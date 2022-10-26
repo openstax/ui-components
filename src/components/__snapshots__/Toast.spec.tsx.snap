@@ -1,0 +1,68 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Toast has variants 1`] = `
+<div
+  className="sc-bczRLJ cAAIBi"
+>
+  <div
+    className="success"
+  >
+    <div
+      className="title"
+    >
+      Success title
+    </div>
+    <div
+      className="body"
+    >
+      Toast body
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Toast has variants 2`] = `
+<div
+  className="sc-bczRLJ cAAIBi"
+>
+  <div
+    className="failure"
+  >
+    <div
+      className="title"
+    >
+      Failure title
+    </div>
+    <div
+      className="body"
+    >
+      Toast body
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Toast matches snapshot 1`] = `
+<div
+  className="sc-bczRLJ cAAIBi"
+>
+  <div
+    className="neutral"
+  >
+    <div
+      className="title"
+    >
+      Toast title
+    </div>
+    <div
+      className="body"
+    >
+      Toast body
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Toast removing after set time works with custom time 1`] = `null`;
+
+exports[`Toast removing after set time works with default time 1`] = `null`;

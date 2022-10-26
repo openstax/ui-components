@@ -6,7 +6,9 @@ const palette = {
   paleRed: "#FBE7EA",
   green: "#77af42",
   lightGreen: "#8bc753",
+  paleGreen: "#e0edd3",
   darkGreen: "#63a524",
+  darkerGreen: "4e7226",
   paleYellow: "#ffffbb",
   teal: "#0dc0de",
   blue: "#007da4",
@@ -32,7 +34,7 @@ const palette = {
   neutralDarker: "#424242", // very dark gray
   black: "#000000",
   orange: "#D4450C"
-};
+} as const;
 
 export const colors = {
   palette: palette,
@@ -43,8 +45,14 @@ export const colors = {
   },
 };
 
+export const zIndexes = {
+  modals: 1060,
+  toasts: 1061
+}
+
 const theme = {
   colors: colors,
+  zIndexes: zIndexes
 };
 
 export default theme;
