@@ -62,7 +62,3 @@ exports[`Toast matches snapshot 1`] = `
   </div>
 </div>
 `;
-
-exports[`Toast removing after set time works with custom time 1`] = `null`;
-
-exports[`Toast removing after set time works with default time 1`] = `null`;
