@@ -60,6 +60,7 @@ const StyledToast = styled.div`
 `;
 
 export const Toast = ({
+  id,
   title,
   children,
   variant = 'neutral',
@@ -72,7 +73,7 @@ export const Toast = ({
     setTimeout(() => {
       setShow(false);
       if (onRemove) {
-        onRemove();
+        onRemove(id);
       }
     }, removeAfterMilliseconds);
   }, []);
