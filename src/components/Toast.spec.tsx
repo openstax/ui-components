@@ -23,6 +23,24 @@ describe('Toast', () => {
     expect(tree).toMatchSnapshot();
   });
 
+  it('runs onRemove callback', () => {
+    const callback = jest.fn();
+    renderer.create(
+      <Toast
+        variant='success'
+        title='Success title'
+        onRemove={callback}
+      >
+        Toast body
+      </Toast>
+    );
+
+    renderer.act(() => {
+      jest.advanceTimersByTime(10000);
+      expect(callback).toHaveBeenCalledTimes(1);
+    });
+  });
+
   describe('removing after set time', () => {
      it('works with default time', () => {
       const render = renderer.create(<Toast title='title'>body</Toast>);
@@ -40,7 +58,6 @@ describe('Toast', () => {
       expect(render.toJSON()).not.toBeNull();
       renderer.act(() => {
         jest.advanceTimersByTime(5001);
-        jest.advanceTimersToNextTimer();
         expect(render.toJSON()).toBeNull();
       });
     });

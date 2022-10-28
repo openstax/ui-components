@@ -1,15 +1,12 @@
 import React from 'react';
-import { colors, zIndexes } from '../../src/theme';
+import { colors } from '../../src/theme';
 import styled from 'styled-components';
+import { ToastData } from 'src/types';
 
 const REMOVE_AFTER = 1000 * 7;
 
 const StyledToast = styled.div`
-  position: fixed;
-  z-index: ${zIndexes.toasts};
   min-height: 5rem;
-  right: 2rem;
-  top: 8.5rem;
   background-color: white;
   box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
   display: flex;
@@ -63,16 +60,21 @@ const StyledToast = styled.div`
 `;
 
 export const Toast = ({
-  title, children, variant = 'neutral', removeAfterMilliseconds = REMOVE_AFTER
-}: React.PropsWithChildren<{
-  title: string;
-  variant?: 'neutral' | 'success' | 'failure';
-  removeAfterMilliseconds?: number;
-}>) => {
+  title,
+  children,
+  variant = 'neutral',
+  removeAfterMilliseconds = REMOVE_AFTER,
+  onRemove
+}: React.PropsWithChildren<Omit<ToastData, 'message'>>) => {
   const [show, setShow] = React.useState(true);
 
   React.useEffect(() => {
-    setTimeout(() => setShow(false), removeAfterMilliseconds);
+    setTimeout(() => {
+      setShow(false);
+      if (onRemove) {
+        onRemove();
+      }
+    }, removeAfterMilliseconds);
   }, []);
 
   if (!show) { return null; }
