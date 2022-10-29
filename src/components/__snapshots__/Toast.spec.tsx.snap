@@ -2,7 +2,7 @@
 
 exports[`Toast has variants 1`] = `
 <div
-  className="sc-bczRLJ gkLRyn"
+  className="sc-bczRLJ bVdGgx"
 >
   <div
     className="success"
@@ -23,7 +23,7 @@ exports[`Toast has variants 1`] = `
 
 exports[`Toast has variants 2`] = `
 <div
-  className="sc-bczRLJ gkLRyn"
+  className="sc-bczRLJ bVdGgx"
 >
   <div
     className="failure"
@@ -44,7 +44,7 @@ exports[`Toast has variants 2`] = `
 
 exports[`Toast matches snapshot 1`] = `
 <div
-  className="sc-bczRLJ gkLRyn"
+  className="sc-bczRLJ bVdGgx"
 >
   <div
     className="neutral"

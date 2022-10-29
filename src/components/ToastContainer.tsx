@@ -1,7 +1,7 @@
 import { zIndexes } from '../../src/theme';
 import styled from 'styled-components';
 import { Toast } from './Toast';
-import { ToastData } from 'src/types';
+import { ToastData } from '../../src/types';
 
 const StyledToastContainer = styled.div`
   position: fixed;

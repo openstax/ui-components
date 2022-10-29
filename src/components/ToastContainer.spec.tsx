@@ -1,6 +1,6 @@
 import { ToastContainer } from './ToastContainer';
 import renderer from 'react-test-renderer';
-import { ToastData } from 'src/types';
+import { ToastData } from '../../src/types';
 
 jest.useFakeTimers();
 

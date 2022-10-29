@@ -1,4 +1,4 @@
-import { ToastData } from 'src/types';
+import { ToastData } from '../../src/types';
 import { ToastContainer } from './ToastContainer';
 
 const toasts: ToastData[] = [
