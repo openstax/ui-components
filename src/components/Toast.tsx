@@ -141,6 +141,10 @@ export const Toast = ({
         onRemove(id);
       }
     }, removeAfterMilliseconds);
+
+    return () => {
+      setShow(false);
+    }
   }, []);
 
   if (!show) { return null; }
