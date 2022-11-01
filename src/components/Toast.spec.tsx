@@ -41,7 +41,7 @@ describe('Toast', () => {
     });
   });
 
-  describe('removing after set time', () => {
+  describe('automatically dismissing', () => {
      it('works with default time', () => {
       const render = renderer.create(<Toast title='title'>body</Toast>);
       expect(render.toJSON()).not.toBeNull();
@@ -59,6 +59,34 @@ describe('Toast', () => {
       renderer.act(() => {
         jest.advanceTimersByTime(5001);
         expect(render.toJSON()).toBeNull();
+      });
+    });
+
+    it('does not allow values too low for animation', () => {
+      const render = renderer.create(
+        <Toast title='title' dismissAfterMilliseconds={100}>body</Toast>
+      );
+      expect(render.toJSON()).not.toBeNull();
+      renderer.act(() => {
+        jest.advanceTimersByTime(500);
+        expect(render.toJSON()).not.toBeNull();
+      });
+    });
+
+    it('is disabled when setting autoDismiss', () => {
+      const render = renderer.create(
+        <Toast
+          variant='success'
+          title='Success title'
+          autoDismiss={false}
+        >
+          Toast body
+        </Toast>
+      );
+      expect(render.toJSON()).not.toBeNull();
+      renderer.act(() => {
+        jest.advanceTimersByTime(10000);
+        expect(render.toJSON()).not.toBeNull();
       });
     });
   });
