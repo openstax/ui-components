@@ -10,7 +10,7 @@ interface StyledToast {
   duration: number;
   inline: boolean;
   autoDismiss: boolean;
-};
+}
 
 const StyledToast = styled.div<StyledToast>`
   min-height: 5rem;
