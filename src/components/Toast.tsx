@@ -3,13 +3,13 @@ import { colors } from '../../src/theme';
 import styled, { css } from 'styled-components';
 import { ToastData } from '../../src/types';
 
-const REMOVE_AFTER = 1000 * 7;
-const ANIMATION_TIME = 500;
+const DISMISS_AFTER_MS = 1000 * 7;
+const ANIMATION_TIME_MS = 500;
 
 interface StyledToast {
   duration: number;
   inline: boolean;
-  timeout: boolean;
+  autoDismiss: boolean;
 };
 
 const StyledToast = styled.div<StyledToast>`
@@ -22,30 +22,29 @@ const StyledToast = styled.div<StyledToast>`
   font-size: 1.4rem;
 
 
-${props => props.timeout && css`
-  animation-duration: ${ANIMATION_TIME}ms;
-  animation-timing-function: ease;
-  animation-delay: ${(props: StyledToast) => props.duration - ANIMATION_TIME}ms;
-  animation-iteration-count: 1;
-  animation-direction: normal;
-  animation-play-state: running;
-  animation-fill-mode: forwards;
-  animation-name: toast-animation;
+  ${props => props.autoDismiss && css`
+    animation-duration: ${ANIMATION_TIME_MS}ms;
+    animation-timing-function: ease;
+    animation-delay: ${(props: StyledToast) => props.duration - ANIMATION_TIME_MS}ms;
+    animation-iteration-count: 1;
+    animation-direction: normal;
+    animation-play-state: running;
+    animation-fill-mode: forwards;
+    animation-name: toast-animation;
 
-  @keyframes toast-animation {
-    from {
-      transform: translateY(0);
-      opacity: 1;
+    @keyframes toast-animation {
+      from {
+        transform: translateY(0);
+        opacity: 1;
+      }
+      to {
+        transform: translateY(-100%);
+        opacity: 0;
+      }
     }
-    to {
-      transform: translateY(-100%);
-      opacity: 0;
-    }
-  }
-`}
+  `}
 
   ${props => props.inline && css`
-    //max-width: 56rem;
     margin: 0 auto;
     box-shadow: none;
     border: 1px solid rgba(0,0,0,0.2);
@@ -101,19 +100,19 @@ ${props => props.timeout && css`
 `;
 
 interface ToastBase extends
-React.PropsWithChildren<Omit<ToastData, 'message' | 'onRemove'>> {
+React.PropsWithChildren<Omit<ToastData, 'message' | 'onDismiss'>> {
   inline?: boolean;
 }
 
 interface ToastWithTimeout extends ToastBase {
-  onRemove?: ToastData['onRemove'];
-  timeout?: true;
+  onDismiss?: ToastData['onDismiss'];
+  autoDismiss?: true;
 }
 
 interface ToastWithoutTimeout extends ToastBase {
-  timeout: false;
-  onRemove?: never;
-  removeAfterMilliseconds?: never;
+  autoDismiss: false;
+  onDismiss?: never;
+  dismissAfterMilliseconds?: never;
 }
 
 export type Toast = ToastWithTimeout | ToastWithoutTimeout;
@@ -123,24 +122,24 @@ export const Toast = ({
   title,
   children,
   variant = 'neutral',
-  timeout = true,
+  autoDismiss = true,
   inline = false,
-  removeAfterMilliseconds = REMOVE_AFTER,
-  onRemove,
+  dismissAfterMilliseconds = DISMISS_AFTER_MS,
+  onDismiss,
 }: Toast) => {
   const [show, setShow] = React.useState(true);
 
   React.useEffect(() => {
-    if (!timeout) {
+    if (!autoDismiss) {
       return;
     }
 
     setTimeout(() => {
       setShow(false);
-      if (onRemove) {
-        onRemove(id);
+      if (onDismiss) {
+        onDismiss(id);
       }
-    }, removeAfterMilliseconds);
+    }, dismissAfterMilliseconds);
 
     return () => {
       setShow(false);
@@ -149,14 +148,14 @@ export const Toast = ({
 
   if (!show) { return null; }
 
-  if (removeAfterMilliseconds < 1000) {
-    removeAfterMilliseconds = 1000;
+  if (dismissAfterMilliseconds < 1000) {
+    dismissAfterMilliseconds = 1000;
   }
 
   return <StyledToast
     inline={inline}
-    duration={removeAfterMilliseconds}
-    timeout={timeout}>
+    duration={dismissAfterMilliseconds}
+    autoDismiss={autoDismiss}>
     <div className={variant}>
       <div className='title'>{title}</div>
       <div className='body'>

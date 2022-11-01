@@ -23,13 +23,13 @@ describe('Toast', () => {
     expect(tree).toMatchSnapshot();
   });
 
-  it('runs onRemove callback', () => {
+  it('runs onDismiss callback', () => {
     const callback = jest.fn();
     renderer.create(
       <Toast
         variant='success'
         title='Success title'
-        onRemove={callback}
+        onDismiss={callback}
       >
         Toast body
       </Toast>
@@ -53,7 +53,7 @@ describe('Toast', () => {
 
     it('works with custom time', () => {
       const render = renderer.create(
-        <Toast title='title' removeAfterMilliseconds={5000}>body</Toast>
+        <Toast title='title' dismissAfterMilliseconds={5000}>body</Toast>
       );
       expect(render.toJSON()).not.toBeNull();
       renderer.act(() => {

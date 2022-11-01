@@ -3,8 +3,8 @@ export type ToastData = {
   title: string;
   message: React.ReactNode;
   variant?: ToastVariant;
-  removeAfterMilliseconds?: number;
-  onRemove?: (id: ToastData['id']) => void;
+  dismissAfterMilliseconds?: number;
+  onDismiss?: (id: ToastData['id']) => void;
 }
 
 type ToastVariant = 'neutral' | 'success' | 'failure';
