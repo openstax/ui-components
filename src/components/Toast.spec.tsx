@@ -11,7 +11,7 @@ describe('Toast', () => {
     expect(tree).toMatchSnapshot();
   });
 
-  it('has variants', () => {
+  it('has variants and inlines', () => {
     let tree = renderer.create(
       <Toast variant='success' title='Success title'>Toast body</Toast>
     ).toJSON();
@@ -19,6 +19,11 @@ describe('Toast', () => {
 
     tree = renderer.create(
       <Toast variant='failure' title='Failure title'>Toast body</Toast>
+    ).toJSON();
+    expect(tree).toMatchSnapshot();
+
+    tree = renderer.create(
+      <Toast title='Inline' inline={true}>Toast body</Toast>
     ).toJSON();
     expect(tree).toMatchSnapshot();
   });
@@ -39,6 +44,19 @@ describe('Toast', () => {
       jest.advanceTimersByTime(10000);
       expect(callback).toHaveBeenCalledTimes(1);
     });
+  });
+
+  it('cleans up useEffect', () => {
+    const component = renderer.create(
+      <Toast title='Success title'>
+        Toast body
+      </Toast>
+    );
+    expect(() => {
+      renderer.act(() =>{
+        component.unmount();
+      });
+    }).not.toThrowError();
   });
 
   describe('automatically dismissing', () => {
