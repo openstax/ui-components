@@ -35,6 +35,7 @@ describe('Toast', () => {
         variant='success'
         title='Success title'
         onDismiss={callback}
+        dismissAfterMs={5000}
       >
         Toast body
       </Toast>
@@ -60,18 +61,9 @@ describe('Toast', () => {
   });
 
   describe('automatically dismissing', () => {
-     it('works with default time', () => {
-      const render = renderer.create(<Toast title='title'>body</Toast>);
-      expect(render.toJSON()).not.toBeNull();
-      renderer.act(() => {
-        jest.advanceTimersByTime(10000);
-        expect(render.toJSON()).toBeNull();
-      });
-    });
-
-    it('works with custom time', () => {
+    it('works when setting value', () => {
       const render = renderer.create(
-        <Toast title='title' dismissAfterMilliseconds={5000}>body</Toast>
+        <Toast title='title' dismissAfterMs={5000}>body</Toast>
       );
       expect(render.toJSON()).not.toBeNull();
       renderer.act(() => {
@@ -82,28 +74,11 @@ describe('Toast', () => {
 
     it('does not allow values too low for animation', () => {
       const render = renderer.create(
-        <Toast title='title' dismissAfterMilliseconds={100}>body</Toast>
+        <Toast title='title' dismissAfterMs={100}>body</Toast>
       );
       expect(render.toJSON()).not.toBeNull();
       renderer.act(() => {
         jest.advanceTimersByTime(500);
-        expect(render.toJSON()).not.toBeNull();
-      });
-    });
-
-    it('is disabled when setting autoDismiss', () => {
-      const render = renderer.create(
-        <Toast
-          variant='success'
-          title='Success title'
-          autoDismiss={false}
-        >
-          Toast body
-        </Toast>
-      );
-      expect(render.toJSON()).not.toBeNull();
-      renderer.act(() => {
-        jest.advanceTimersByTime(10000);
         expect(render.toJSON()).not.toBeNull();
       });
     });

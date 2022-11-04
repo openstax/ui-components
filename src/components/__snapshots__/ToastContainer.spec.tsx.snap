@@ -5,7 +5,7 @@ exports[`ToastContainer matches snapshot 1`] = `
   className="sc-gsnTZi gNuHnK"
 >
   <div
-    className="sc-bczRLJ cgUHFZ"
+    className="sc-bczRLJ ihkPxq"
   >
     <div
       className="neutral"
@@ -23,7 +23,7 @@ exports[`ToastContainer matches snapshot 1`] = `
     </div>
   </div>
   <div
-    className="sc-bczRLJ gPyylo"
+    className="sc-bczRLJ ihkPxq"
   >
     <div
       className="failure"
@@ -41,7 +41,7 @@ exports[`ToastContainer matches snapshot 1`] = `
     </div>
   </div>
   <div
-    className="sc-bczRLJ kDQpsW"
+    className="sc-bczRLJ ihkPxq"
   >
     <div
       className="success"

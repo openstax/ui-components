@@ -3,7 +3,7 @@ export type ToastData = {
   title: string;
   message: React.ReactNode;
   variant?: ToastVariant;
-  dismissAfterMilliseconds?: number;
+  dismissAfterMs?: number;
   onDismiss?: (id: ToastData['id']) => void;
 }
 

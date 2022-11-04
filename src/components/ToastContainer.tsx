@@ -13,13 +13,13 @@ const StyledToastContainer = styled.div`
   gap: 1vh;
 `;
 
-export const ToastContainer = ({ toasts, onRemoveToast }: {
-  toasts: ToastData[], onRemoveToast?: ToastData['onDismiss']
+export const ToastContainer = ({ toasts, onDismissToast }: {
+  toasts: ToastData[], onDismissToast?: ToastData['onDismiss']
 }) => {
   return <StyledToastContainer>
     {toasts.map((toast, index) => <Toast
       key={`toast-${index}`}
-      onDismiss={(id) => onRemoveToast ? onRemoveToast(id) : null}
+      onDismiss={onDismissToast}
       {...toast}
       >{toast.message}</Toast>)}
   </StyledToastContainer>

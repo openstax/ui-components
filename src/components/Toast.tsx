@@ -3,13 +3,13 @@ import { colors } from '../../src/theme';
 import styled, { css } from 'styled-components';
 import { ToastData } from '../../src/types';
 
-const DISMISS_AFTER_MS = 1000 * 7;
 const ANIMATION_TIME_MS = 500;
+const DISMISS_AFTER_MS_FLOOR = 1000;
 
-interface StyledToast {
-  duration: number;
+type StyledToast = {
   inline: boolean;
-  autoDismiss: boolean;
+  autoDismiss?: boolean;
+  dismissAfterMs?: number;
 }
 
 const StyledToast = styled.div<StyledToast>`
@@ -25,7 +25,8 @@ const StyledToast = styled.div<StyledToast>`
   ${props => props.autoDismiss && css`
     animation-duration: ${ANIMATION_TIME_MS}ms;
     animation-timing-function: ease;
-    animation-delay: ${(props: StyledToast) => props.duration - ANIMATION_TIME_MS}ms;
+    animation-delay: ${(props: StyledToast) =>
+      props.dismissAfterMs ? props.dismissAfterMs - ANIMATION_TIME_MS : DISMISS_AFTER_MS_FLOOR}ms;
     animation-iteration-count: 1;
     animation-direction: normal;
     animation-play-state: running;
@@ -106,13 +107,12 @@ React.PropsWithChildren<Omit<ToastData, 'message' | 'onDismiss'>> {
 
 interface ToastWithTimeout extends ToastBase {
   onDismiss?: ToastData['onDismiss'];
-  autoDismiss?: true;
+  dismissAfterMs?: number;
 }
 
 interface ToastWithoutTimeout extends ToastBase {
-  autoDismiss: false;
   onDismiss?: never;
-  dismissAfterMilliseconds?: never;
+  dismissAfterMs?: never;
 }
 
 export type Toast = ToastWithTimeout | ToastWithoutTimeout;
@@ -122,15 +122,14 @@ export const Toast = ({
   title,
   children,
   variant = 'neutral',
-  autoDismiss = true,
   inline = false,
-  dismissAfterMilliseconds = DISMISS_AFTER_MS,
+  dismissAfterMs,
   onDismiss,
 }: Toast) => {
   const [show, setShow] = React.useState(true);
 
   React.useEffect(() => {
-    if (!autoDismiss) {
+    if (!dismissAfterMs) {
       return;
     }
 
@@ -139,7 +138,7 @@ export const Toast = ({
       if (onDismiss) {
         onDismiss(id);
       }
-    }, dismissAfterMilliseconds);
+    }, dismissAfterMs);
 
     return () => {
       setShow(false);
@@ -148,14 +147,13 @@ export const Toast = ({
 
   if (!show) { return null; }
 
-  if (dismissAfterMilliseconds < 1000) {
-    dismissAfterMilliseconds = 1000;
+  if (dismissAfterMs && dismissAfterMs < DISMISS_AFTER_MS_FLOOR) {
+    dismissAfterMs = DISMISS_AFTER_MS_FLOOR;
   }
 
   return <StyledToast
     inline={inline}
-    duration={dismissAfterMilliseconds}
-    autoDismiss={autoDismiss}>
+    dismissAfterMs={dismissAfterMs}>
     <div className={variant}>
       <div className='title'>{title}</div>
       <div className='body'>
