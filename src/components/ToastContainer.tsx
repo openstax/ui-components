@@ -1,11 +1,13 @@
 import { zIndexes } from '../../src/theme';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { Toast } from './Toast';
 import { ToastData } from '../../src/types';
 
 const StyledToastContainer = styled.div`
-  position: fixed;
-  right: 2rem;
+  ${(props: {inline: boolean}) => !props.inline && css`
+    position: fixed;
+    right: 2rem;
+  `}
   z-index: ${zIndexes.toasts};
   display: grid;
   justify-items: center;
@@ -13,13 +15,14 @@ const StyledToastContainer = styled.div`
   gap: 1vh;
 `;
 
-export const ToastContainer = ({ toasts, onDismissToast }: {
-  toasts: ToastData[], onDismissToast?: ToastData['onDismiss']
+export const ToastContainer = ({ toasts, onDismissToast, inline = false }: {
+  toasts: ToastData[], onDismissToast?: ToastData['onDismiss'], inline?: boolean
 }) => {
-  return <StyledToastContainer>
+  return <StyledToastContainer inline={inline}>
     {toasts.map((toast, index) => <Toast
       key={`toast-${index}`}
       onDismiss={onDismissToast}
+      inline={inline}
       {...toast}
       >{toast.message}</Toast>)}
   </StyledToastContainer>

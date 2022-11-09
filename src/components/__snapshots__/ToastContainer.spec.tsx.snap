@@ -2,10 +2,10 @@
 
 exports[`ToastContainer matches snapshot 1`] = `
 <div
-  className="sc-gsnTZi gNuHnK"
+  className="sc-gsnTZi jgRncN"
 >
   <div
-    className="sc-bczRLJ ihkPxq"
+    className="sc-bczRLJ gKtpgy"
   >
     <div
       className="neutral"
@@ -23,7 +23,7 @@ exports[`ToastContainer matches snapshot 1`] = `
     </div>
   </div>
   <div
-    className="sc-bczRLJ ihkPxq"
+    className="sc-bczRLJ iOhxrI"
   >
     <div
       className="failure"
@@ -41,7 +41,68 @@ exports[`ToastContainer matches snapshot 1`] = `
     </div>
   </div>
   <div
-    className="sc-bczRLJ ihkPxq"
+    className="sc-bczRLJ cJAPSe"
+  >
+    <div
+      className="success"
+    >
+      <div
+        className="title"
+      >
+        Success
+      </div>
+      <div
+        className="body"
+      >
+        message
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`ToastContainer uses inline prop 1`] = `
+<div
+  className="sc-gsnTZi bBRjBg"
+>
+  <div
+    className="sc-bczRLJ gjglkd"
+  >
+    <div
+      className="neutral"
+    >
+      <div
+        className="title"
+      >
+        Neutral
+      </div>
+      <div
+        className="body"
+      >
+        message
+      </div>
+    </div>
+  </div>
+  <div
+    className="sc-bczRLJ hptoRH"
+  >
+    <div
+      className="failure"
+    >
+      <div
+        className="title"
+      >
+        Error
+      </div>
+      <div
+        className="body"
+      >
+        message
+      </div>
+    </div>
+  </div>
+  <div
+    className="sc-bczRLJ ikbXNd"
   >
     <div
       className="success"

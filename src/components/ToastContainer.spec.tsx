@@ -16,6 +16,11 @@ describe('ToastContainer', () => {
     expect(tree).toMatchSnapshot();
   });
 
+  it('uses inline prop', () => {
+    const tree = renderer.create(<ToastContainer toasts={toasts} inline={true} />).toJSON();
+    expect(tree).toMatchSnapshot();
+  });
+
   it('runs callback', () => {
     const callback = jest.fn();
     renderer.create(<ToastContainer toasts={toasts.splice(0)} onDismissToast={callback} />).toJSON();

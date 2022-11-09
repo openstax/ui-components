@@ -47,16 +47,18 @@ describe('Toast', () => {
     });
   });
 
-  it('cleans up useEffect', () => {
-    const component = renderer.create(
-      <Toast title='Success title'>
-        Toast body
-      </Toast>
-    );
-    expect(() => {
-      renderer.act(() =>{
+  it('cleans up useEffect', async () => {
+
+    expect(async () => {
+      await renderer.act(async () => {
+        const component = renderer.create(
+          <Toast title='Success title'>
+            Toast body
+          </Toast>
+        );
         component.unmount();
       });
+
     }).not.toThrowError();
   });
 

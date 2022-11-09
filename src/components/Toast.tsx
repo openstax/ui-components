@@ -8,7 +8,6 @@ const DISMISS_AFTER_MS_FLOOR = 1000;
 
 type StyledToast = {
   inline: boolean;
-  autoDismiss?: boolean;
   dismissAfterMs?: number;
 }
 
@@ -21,12 +20,10 @@ const StyledToast = styled.div<StyledToast>`
   max-width: 28rem;
   font-size: 1.4rem;
 
-
-  ${props => props.autoDismiss && css`
+  ${props => props.dismissAfterMs && css`
     animation-duration: ${ANIMATION_TIME_MS}ms;
     animation-timing-function: ease;
-    animation-delay: ${(props: StyledToast) =>
-      props.dismissAfterMs ? props.dismissAfterMs - ANIMATION_TIME_MS : DISMISS_AFTER_MS_FLOOR}ms;
+    animation-delay: ${props.dismissAfterMs - ANIMATION_TIME_MS}ms;
     animation-iteration-count: 1;
     animation-direction: normal;
     animation-play-state: running;
@@ -77,7 +74,7 @@ const StyledToast = styled.div<StyledToast>`
   .neutral {
     .title {
       color: ${colors.palette.neutralDarker};
-      background-color: ${colors.palette.neutralLighter};
+f      background-color: ${colors.palette.neutralLighter};
     }
   }
 
@@ -100,10 +97,9 @@ const StyledToast = styled.div<StyledToast>`
   }
 `;
 
-interface ToastBase extends
-React.PropsWithChildren<Omit<ToastData, 'message' | 'onDismiss'>> {
+interface ToastBase extends React.PropsWithChildren<Omit<ToastData, 'message' | 'onDismiss'>> {
   inline?: boolean;
-}
+};
 
 interface ToastWithTimeout extends ToastBase {
   onDismiss?: ToastData['onDismiss'];
@@ -127,7 +123,6 @@ export const Toast = ({
   onDismiss,
 }: Toast) => {
   const [show, setShow] = React.useState(true);
-
   React.useEffect(() => {
     if (!dismissAfterMs) {
       return;
@@ -140,9 +135,6 @@ export const Toast = ({
       }
     }, dismissAfterMs);
 
-    return () => {
-      setShow(false);
-    }
   }, []);
 
   if (!show) { return null; }
@@ -152,8 +144,7 @@ export const Toast = ({
   }
 
   return <StyledToast
-    inline={inline}
-    dismissAfterMs={dismissAfterMs}>
+    dismissAfterMs={dismissAfterMs} inline={inline}>
     <div className={variant}>
       <div className='title'>{title}</div>
       <div className='body'>
