@@ -74,7 +74,7 @@ const StyledToast = styled.div<StyledToast>`
   .neutral {
     .title {
       color: ${colors.palette.neutralDarker};
-f      background-color: ${colors.palette.neutralLighter};
+      background-color: ${colors.palette.neutralLighter};
     }
   }
 
@@ -99,7 +99,7 @@ f      background-color: ${colors.palette.neutralLighter};
 
 interface ToastBase extends React.PropsWithChildren<Omit<ToastData, 'message' | 'onDismiss'>> {
   inline?: boolean;
-};
+}
 
 interface ToastWithTimeout extends ToastBase {
   onDismiss?: ToastData['onDismiss'];
