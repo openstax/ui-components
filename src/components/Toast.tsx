@@ -17,7 +17,9 @@ const StyledToast = styled.div<StyledToast>`
   box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
   display: flex;
   align-items: center;
-  max-width: 28rem;
+  ${props => !props.inline && css`
+    max-width: 28rem;
+  `}
   font-size: 1.4rem;
 
   ${props => props.dismissAfterMs && css`
