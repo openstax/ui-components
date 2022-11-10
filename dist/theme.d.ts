@@ -1,0 +1,87 @@
+export declare const colors: {
+    palette: {
+        red: string;
+        danger: string;
+        darkRed: string;
+        lightRed: string;
+        paleRed: string;
+        green: string;
+        lightGreen: string;
+        darkGreen: string;
+        paleYellow: string;
+        teal: string;
+        blue: string;
+        mediumBlue: string;
+        lightBlue: string;
+        neutralLightBlue: string;
+        tangerine: string;
+        gray: string;
+        darkGray: string;
+        pale: string;
+        light: string;
+        white: string;
+        neutralLightest: string;
+        neutralCool: string;
+        neutralBright: string;
+        neutralLighter: string;
+        neutralLight: string;
+        neutralMedium: string;
+        neutral: string;
+        neutralThin: string;
+        neutralDark: string;
+        neutralFeedback: string;
+        neutralDarker: string;
+        black: string;
+        orange: string;
+    };
+    button: {
+        background: string;
+        backgroundHover: string;
+        backgroundActive: string;
+    };
+};
+declare const theme: {
+    colors: {
+        palette: {
+            red: string;
+            danger: string;
+            darkRed: string;
+            lightRed: string;
+            paleRed: string;
+            green: string;
+            lightGreen: string;
+            darkGreen: string;
+            paleYellow: string;
+            teal: string;
+            blue: string;
+            mediumBlue: string;
+            lightBlue: string;
+            neutralLightBlue: string;
+            tangerine: string;
+            gray: string;
+            darkGray: string;
+            pale: string;
+            light: string;
+            white: string;
+            neutralLightest: string;
+            neutralCool: string;
+            neutralBright: string;
+            neutralLighter: string;
+            neutralLight: string;
+            neutralMedium: string;
+            neutral: string;
+            neutralThin: string;
+            neutralDark: string;
+            neutralFeedback: string;
+            neutralDarker: string;
+            black: string;
+            orange: string;
+        };
+        button: {
+            background: string;
+            backgroundHover: string;
+            backgroundActive: string;
+        };
+    };
+};
+export default theme;
