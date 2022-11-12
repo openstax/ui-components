@@ -8,6 +8,7 @@ const Wrapper = styled.div`
   }
   font-family: "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #424242;
+  height: 100%;
 `;
 
 export const Provider: GlobalProvider = ({ children }) => {

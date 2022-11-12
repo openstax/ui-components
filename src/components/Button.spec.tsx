@@ -9,6 +9,13 @@ describe('Button', () => {
     expect(tree).toMatchSnapshot();
   });
 
+  it('matches light color snapshot', () => {
+    const tree = renderer.create(
+      <Button color='light'>Click Me</Button>
+    ).toJSON();
+    expect(tree).toMatchSnapshot();
+  });
+
   it('isWaiting state matches snapshot', () => {
     const tree = renderer.create(
       <Button isWaiting={true} waitingText="Submitting...">Click Me</Button>

@@ -1,13 +1,14 @@
-import { colors } from "../theme";
+import { ButtonColor, colors } from "../theme";
 import styled from "styled-components";
 
-const StyledButton = styled.button`
-  background-color: ${colors.button.background};
-  color: ${colors.palette.white};
+const StyledButton = styled.button<{ color: ButtonColor }>`
+  background-color: ${props =>
+    colors.button[props.color].background};
+  color: ${props => colors.button[props.color].color};
   font-size: 1.6rem;
-  font-weight: 700;
+  font-weight: ${props => props.color === 'light' ? '400' : '700'};
   line-height: 2rem;
-  display: flex;
+  display: inline-flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
@@ -20,22 +21,31 @@ const StyledButton = styled.button`
   &:not([disabled]) {
     cursor: pointer;
     &:hover {
-      background: ${colors.button.backgroundHover}
+      background: ${props => colors.button[props.color].backgroundHover};
     }
     &:active {
-      background: ${colors.button.backgroundActive}
+      background: ${props => colors.button[props.color].backgroundActive};
     }
   }
   &:disabled {
     opacity: 0.4;
   }
+
+  & + & {
+    margin-left: 1.6rem;
+  }
 `;
 
-interface ButtonProps extends React.ComponentPropsWithoutRef<'button'> {
+interface ButtonBase extends React.ComponentPropsWithoutRef<'button'> {
+  color?: ButtonColor;
+}
+
+interface ButtonProps extends ButtonBase {
   isWaiting?: never;
   waitingText?: never;
 }
-interface WaitingButtonProps extends React.ComponentPropsWithoutRef<'button'> {
+
+interface WaitingButtonProps extends ButtonBase {
   isWaiting: boolean;
   waitingText: string;
 }
@@ -43,9 +53,13 @@ interface WaitingButtonProps extends React.ComponentPropsWithoutRef<'button'> {
 const Button = (props: ButtonProps | WaitingButtonProps) => {
   const { disabled, isWaiting, waitingText, children, ...otherProps } = props;
 
-  return (
-    <StyledButton {...otherProps} disabled={isWaiting || disabled}>{(isWaiting && waitingText) || children}</StyledButton>
-  );
+  return <StyledButton
+    {...otherProps}
+    disabled={isWaiting || disabled}
+    color={props.color || 'orange'}
+  >
+    {(isWaiting && waitingText) || children}
+  </StyledButton>;
 }
 
 export default Button;

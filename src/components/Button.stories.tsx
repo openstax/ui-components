@@ -1,5 +1,13 @@
 import Button from "./Button";
 
-export const Default = () => <Button>Click Me</Button>;
-export const Disabled = () => <Button disabled>Click Me</Button>;
-export const Waiting = () => <Button isWaiting={true} waitingText="Submitting...">Click Me</Button>;
+export const DefaultOrange = () => <>
+  <Button>Default orange</Button>
+  <Button disabled>Disabled</Button>
+  <Button isWaiting={true} waitingText='Waiting...'>Button</Button>
+</>;
+
+export const Light = () => <>
+  <Button color='light'>Light</Button>
+  <Button color='light' disabled>Disabled</Button>
+  <Button color='light' isWaiting={true} waitingText='Waiting...'>Button</Button>
+</>;

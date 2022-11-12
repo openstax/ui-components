@@ -36,13 +36,24 @@ const palette = {
   orange: "#D4450C"
 } as const;
 
+const buttonColors = {
+  orange: {
+    background: palette.orange,
+    backgroundActive: "#C5400B",
+    backgroundHover: "#E74B0D",
+    color: "#fff",
+  },
+  light: {
+    background: '#fff',
+    backgroundActive: '#eee',
+    backgroundHover: '#fff',
+    color: palette.neutralDarker,
+  }
+} as const;
+
 export const colors = {
   palette: palette,
-  button: {
-    background: palette.orange,
-    backgroundHover: "#E74B0D",
-    backgroundActive: "#C5400B"
-  },
+  button: {...buttonColors, default: buttonColors.orange},
 };
 
 export const zIndexes = {
@@ -56,3 +67,4 @@ const theme = {
 };
 
 export default theme;
+export type ButtonColor = keyof typeof buttonColors;

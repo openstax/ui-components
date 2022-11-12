@@ -2,16 +2,27 @@
 
 exports[`Button isWaiting state matches snapshot 1`] = `
 <button
-  className="sc-bczRLJ fLTvYy"
+  className="sc-bczRLJ gwwGEf"
+  color="orange"
   disabled={true}
 >
   Submitting...
 </button>
 `;
 
+exports[`Button matches light color snapshot 1`] = `
+<button
+  className="sc-bczRLJ hgOqij"
+  color="light"
+>
+  Click Me
+</button>
+`;
+
 exports[`Button matches snapshot 1`] = `
 <button
-  className="sc-bczRLJ fLTvYy"
+  className="sc-bczRLJ gwwGEf"
+  color="orange"
 >
   Click Me
 </button>
