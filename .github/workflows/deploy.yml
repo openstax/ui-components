@@ -1,13 +1,34 @@
 name: Build
 
 on:
-  push:
+  deployment:
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
+      - id: setup
+        run: |
+          prefix="${{ github.deployment.ref }}"
+          [ "$prefix" == "refs/heads/main" ] && prefix="main" || prefix="$prefix/${{ github.deployment.sha }}"
+          echo "::set-output name=prefix::$prefix"
+
+      - name: set deployment status to in progress
+        id: start_deployment
+        uses: octokit/request-action@v2.x
+        with:
+          route: POST /repos/:repository/deployments/:deployment/statuses
+          repository: ${{ github.repository }}
+          deployment: ${{ github.deployment.id }}
+          environment: dev
+          environment_url: https://openstax.github.io/${{ github.repository }}/${{ steps.setup.outputs.prefix }}
+          log_url: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          state: in_progress
+          mediaType: '{"previews": ["flash", "ant-man"]}'
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+
       - uses: actions/checkout@v2
 
       - name: Setup Node.js
@@ -23,13 +44,11 @@ jobs:
 
       - id: build
         run: |
-          prefix="${{ github.event.ref }}"
-          [ "$prefix" == "refs/heads/main" ] && prefix="main" || prefix="$prefix/${{ github.event.after }}"
+          prefix="${{ steps.setup.outputs.prefix }}"
           yarn
           yarn ladle build --base "/ui-components/$prefix/"
           mkdir -p "./$prefix"
           mv ./docs/* "./$prefix"
-          echo "::set-output name=prefix::$prefix"
 
       - uses: actions/checkout@v2
         with:
@@ -40,6 +59,7 @@ jobs:
         run: |
           git config --global user.name 'staxly'
           git config --global user.email 'staxly@users.noreply.github.com'
-          git add "./${{ steps.build.outputs.prefix }}"
-          git commit -m "building ${{ steps.build.outputs.prefix }}"
+          git add "./${{ steps.setup.outputs.prefix }}"
+          git commit -m "building ${{ steps.setup.outputs.prefix }}"
           git push
+
