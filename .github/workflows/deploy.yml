@@ -83,7 +83,7 @@ jobs:
       - name: wait for deployment
         run: |
           WAIT_SECONDS=240
-          until [ "$WAIT_MINUTES" -le "0" ] || [ "$(curl -s -o /dev/null -w "%{http_code}" ${{ steps.setup.outputs.environment_url }})" == "200" ]; do
+          until [[ "$WAIT_MINUTES" -le "0" ]] || [ "$(curl -s -o /dev/null -w "%{http_code}" ${{ steps.setup.outputs.environment_url }})" == "200" ]; do
             echo "sleeping 10s">&2
             sleep 10
             WAIT_SECONDS=$(( WAIT_SECONDS - 10 ))
