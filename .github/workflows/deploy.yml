@@ -11,14 +11,14 @@ jobs:
       - id: setup
         run: |
           branch="${{ github.event.ref }}"
-          [ "$branch" == "refs/heads/main" ] && branch="main" || true 
+          [ "$branch" == "refs/heads/main" ] && branch="main" || true
           prefix="$branch"
-          [ "$prefix" != "main" ] && prefix="$prefix/${{ github.event.sha }}" || true 
+          [ "$prefix" != "main" ] && prefix="$prefix/${{ github.event.sha }}" || true
           echo "::set-output name=branch::$branch"
           echo "::set-output name=prefix::$prefix"
-      
+
       - name: create deployment
-        id: create_deployment 
+        id: create_deployment
         uses: octokit/request-action@v2.x
         with:
           route: POST /repos/:repository/deployments
@@ -38,7 +38,7 @@ jobs:
           repository: ${{ github.repository }}
           deployment: ${{ fromJson(steps.create_deployment.outputs.data).id }}
           environment: ${{ steps.setup.outputs.branch }}
-          environment_url: https://openstax.github.io/${{ github.repository }}/${{ steps.setup.outputs.prefix }}
+          environment_url: https://openstax.github.io/${{ github.event.repository.name }}/${{ steps.setup.outputs.prefix }}
           log_url: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
           state: in_progress
           mediaType: '{"previews": ["flash", "ant-man"]}'
@@ -86,7 +86,7 @@ jobs:
           repository: ${{ github.repository }}
           deployment: ${{ fromJson(steps.create_deployment.outputs.data).id }}
           environment: ${{ steps.setup.outputs.branch }}
-          environment_url: https://openstax.github.io/${{ github.repository }}/${{ steps.setup.outputs.prefix }}
+          environment_url: https://openstax.github.io/${{ github.event.repository.name }}/${{ steps.setup.outputs.prefix }}
           log_url: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
           state: success
           mediaType: '{"previews": ["flash", "ant-man"]}'
