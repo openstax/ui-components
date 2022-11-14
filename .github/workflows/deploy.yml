@@ -1,0 +1,35 @@
+name: Docs
+
+on:
+  push:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+
+      - id: build
+        run: |
+          prefix="${{ github.event.push.ref }}/${{ github.event.push.after }}"
+          yarn
+          yarn ladle build --base /ui-components/$prefix/
+          mkdir -p "./$prefix"
+          mv ./docs/* "./$prefix"
+          echo "::set-output name=prefix::$prefix"
+      
+      - uses: actions/checkout@v2
+        ref: gh-pages 
+        clean: false
+
+      - name: push
+        run: |
+          git add ${{ steps.build.outputs.prefix }}
+          git commit -m "building ${{ steps.build.outputs.prefix }}"
+          git push
