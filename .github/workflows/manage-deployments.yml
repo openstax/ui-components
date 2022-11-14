@@ -1,0 +1,21 @@
+name: Build
+
+on:
+  push:
+  pull_request:
+    types: [opened, reopened]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: create deployment
+        uses: octokit/request-action@v2.x
+        with:
+          route: POST /repos/:repository/deployments
+          repository: ${{ github.repository }}
+          ref: ${{ github.event.ref }}
+          environment: dev
+          auto_merge: false
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
