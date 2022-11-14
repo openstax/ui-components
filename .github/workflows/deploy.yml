@@ -1,0 +1,94 @@
+name: Build
+
+on:
+  push:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - id: setup
+        run: |
+          branch="${{ github.event.ref }}"
+          [ "$branch" == "refs/heads/main" ] && branch="main" || true
+          prefix="$branch"
+          [ "$prefix" != "main" ] && prefix="$prefix/${{ github.event.sha }}" || true
+          echo "::set-output name=branch::$branch"
+          echo "::set-output name=prefix::$prefix"
+
+      - name: create deployment
+        id: create_deployment
+        uses: octokit/request-action@v2.x
+        with:
+          route: POST /repos/:repository/deployments
+          repository: ${{ github.repository }}
+          ref: ${{ github.event.ref }}
+          required_contexts: '[]'
+          transient_environment: true
+          environment: ${{ steps.setup.outputs.branch }}
+          auto_merge: false
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+
+      - name: set deployment status to in progress
+        uses: octokit/request-action@v2.x
+        with:
+          route: POST /repos/:repository/deployments/:deployment/statuses
+          repository: ${{ github.repository }}
+          deployment: ${{ fromJson(steps.create_deployment.outputs.data).id }}
+          environment: ${{ steps.setup.outputs.branch }}
+          environment_url: https://openstax.github.io/${{ github.event.repository.name }}/${{ steps.setup.outputs.prefix }}
+          log_url: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          state: in_progress
+          mediaType: '{"previews": ["flash", "ant-man"]}'
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+
+      - uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+
+      - uses: actions/cache@v2
+        id: node_modules
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock') }}
+
+      - id: build
+        run: |
+          prefix="${{ steps.setup.outputs.prefix }}"
+          yarn
+          yarn ladle build --base "/ui-components/$prefix/"
+          mkdir -p "./$prefix"
+          mv ./docs/* "./$prefix"
+
+      - uses: actions/checkout@v2
+        with:
+          ref: gh-pages
+          clean: false
+
+      - name: push
+        run: |
+          git config --global user.name 'staxly'
+          git config --global user.email 'staxly@users.noreply.github.com'
+          git add "./${{ steps.setup.outputs.prefix }}"
+          git commit -m "building ${{ steps.setup.outputs.prefix }}" || true
+          git push
+
+      - name: set deployment status to in progress
+        uses: octokit/request-action@v2.x
+        with:
+          route: POST /repos/:repository/deployments/:deployment/statuses
+          repository: ${{ github.repository }}
+          deployment: ${{ fromJson(steps.create_deployment.outputs.data).id }}
+          environment: ${{ steps.setup.outputs.branch }}
+          environment_url: https://openstax.github.io/${{ github.event.repository.name }}/${{ steps.setup.outputs.prefix }}
+          log_url: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          state: success
+          mediaType: '{"previews": ["flash", "ant-man"]}'
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
