@@ -71,7 +71,7 @@ exports[`Modal matches snapshot 1`] = `
         className="sc-jqUVSM bCBcaQ"
       >
         <button
-          className="sc-bczRLJ gwwGEf"
+          className="sc-bczRLJ kAqnNz"
           color="orange"
           onClick={[MockFunction]}
         >
