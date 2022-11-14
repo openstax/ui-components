@@ -1,4 +1,4 @@
-import { ButtonColor, colors } from "../theme";
+import { ButtonColor, colors, typography } from "../theme";
 import styled from "styled-components";
 
 const StyledButton = styled.button<{ color: ButtonColor }>`
@@ -6,8 +6,12 @@ const StyledButton = styled.button<{ color: ButtonColor }>`
     colors.button[props.color].background};
   color: ${props => colors.button[props.color].color};
   font-size: 1.6rem;
-  font-weight: ${props => props.color === 'light' ? '400' : '700'};
+  ${(props) => `
+    font-weight: ${typography.button[props.color]?.fontWeight ?? typography.button.default.fontWeight}
+  `};
   line-height: 2rem;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
   display: inline-flex;
   flex-direction: row;
   justify-content: center;
@@ -16,7 +20,11 @@ const StyledButton = styled.button<{ color: ButtonColor }>`
   padding: 0 3rem;
   border: 0;
   border-radius: 5px;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: 0px 0.2rem 0.4rem rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease-in-out;
+  text-decoration: none;
+  user-select: none;
+  white-space: nowrap;
 
   &:not([disabled]) {
     cursor: pointer;

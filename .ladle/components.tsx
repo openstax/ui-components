@@ -6,7 +6,7 @@ const Wrapper = styled.div`
   *, ::before, ::after {
     box-sizing: border-box;
   }
-  font-family: "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #424242;
   height: 100%;
 `;
@@ -14,7 +14,7 @@ const Wrapper = styled.div`
 export const Provider: GlobalProvider = ({ children }) => {
   useEffect(() => {
     const style = document.createElement('style');
-    style.innerText = 'html { font-size: 10px }';
+    style.innerText = 'html { font-size: 62.5%; }';
     document.head.append(style);
   }, []);
 

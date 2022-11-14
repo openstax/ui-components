@@ -39,14 +39,14 @@ const palette = {
 const buttonColors = {
   orange: {
     background: palette.orange,
-    backgroundActive: "#C5400B",
-    backgroundHover: "#E74B0D",
-    color: "#fff",
+    backgroundActive: "#b03808",
+    backgroundHover: "#be3c08",
+    color: "#ffffff",
   },
   light: {
-    background: '#fff',
-    backgroundActive: '#eee',
-    backgroundHover: '#fff',
+    background: "#ffffff",
+    backgroundActive: "#e5e5e5",
+    backgroundHover: "#f1f1f1",
     color: palette.neutralDarker,
   }
 } as const;
@@ -60,6 +60,17 @@ export const zIndexes = {
   modals: 1060,
   toasts: 1061
 }
+
+export const typography = {
+  button: {
+    default: {
+      fontWeight: 700,
+    },
+    light: {
+      fontWeight: 400,
+    }
+  }
+};
 
 const theme = {
   colors: colors,
