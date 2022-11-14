@@ -1,4 +1,4 @@
-name: Build
+name: Deploy
 
 on:
   push:
@@ -78,6 +78,13 @@ jobs:
           git add "./${{ steps.setup.outputs.prefix }}"
           git commit -m "building ${{ steps.setup.outputs.prefix }}" || true
           git push
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
+        path: '.'
+
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v1
 
       - name: set deployment status to in progress
         uses: octokit/request-action@v2.x
