@@ -13,9 +13,9 @@ jobs:
           branch="${{ github.event.ref }}"
           [ "$branch" == "refs/heads/main" ] && branch="main" || true
           prefix="$branch"
-          [ "$prefix" != "main" ] && prefix="$prefix/${{ github.event.sha }}" || true
-          echo "::set-output name=branch::$branch"
-          echo "::set-output name=prefix::$prefix"
+          [ "$prefix" != "main" ] && prefix="$prefix/${{ github.event.after }}" || true
+          echo "{branch}={$branch}" >> $GITHUB_OUTPUT
+          echo "{prefix}={$prefix}" >> $GITHUB_OUTPUT
 
       - name: create deployment
         id: create_deployment
