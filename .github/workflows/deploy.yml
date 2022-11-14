@@ -12,7 +12,8 @@ jobs:
         run: |
           branch="${{ github.event.ref }}"
           [ "$branch" == "refs/heads/main" ] && branch="main" || true 
-          prefix="$branch/${{ github.event.after }}"
+          prefix="$branch"
+          [ "$prefix" != "main" ] && prefix="$prefix/${{ github.event.sha }}" || true 
           echo "::set-output name=branch::$branch"
           echo "::set-output name=prefix::$prefix"
       
