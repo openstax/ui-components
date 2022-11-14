@@ -1,0 +1,109 @@
+{
+  "about": {
+    "homepage": "https://www.ladle.dev",
+    "github": "https://github.com/tajo/ladle",
+    "version": 1
+  },
+  "stories": {
+    "button--default": {
+      "name": "Default",
+      "levels": [
+        "Button"
+      ],
+      "locStart": 3,
+      "locEnd": 3,
+      "filePath": "src/components/Button.stories.tsx",
+      "meta": {}
+    },
+    "button--disabled": {
+      "name": "Disabled",
+      "levels": [
+        "Button"
+      ],
+      "locStart": 4,
+      "locEnd": 4,
+      "filePath": "src/components/Button.stories.tsx",
+      "meta": {}
+    },
+    "button--waiting": {
+      "name": "Waiting",
+      "levels": [
+        "Button"
+      ],
+      "locStart": 5,
+      "locEnd": 5,
+      "filePath": "src/components/Button.stories.tsx",
+      "meta": {}
+    },
+    "modal--default": {
+      "name": "Default",
+      "levels": [
+        "Modal"
+      ],
+      "locStart": 5,
+      "locEnd": 10,
+      "filePath": "src/components/Modal.stories.tsx",
+      "meta": {}
+    },
+    "modal--error": {
+      "name": "Error",
+      "levels": [
+        "Modal"
+      ],
+      "locStart": 12,
+      "locEnd": 17,
+      "filePath": "src/components/Modal.stories.tsx",
+      "meta": {}
+    },
+    "toast--default": {
+      "name": "Default",
+      "levels": [
+        "Toast"
+      ],
+      "locStart": 3,
+      "locEnd": 3,
+      "filePath": "src/components/Toast.stories.tsx",
+      "meta": {}
+    },
+    "toast--success-with-timeout": {
+      "name": "Success with timeout",
+      "levels": [
+        "Toast"
+      ],
+      "locStart": 4,
+      "locEnd": 4,
+      "filePath": "src/components/Toast.stories.tsx",
+      "meta": {}
+    },
+    "toast--failure-with-timeout": {
+      "name": "Failure with timeout",
+      "levels": [
+        "Toast"
+      ],
+      "locStart": 5,
+      "locEnd": 5,
+      "filePath": "src/components/Toast.stories.tsx",
+      "meta": {}
+    },
+    "toast--inline-and-permanent": {
+      "name": "Inline and permanent",
+      "levels": [
+        "Toast"
+      ],
+      "locStart": 6,
+      "locEnd": 6,
+      "filePath": "src/components/Toast.stories.tsx",
+      "meta": {}
+    },
+    "toast-container--default": {
+      "name": "Default",
+      "levels": [
+        "Toast container"
+      ],
+      "locStart": 9,
+      "locEnd": 9,
+      "filePath": "src/components/ToastContainer.stories.tsx",
+      "meta": {}
+    }
+  }
+}
