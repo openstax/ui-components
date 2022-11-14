@@ -23,7 +23,8 @@ jobs:
 
       - id: build
         run: |
-          prefix="${{ github.event.ref }}/${{ github.event.after }}"
+          prefix="${{ github.event.ref }}"
+          [ "$prefix" == "refs/heads/main" ] && prefix="main" || prefix="$prefix/${{ github.event.after }}"
           yarn
           yarn ladle build --base "/ui-components/$prefix/"
           mkdir -p "./$prefix"
@@ -37,6 +38,8 @@ jobs:
 
       - name: push
         run: |
+          git config --global user.name 'staxly'
+          git config --global user.email 'staxly@users.noreply.github.com'
           git add "./${{ steps.build.outputs.prefix }}"
           git commit -m "building ${{ steps.build.outputs.prefix }}"
           git push
