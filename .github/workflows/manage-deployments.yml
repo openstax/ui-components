@@ -1,4 +1,4 @@
-name: Build
+name: Create Deployment
 
 on:
   push:
@@ -15,6 +15,7 @@ jobs:
           route: POST /repos/:repository/deployments
           repository: ${{ github.repository }}
           ref: ${{ github.event.ref }}
+          required_contexts: []
           environment: dev
           auto_merge: false
         env:
