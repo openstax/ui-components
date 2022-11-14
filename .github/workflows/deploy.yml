@@ -16,6 +16,7 @@ jobs:
           [ "$prefix" != "main" ] && prefix="$prefix/${{ github.event.after }}" || true
           echo "branch=$branch" >> $GITHUB_OUTPUT
           echo "prefix=$prefix" >> $GITHUB_OUTPUT
+          echo "environment_url=https://openstax.github.io/${{ github.event.repository.name }}/$prefix" >> $GITHUB_OUTPUT
 
       - name: create deployment
         id: create_deployment
@@ -38,7 +39,7 @@ jobs:
           repository: ${{ github.repository }}
           deployment: ${{ fromJson(steps.create_deployment.outputs.data).id }}
           environment: ${{ steps.setup.outputs.branch }}
-          environment_url: https://openstax.github.io/${{ github.event.repository.name }}/${{ steps.setup.outputs.prefix }}
+          environment_url: ${{ steps.setup.outputs.environment_url }}
           log_url: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
           state: in_progress
           mediaType: '{"previews": ["flash", "ant-man"]}'
@@ -79,22 +80,23 @@ jobs:
           git commit -m "building ${{ steps.setup.outputs.prefix }}" || true
           git push
 
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
-        with:
-          path: '.'
+      - name: wait for deployment
+        run: |
+          WAIT_SECONDS=240
+          until [ $WAIT_MINUTES -lt 0 ] || [ "$(curl -s -o /dev/null -w "%{http_code}" ${{ steps.setup.outputs.environment_url }})" == "200" ]; do
+            echo "sleeping 10s">&2
+            sleep 10
+            WAIT_SECONDS=$(( WAIT_SECONDS - 10 ))
+          done
 
-      - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@v1
-
-      - name: set deployment status to in progress
+      - name: set deployment status to success
         uses: octokit/request-action@v2.x
         with:
           route: POST /repos/:repository/deployments/:deployment/statuses
           repository: ${{ github.repository }}
           deployment: ${{ fromJson(steps.create_deployment.outputs.data).id }}
           environment: ${{ steps.setup.outputs.branch }}
-          environment_url: https://openstax.github.io/${{ github.event.repository.name }}/${{ steps.setup.outputs.prefix }}
+          environment_url: ${{ steps.setup.outputs.environment_url }}
           log_url: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
           state: success
           mediaType: '{"previews": ["flash", "ant-man"]}'
