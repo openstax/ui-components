@@ -23,9 +23,9 @@ jobs:
 
       - id: build
         run: |
-          prefix="${{ github.event.push.ref }}/${{ github.event.push.after }}"
+          prefix="${{ github.event.ref }}/${{ github.event.after }}"
           yarn
-          yarn ladle build --base /ui-components/$prefix/
+          yarn ladle build --base "/ui-components/$prefix/"
           mkdir -p "./$prefix"
           mv ./docs/* "./$prefix"
           echo "::set-output name=prefix::$prefix"
@@ -37,6 +37,6 @@ jobs:
 
       - name: push
         run: |
-          git add ${{ steps.build.outputs.prefix }}
+          git add "./${{ steps.build.outputs.prefix }}"
           git commit -m "building ${{ steps.build.outputs.prefix }}"
           git push
