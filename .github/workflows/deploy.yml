@@ -76,7 +76,7 @@ jobs:
           git config --global user.name 'staxly'
           git config --global user.email 'staxly@users.noreply.github.com'
           git add "./${{ steps.setup.outputs.prefix }}"
-          git commit -m "building ${{ steps.setup.outputs.prefix }}"
+          git commit -m "building ${{ steps.setup.outputs.prefix }}" || true
           git push
 
       - name: set deployment status to in progress
