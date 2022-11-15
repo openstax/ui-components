@@ -1,3 +1,5 @@
+import { css, FlattenSimpleInterpolation } from "styled-components";
+
 const palette = {
   red: "#ca2026",
   danger: "#c2002f",
@@ -62,11 +64,6 @@ export const colors = {
   button: {...buttonColors, default: buttonColors.orange},
 };
 
-export const zIndexes = {
-  modals: 1060,
-  toasts: 1061
-}
-
 export const typography = {
   button: {
     default: {
@@ -78,9 +75,38 @@ export const typography = {
   }
 };
 
+export const zIndex = [
+  'navbar',
+  'modals',
+  'toasts'
+].reduce((result, key, index) => {
+  result[key] = (index + 1) * 10;
+  return result;
+}, {} as { [key: string]: number });
+
+export const padding = {
+  navbar: {
+    desktop: 3.2,
+    mobile: 1.6,
+  },
+};
+
+const mobileBreak = 75; // 1200px
+const desktopBreak = mobileBreak + .0625; // 1201px
+const breakpoints = {
+  desktop: (style: FlattenSimpleInterpolation) => css`
+    @media screen and (min-width: ${desktopBreak}em) {
+      ${style}
+    }
+  `,
+};
+
 const theme = {
-  colors: colors,
-  zIndexes: zIndexes
+  colors,
+  typography,
+  zIndex,
+  padding,
+  breakpoints
 };
 
 export default theme;
