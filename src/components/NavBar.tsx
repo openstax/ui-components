@@ -1,10 +1,9 @@
+import { maxNavWidth, navDesktopHeight, navMobileHeight } from '../../src/constants';
 import styled, { css } from 'styled-components';
 import theme from '../../src/theme';
-import openstaxLogo from '../assets/logo.svg';
+import OpenstaxLogo from './NavBarLogo';
 
-// TODO: Heights in mockup are shorter than in REX?
-
-export const BarWrapper = styled.div`
+const BarWrapper = styled.div`
   overflow: visible;
   z-index: ${theme.zIndex.navbar};
   background: ${theme.colors.palette.white};
@@ -16,44 +15,67 @@ export const BarWrapper = styled.div`
   `)}
 `;
 
-export const navDesktopHeight = 6.0;
-export const navMobileHeight = 5.2;
-const headerImageDesktopHeight = 3.5;
-const headerImageMobileHeight = 2.8;
-
-export const NavBar = styled.div`
+const StyledNavBar = styled.div<{
+  maxWidth: number;
+  navDesktopHeight: number;
+  navMobileHeight: number;
+}>`
   overflow: visible;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: ${navMobileHeight}rem;
+  height: ${props => props.navMobileHeight}rem;
+  max-width: ${props => props.maxWidth}rem;
   margin: 0 auto;
-  ${theme.breakpoints.desktop(css`
-    height: ${navDesktopHeight}rem;
+  ${props => theme.breakpoints.desktop(css`
+    height: ${props.navDesktopHeight}rem;
   `)}
   @media print { display: none; }
 `;
 
-export const HeaderImage = styled.img`
-  display: block;
-  width: auto;
-  height: ${headerImageMobileHeight}rem;
-  ${theme.breakpoints.desktop(css`
-    height: ${headerImageDesktopHeight}rem;
-  `)}
-`;
+interface NavBarProps extends React.PropsWithChildren<{
+  maxWidth?: number;
+  navDesktopHeight?: number;
+  navMobileHeight?: number;
+}> {}
 
-export default (props: React.PropsWithChildren<{
-
-}>) => (
+const NavBar = (props: NavBarProps) => (
   <BarWrapper>
-    <NavBar>
-      <HeaderImage
-        role='img'
-        src={openstaxLogo}
-        alt={'alt'}
-      />
+    <StyledNavBar
+      maxWidth={props.maxWidth || maxNavWidth}
+      navDesktopHeight={props.navDesktopHeight || navDesktopHeight}
+      navMobileHeight={props.navMobileHeight || navMobileHeight}
+    >
       {props.children}
-    </NavBar>
+    </StyledNavBar>
   </BarWrapper>
 );
+
+export const NavBarWithLogo = (props: NavBarProps & {
+  href?: string;
+  alt: string;
+  headerImageMobileHeight?: number;
+  headerImageDesktopHeight?: number;
+}) => {
+  const LinkWrapper = ({
+    href, wrapper, children,
+  }: {
+    href?: string;
+    wrapper: Function;
+    children: React.ReactNode;
+  }) => href ? wrapper(children) : children;
+
+  return (
+    <NavBar>
+      <LinkWrapper
+        href={props.href}
+        wrapper={(children: React.ReactNode) => <a href={props.href}>{children}</a>}
+      >
+        <OpenstaxLogo alt={props.alt} />
+      </LinkWrapper>
+      {props.children}
+    </NavBar>
+  )
+}
+
+export default NavBar;
