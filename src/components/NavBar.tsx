@@ -1,4 +1,4 @@
-import { maxNavWidth, navDesktopHeight, navMobileHeight } from '../../src/constants';
+import { navDesktopHeight, navMobileHeight } from '../../src/constants';
 import styled, { css } from 'styled-components';
 import theme from '../../src/theme';
 import OpenstaxLogo from './NavBarLogo';
@@ -16,7 +16,7 @@ const BarWrapper = styled.div`
 `;
 
 const StyledNavBar = styled.div<{
-  maxWidth: number;
+  maxWidth?: number;
   navDesktopHeight: number;
   navMobileHeight: number;
 }>`
@@ -25,7 +25,7 @@ const StyledNavBar = styled.div<{
   justify-content: space-between;
   align-items: center;
   height: ${props => props.navMobileHeight}rem;
-  max-width: ${props => props.maxWidth}rem;
+  ${props => props.maxWidth ? `max-width: ${props.maxWidth}rem;` : null}
   margin: 0 auto;
   ${props => theme.breakpoints.desktop(css`
     height: ${props.navDesktopHeight}rem;
@@ -33,16 +33,16 @@ const StyledNavBar = styled.div<{
   @media print { display: none; }
 `;
 
-interface NavBarProps extends React.PropsWithChildren<{
+type NavBarProps = React.PropsWithChildren<{
   maxWidth?: number;
   navDesktopHeight?: number;
   navMobileHeight?: number;
-}> {}
+}>
 
 const NavBar = (props: NavBarProps) => (
   <BarWrapper>
     <StyledNavBar
-      maxWidth={props.maxWidth || maxNavWidth}
+      maxWidth={props.maxWidth}
       navDesktopHeight={props.navDesktopHeight || navDesktopHeight}
       navMobileHeight={props.navMobileHeight || navMobileHeight}
     >
@@ -57,13 +57,11 @@ export const NavBarWithLogo = (props: NavBarProps & {
   headerImageMobileHeight?: number;
   headerImageDesktopHeight?: number;
 }) => {
-  const LinkWrapper = ({
-    href, wrapper, children,
-  }: {
+  const LinkWrapper = ({href, wrapper, children}: {
     href?: string;
-    wrapper: Function;
+    wrapper: (children: React.ReactNode) => JSX.Element;
     children: React.ReactNode;
-  }) => href ? wrapper(children) : children;
+  }) => href ? wrapper(children) : <>{children}</>;
 
   return (
     <NavBar>
