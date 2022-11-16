@@ -51,11 +51,12 @@ describe('Toast', () => {
 
     expect(async () => {
       await renderer.act(async () => {
-        const component = renderer.create(
-          <Toast title='Success title'>
+        const toast = <Toast title='Success title' dismissAfterMs={5000}>
             Toast body
-          </Toast>
-        );
+        </Toast>;
+        const component = renderer.create(toast);
+        component.update(toast);
+        jest.advanceTimersToNextTimer();
         component.unmount();
       });
 
