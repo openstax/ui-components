@@ -1,4 +1,4 @@
-import { colors } from "../../src/theme";
+import { colors, zIndexes } from "../../src/theme";
 import styled, { css } from "styled-components";
 
 const Times = (props: React.HTMLAttributes<SVGElement>) => (
@@ -73,7 +73,7 @@ const Mask = styled.div`
 
 const ModalWrapper = styled.div`
   top: 0;
-  z-index: 1060;
+  z-index: ${zIndexes.modals};
   left: 0;
   width: 100%;
   height: 100%;
