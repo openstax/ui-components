@@ -6,12 +6,10 @@ import { ToastData } from '../../src/types';
 const ANIMATION_TIME_MS = 500;
 const DISMISS_AFTER_MS_FLOOR = 1000;
 
-type StyledToast = {
+const StyledToast = styled.div<{
   inline: boolean;
   dismissAfterMs?: number;
-}
-
-const StyledToast = styled.div<StyledToast>`
+}>`
   min-height: 5rem;
   background-color: white;
   box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
@@ -22,7 +20,7 @@ const StyledToast = styled.div<StyledToast>`
   `}
   font-size: 1.4rem;
 
-  ${props => props.dismissAfterMs && css`
+  ${props => props.dismissAfterMs ? css`
     animation-duration: ${ANIMATION_TIME_MS}ms;
     animation-timing-function: ease;
     animation-delay: ${props.dismissAfterMs - ANIMATION_TIME_MS}ms;
@@ -42,7 +40,7 @@ const StyledToast = styled.div<StyledToast>`
         opacity: 0;
       }
     }
-  `}
+  `: null}
 
   ${props => props.inline && css`
     margin: 0 auto;
@@ -125,6 +123,11 @@ export const Toast = ({
   onDismiss,
 }: Toast) => {
   const [show, setShow] = React.useState(true);
+
+  if (dismissAfterMs) {
+    dismissAfterMs = Math.max(dismissAfterMs, DISMISS_AFTER_MS_FLOOR);
+  }
+
   React.useEffect(() => {
     if (!dismissAfterMs) {
       return;
@@ -145,12 +148,9 @@ export const Toast = ({
 
   if (!show) { return null; }
 
-  if (dismissAfterMs && dismissAfterMs < DISMISS_AFTER_MS_FLOOR) {
-    dismissAfterMs = DISMISS_AFTER_MS_FLOOR;
-  }
-
   return <StyledToast
-    dismissAfterMs={dismissAfterMs} inline={inline}>
+    dismissAfterMs={dismissAfterMs}
+    inline={inline}>
     <div className={variant}>
       <div className='title'>{title}</div>
       <div className='body'>

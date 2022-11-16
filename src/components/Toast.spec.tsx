@@ -48,7 +48,6 @@ describe('Toast', () => {
   });
 
   it('cleans up useEffect', async () => {
-
     expect(async () => {
       await renderer.act(async () => {
         const toast = <Toast title='Success title' dismissAfterMs={5000}>
