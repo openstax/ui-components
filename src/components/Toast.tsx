@@ -142,7 +142,6 @@ export const Toast = ({
 
     return () => {
       clearTimeout(timeoutId);
-      setShow(false);
     };
   }, []);
 
