@@ -2,7 +2,6 @@ import React from 'react';
 import { colors } from '../../src/theme';
 import styled, { css } from 'styled-components';
 import { ToastData } from '../../src/types';
-import { clearTimeout } from 'timers';
 
 const ANIMATION_TIME_MS = 500;
 const DISMISS_AFTER_MS_FLOOR = 1000;
@@ -139,7 +138,7 @@ export const Toast = ({
     }, dismissAfterMs);
 
     return () => {
-      window?.clearTimeout(timeoutId);
+      clearTimeout(timeoutId);
       setShow(false);
     };
   }, []);
