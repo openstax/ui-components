@@ -139,7 +139,7 @@ export const Toast = ({
     }, dismissAfterMs);
 
     return () => {
-      clearTimeout(timeoutId);
+      window?.clearTimeout(timeoutId);
       setShow(false);
     };
   }, []);
