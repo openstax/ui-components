@@ -1,4 +1,4 @@
-import NavBar, { NavBarWithLogo } from './NavBar';
+import NavBar from './NavBar';
 import renderer from 'react-test-renderer';
 
 describe('NavBar', () => {
@@ -17,17 +17,17 @@ describe('NavBar', () => {
   });
 });
 
-describe('NavBarWithLogo', () => {
+describe('NavBar with a logo', () => {
   it('matches snapshot', () => {
     const tree = renderer.create(
-      <NavBarWithLogo alt='Logo'>NavBar content</NavBarWithLogo>
+      <NavBar logo={true}>NavBar content</NavBar>
     ).toJSON();
     expect(tree).toMatchSnapshot();
   });
 
   it('links the logo', () => {
     const tree = renderer.create(
-      <NavBarWithLogo alt='Logo' href='/'>NavBar content</NavBarWithLogo>
+      <NavBar logo={{alt: 'Logo', href:'/'}}>NavBar content</NavBar>
     ).toJSON();
     expect(tree).toMatchSnapshot();
   });

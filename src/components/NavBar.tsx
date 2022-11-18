@@ -37,43 +37,35 @@ type NavBarProps = React.PropsWithChildren<{
   maxWidth?: number;
   navDesktopHeight?: number;
   navMobileHeight?: number;
+  logo?: boolean | React.HTMLProps<HTMLAnchorElement> & { alt?: string };
 }>
 
-const NavBar = (props: NavBarProps) => (
-  <BarWrapper>
+const LinkWrapper = ({renderWrapper, wrapper, children}: {
+  renderWrapper: boolean;
+  wrapper: (children: React.ReactNode) => JSX.Element;
+  children: React.ReactNode;
+}) => renderWrapper ? wrapper(children) : <>{children}</>;
+
+export const NavBar = (props: NavBarProps) => {
+  const alt = typeof props.logo === 'object' && props.logo.alt ?
+    props.logo.alt : 'OpenStax Logo';
+
+  return <BarWrapper>
     <StyledNavBar
       maxWidth={props.maxWidth}
       navDesktopHeight={props.navDesktopHeight || navDesktopHeight}
       navMobileHeight={props.navMobileHeight || navMobileHeight}
     >
+      <LinkWrapper
+        renderWrapper={typeof props.logo === 'object'}
+        wrapper={(children: React.ReactNode) =>
+        <a {...props.logo as object}>{children}</a>}
+      >
+        {props.logo ? <OpenstaxLogo alt={alt} /> : null}
+      </LinkWrapper>
       {props.children}
     </StyledNavBar>
   </BarWrapper>
-);
-
-export const NavBarWithLogo = (props: NavBarProps & {
-  href?: string;
-  alt: string;
-  headerImageMobileHeight?: number;
-  headerImageDesktopHeight?: number;
-}) => {
-  const LinkWrapper = ({href, wrapper, children}: {
-    href?: string;
-    wrapper: (children: React.ReactNode) => JSX.Element;
-    children: React.ReactNode;
-  }) => href ? wrapper(children) : <>{children}</>;
-
-  return (
-    <NavBar>
-      <LinkWrapper
-        href={props.href}
-        wrapper={(children: React.ReactNode) => <a href={props.href}>{children}</a>}
-      >
-        <OpenstaxLogo alt={props.alt} />
-      </LinkWrapper>
-      {props.children}
-    </NavBar>
-  )
-}
+};
 
 export default NavBar;

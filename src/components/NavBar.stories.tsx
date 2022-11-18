@@ -1,5 +1,5 @@
-import NavBar, { NavBarWithLogo } from "./NavBar";
+import NavBar from "./NavBar";
 
 export const PlainNavBar = () => <NavBar>NavBar</NavBar>
-export const NavBarLogoAndChildren = () => <NavBarWithLogo alt='Logo'>Menu</NavBarWithLogo>
-export const NavBarLinkedLogo = () => <NavBarWithLogo alt='Logo' href='/' />
+export const NavBarLogoAndChildren = () => <NavBar logo>Menu</NavBar>
+export const NavBarLinkedLogo = () => <NavBar logo={{alt: 'custom alt', href: '/'}} />
