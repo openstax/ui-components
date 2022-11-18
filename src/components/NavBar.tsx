@@ -1,5 +1,5 @@
 import { navDesktopHeight, navMobileHeight } from '../../src/constants';
-import styled, { css, CSSProperties } from 'styled-components';
+import styled, { css } from 'styled-components';
 import theme from '../../src/theme';
 import OpenstaxLogo from './NavBarLogo';
 

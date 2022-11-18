@@ -5,7 +5,7 @@ exports[`NavBar matches snapshot 1`] = `
   className="sc-gsnTZi dMcFZD"
 >
   <div
-    className="sc-dkzDqf eKZQXf"
+    className="sc-dkzDqf bpDzAE"
   >
     NavBar content
   </div>
@@ -17,7 +17,7 @@ exports[`NavBar sets the maxWidth 1`] = `
   className="sc-gsnTZi dMcFZD"
 >
   <div
-    className="sc-dkzDqf cuErLs"
+    className="sc-dkzDqf gQjsvL"
   >
     NavBar content
   </div>
@@ -29,7 +29,7 @@ exports[`NavBar with a logo links the logo 1`] = `
   className="sc-gsnTZi dMcFZD"
 >
   <div
-    className="sc-dkzDqf eKZQXf"
+    className="sc-dkzDqf bpDzAE"
   >
     <a
       alt="Logo"
@@ -86,7 +86,7 @@ exports[`NavBar with a logo matches snapshot 1`] = `
   className="sc-gsnTZi dMcFZD"
 >
   <div
-    className="sc-dkzDqf eKZQXf"
+    className="sc-dkzDqf bpDzAE"
   >
     <svg
       className="sc-bczRLJ qyeAg"

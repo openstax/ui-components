@@ -2,7 +2,7 @@
 
 exports[`ToastContainer matches snapshot 1`] = `
 <div
-  className="sc-gsnTZi jgRncN"
+  className="sc-gsnTZi bQKHKA"
 >
   <div
     className="sc-bczRLJ jAZNhq"
@@ -63,7 +63,7 @@ exports[`ToastContainer matches snapshot 1`] = `
 
 exports[`ToastContainer uses inline prop 1`] = `
 <div
-  className="sc-gsnTZi bBRjBg"
+  className="sc-gsnTZi gRYEVl"
 >
   <div
     className="sc-bczRLJ jSNerL"
