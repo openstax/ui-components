@@ -4,4 +4,5 @@ export * from './components/Button';
 export * from './components/ToastContainer';
 export * from './components/Loader';
 export * from './components/NavBar';
+export * from './components/NavBarLogo';
 export * from './types';

@@ -1,5 +1,5 @@
 import { navDesktopHeight, navMobileHeight } from '../../src/constants';
-import styled, { css } from 'styled-components';
+import styled, { css, CSSProperties } from 'styled-components';
 import theme from '../../src/theme';
 import OpenstaxLogo from './NavBarLogo';
 
@@ -19,10 +19,11 @@ const StyledNavBar = styled.div<{
   maxWidth?: number;
   navDesktopHeight: number;
   navMobileHeight: number;
+  justifyContent?: string;
 }>`
   overflow: visible;
   display: flex;
-  justify-content: space-between;
+  justify-content: ${props => props.justifyContent || 'space-between'};
   align-items: center;
   height: ${props => props.navMobileHeight}rem;
   ${props => props.maxWidth ? `max-width: ${props.maxWidth}rem;` : null}
@@ -38,6 +39,7 @@ type NavBarProps = React.PropsWithChildren<{
   navDesktopHeight?: number;
   navMobileHeight?: number;
   logo?: boolean | React.HTMLProps<HTMLAnchorElement> & { alt?: string };
+  justifyContent?: string;
 }>
 
 const LinkWrapper = ({renderWrapper, wrapper, children}: {
@@ -47,14 +49,14 @@ const LinkWrapper = ({renderWrapper, wrapper, children}: {
 }) => renderWrapper ? wrapper(children) : <>{children}</>;
 
 export const NavBar = (props: NavBarProps) => {
-  const alt = typeof props.logo === 'object' && props.logo.alt ?
-    props.logo.alt : 'OpenStax Logo';
+  const alt = (props.logo && props.logo['alt']) || 'OpenStax Logo';
 
   return <BarWrapper>
     <StyledNavBar
       maxWidth={props.maxWidth}
       navDesktopHeight={props.navDesktopHeight || navDesktopHeight}
       navMobileHeight={props.navMobileHeight || navMobileHeight}
+      justifyContent={props.justifyContent}
     >
       <LinkWrapper
         renderWrapper={typeof props.logo === 'object'}
