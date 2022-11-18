@@ -38,7 +38,7 @@ const palette = {
   orange: "#D4450C"
 } as const;
 
-const buttonColors = {
+const buttonVariants = {
   orange: {
     background: palette.orange,
     backgroundActive: "#b03808",
@@ -61,7 +61,7 @@ const buttonColors = {
 
 export const colors = {
   palette: palette,
-  button: {...buttonColors, default: buttonColors.orange},
+  button: {...buttonVariants, default: buttonVariants.orange},
 };
 
 export const typography = {
@@ -110,4 +110,4 @@ const theme = {
 };
 
 export default theme;
-export type ButtonColor = keyof typeof buttonColors;
+export type ButtonVariant = keyof typeof buttonVariants;

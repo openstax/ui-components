@@ -1,13 +1,13 @@
-import { ButtonColor, colors, typography } from "../theme";
+import { ButtonVariant, colors, typography } from "../theme";
 import styled from "styled-components";
 
-const StyledButton = styled.button<{ color: ButtonColor }>`
+const StyledButton = styled.button<{ variant: ButtonVariant }>`
   background-color: ${props =>
-    colors.button[props.color].background};
-  color: ${props => colors.button[props.color].color};
+    colors.button[props.variant].background};
+  color: ${props => colors.button[props.variant].color};
   font-size: 1.6rem;
   ${(props) => `
-    font-weight: ${typography.button[props.color]?.fontWeight ?? typography.button.default.fontWeight}
+    font-weight: ${typography.button[props.variant]?.fontWeight ?? typography.button.default.fontWeight}
   `};
   line-height: 2rem;
   -moz-osx-font-smoothing: grayscale;
@@ -29,10 +29,10 @@ const StyledButton = styled.button<{ color: ButtonColor }>`
   &:not([disabled]) {
     cursor: pointer;
     &:hover {
-      background: ${props => colors.button[props.color].backgroundHover};
+      background: ${props => colors.button[props.variant].backgroundHover};
     }
     &:active {
-      background: ${props => colors.button[props.color].backgroundActive};
+      background: ${props => colors.button[props.variant].backgroundActive};
     }
   }
   &:disabled {
@@ -45,7 +45,7 @@ const StyledButton = styled.button<{ color: ButtonColor }>`
 `;
 
 interface ButtonBase extends React.ComponentPropsWithoutRef<'button'> {
-  color?: ButtonColor;
+  variant?: ButtonVariant;
 }
 
 interface ButtonProps extends ButtonBase {
@@ -64,7 +64,7 @@ const Button = (props: ButtonProps | WaitingButtonProps) => {
   return <StyledButton
     {...otherProps}
     disabled={isWaiting || disabled}
-    color={props.color || 'orange'}
+    variant={props.variant || 'orange'}
   >
     {(isWaiting && waitingText) || children}
   </StyledButton>;

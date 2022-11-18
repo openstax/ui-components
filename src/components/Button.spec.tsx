@@ -11,7 +11,7 @@ describe('Button', () => {
 
   it('matches light color snapshot', () => {
     const tree = renderer.create(
-      <Button color='light'>Click Me</Button>
+      <Button variant='light'>Click Me</Button>
     ).toJSON();
     expect(tree).toMatchSnapshot();
   });
