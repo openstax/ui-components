@@ -31,4 +31,11 @@ describe('NavBar with a logo', () => {
     ).toJSON();
     expect(tree).toMatchSnapshot();
   });
+
+  it('customizes the alt text', () => {
+    const tree = renderer.create(
+      <NavBar logo={{alt: 'Custom alt text'}}>NavBar content</NavBar>
+    ).toJSON();
+    expect(tree).toMatchSnapshot();
+  });
 });

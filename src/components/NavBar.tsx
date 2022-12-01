@@ -48,22 +48,23 @@ const LinkWrapper = ({renderWrapper, wrapper, children}: {
   children: React.ReactNode;
 }) => renderWrapper ? wrapper(children) : <>{children}</>;
 
-export const NavBar = (props: NavBarProps) => {
-  const alt = (props.logo && props.logo['alt']) || 'OpenStax Logo';
+export const NavBar = ({ logo, maxWidth, ...props }: NavBarProps) => {
+  const alt = (logo && logo['alt']) || 'OpenStax Logo';
+  const renderWrapper = typeof logo === 'object' ? 'href' in logo : !!logo;
 
   return <BarWrapper>
     <StyledNavBar
-      maxWidth={props.maxWidth}
+      maxWidth={maxWidth}
       navDesktopHeight={props.navDesktopHeight || navDesktopHeight}
       navMobileHeight={props.navMobileHeight || navMobileHeight}
       justifyContent={props.justifyContent}
     >
       <LinkWrapper
-        renderWrapper={typeof props.logo === 'object'}
+        renderWrapper={renderWrapper}
         wrapper={(children: React.ReactNode) =>
-        <a {...props.logo as object}>{children}</a>}
+          <a {...logo as object}>{children}</a>}
       >
-        {props.logo ? <OpenstaxLogo alt={alt} /> : null}
+        {logo ? <OpenstaxLogo alt={alt} /> : null}
       </LinkWrapper>
       {props.children}
     </StyledNavBar>
