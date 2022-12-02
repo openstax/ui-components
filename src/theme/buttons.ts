@@ -1,7 +1,21 @@
+import { css } from "styled-components";
 import { palette } from "./palette";
 
-export const buttonVariants = {
-  orange: {
+export type ButtonVariant = keyof typeof buttonStyleSets;
+
+interface ButtonStyleSet {
+  background: string;
+  backgroundActive: string;
+  backgroundHover: string;
+  color: string;
+  fontWeight?: number;
+}
+
+// https://stackoverflow.com/a/54598743
+const asButtonStyleSetTypes = <T>(st: { [K in keyof T]: ButtonStyleSet }) => st;
+
+const buttonStyleSets = asButtonStyleSetTypes({
+  primary: {
     background: palette.orange,
     backgroundActive: "#b03808",
     backgroundHover: "#be3c08",
@@ -9,14 +23,33 @@ export const buttonVariants = {
   },
   light: {
     background: palette.white,
-    backgroundActive: "#e5e5e5",
-    backgroundHover: "#f1f1f1",
+    backgroundActive: palette.neutralLight,
+    backgroundHover: palette.white,
     color: palette.neutralDarker,
+    fontWeight: 400,
   },
-  gray: {
-    background: "#757575",
+  secondary: {
+    background: palette.darkGray,
     backgroundActive: "#4c4c4c",
     backgroundHover: "#646464",
     color: palette.white,
-  }
-} as const;
+  },
+} as const);
+
+export const applyButtonVariantStyles = (variant: ButtonVariant) => {
+  const set = buttonStyleSets[variant];
+  return css`
+    background-color: ${set.background};
+    color: ${set.color};
+    font-weight: ${set.fontWeight ?? 700};
+
+    &:not([disabled]) {
+      &:hover {
+        background: ${set.backgroundHover};
+      }
+      &:active {
+        background: ${set.backgroundActive};
+      }
+    }
+  `;
+};

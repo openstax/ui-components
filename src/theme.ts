@@ -1,21 +1,8 @@
 import { css, FlattenSimpleInterpolation } from "styled-components";
-import { buttonVariants } from "./theme/buttons";
 import { palette } from "./theme/palette";
 
 export const colors = {
   palette: palette,
-  button: {...buttonVariants, default: buttonVariants.orange},
-};
-
-export const typography = {
-  button: {
-    default: {
-      fontWeight: 700,
-    },
-    light: {
-      fontWeight: 400,
-    }
-  }
 };
 
 export const zIndex = [
@@ -46,11 +33,9 @@ const breakpoints = {
 
 const theme = {
   colors,
-  typography,
   zIndex,
   padding,
   breakpoints
 };
 
 export default theme;
-export type ButtonVariant = keyof typeof buttonVariants;
