@@ -44,13 +44,11 @@ type NavBarProps = React.PropsWithChildren<{
   justifyContent?: string;
 }>
 
-export const NavBar = ({ logo, maxWidth, ...props }: NavBarProps) => {
-  const alt = (logo && logo['alt']) || 'OpenStax Logo';
+export const NavBar = ({ logo = false, maxWidth, ...props }: NavBarProps) => {
+  const logoIsObject = typeof logo === 'object';
+  const renderAnchor = logoIsObject && 'href' in logo;
+  const {alt = 'OpenStax Logo', ...anchorProps} = logoIsObject ? logo : {};
   const logoComponent = logo ? <OpenstaxLogo alt={alt} /> : null;
-  const renderAnchor = typeof logo === 'object' && 'href' in logo;
-  if (renderAnchor) {
-    delete logo.alt;
-  }
 
   return <BarWrapper>
     <StyledNavBar
@@ -59,7 +57,7 @@ export const NavBar = ({ logo, maxWidth, ...props }: NavBarProps) => {
       navMobileHeight={props.navMobileHeight || navMobileHeight}
       justifyContent={props.justifyContent}
     >
-      {renderAnchor ? <a {...logo}>{logoComponent}</a> : logoComponent}
+      {renderAnchor ? <a {...anchorProps}>{logoComponent}</a> : logoComponent}
       {props.children}
     </StyledNavBar>
   </BarWrapper>
