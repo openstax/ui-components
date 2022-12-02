@@ -34,13 +34,17 @@ const StyledNavBar = styled.div<{
   @media print { display: none; }
 `;
 
+type Logo = React.HTMLProps<HTMLAnchorElement> & { alt?: string };
+
 type NavBarProps = React.PropsWithChildren<{
   maxWidth?: number;
   navDesktopHeight?: number;
   navMobileHeight?: number;
-  logo?: boolean | React.HTMLProps<HTMLAnchorElement> & { alt?: string };
+  logo?: boolean | Logo;
   justifyContent?: string;
 }>
+
+const anchorProps = ({alt, ...props}: Logo) => props;
 
 export const NavBar = ({ logo, maxWidth, ...props }: NavBarProps) => {
   const alt = (logo && logo['alt']) || 'OpenStax Logo';
@@ -54,7 +58,7 @@ export const NavBar = ({ logo, maxWidth, ...props }: NavBarProps) => {
       navMobileHeight={props.navMobileHeight || navMobileHeight}
       justifyContent={props.justifyContent}
     >
-      {renderAnchor ? <a {...logo}>{logoComponent}</a> : logoComponent}
+      {renderAnchor ? <a {...anchorProps(logo)}>{logoComponent}</a> : logoComponent}
       {props.children}
     </StyledNavBar>
   </BarWrapper>

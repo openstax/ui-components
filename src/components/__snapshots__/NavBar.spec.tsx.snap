@@ -84,7 +84,6 @@ exports[`NavBar with a logo links the logo 1`] = `
     className="sc-dkzDqf bpDzAE"
   >
     <a
-      alt="Logo"
       href="/"
     >
       <svg
