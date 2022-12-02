@@ -7,13 +7,13 @@ export const Orange = () => <>
 </>;
 
 export const Light = () => <>
-  <Button color='light'>Light</Button>
-  <Button color='light' disabled>Disabled</Button>
-  <Button color='light' isWaiting={true} waitingText='Waiting...'>Button</Button>
+  <Button variant='light'>Light</Button>
+  <Button variant='light' disabled>Disabled</Button>
+  <Button variant='light' isWaiting={true} waitingText='Waiting...'>Button</Button>
 </>;
 
 export const Gray = () => <>
-  <Button color='gray'>Gray</Button>
-  <Button color='gray' disabled>Disabled</Button>
-  <Button color='gray' isWaiting={true} waitingText='Waiting...'>Button</Button>
+  <Button variant='gray'>Gray</Button>
+  <Button variant='gray' disabled>Disabled</Button>
+  <Button variant='gray' isWaiting={true} waitingText='Waiting...'>Button</Button>
 </>;
