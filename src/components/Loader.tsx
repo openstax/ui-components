@@ -130,7 +130,7 @@ const LoadingIcon = styled.svg`
   }
 `;
 
-export const Loader =(props: Props) => (
+export const Loader = (props: Props) => (
   <LoadingIcon
     data-testid='loader'
     version='1.1'
