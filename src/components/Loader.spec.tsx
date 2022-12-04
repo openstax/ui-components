@@ -1,5 +1,5 @@
 import renderer from 'react-test-renderer';
-import Loader from './Loader';
+import { Loader } from './Loader';
 
 describe('Loader', () => {
   it('matches snapshot', () => {

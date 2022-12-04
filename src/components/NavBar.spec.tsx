@@ -1,4 +1,4 @@
-import NavBar from './NavBar';
+import { NavBar } from './NavBar';
 import renderer from 'react-test-renderer';
 
 describe('NavBar', () => {

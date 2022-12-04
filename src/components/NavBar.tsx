@@ -1,7 +1,7 @@
 import { navDesktopHeight, navMobileHeight } from '../../src/constants';
 import styled, { css } from 'styled-components';
 import theme from '../../src/theme';
-import OpenstaxLogo from './NavBarLogo';
+import { NavBarLogo as OpenstaxLogo } from './NavBarLogo';
 
 const BarWrapper = styled.div`
   overflow: visible;
@@ -62,5 +62,3 @@ export const NavBar = ({ logo = false, maxWidth, ...props }: NavBarProps) => {
     </StyledNavBar>
   </BarWrapper>
 };
-
-export default NavBar;

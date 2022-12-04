@@ -38,4 +38,4 @@ const theme = {
   breakpoints
 };
 
-export default theme;
+export default theme; // eslint-disable-line import/no-default-export

@@ -12,7 +12,7 @@ const StyledLogo = styled.svg`
   `)}
 `;
 
-export default ({ alt }: { alt: string; }) => (
+export const NavBarLogo = ({ alt }: { alt: string; }) => (
   <StyledLogo
     role="img"
     xmlns="http://www.w3.org/2000/svg"

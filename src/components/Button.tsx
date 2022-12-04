@@ -48,7 +48,7 @@ interface WaitingButtonProps extends ButtonBase {
   waitingText: string;
 }
 
-const Button = (props: ButtonProps | WaitingButtonProps) => {
+export const Button = (props: ButtonProps | WaitingButtonProps) => {
   const {
     disabled,
     isWaiting,
@@ -66,5 +66,3 @@ const Button = (props: ButtonProps | WaitingButtonProps) => {
     {(isWaiting && waitingText) || children}
   </StyledButton>;
 }
-
-export default Button;

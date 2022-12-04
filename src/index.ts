@@ -6,3 +6,4 @@ export * from './components/Loader';
 export * from './components/NavBar';
 export * from './components/NavBarLogo';
 export * from './types';
+export * from './theme';

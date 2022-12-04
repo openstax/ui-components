@@ -1,4 +1,4 @@
-import NavBar from "./NavBar";
+import { NavBar } from "./NavBar";
 
 export const Plain = () => <NavBar>NavBar</NavBar>;
 export const LogoAndChildren = () => <NavBar logo>Menu</NavBar>;
