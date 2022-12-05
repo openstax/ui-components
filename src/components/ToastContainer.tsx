@@ -1,4 +1,4 @@
-import { zIndexes } from '../../src/theme';
+import { zIndex } from '../../src/theme';
 import styled, { css } from 'styled-components';
 import { Toast } from './Toast';
 import { ToastData } from '../../src/types';
@@ -8,7 +8,7 @@ const StyledToastContainer = styled.div`
     position: fixed;
     right: 2rem;
   `}
-  z-index: ${zIndexes.toasts};
+  z-index: ${zIndex.toasts};
   display: grid;
   justify-items: center;
   justify-content: center;

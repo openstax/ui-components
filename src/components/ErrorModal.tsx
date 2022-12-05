@@ -1,4 +1,4 @@
-import Button from "./Button";
+import { Button } from "./Button";
 import { Modal, ModalBody, ModalBodyHeading, ModalFooter, ModalPropTypes } from "./Modal";
 
 type ErrorModalProps = React.PropsWithChildren<Omit<ModalPropTypes, 'variant' | 'heading'>>;

@@ -2,7 +2,7 @@
 
 exports[`Modal matches snapshot 1`] = `
 <div
-  className="sc-iBkjds oZpgf"
+  className="sc-iBkjds cbXHOy"
 >
   <div
     className="sc-ftvSup YygFK"
@@ -71,7 +71,7 @@ exports[`Modal matches snapshot 1`] = `
         className="sc-jqUVSM bCBcaQ"
       >
         <button
-          className="sc-bczRLJ fLTvYy"
+          className="sc-bczRLJ cJphOo"
           onClick={[MockFunction]}
         >
           OK
