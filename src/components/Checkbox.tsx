@@ -35,12 +35,11 @@ const StyledInput = styled.input<{ variant: CheckboxVariant; checkboxSize: Check
 `;
 
 type CheckboxProps = PropsWithChildren<
-  Omit<InputHTMLAttributes<HTMLInputElement>, 'type'>
-> & {
+  Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> & {
   variant?: CheckboxVariant;
   size?: CheckboxSize;
   bold?: boolean;
-};
+}>;
 
 export const Checkbox = ({ children, variant = 'primary', bold = false, size = 1.6, ...props }: CheckboxProps) => {
   return (
