@@ -1,0 +1,25 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Checkbox handles options 1`] = `
+<label
+  className="sc-bczRLJ bYTfrb"
+>
+  <input
+    className="sc-gsnTZi hvmWuC"
+    type="checkbox"
+  />
+  Click Me
+</label>
+`;
+
+exports[`Checkbox matches snapshot 1`] = `
+<label
+  className="sc-bczRLJ bYTeUU"
+>
+  <input
+    className="sc-gsnTZi ljReaQ"
+    type="checkbox"
+  />
+  Click Me
+</label>
+`;

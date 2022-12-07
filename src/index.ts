@@ -5,5 +5,6 @@ export * from './components/ToastContainer';
 export * from './components/Loader';
 export * from './components/NavBar';
 export * from './components/NavBarLogo';
-export * from './types';
+export * from './components/Checkbox';
 export * from './theme';
+export * from './types';
