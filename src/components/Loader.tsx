@@ -137,7 +137,7 @@ export const Loader = (props: Props) => (
     id='Layer_1'
     x='0px'
     y='0px'
-    viewBox='0 0 57.6 39.1'
+    viewBox='0 -30 57.6 69.1'
     {...props}
   >
     <path
