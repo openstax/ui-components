@@ -6,7 +6,7 @@ exports[`Loader matches large snapshot 1`] = `
   data-testid="loader"
   id="Layer_1"
   version="1.1"
-  viewBox="0 0 57.6 39.1"
+  viewBox="0 -30 57.6 69.1"
   x="0px"
   y="0px"
 >
@@ -79,7 +79,7 @@ exports[`Loader matches snapshot 1`] = `
   data-testid="loader"
   id="Layer_1"
   version="1.1"
-  viewBox="0 0 57.6 39.1"
+  viewBox="0 -30 57.6 69.1"
   x="0px"
   y="0px"
 >
