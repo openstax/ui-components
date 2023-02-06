@@ -1,3 +1,4 @@
+export * from './components/Error';
 export * from './components/Modal';
 export * from './components/ErrorModal';
 export * from './components/Button';
