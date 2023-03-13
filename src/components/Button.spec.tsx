@@ -29,4 +29,11 @@ describe('Button', () => {
     ).toJSON();
     expect(tree).toMatchSnapshot();
   });
+
+  it('renders as a tag variant', () => {
+    const tree = renderer.create(
+      <LinkButton variant='light'>Click Me</LinkButton>
+    ).toJSON();
+    expect(tree).toMatchSnapshot();
+  });
 });
