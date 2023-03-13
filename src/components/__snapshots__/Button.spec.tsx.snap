@@ -24,3 +24,11 @@ exports[`Button matches snapshot 1`] = `
   Click Me
 </button>
 `;
+
+exports[`Button renders as a tag 1`] = `
+<a
+  className="sc-bczRLJ cJphOo"
+>
+  Click Me
+</a>
+`;
