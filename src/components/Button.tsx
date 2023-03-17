@@ -34,9 +34,12 @@ const StyledButton = styled.button<{ variant: ButtonVariant }>`
   }
 `;
 
-interface ButtonBase extends React.ComponentPropsWithoutRef<'button'> {
+interface ButtonOptions {
   variant?: ButtonVariant;
 }
+
+type ButtonBase = React.ComponentPropsWithoutRef<'button'> & ButtonOptions;
+type LinkButtonBase = React.ComponentPropsWithoutRef<'a'> & ButtonOptions;
 
 interface ButtonProps extends ButtonBase {
   isWaiting?: never;
@@ -66,3 +69,6 @@ export const Button = (props: ButtonProps | WaitingButtonProps) => {
     {(isWaiting && waitingText) || children}
   </StyledButton>;
 }
+
+export const LinkButton = ({ variant = 'primary', ...props}: LinkButtonBase) =>
+  <StyledButton {...props} as='a' variant={variant}>{props.children}</StyledButton>
