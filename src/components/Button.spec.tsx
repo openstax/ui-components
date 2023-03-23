@@ -1,4 +1,4 @@
-import { Button } from './Button';
+import { Button, LinkButton } from './Button';
 import renderer from 'react-test-renderer';
 
 describe('Button', () => {
@@ -19,6 +19,20 @@ describe('Button', () => {
   it('isWaiting state matches snapshot', () => {
     const tree = renderer.create(
       <Button isWaiting={true} waitingText="Submitting...">Click Me</Button>
+    ).toJSON();
+    expect(tree).toMatchSnapshot();
+  });
+
+  it('renders as a tag', () => {
+    const tree = renderer.create(
+      <LinkButton>Click Me</LinkButton>
+    ).toJSON();
+    expect(tree).toMatchSnapshot();
+  });
+
+  it('renders as a tag variant', () => {
+    const tree = renderer.create(
+      <LinkButton variant='light'>Click Me</LinkButton>
     ).toJSON();
     expect(tree).toMatchSnapshot();
   });
