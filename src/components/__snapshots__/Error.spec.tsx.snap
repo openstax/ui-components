@@ -1,0 +1,34 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Error can override text 1`] = `
+<div
+  className="sc-eCYdqJ GurhM"
+>
+  <h3
+    className="sc-hKMtZM fYUfXw"
+  >
+    An important heading
+  </h3>
+  Body text
+</div>
+`;
+
+exports[`Error matches snapshot 1`] = `
+<div
+  className="sc-eCYdqJ GurhM"
+>
+  <h3
+    className="sc-hKMtZM fYUfXw"
+  >
+    Uh-oh, there's been a glitch
+  </h3>
+  We're not quite sure what went wrong. Restart your browser. If this doesn't solve the problem, visit our 
+  <a
+    href="https://openstax.secure.force.com/help"
+    target="_blank"
+  >
+    Support Center
+  </a>
+  .
+</div>
+`;
