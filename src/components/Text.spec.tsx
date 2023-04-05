@@ -1,4 +1,4 @@
-import { Paragraph, Heading } from './Text';
+import { Paragraph, H2 } from './Text';
 import renderer from 'react-test-renderer';
 
 describe('Text', () => {
@@ -11,7 +11,7 @@ describe('Text', () => {
 
   it('matches heading snapshot', () => {
     const tree = renderer.create(
-      <Heading>This is a heading</Heading>
+      <H2>This is a heading</H2>
     ).toJSON();
     expect(tree).toMatchSnapshot();
   });
