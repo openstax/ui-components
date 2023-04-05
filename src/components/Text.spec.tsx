@@ -1,10 +1,10 @@
-import { BodyText, Heading } from './Text';
+import { Paragraph, Heading } from './Text';
 import renderer from 'react-test-renderer';
 
 describe('Text', () => {
   it('matches body snapshot', () => {
     const tree = renderer.create(
-      <BodyText>This is a paragraph</BodyText>
+      <Paragraph>This is a paragraph</Paragraph>
     ).toJSON();
     expect(tree).toMatchSnapshot();
   });

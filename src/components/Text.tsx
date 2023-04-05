@@ -7,7 +7,7 @@ export const Heading = styled.h2`
   font-weight: 700;
 `;
 
-export const BodyText = styled.p`
+export const Paragraph = styled.p`
   color: ${palette.neutralDarker};
   size: '18px';
 `;
