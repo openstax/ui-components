@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { palette } from "../theme/palette";
 
 export const H2 = styled.h2`
-  color: ${palette.neutralDarker}  
+  color: ${palette.neutralDarker};
   font-size: 3.6rem;
   font-weight: 700;
 `;
