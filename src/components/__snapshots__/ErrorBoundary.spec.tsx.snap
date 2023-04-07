@@ -1,23 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Error can override text 1`] = `
-<div
-  className="sc-eCYdqJ GurhM"
-  data-testid="error"
->
-  <h3
-    className="sc-hKMtZM fYUfXw"
-  >
-    An important heading
-  </h3>
-  Body text
-  <div
-    className="sc-jqUVSM iYpgOz"
-  />
-</div>
-`;
-
-exports[`Error matches snapshot 1`] = `
+exports[`ErrorBoundary captures unhandled rejections 1`] = `
 <div
   className="sc-eCYdqJ GurhM"
   data-testid="error"

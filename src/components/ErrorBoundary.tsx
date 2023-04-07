@@ -11,28 +11,40 @@ type SentryError = {
 
 export const ErrorContext = React.createContext<SentryError | null>(null);
 
-export const ErrorBoundary = ({ children, renderFallback, ...props }: ErrorBoundaryProps & {
+export const ErrorBoundary = ({
+  children,
+  renderFallback,
+  windowImpl = window,
+  fallback,
+  ...props
+}: ErrorBoundaryProps & {
   renderFallback?: boolean;
+  windowImpl?: Window | Pick<Window, 'addEventListener' | 'removeEventListener'>;
 }) => {
-  const [sentryError, setSentryError] = React.useState<SentryError | null>(null);
+  const [error, setError] = React.useState<SentryError | null>(null);
+  const defaultFallback = <Error data-testid='error-fallback' />;
+  // Optionally re-render with the children so they can render inline errors with <ErrorMessage />
+  const renderElement = error && renderFallback ? (fallback || defaultFallback) : <>{children}</>;
 
   React.useEffect(() => {
-    const handleRejection = (e: PromiseRejectionEvent) => setSentryError({
+    const handleRejection = (e: PromiseRejectionEvent) => setError({
       error: { name: e.type, message: e.reason.toString() },
     });
-    window.addEventListener('unhandledrejection', handleRejection);
-    return () => window.removeEventListener('unhandledrejection', handleRejection);
+    windowImpl.addEventListener('unhandledrejection', handleRejection);
+    return () => windowImpl.removeEventListener('unhandledrejection', handleRejection);
   }, []);
 
-  return <ErrorContext.Provider value={sentryError}>
+  // There are two references to the render element here because the Sentry fallback (and onError)
+  // are not used for unhandledrejection events.
+  return <ErrorContext.Provider value={error}>
     <Sentry.ErrorBoundary
-      fallback={renderFallback ? <Error /> : <>{children}</>}
+      fallback={renderElement}
       onError={(error, componentStack, eventId) => {
-        setSentryError({ error, componentStack, eventId });
+        setError({ error, componentStack, eventId });
       }}
       {...props}
     >
-      {children}
+      {renderElement}
     </Sentry.ErrorBoundary>
   </ErrorContext.Provider>;
 }
