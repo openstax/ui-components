@@ -23,7 +23,7 @@ export const ErrorBoundary = ({
 }) => {
   const [error, setError] = React.useState<SentryError | null>(null);
   const defaultFallback = <Error data-testid='error-fallback' />;
-  // Optionally re-render with the children so they can render inline errors with <ErrorMessage />
+  // Optionally re-render with the children so they can display inline errors with <ErrorMessage />
   const renderElement = error && renderFallback ? (fallback || defaultFallback) : <>{children}</>;
 
   React.useEffect(() => {
@@ -35,7 +35,8 @@ export const ErrorBoundary = ({
   }, []);
 
   // There are two references to the render element here because the Sentry fallback (and onError)
-  // are not used for unhandledrejection events.
+  // are not used for unhandledrejection events. To support those events, we add a listener and
+  // reuse the same error state and rendering logic.
   return <ErrorContext.Provider value={error}>
     <Sentry.ErrorBoundary
       fallback={renderElement}
@@ -43,6 +44,7 @@ export const ErrorBoundary = ({
         setError({ error, componentStack, eventId });
       }}
       {...props}
+      onReset={() => setError(null)}
     >
       {renderElement}
     </Sentry.ErrorBoundary>

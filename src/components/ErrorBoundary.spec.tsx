@@ -41,6 +41,28 @@ describe('ErrorBoundary', () => {
     spy.mockRestore();
   });
 
+  it('resets error', () => {
+    const spy = jest.spyOn(console, 'error')
+    spy.mockImplementation(() => {});
+
+    let render: ReactTestRenderer;
+    expect(() => {
+      render = renderer.create(
+        <ErrorBoundary
+          renderFallback
+          fallback={({ resetError }) => { resetError(); return <></> }}
+        >
+          <ErrorComponent />
+        </ErrorBoundary>
+      );
+    }).toThrow();
+
+    expect(() => findByTestId(render.root, 'error-fallback')).toThrow();
+    expect(testkit.reports()).toHaveLength(1);
+
+    spy.mockRestore();
+  });
+
   it('captures unhandled rejections', async () => {
     const callbacks: Record<string, Function> = {};
     const mockWindow = {
