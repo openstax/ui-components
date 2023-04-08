@@ -8,5 +8,6 @@ export * from './components/NavBar';
 export * from './components/NavBarLogo';
 export * from './components/Checkbox';
 export * from './components/RiceLogo';
+export * from './components/Text';
 export * from './theme';
 export * from './types';

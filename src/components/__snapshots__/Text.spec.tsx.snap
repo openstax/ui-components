@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Text matches body snapshot 1`] = `
+<p
+  className="sc-gsnTZi eGRQDn"
+>
+  This is a paragraph
+</p>
+`;
+
+exports[`Text matches heading snapshot 1`] = `
+<h2
+  className="sc-bczRLJ fZeHof"
+>
+  This is a heading
+</h2>
+`;
