@@ -25,11 +25,9 @@ describe('ErrorBoundary', () => {
 
   it('captures errors', () => {
     const spy = jest.spyOn(console, 'error')
-    spy.mockImplementation(() => {});
+    spy.mockImplementation(() => undefined);
 
-    let render: ReactTestRenderer;
-
-    render = renderer.create(
+    const render = renderer.create(
       <ErrorBoundary renderFallback>
         <ErrorComponent />
       </ErrorBoundary>
@@ -43,14 +41,16 @@ describe('ErrorBoundary', () => {
 
   it('resets error', () => {
     const spy = jest.spyOn(console, 'error')
-    spy.mockImplementation(() => {});
+    spy.mockImplementation(() => undefined);
 
     let render: ReactTestRenderer;
     expect(() => {
       render = renderer.create(
         <ErrorBoundary
           renderFallback
-          fallback={({ resetError }) => { resetError(); return <></> }}
+          fallback={({ resetError }: {
+            resetError: () => void
+          }) => { resetError(); return <></> }}
         >
           <ErrorComponent />
         </ErrorBoundary>
@@ -64,7 +64,7 @@ describe('ErrorBoundary', () => {
   });
 
   it('captures unhandled rejections', async () => {
-    const callbacks: Record<string, Function> = {};
+    const callbacks: Record<string, ({ reason }: { reason: string }) => void> = {};
     const mockWindow = {
       addEventListener: jest.fn().mockImplementation(
         (event, callback) => callbacks[event] = callback
@@ -74,7 +74,7 @@ describe('ErrorBoundary', () => {
       )
     };
 
-    let render: ReactTestRenderer;
+    let render: ReactTestRenderer | undefined;
     act(() => {
       render = renderer.create(
         <ErrorBoundary renderFallback windowImpl={mockWindow}>
@@ -88,10 +88,11 @@ describe('ErrorBoundary', () => {
     act(() => {
       callbacks.unhandledrejection({ reason: 'Test Rejection' });
     });
-    expect(render!.toJSON()).toMatchSnapshot();
+
+    expect(render?.toJSON()).toMatchSnapshot();
 
     act(() => {
-      render!.unmount();
+      render?.unmount();
     });
 
     expect(mockWindow.removeEventListener).toHaveBeenCalled();
