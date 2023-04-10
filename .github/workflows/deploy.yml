@@ -63,7 +63,7 @@ jobs:
         run: |
           prefix="${{ steps.setup.outputs.prefix }}"
           yarn
-          yarn ladle build --base "/ui-components/$prefix/"
+          yarn ladle-build --base "/ui-components/$prefix/"
           mkdir -p "./$prefix"
           mv ./docs/* "./$prefix"
 

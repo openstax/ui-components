@@ -21,7 +21,8 @@
     "dev": "microbundle watch --no-compress",
     "test": "jest --coverage .",
     "lint": "eslint src/*ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "ladle-build": "NODE_ENV=production yarn ladle build"
   },
   "peerDependencies": {
     "@sentry/react": "*",
