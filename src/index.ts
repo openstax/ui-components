@@ -10,5 +10,6 @@ export * from './components/Checkbox';
 export * from './components/RiceLogo';
 export * from './components/ErrorBoundary';
 export * from './components/ErrorMessage';
+export * from './components/Text';
 export * from './theme';
 export * from './types';
