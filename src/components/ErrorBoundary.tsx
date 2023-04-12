@@ -14,11 +14,13 @@ export const ErrorContext = React.createContext<SentryError | null>(null);
 export const ErrorBoundary = ({
   children,
   renderFallback,
+  catchUnhandledRejections = true,
   windowImpl = window,
   fallback,
   ...props
 }: ErrorBoundaryProps & {
   renderFallback?: boolean;
+  catchUnhandledRejections?: boolean;
   windowImpl?: Window | Pick<Window, 'addEventListener' | 'removeEventListener'>;
 }) => {
   const [error, setError] = React.useState<SentryError | null>(null);
@@ -27,6 +29,9 @@ export const ErrorBoundary = ({
   const renderElement = error && renderFallback ? (fallback || defaultFallback) : <>{children}</>;
 
   React.useEffect(() => {
+    if (!catchUnhandledRejections) {
+      return;
+    }
     const handleRejection = (e: PromiseRejectionEvent) => setError({
       error: { name: e.type, message: e.reason.toString() },
     });

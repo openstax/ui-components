@@ -63,38 +63,71 @@ describe('ErrorBoundary', () => {
     spy.mockRestore();
   });
 
-  it('captures unhandled rejections', async () => {
-    const callbacks: Record<string, ({ reason }: { reason: string }) => void> = {};
-    const mockWindow = {
-      addEventListener: jest.fn().mockImplementation(
-        (event, callback) => callbacks[event] = callback
-      ),
-      removeEventListener: jest.fn().mockImplementation(
-        (event: string) => delete callbacks[event],
-      )
-    };
+  describe('unhandled rejections', () => {
+    it('are captured', async () => {
+      const callbacks: Record<string, ({ reason }: { reason: string }) => void> = {};
+      const mockWindow = {
+        addEventListener: jest.fn().mockImplementation(
+          (event, callback) => callbacks[event] = callback
+        ),
+        removeEventListener: jest.fn().mockImplementation(
+          (event: string) => delete callbacks[event],
+        )
+      };
 
-    let render: ReactTestRenderer | undefined;
-    act(() => {
-      render = renderer.create(
-        <ErrorBoundary renderFallback windowImpl={mockWindow}>
-          Content
-        </ErrorBoundary>
-      );
+      let render: ReactTestRenderer | undefined;
+      act(() => {
+        render = renderer.create(
+          <ErrorBoundary renderFallback windowImpl={mockWindow}>
+            Content
+          </ErrorBoundary>
+        );
+      });
+
+      expect(mockWindow.addEventListener).toHaveBeenCalled();
+
+      act(() => {
+        callbacks.unhandledrejection({ reason: 'Test Rejection' });
+      });
+
+      expect(render?.toJSON()).toMatchSnapshot();
+
+      act(() => {
+        render?.unmount();
+      });
+
+      expect(mockWindow.removeEventListener).toHaveBeenCalled();
     });
 
-    expect(mockWindow.addEventListener).toHaveBeenCalled();
+    it('can be disabled', async () => {
+      const callbacks: Record<string, ({ reason }: { reason: string }) => void> = {};
+      const mockWindow = {
+        addEventListener: jest.fn().mockImplementation(
+          (event, callback) => callbacks[event] = callback
+        ),
+        removeEventListener: jest.fn().mockImplementation(
+          (event: string) => delete callbacks[event],
+        )
+      };
 
-    act(() => {
-      callbacks.unhandledrejection({ reason: 'Test Rejection' });
+      let render: ReactTestRenderer | undefined;
+      act(() => {
+        render = renderer.create(
+          <ErrorBoundary renderFallback windowImpl={mockWindow} catchUnhandledRejections={false}>
+            Content
+          </ErrorBoundary>
+        );
+      });
+
+      expect(mockWindow.addEventListener).not.toHaveBeenCalled();
+      expect(callbacks).toStrictEqual({});
+      expect(render?.toJSON()).toMatchSnapshot();
+
+      act(() => {
+        render?.unmount();
+      });
+
+      expect(mockWindow.removeEventListener).not.toHaveBeenCalled();
     });
-
-    expect(render?.toJSON()).toMatchSnapshot();
-
-    act(() => {
-      render?.unmount();
-    });
-
-    expect(mockWindow.removeEventListener).toHaveBeenCalled();
   });
 });

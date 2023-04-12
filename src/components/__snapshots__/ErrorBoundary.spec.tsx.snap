@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`ErrorBoundary captures unhandled rejections 1`] = `
+exports[`ErrorBoundary unhandled rejections are captured 1`] = `
 <div
   className="sc-eCYdqJ GurhM"
   data-testid="error"
@@ -23,3 +23,5 @@ exports[`ErrorBoundary captures unhandled rejections 1`] = `
   />
 </div>
 `;
+
+exports[`ErrorBoundary unhandled rejections can be disabled 1`] = `"Content"`;
