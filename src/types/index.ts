@@ -8,3 +8,9 @@ export type ToastData = {
 }
 
 type ToastVariant = 'neutral' | 'success' | 'failure';
+
+export type SentryError = {
+  error: Error;
+  componentStack?: string;
+  eventId?: string;
+};

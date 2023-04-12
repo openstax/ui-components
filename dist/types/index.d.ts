@@ -8,4 +8,9 @@ export declare type ToastData = {
     onDismiss?: (id: ToastData['id']) => void;
 };
 declare type ToastVariant = 'neutral' | 'success' | 'failure';
+export declare type SentryError = {
+    error: Error;
+    componentStack?: string;
+    eventId?: string;
+};
 export {};

@@ -1,8 +1,8 @@
 import React from "react";
-import { ErrorContext } from "./ErrorBoundary";
 import { ModalBody, ModalBodyHeading } from "./Modal";
 import styled from "styled-components";
 import { colors } from "../../src/theme";
+import { ErrorContext } from "src/contexts";
 
 export interface ErrorPropTypes {
   className?: string;
