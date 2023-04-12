@@ -2,14 +2,8 @@ import * as Sentry from '@sentry/react';
 import React from 'react';
 import { Error } from './Error';
 import type { ErrorBoundaryProps } from '@sentry/react/types/errorboundary';
-
-type SentryError = {
-  error: Error;
-  componentStack?: string;
-  eventId?: string;
-};
-
-export const ErrorContext = React.createContext<SentryError | null>(null);
+import { ErrorContext } from 'src/contexts';
+import { SentryError } from 'src/types';
 
 export const ErrorBoundary = ({
   children,
