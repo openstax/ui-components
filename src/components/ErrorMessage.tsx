@@ -1,5 +1,5 @@
 import React from "react";
-import { ErrorContext } from "src/contexts";
+import { ErrorContext } from "../contexts";
 
 export const ErrorMessage = ({ message, showEventId = true }: {
   message?: string;
