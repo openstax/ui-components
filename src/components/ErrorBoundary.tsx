@@ -8,19 +8,36 @@ import { SentryError } from '../types';
 export const ErrorBoundary = ({
   children,
   renderFallback,
+  fallback,
   catchUnhandledRejections = true,
   windowImpl = window,
-  fallback,
+  sentryDsn,
+  sentryInit,
   ...props
 }: ErrorBoundaryProps & {
   renderFallback?: boolean;
   catchUnhandledRejections?: boolean;
   windowImpl?: Window | Pick<Window, 'addEventListener' | 'removeEventListener'>;
+  sentryDsn?: string;
+  sentryInit?: Sentry.BrowserOptions;
 }) => {
   const [error, setError] = React.useState<SentryError | null>(null);
   const defaultFallback = <Error data-testid='error-fallback' />;
   // Optionally re-render with the children so they can display inline errors with <ErrorMessage />
   const renderElement = error && renderFallback ? (fallback || defaultFallback) : <>{children}</>;
+
+  React.useEffect(() => {
+    if (!sentryDsn && !sentryInit) {
+      return;
+    }
+
+    Sentry.init(sentryInit || {
+      dsn: sentryDsn,
+      integrations: [
+        new Sentry.BrowserTracing(),
+      ],
+    });
+  }, []);
 
   React.useEffect(() => {
     if (!catchUnhandledRejections) {

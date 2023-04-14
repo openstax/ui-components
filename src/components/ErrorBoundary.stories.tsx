@@ -1,17 +1,6 @@
 import React from "react";
 import { ErrorBoundary } from "./ErrorBoundary";
-import * as Sentry from '@sentry/react';
 import { ErrorMessage } from "./ErrorMessage";
-
-Sentry.init({
-  integrations: [
-    new Sentry.BrowserTracing(),
-    new Sentry.Integrations.GlobalHandlers({
-      onerror: true,
-      onunhandledrejection: true,
-    }),
-  ],
-});
 
 const ErrorComponent = ({ doThrow, setShowError }: {
   doThrow: boolean;

@@ -8,12 +8,17 @@ const { testkit, sentryTransport } = sentryTestkit();
 
 const ErrorComponent = () => { throw new Error('Test Error') };
 
-Sentry.init({
-  dsn: 'https://examplePublicKey@o0.ingest.sentry.io/0',
-  transport: sentryTransport,
-});
 
 describe('ErrorBoundary', () => {
+  beforeEach(() => {
+    Sentry.init({
+      dsn: 'https://examplePublicKey@o0.ingest.sentry.io/0',
+      transport: sentryTransport,
+    });
+
+    jest.resetAllMocks();
+  });
+
   it('renders children', () => {
     const tree = renderer.create(
       <ErrorBoundary>
@@ -129,5 +134,38 @@ describe('ErrorBoundary', () => {
 
       expect(mockWindow.removeEventListener).not.toHaveBeenCalled();
     });
+  });
+
+  it('inits Sentry', () => {
+    jest.resetAllMocks();
+    const initSpy = jest.spyOn(Sentry, 'init');
+
+    act(() => {
+      renderer.create(
+        <ErrorBoundary sentryDsn='https://examplePublicKey@o0.ingest.sentry.io/0' />
+      );
+    });
+
+    expect(initSpy).toHaveBeenCalled();
+  });
+
+  it('can override Sentry init', () => {
+    jest.resetAllMocks();
+    const initSpy = jest.spyOn(Sentry, 'init');
+    const config = {
+      dsn: 'https://examplePublicKey@o0.ingest.sentry.io/0',
+      enabled: false,
+      transport: sentryTransport
+    };
+
+    act(() => {
+      renderer.create(
+        <ErrorBoundary
+          sentryInit={config}
+        />
+      );
+    });
+
+    expect(initSpy).toHaveBeenCalledWith(config);
   });
 });
