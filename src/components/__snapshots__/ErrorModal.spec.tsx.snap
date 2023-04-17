@@ -52,6 +52,7 @@ exports[`Modal matches snapshot 1`] = `
       </header>
       <div
         className="sc-jSMfEi cWLUhq"
+        data-testid="error"
       >
         <h3
           className="sc-eCYdqJ hrmHjt"
@@ -66,6 +67,9 @@ exports[`Modal matches snapshot 1`] = `
           Support Center
         </a>
         .
+        <div
+          className="sc-kDDrLX gFmCSI"
+        />
       </div>
       <div
         className="sc-jqUVSM bCBcaQ"

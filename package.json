@@ -21,7 +21,8 @@
     "dev": "microbundle watch --no-compress",
     "test": "jest --coverage .",
     "lint": "eslint src/*ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "ladle-build": "NODE_ENV=production yarn ladle build"
   },
   "peerDependencies": {
     "react": "*",
@@ -51,11 +52,13 @@
     "react-dom": "^17.0.2",
     "react-is": "^16.8.0",
     "react-test-renderer": "^17.0.2",
+    "sentry-testkit": "^5.0.5",
     "styled-components": "^5.3.5",
     "ts-jest": "^28.0.5",
     "typescript": "^4.7.4"
   },
   "dependencies": {
+    "@sentry/react": "^7.48.0",
     "classnames": "^2.3.1"
   }
 }
