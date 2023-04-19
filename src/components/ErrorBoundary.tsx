@@ -33,6 +33,7 @@ export const ErrorBoundary = ({
 
     Sentry.init(sentryInit || {
       dsn: sentryDsn,
+      environment: window.location.hostname,
       integrations: [
         new Sentry.BrowserTracing(),
       ],
