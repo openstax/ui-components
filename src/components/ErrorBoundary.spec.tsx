@@ -3,11 +3,11 @@ import { ErrorBoundary } from './ErrorBoundary';
 import sentryTestkit from 'sentry-testkit';
 import * as Sentry from '@sentry/react';
 import { findByTestId } from '../test/utils';
+import { SessionExpiredError } from '@openstax/ts-utils/errors';
 
 const { testkit, sentryTransport } = sentryTestkit();
 
 const ErrorComponent = () => { throw new Error('Test Error') };
-
 
 describe('ErrorBoundary', () => {
   beforeEach(() => {
@@ -64,6 +64,25 @@ describe('ErrorBoundary', () => {
 
     expect(() => findByTestId(render.root, 'error-fallback')).toThrow();
     expect(testkit.reports()).toHaveLength(1);
+
+    spy.mockRestore();
+  });
+
+  it('can override fallback components for specific errors', () => {
+    const spy = jest.spyOn(console, 'error')
+    spy.mockImplementation(() => undefined);
+
+    const tree = renderer.create(
+      <ErrorBoundary
+        renderFallback
+        errorFallbacks={{
+          'SessionExpiredError': <>You are signed out</>,
+        }}
+      >
+        {() => { throw new SessionExpiredError }}
+      </ErrorBoundary>
+    ).toJSON();
+    expect(tree).toMatchInlineSnapshot(`"You are signed out"`);
 
     spy.mockRestore();
   });
