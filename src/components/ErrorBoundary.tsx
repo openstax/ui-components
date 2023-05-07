@@ -6,12 +6,12 @@ import { ErrorContext } from '../contexts';
 import { SentryError } from '../types';
 
 const Error = ({ children, ...props }: React.PropsWithChildren<ErrorPropTypes>) =>
-  <ErrorComponent data-testid='error-fallback' {...props}>{children}</ ErrorComponent>;
+  <ErrorComponent data-testid='error-fallback' {...props}>{children}</ErrorComponent>;
 
 const genericFallback = <Error data-testid='error-fallback' />;
 
 export const defaultErrorFallbacks = {
-  'SessionExpiredError': <Error heading='Your session has expired'>Please sign in again</Error>,
+  SessionExpiredError: <Error heading='Your session has expired'>Please sign in again</Error>,
 };
 
 export const ErrorBoundary = ({
@@ -33,9 +33,8 @@ export const ErrorBoundary = ({
   errorFallbacks?: { [_: string]: JSX.Element }
 }) => {
   const [error, setError] = React.useState<SentryError | null>(null);
-  console.log(error);
   const fallbackElement = error?.error.name ?
-    errorFallbacks[error?.error.name] || fallback
+    errorFallbacks[error.error.name] || fallback
     : fallback;
 
   // Optionally re-render with the children so they can display inline errors with <ErrorMessage />

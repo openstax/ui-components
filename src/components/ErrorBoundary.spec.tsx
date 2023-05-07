@@ -72,16 +72,21 @@ describe('ErrorBoundary', () => {
     const spy = jest.spyOn(console, 'error')
     spy.mockImplementation(() => undefined);
 
+    const SessionExpiredComponent = () => {
+      throw new SessionExpiredError();
+    }
+
     const tree = renderer.create(
       <ErrorBoundary
         renderFallback
         errorFallbacks={{
-          'SessionExpiredError': <>You are signed out</>,
+          SessionExpiredError: <>You are signed out</>,
         }}
-      >
-        {() => { throw new SessionExpiredError }}
+        >
+        <SessionExpiredComponent />
       </ErrorBoundary>
     ).toJSON();
+
     expect(tree).toMatchInlineSnapshot(`"You are signed out"`);
 
     spy.mockRestore();
