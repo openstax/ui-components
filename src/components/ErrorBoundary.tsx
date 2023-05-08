@@ -79,6 +79,7 @@ export const ErrorBoundary = ({
         setError({
           error: {
             ...error,
+            // If the error is a custom error from ts-utils, use the custom name instead of 'Error'
             name: ('TYPE' in error.constructor ? error.constructor.name : error.name)
           },
           componentStack,
