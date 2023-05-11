@@ -4,6 +4,7 @@ import { Error as ErrorComponent, ErrorPropTypes } from './Error';
 import type { ErrorBoundaryProps } from '@sentry/react/types/errorboundary';
 import { ErrorContext } from '../contexts';
 import { SentryError } from '../types';
+import { SessionExpiredError } from '@openstax/ts-utils/errors';
 
 const Error = ({ children, ...props }: React.PropsWithChildren<ErrorPropTypes>) =>
   <ErrorComponent data-testid='error-fallback' {...props}>{children}</ErrorComponent>;
@@ -11,7 +12,7 @@ const Error = ({ children, ...props }: React.PropsWithChildren<ErrorPropTypes>) 
 const genericFallback = <Error data-testid='error-fallback' />;
 
 export const defaultErrorFallbacks = {
-  SessionExpiredError: <Error heading='Your session has expired'>Please sign in again</Error>,
+  [SessionExpiredError.TYPE]: <Error heading='Your session has expired'>Please sign in again</Error>,
 };
 
 export const ErrorBoundary = ({

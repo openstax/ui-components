@@ -58,7 +58,7 @@
     "typescript": "^4.7.4"
   },
   "dependencies": {
-    "@openstax/ts-utils": "^1.1.40",
+    "@openstax/ts-utils": "^1.1.42",
     "@sentry/react": "^7.48.0",
     "classnames": "^2.3.1"
   }

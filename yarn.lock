@@ -2763,10 +2763,10 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@openstax/ts-utils@^1.1.40":
-  version "1.1.40"
-  resolved "https://registry.yarnpkg.com/@openstax/ts-utils/-/ts-utils-1.1.40.tgz#2a2c31c4729a491cb49769db384f974f8e5c911d"
-  integrity sha512-BiUG5td3barUAg3fektbYPoP6/8b41sRGqquYvYnveZUh03LjRhyHSf3QXThK+3XrNXQ0GM4NzZ8kaQJVKXang==
+"@openstax/ts-utils@^1.1.42":
+  version "1.1.42"
+  resolved "https://registry.yarnpkg.com/@openstax/ts-utils/-/ts-utils-1.1.42.tgz#c9124f8a2737706b324474d3ba258f7bc20f8c49"
+  integrity sha512-e7cIDqyE9ZAR3R7abobLXQjArtBN1AOCmOfpv1RbdFMJUexnSoowCNuMVOR03Ygrok+dzHaUqrrdC8PbSmgN3w==
   dependencies:
     "@aws-sdk/client-dynamodb" "^3.171.0"
     "@aws-sdk/client-ssm" "^3.171.0"

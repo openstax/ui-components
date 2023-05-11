@@ -13,4 +13,7 @@ module.exports = {
     "json",
     "node"
   ],
+  moduleNameMapper: {
+    '^@openstax/ts-utils/errors$': '@openstax/ts-utils/errors.js',
+  },
 };

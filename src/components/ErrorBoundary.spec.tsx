@@ -80,7 +80,7 @@ describe('ErrorBoundary', () => {
       <ErrorBoundary
         renderFallback
         errorFallbacks={{
-          SessionExpiredError: <>You are signed out</>,
+          [SessionExpiredError.TYPE]: <>You are signed out</>,
         }}
         >
         <SessionExpiredComponent />

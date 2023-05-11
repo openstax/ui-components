@@ -38,7 +38,7 @@ export const InlineMessages = () => {
   </ErrorBoundary>
 };
 
-export const FallbackComponent_Default = () => {
+export const Fallback_GenericError_Default = () => {
   const [showError, setShowError] = React.useState(false);
 
   return <ErrorBoundary renderFallback>
@@ -53,7 +53,7 @@ export const FallbackComponent_Default = () => {
   </ErrorBoundary>
 };
 
-export const FallbackComponent_Custom = () => {
+export const Fallback_GenericError_Custom = () => {
   const [showError, setShowError] = React.useState(false);
 
   return <ErrorBoundary
@@ -76,7 +76,7 @@ export const FallbackComponent_Custom = () => {
   </ErrorBoundary>
 };
 
-export const CustomErrorFallbacks = () => {
+export const Fallback_SpecialError = () => {
   const [showError1, setShowError1] = React.useState(false);
   const [showError2, setShowError2] = React.useState(false);
 
@@ -84,7 +84,7 @@ export const CustomErrorFallbacks = () => {
     renderFallback
     errorFallbacks={{
       ...defaultErrorFallbacks,
-      'InvalidRequestError': <h2>Custom fallback matching on InvalidRequestError</h2>
+      [InvalidRequestError.TYPE]: <h2>Custom fallback matching on InvalidRequestError</h2>
     }}
   >
     <ErrorComponent
