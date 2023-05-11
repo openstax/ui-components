@@ -12,7 +12,9 @@ const Error = ({ children, ...props }: React.PropsWithChildren<ErrorPropTypes>) 
 const genericFallback = <Error data-testid='error-fallback' />;
 
 export const defaultErrorFallbacks = {
-  [SessionExpiredError.TYPE]: <Error heading='Your session has expired'>Please sign in again</Error>,
+  [SessionExpiredError.TYPE]: <Error heading='Your session has expired'>
+    Please refresh your browser and try again.
+  </Error>,
 };
 
 export const ErrorBoundary = ({
