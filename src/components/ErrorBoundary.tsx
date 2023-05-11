@@ -9,18 +9,21 @@ import { SessionExpiredError } from '@openstax/ts-utils/errors';
 const Error = ({ children, ...props }: React.PropsWithChildren<ErrorPropTypes>) =>
   <ErrorComponent data-testid='error-fallback' {...props}>{children}</ErrorComponent>;
 
-const genericFallback = <Error data-testid='error-fallback' />;
-
 export const defaultErrorFallbacks = {
+  'generic': <Error data-testid='error-fallback' />,
   [SessionExpiredError.TYPE]: <Error heading='Your session has expired'>
     Please refresh your browser and try again.
   </Error>,
 };
 
+const getTypeFromError = (error: Error | PromiseRejectionEvent['reason']) =>
+  'TYPE' in error.constructor && typeof error.constructor.TYPE === 'string' ?
+  error.constructor.TYPE : undefined;
+
 export const ErrorBoundary = ({
   children,
   renderFallback,
-  fallback = genericFallback,
+  fallback = defaultErrorFallbacks['generic'],
   catchUnhandledRejections = true,
   windowImpl = window,
   sentryDsn,
@@ -35,13 +38,11 @@ export const ErrorBoundary = ({
   sentryInit?: Sentry.BrowserOptions;
   errorFallbacks?: { [_: string]: JSX.Element }
 }) => {
-  const [error, setError] = React.useState<SentryError | null>(null);
-  const fallbackElement = error?.error.name ?
-    errorFallbacks[error.error.name] || fallback
-    : fallback;
+  const [error, setError] = React.useState<SentryError & { type?: string } | null>(null);
+  const typedFallback = error?.type ? errorFallbacks[error.type] : undefined;
 
   // Optionally re-render with the children so they can display inline errors with <ErrorMessage />
-  const renderElement = error && renderFallback ? fallbackElement : <>{children}</>;
+  const renderElement = error && renderFallback ? (typedFallback || fallback) : <>{children}</>;
 
   React.useEffect(() => {
     if (!sentryDsn && !sentryInit) {
@@ -64,7 +65,8 @@ export const ErrorBoundary = ({
 
     const handleRejection = (e: PromiseRejectionEvent) => {
       setError({
-        error: { name: e.reason.constructor.name, message: e.reason.toString() },
+        error: { name: e.type, message: e.reason.toString(), },
+        type: getTypeFromError(e.reason),
       });
     };
 
@@ -80,11 +82,9 @@ export const ErrorBoundary = ({
       fallback={renderElement}
       onError={(error, componentStack, eventId) => {
         setError({
-          error: {
-            ...error,
-            // If the error is a custom error from ts-utils, use the custom name instead of 'Error'
-            name: ('TYPE' in error.constructor ? error.constructor.name : error.name)
-          },
+          error,
+          // If the error is a custom error from ts-utils, use the custom type instead of 'Error'
+          type: getTypeFromError(error),
           componentStack,
           eventId
         });
