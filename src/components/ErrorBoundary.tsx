@@ -73,7 +73,6 @@ export const ErrorBoundary = ({
     windowImpl.addEventListener('unhandledrejection', handleRejection);
     return () => windowImpl.removeEventListener('unhandledrejection', handleRejection);
   }, []);
-
   // There are two references to the render element here because the Sentry fallback (and onError)
   // are not used for unhandledrejection events. To support those events, we add a listener and
   // reuse the same error state and rendering logic.
