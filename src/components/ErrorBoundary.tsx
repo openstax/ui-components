@@ -4,7 +4,7 @@ import { Error as ErrorComponent, ErrorPropTypes } from './Error';
 import type { ErrorBoundaryProps } from '@sentry/react/types/errorboundary';
 import { ErrorContext } from '../contexts';
 import { SentryError } from '../types';
-import { SessionExpiredError } from '@openstax/ts-utils/errors';
+import { SessionExpiredError } from '@openstax/ts-utils/errors.js';
 
 const Error = ({ children, ...props }: React.PropsWithChildren<ErrorPropTypes>) =>
   <ErrorComponent data-testid='error-fallback' {...props}>{children}</ErrorComponent>;
