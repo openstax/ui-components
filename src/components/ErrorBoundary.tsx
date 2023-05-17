@@ -11,8 +11,8 @@ const Error = ({ children, ...props }: React.PropsWithChildren<ErrorPropTypes>) 
 export const defaultErrorFallbacks = {
   'generic': <Error data-testid='error-fallback' />,
   'SessionExpiredError': <Error heading='Your session has expired'>
-    Please refresh your browser and try again.
-  </Error>,
+    Please refresh your browser and try again. If this doesn't solve the problem, visit our <a href="https://openstax.secure.force.com/help" target="_blank">Support Center</a>.
+    </Error>
 };
 
 export const getTypeFromError = (error: Error | PromiseRejectionEvent['reason']) => {
