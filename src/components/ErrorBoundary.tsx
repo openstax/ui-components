@@ -4,21 +4,21 @@ import { Error as ErrorComponent, ErrorPropTypes } from './Error';
 import type { ErrorBoundaryProps } from '@sentry/react/types/errorboundary';
 import { ErrorContext } from '../contexts';
 import { SentryError } from '../types';
-import { SessionExpiredError } from '@openstax/ts-utils/errors';
 
 const Error = ({ children, ...props }: React.PropsWithChildren<ErrorPropTypes>) =>
   <ErrorComponent data-testid='error-fallback' {...props}>{children}</ErrorComponent>;
 
 export const defaultErrorFallbacks = {
   'generic': <Error data-testid='error-fallback' />,
-  [SessionExpiredError.TYPE]: <Error heading='Your session has expired'>
+  'SessionExpiredError': <Error heading='Your session has expired'>
     Please refresh your browser and try again.
   </Error>,
 };
 
-const getTypeFromError = (error: Error | PromiseRejectionEvent['reason']) =>
-  'TYPE' in error.constructor && typeof error.constructor.TYPE === 'string' ?
-  error.constructor.TYPE : undefined;
+export const getTypeFromError = (error: Error | PromiseRejectionEvent['reason']) => {
+  const { TYPE, name } = error.constructor;
+  return TYPE && typeof TYPE === 'string' ? TYPE : name;
+};
 
 export const ErrorBoundary = ({
   children,
@@ -73,7 +73,6 @@ export const ErrorBoundary = ({
     windowImpl.addEventListener('unhandledrejection', handleRejection);
     return () => windowImpl.removeEventListener('unhandledrejection', handleRejection);
   }, []);
-
   // There are two references to the render element here because the Sentry fallback (and onError)
   // are not used for unhandledrejection events. To support those events, we add a listener and
   // reuse the same error state and rendering logic.

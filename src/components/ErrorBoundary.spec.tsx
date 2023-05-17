@@ -1,5 +1,5 @@
 import renderer, { ReactTestRenderer, act } from 'react-test-renderer';
-import { ErrorBoundary } from './ErrorBoundary';
+import { ErrorBoundary, getTypeFromError } from './ErrorBoundary';
 import sentryTestkit from 'sentry-testkit';
 import * as Sentry from '@sentry/react';
 import { findByTestId } from '../test/utils';
@@ -74,13 +74,13 @@ describe('ErrorBoundary', () => {
 
     const SessionExpiredComponent = () => {
       throw new SessionExpiredError();
-    }
+    };
 
     const tree = renderer.create(
       <ErrorBoundary
         renderFallback
         errorFallbacks={{
-          [SessionExpiredError.TYPE]: <>You are signed out</>,
+          'SessionExpiredError': <>You are signed out</>,
         }}
         >
         <SessionExpiredComponent />
@@ -91,6 +91,19 @@ describe('ErrorBoundary', () => {
 
     spy.mockRestore();
   });
+
+  describe('getTypeFromError', () => {
+    it('returns name if the constuctor does not contain TYPE ', () => {
+      class MyError extends Error {
+        constructor() {
+          super();
+          Object.setPrototypeOf(this, MyError.prototype);
+        }
+      }
+
+      expect(getTypeFromError(new MyError())).toEqual('MyError');
+    });
+  })
 
   describe('unhandled rejections', () => {
     it('are captured', async () => {

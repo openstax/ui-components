@@ -1,7 +1,7 @@
 import React from "react";
 import { ErrorBoundary, defaultErrorFallbacks } from "./ErrorBoundary";
 import { ErrorMessage } from "./ErrorMessage";
-import { InvalidRequestError, SessionExpiredError } from '@openstax/ts-utils/errors';
+import { InvalidRequestError, SessionExpiredError } from "@openstax/ts-utils/errors";
 
 const ErrorComponent = ({ doThrow, setShowError, error: error, errorMessage }: {
   doThrow: boolean;
@@ -84,7 +84,7 @@ export const Fallback_SpecialError = () => {
     renderFallback
     errorFallbacks={{
       ...defaultErrorFallbacks,
-      [InvalidRequestError.TYPE]: <h2>Custom fallback matching on InvalidRequestError</h2>
+      InvalidRequestError: <h2>Custom fallback matching on InvalidRequestError</h2>
     }}
   >
     <ErrorComponent
