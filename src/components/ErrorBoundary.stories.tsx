@@ -1,7 +1,7 @@
 import React from "react";
-import { ErrorBoundary, defaultErrorFallbacks } from "./ErrorBoundary";
+import { ErrorBoundary } from "./ErrorBoundary";
 import { ErrorMessage } from "./ErrorMessage";
-import { InvalidRequestError, SessionExpiredError } from "@openstax/ts-utils/errors";
+import { UnauthorizedError, SessionExpiredError } from "@openstax/ts-utils/errors";
 
 const ErrorComponent = ({ doThrow, setShowError, error: error, errorMessage }: {
   doThrow: boolean;
@@ -82,10 +82,6 @@ export const Fallback_SpecialError = () => {
 
   return <ErrorBoundary
     renderFallback
-    errorFallbacks={{
-      ...defaultErrorFallbacks,
-      InvalidRequestError: <h2>Custom fallback matching on InvalidRequestError</h2>
-    }}
   >
     <ErrorComponent
       doThrow={showError1}
@@ -95,7 +91,7 @@ export const Fallback_SpecialError = () => {
     <ErrorComponent
       doThrow={showError2}
       setShowError={setShowError2}
-      error={new InvalidRequestError}
+      error={new UnauthorizedError}
     />
     <button onClick={() => { setShowError1(true) }}>Throw SessionExpiredError</button>
     <br />
@@ -103,6 +99,6 @@ export const Fallback_SpecialError = () => {
       throw new SessionExpiredError();
     }}>Throw Async SessionExpiredError</button>
     <br />
-    <button onClick={() => { setShowError2(true) }}>Throw InvalidRequestError</button>
+    <button onClick={() => { setShowError2(true) }}>Throw UnauthorizedError</button>
   </ErrorBoundary>
 };
