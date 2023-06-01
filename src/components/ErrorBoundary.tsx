@@ -16,6 +16,7 @@ export const defaultErrorFallbacks = {
 };
 
 export const getTypeFromError = (error: Error | PromiseRejectionEvent['reason']) => {
+  if (!error) { return undefined };
   const { TYPE, name } = error.constructor;
   return TYPE && typeof TYPE === 'string' ? TYPE : name;
 };
@@ -65,7 +66,10 @@ export const ErrorBoundary = ({
 
     const handleRejection = (e: PromiseRejectionEvent) => {
       setError({
-        error: { name: e.type, message: e.reason.toString(), },
+        error: {
+          name: e.type,
+          message: e.reason?.toString(),
+        },
         type: getTypeFromError(e.reason),
       });
     };

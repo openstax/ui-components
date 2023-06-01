@@ -171,6 +171,42 @@ describe('ErrorBoundary', () => {
 
       expect(mockWindow.removeEventListener).not.toHaveBeenCalled();
     });
+
+    it('does not crash on undefined reasons', async () => {
+      const callbacks: Record<string, ({}) => void> = {};
+
+      const mockWindow = {
+        addEventListener: jest.fn().mockImplementation(
+          (event, callback) => callbacks[event] = callback
+        ),
+        removeEventListener: jest.fn().mockImplementation(
+          (event: string) => delete callbacks[event],
+        )
+      };
+
+      let render: ReactTestRenderer | undefined;
+      act(() => {
+        render = renderer.create(
+          <ErrorBoundary renderFallback windowImpl={mockWindow}>
+            Content
+          </ErrorBoundary>
+        );
+      });
+
+      expect(mockWindow.addEventListener).toHaveBeenCalled();
+
+      act(() => {
+        callbacks.unhandledrejection({});
+      });
+
+      expect(render?.toJSON()).toMatchSnapshot();
+
+      act(() => {
+        render?.unmount();
+      });
+
+      expect(mockWindow.removeEventListener).toHaveBeenCalled();
+    });
   });
 
   it('inits Sentry', () => {
