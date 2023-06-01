@@ -8,7 +8,7 @@ import { SentryError } from '../types';
 const Error = ({ children, ...props }: React.PropsWithChildren<ErrorPropTypes>) =>
   <ErrorComponent data-testid='error-fallback' {...props}>{children}</ErrorComponent>;
 
-export const defaultErrorFallbacks = {
+const defaultErrorFallbacks = {
   'generic': <Error data-testid='error-fallback' />,
   'SessionExpiredError': <Error heading='Your session has expired'>
     Please refresh your browser and try again. If this doesn't solve the problem, visit our <a href="https://openstax.secure.force.com/help" target="_blank">Support Center</a>.
@@ -33,7 +33,6 @@ export const ErrorBoundary = ({
   windowImpl = window,
   sentryDsn,
   sentryInit,
-  errorFallbacks = defaultErrorFallbacks,
   ...props
 }: ErrorBoundaryProps & {
   renderFallback?: boolean;
@@ -44,6 +43,7 @@ export const ErrorBoundary = ({
   errorFallbacks?: { [_: string]: JSX.Element }
 }) => {
   const [error, setError] = React.useState<SentryError & { type?: string } | null>(null);
+  const errorFallbacks = { ...defaultErrorFallbacks, ...props.errorFallbacks };
   const typedFallback = error?.type ? errorFallbacks[error.type] : undefined;
 
   // Optionally re-render with the children so they can display inline errors with <ErrorMessage />
