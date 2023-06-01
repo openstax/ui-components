@@ -173,7 +173,7 @@ describe('ErrorBoundary', () => {
     });
 
     it('does not crash on undefined reasons', async () => {
-      const callbacks: Record<string, ({}) => void> = {};
+      const callbacks: Record<string, (_: unknown) => void> = {};
 
       const mockWindow = {
         addEventListener: jest.fn().mockImplementation(
