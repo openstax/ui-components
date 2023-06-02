@@ -1,13 +1,13 @@
 import renderer, { ReactTestRenderer, act } from 'react-test-renderer';
-import { ErrorBoundary } from './ErrorBoundary';
+import { ErrorBoundary, getTypeFromError } from './ErrorBoundary';
 import sentryTestkit from 'sentry-testkit';
 import * as Sentry from '@sentry/react';
 import { findByTestId } from '../test/utils';
+import { SessionExpiredError } from '@openstax/ts-utils/errors';
 
 const { testkit, sentryTransport } = sentryTestkit();
 
 const ErrorComponent = () => { throw new Error('Test Error') };
-
 
 describe('ErrorBoundary', () => {
   beforeEach(() => {
@@ -67,6 +67,43 @@ describe('ErrorBoundary', () => {
 
     spy.mockRestore();
   });
+
+  it('can override fallback components for specific errors', () => {
+    const spy = jest.spyOn(console, 'error')
+    spy.mockImplementation(() => undefined);
+
+    const SessionExpiredComponent = () => {
+      throw new SessionExpiredError();
+    };
+
+    const tree = renderer.create(
+      <ErrorBoundary
+        renderFallback
+        errorFallbacks={{
+          'SessionExpiredError': <>You are signed out</>,
+        }}
+        >
+        <SessionExpiredComponent />
+      </ErrorBoundary>
+    ).toJSON();
+
+    expect(tree).toMatchInlineSnapshot(`"You are signed out"`);
+
+    spy.mockRestore();
+  });
+
+  describe('getTypeFromError', () => {
+    it('returns name if the constuctor does not contain TYPE ', () => {
+      class MyError extends Error {
+        constructor() {
+          super();
+          Object.setPrototypeOf(this, MyError.prototype);
+        }
+      }
+
+      expect(getTypeFromError(new MyError())).toEqual('MyError');
+    });
+  })
 
   describe('unhandled rejections', () => {
     it('are captured', async () => {
@@ -133,6 +170,42 @@ describe('ErrorBoundary', () => {
       });
 
       expect(mockWindow.removeEventListener).not.toHaveBeenCalled();
+    });
+
+    it('does not crash on undefined reasons', async () => {
+      const callbacks: Record<string, (_: unknown) => void> = {};
+
+      const mockWindow = {
+        addEventListener: jest.fn().mockImplementation(
+          (event, callback) => callbacks[event] = callback
+        ),
+        removeEventListener: jest.fn().mockImplementation(
+          (event: string) => delete callbacks[event],
+        )
+      };
+
+      let render: ReactTestRenderer | undefined;
+      act(() => {
+        render = renderer.create(
+          <ErrorBoundary renderFallback windowImpl={mockWindow}>
+            Content
+          </ErrorBoundary>
+        );
+      });
+
+      expect(mockWindow.addEventListener).toHaveBeenCalled();
+
+      act(() => {
+        callbacks.unhandledrejection({});
+      });
+
+      expect(render?.toJSON()).toMatchSnapshot();
+
+      act(() => {
+        render?.unmount();
+      });
+
+      expect(mockWindow.removeEventListener).toHaveBeenCalled();
     });
   });
 

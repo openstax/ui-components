@@ -1,16 +1,21 @@
 import React from "react";
 import { ErrorBoundary } from "./ErrorBoundary";
 import { ErrorMessage } from "./ErrorMessage";
+import { UnauthorizedError, SessionExpiredError } from "@openstax/ts-utils/errors";
 
-const ErrorComponent = ({ doThrow, setShowError }: {
+const ErrorComponent = ({ doThrow, setShowError, error: error, errorMessage }: {
   doThrow: boolean;
-  setShowError: React.Dispatch<boolean>
+  setShowError: React.Dispatch<boolean>;
+  error?: Error;
+  errorMessage?: string;
 }) => {
 
   React.useEffect(() => {
     if (doThrow) {
       setShowError(false);
-      throw new Error('Test Error');
+      throw(
+        error instanceof Error ? error : new Error(errorMessage || 'Test Error')
+      );
     }
   }, [doThrow]);
 
@@ -33,7 +38,7 @@ export const InlineMessages = () => {
   </ErrorBoundary>
 };
 
-export const FallbackComponent_Default = () => {
+export const Fallback_GenericError_Default = () => {
   const [showError, setShowError] = React.useState(false);
 
   return <ErrorBoundary renderFallback>
@@ -48,7 +53,7 @@ export const FallbackComponent_Default = () => {
   </ErrorBoundary>
 };
 
-export const FallbackComponent_Custom = () => {
+export const Fallback_GenericError_Custom = () => {
   const [showError, setShowError] = React.useState(false);
 
   return <ErrorBoundary
@@ -68,5 +73,32 @@ export const FallbackComponent_Custom = () => {
     <button onClick={() => {
       Promise.reject( Error('Test Error') )
     }}>Reject Promise</button>
+  </ErrorBoundary>
+};
+
+export const Fallback_SpecialError = () => {
+  const [showError1, setShowError1] = React.useState(false);
+  const [showError2, setShowError2] = React.useState(false);
+
+  return <ErrorBoundary
+    renderFallback
+  >
+    <ErrorComponent
+      doThrow={showError1}
+      setShowError={setShowError1}
+      error={new SessionExpiredError}
+    />
+    <ErrorComponent
+      doThrow={showError2}
+      setShowError={setShowError2}
+      error={new UnauthorizedError}
+    />
+    <button onClick={() => { setShowError1(true) }}>Throw SessionExpiredError</button>
+    <br />
+    <button onClick={async () => {
+      throw new SessionExpiredError();
+    }}>Throw Async SessionExpiredError</button>
+    <br />
+    <button onClick={() => { setShowError2(true) }}>Throw UnauthorizedError</button>
   </ErrorBoundary>
 };
