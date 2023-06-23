@@ -15,10 +15,10 @@ const StyledToastContainer = styled.div`
   gap: 1vh;
 `;
 
-export const ToastContainer = ({ toasts, onDismissToast, inline = false }: {
+export const ToastContainer = ({ toasts, onDismissToast, inline = false, ...props }: {
   toasts: ToastData[], onDismissToast?: ToastData['onDismiss'], inline?: boolean
 }) => {
-  return <StyledToastContainer inline={inline}>
+  return <StyledToastContainer inline={inline} {...props}>
     {toasts.map((toast, index) => <Toast
       key={`toast-${index}`}
       onDismiss={onDismissToast}
