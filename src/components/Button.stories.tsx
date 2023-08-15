@@ -1,4 +1,4 @@
-import { Button, LinkButton } from "./Button";
+import { Button, LinkButton, ButtonLink } from "./Button";
 
 export const Primary = () => <>
   <Button>Primary</Button>
@@ -21,4 +21,8 @@ export const Secondary = () => <>
 export const Link = () => <>
   <LinkButton href='https://openstax.org'>Primary</LinkButton>
   <LinkButton variant='secondary' href='https://openstax.org' target='_blank'>Button</LinkButton>
+</>;
+
+export const Linkish = () => <>
+  <ButtonLink onClick={() => alert('hi')}>press to say hi</ButtonLink>
 </>;

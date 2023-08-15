@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, {css} from "styled-components";
 import { applyButtonVariantStyles, ButtonVariant } from "../theme/buttons";
 
 const StyledButton = styled.button<{ variant: ButtonVariant }>`
@@ -72,3 +72,31 @@ export const Button = (props: ButtonProps | WaitingButtonProps) => {
 
 export const LinkButton = ({ variant = 'primary', ...props}: LinkButtonBase) =>
   <StyledButton {...props} as='a' variant={variant}>{props.children}</StyledButton>
+
+export const linkColor = '#027EB5';
+export const linkHover = '#0064A0';
+export const linkStyle = css`
+  color: ${linkColor};
+  cursor: pointer;
+  text-decoration: none;
+
+  :hover,
+  :focus {
+    text-decoration: underline;
+    color: ${linkHover};
+  }
+`;
+
+export const PlainButton = styled.button`
+  cursor: pointer;
+  border: none;
+  margin: 0;
+  padding: 0;
+  background: none;
+  outline: none;
+`;
+
+// tslint:disable-next-line:variable-name
+export const ButtonLink = styled(PlainButton)`
+  ${linkStyle}
+`;
