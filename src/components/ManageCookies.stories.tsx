@@ -8,7 +8,16 @@ export const WithoutOsano = () => {
   // small delay so that going back and forth from WithOsano works
   React.useEffect(() => setShow(true),[]);
 
-  return show ? <ManageCookiesLink /> : null;
+  return <>
+    <div className="osano-cm-widget">mock osano cookie button</div>
+    {show ? <ManageCookiesLink /> : null}
+
+    <ul>
+      <li>in a list</li>
+      <li>use a function child to provide wrappers that will only be included if the link is shown</li>
+      <ManageCookiesLink>{button => <li>{button}</li>}</ManageCookiesLink>
+    </ul>
+  </>;
 };
 
 const SomeContainer = styled.div`
@@ -29,11 +38,19 @@ export const WithOsano = () => {
   React.useEffect(() => () => { delete (window as any).Osano }, []);
 
   return <>
+    <div className="osano-cm-widget">mock osano cookie button</div>
+
     <ManageCookiesLink />
 
     <SomeContainer>
       if there is some container like a footer or whatever that sets colors, it works
       <ManageCookiesLink />
     </SomeContainer>
+
+    <ul>
+      <li>in a list</li>
+      <li>use a function child to provide wrappers that will only be included if the link is shown</li>
+      <ManageCookiesLink>{button => <li>{button}</li>}</ManageCookiesLink>
+    </ul>
   </>;
 };
