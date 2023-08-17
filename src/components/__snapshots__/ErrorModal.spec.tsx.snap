@@ -2,25 +2,25 @@
 
 exports[`Modal matches snapshot 1`] = `
 <div
-  className="sc-iBkjds cbXHOy"
+  className="sc-papXJ cRBZLs"
 >
   <div
-    className="sc-ftvSup YygFK"
+    className="sc-jqUVSM kHnGYC"
   >
     <div
-      className="sc-gsnTZi liuLzN"
+      className="sc-hKMtZM kOcfSB"
     >
       <header
-        className="sc-dkzDqf gXnWMX"
+        className="sc-eCYdqJ dMqrqF"
       >
         <h1
-          className="sc-hKMtZM gKFAwv"
+          className="sc-jSMfEi bvrHSE"
         >
           Error
         </h1>
         <svg
           aria-hidden="true"
-          className="sc-papXJ iDrmTA"
+          className="sc-kDDrLX drUIle"
           focusable="false"
           height="15px"
           onClick={[MockFunction]}
@@ -51,11 +51,11 @@ exports[`Modal matches snapshot 1`] = `
         </svg>
       </header>
       <div
-        className="sc-jSMfEi cWLUhq"
+        className="sc-iBkjds cDzikx"
         data-testid="error"
       >
         <h3
-          className="sc-eCYdqJ hrmHjt"
+          className="sc-gKXOVf cdoIdG"
         >
           Uh-oh, there's been a glitch
         </h3>
@@ -68,11 +68,11 @@ exports[`Modal matches snapshot 1`] = `
         </a>
         .
         <div
-          className="sc-kDDrLX gFmCSI"
+          className="sc-crXcEl fDJHVG"
         />
       </div>
       <div
-        className="sc-jqUVSM bCBcaQ"
+        className="sc-iqcoie cqUGeK"
       >
         <button
           className="sc-bczRLJ cJphOo"
@@ -84,7 +84,7 @@ exports[`Modal matches snapshot 1`] = `
     </div>
   </div>
   <div
-    className="sc-gKXOVf etxkPo"
+    className="sc-ftvSup fzFYjh"
   />
 </div>
 `;

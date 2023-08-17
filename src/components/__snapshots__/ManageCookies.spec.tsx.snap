@@ -1,0 +1,25 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ManageCookies with osano renders button 1`] = `
+<button
+  className="sc-gsnTZi sc-dkzDqf czjxlp kMkEHE"
+  onClick={[Function]}
+>
+  Manage Cookies
+</button>
+`;
+
+exports[`ManageCookies with osano renders button in wrapper 1`] = `
+<div>
+  <button
+    className="sc-gsnTZi sc-dkzDqf czjxlp kMkEHE"
+    onClick={[Function]}
+  >
+    Manage Cookies
+  </button>
+</div>
+`;
+
+exports[`ManageCookies without osano renders nothing 1`] = `null`;
+
+exports[`ManageCookies without osano renders nothing, even a wrapper 1`] = `null`;
