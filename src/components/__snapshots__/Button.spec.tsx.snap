@@ -40,3 +40,19 @@ exports[`Button renders as a tag variant 1`] = `
   Click Me
 </a>
 `;
+
+exports[`Button renders button that looks like a link 1`] = `
+<button
+  className="sc-gsnTZi sc-dkzDqf czjxlp kMkEHE"
+>
+  Click Me
+</button>
+`;
+
+exports[`Button renders plain button 1`] = `
+<button
+  className="sc-gsnTZi czjxlp"
+>
+  Click Me
+</button>
+`;
