@@ -14,7 +14,7 @@ describe('ManageCookies', () => {
 
     it('renders nothing, even a wrapper', () => {
       const tree = renderer.create(
-        <ManageCookiesLink>{button => <div>{button}</div>}</ManageCookiesLink>
+        <ManageCookiesLink wrapper={button => <div>{button}</div>} />
       ).toJSON();
       expect(tree).toMatchSnapshot();
     });
@@ -45,9 +45,16 @@ describe('ManageCookies', () => {
       expect(tree).toMatchSnapshot();
     });
 
+    it('renders button with content', () => {
+      const tree = renderer.create(
+        <ManageCookiesLink>some content</ManageCookiesLink>
+      ).toJSON();
+      expect(tree).toMatchSnapshot();
+    });
+
     it('renders button in wrapper', () => {
       const tree = renderer.create(
-        <ManageCookiesLink>{button => <div>{button}</div>}</ManageCookiesLink>
+        <ManageCookiesLink wrapper={button => <div>{button}</div>} />
       ).toJSON();
       expect(tree).toMatchSnapshot();
     });

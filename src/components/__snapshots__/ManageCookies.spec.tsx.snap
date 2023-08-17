@@ -20,6 +20,15 @@ exports[`ManageCookies with osano renders button in wrapper 1`] = `
 </div>
 `;
 
+exports[`ManageCookies with osano renders button with content 1`] = `
+<button
+  className="sc-gsnTZi sc-dkzDqf czjxlp kMkEHE"
+  onClick={[Function]}
+>
+  some content
+</button>
+`;
+
 exports[`ManageCookies without osano renders nothing 1`] = `null`;
 
 exports[`ManageCookies without osano renders nothing, even a wrapper 1`] = `null`;
