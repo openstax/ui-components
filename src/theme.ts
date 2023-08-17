@@ -3,6 +3,10 @@ import { palette } from "./theme/palette";
 
 export const colors = {
   palette: palette,
+  link: {
+    color: '#027EB5',
+    hover: '#0064A0',
+  }
 };
 
 export const zIndex = [

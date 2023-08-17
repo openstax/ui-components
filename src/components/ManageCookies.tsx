@@ -2,7 +2,7 @@ import React from 'react';
 import { ButtonLink } from "./Button";
 import { createGlobalStyle } from "styled-components";
 
-const GlobalStyle = createGlobalStyle<{ $whiteColor?: boolean; }>`
+const GlobalStyle = createGlobalStyle`
   .osano-cm-widget { display: none; }
 `
 
