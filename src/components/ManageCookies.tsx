@@ -6,8 +6,8 @@ const GlobalStyle = createGlobalStyle`
   .osano-cm-widget { display: none; }
 `
 
-type ManageCookiesLinkProps = Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'children'> & {
-  children?: (button: React.ReactElement) => React.ReactElement
+type ManageCookiesLinkProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
+  wrapper?: (button: React.ReactElement) => React.ReactElement
 }
 
 // documentation for this at https://docs.osano.com/hiding-the-cookie-widget
@@ -25,12 +25,12 @@ export const ManageCookiesLink = (props: ManageCookiesLinkProps) => {
       osano.cm.showDrawer('osano-cm-dom-info-dialog-open')
       props.onClick?.(e)
     }}
-  >Manage Cookies</ButtonLink>;
+  >{props.children || 'Manage Cookies'}</ButtonLink>;
 
   return <>
     <GlobalStyle />
-    {typeof props.children === 'function'
-      ? props.children(button)
+    {typeof props.wrapper === 'function'
+      ? props.wrapper(button)
       : button
     }
   </>

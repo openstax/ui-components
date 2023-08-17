@@ -15,7 +15,7 @@ export const WithoutOsano = () => {
     <ul>
       <li>in a list</li>
       <li>use a function child to provide wrappers that will only be included if the link is shown</li>
-      <ManageCookiesLink>{button => <li>{button}</li>}</ManageCookiesLink>
+      <ManageCookiesLink wrapper={button => <li>{button}</li>} />
     </ul>
   </>;
 };
@@ -50,7 +50,7 @@ export const WithOsano = () => {
     <ul>
       <li>in a list</li>
       <li>use a function child to provide wrappers that will only be included if the link is shown</li>
-      <ManageCookiesLink>{button => <li>{button}</li>}</ManageCookiesLink>
+      <ManageCookiesLink wrapper={button => <li>{button}</li>} />
     </ul>
   </>;
 };
