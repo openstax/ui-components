@@ -21,7 +21,7 @@ exports[`ErrorBoundary unhandled rejections are captured 1`] = `
   <div
     className="sc-jqUVSM iYpgOz"
   >
-    1f869269d8fe4ee689d08100d763c001
+    someuuid
   </div>
 </div>
 `;
@@ -49,7 +49,7 @@ exports[`ErrorBoundary unhandled rejections does not crash on undefined reasons 
   <div
     className="sc-jqUVSM iYpgOz"
   >
-    1f869269d8fe4ee689d08100d763c001
+    someuuid
   </div>
 </div>
 `;
