@@ -74,8 +74,7 @@ export const ErrorBoundary = ({
           name: e.type,
           message: e.reason?.toString(),
         },
-        type: getTypeFromError(e.reason),
-        eventId: Sentry.lastEventId()
+        type: getTypeFromError(e.reason)
       });
     };
 

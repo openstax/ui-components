@@ -12,7 +12,7 @@ exports[`Error can override text 1`] = `
   </h3>
   Body text
   <div
-    className="sc-jqUVSM iYpgOz"
+    className="sc-jqUVSM iQgvmr"
   />
 </div>
 `;
@@ -36,7 +36,7 @@ exports[`Error matches snapshot 1`] = `
   </a>
   .
   <div
-    className="sc-jqUVSM iYpgOz"
+    className="sc-jqUVSM iQgvmr"
   />
 </div>
 `;

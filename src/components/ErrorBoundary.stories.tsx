@@ -41,7 +41,7 @@ export const InlineMessages = () => {
 export const Fallback_GenericError_Default = () => {
   const [showError, setShowError] = React.useState(false);
 
-  return <ErrorBoundary renderFallback>
+  return <ErrorBoundary renderFallback sentryDsn="https://0@o0.ingest.sentry.io/0">
     <ErrorComponent
       doThrow={showError}
       setShowError={setShowError}

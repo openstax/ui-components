@@ -1,4 +1,5 @@
 import React from "react";
+import * as Sentry from '@sentry/react';
 import { ModalBody, ModalBodyHeading } from "./Modal";
 import styled from "styled-components";
 import { colors } from "../../src/theme";
@@ -11,13 +12,18 @@ export interface ErrorPropTypes {
 }
 
 const EventId = styled.div`
-  font-size: 0.9rem;
+  font-size: 1.4rem;
   color: ${colors.palette.neutralMedium};
-  margin-top: 1.2rem;
+  margin-top: 1.6rem;
 `;
 
 export const Error = ({ heading, children, ...props }: ErrorPropTypes) => {
   const context = React.useContext(ErrorContext);
+  const [lastEventId, setLastEventId] = React.useState<string | undefined>();
+
+  React.useEffect(() => {
+    setLastEventId(Sentry.lastEventId());
+  }, [Sentry.lastEventId()]);
 
   return <ModalBody {...props} data-testid='error'>
     <ModalBodyHeading>{heading ?? `Uh-oh, there's been a glitch`}</ModalBodyHeading>
@@ -25,6 +31,6 @@ export const Error = ({ heading, children, ...props }: ErrorPropTypes) => {
       We're not quite sure what went wrong. Restart your browser. If this doesn't solve
       the problem, visit our <a href="https://openstax.secure.force.com/help" target="_blank">Support Center</a>.
     </>}
-    <EventId>{context?.eventId}</EventId>
+    <EventId>{context?.eventId || lastEventId}</EventId>
   </ModalBody>
 };
