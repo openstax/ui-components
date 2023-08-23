@@ -9,7 +9,7 @@ export const Default = () => {
 
   return <ErrorBoundary sentryDsn="https://0@o0.ingest.sentry.io/0">
     <ErrorModal
-      onModalClose={() => {}}
+      onModalClose={() => undefined}
       show={true}
     />
   </ErrorBoundary>;
