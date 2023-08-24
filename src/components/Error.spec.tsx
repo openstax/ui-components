@@ -21,13 +21,15 @@ describe('Error', () => {
   it('updates lastEventId when Sentry.lastEventId() changes', async () => {
     jest.useFakeTimers();
 
+    const setIntervalSpy = jest.spyOn(global, 'setInterval');
     const sentrySpy = jest.spyOn(Sentry, 'lastEventId');
-    sentrySpy.mockReturnValue('initialEventId');
+    sentrySpy.mockReturnValue(undefined);
 
-    const { getByTestId } = render(<Error heading='test' />);
+    const { getByTestId } = render(<Error />);
 
-    const errorElement = getByTestId('error');
-    expect(errorElement.textContent).toContain('initialEventId');
+    const errorElement = getByTestId('event-id');
+    expect(errorElement.textContent).toBe('');
+    expect(setIntervalSpy).toHaveBeenCalled();
 
     act(() => {
       sentrySpy.mockReturnValue('updatedEventId');

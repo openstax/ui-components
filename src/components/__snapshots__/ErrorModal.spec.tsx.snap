@@ -69,6 +69,7 @@ exports[`Modal matches snapshot 1`] = `
         .
         <div
           className="sc-crXcEl gaTpxy"
+          data-testid="event-id"
         />
       </div>
       <div

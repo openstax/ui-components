@@ -22,7 +22,7 @@ export const Error = ({ heading, children, ...props }: ErrorPropTypes) => {
   const [lastEventId, setLastEventId] = React.useState<string | undefined>(Sentry.lastEventId());
 
   React.useEffect(() => {
-    if (context?.eventId) {
+    if (context?.eventId || lastEventId) {
       return;
     }
 
@@ -42,6 +42,6 @@ export const Error = ({ heading, children, ...props }: ErrorPropTypes) => {
       We're not quite sure what went wrong. Restart your browser. If this doesn't solve
       the problem, visit our <a href="https://openstax.secure.force.com/help" target="_blank">Support Center</a>.
     </>}
-    <EventId>{context?.eventId || lastEventId}</EventId>
+    <EventId data-testid='event-id'>{context?.eventId || lastEventId}</EventId>
   </ModalBody>
 };

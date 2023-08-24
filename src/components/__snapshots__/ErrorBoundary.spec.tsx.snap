@@ -20,6 +20,7 @@ exports[`ErrorBoundary unhandled rejections are captured 1`] = `
   .
   <div
     className="sc-jqUVSM iQgvmr"
+    data-testid="event-id"
   >
     someuuid
   </div>
@@ -48,6 +49,7 @@ exports[`ErrorBoundary unhandled rejections does not crash on undefined reasons 
   .
   <div
     className="sc-jqUVSM iQgvmr"
+    data-testid="event-id"
   >
     someuuid
   </div>
