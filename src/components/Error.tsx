@@ -19,11 +19,22 @@ const EventId = styled.div`
 
 export const Error = ({ heading, children, ...props }: ErrorPropTypes) => {
   const context = React.useContext(ErrorContext);
-  const [lastEventId, setLastEventId] = React.useState<string | undefined>();
+  const [lastEventId, setLastEventId] = React.useState<string | undefined>(Sentry.lastEventId());
 
   React.useEffect(() => {
-    setLastEventId(Sentry.lastEventId());
-  }, [Sentry.lastEventId()]);
+    if (context?.eventId) {
+      return;
+    }
+
+    const intervalId = setInterval(() => {
+      const currentEventId = Sentry.lastEventId();
+      if (lastEventId !== currentEventId) {
+        setLastEventId(currentEventId);
+      }
+    }, 100);
+
+    return () => clearInterval(intervalId);
+  }, [lastEventId, context?.eventId]);
 
   return <ModalBody {...props} data-testid='error'>
     <ModalBodyHeading>{heading ?? `Uh-oh, there's been a glitch`}</ModalBodyHeading>
