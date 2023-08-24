@@ -1,0 +1,1 @@
+import{B as a}from"./Button.f9ee9fd3.js";import{M as s,E as n,r as t}from"./Error.5140769d.js";import{j as e,a as r}from"./index.4ef26d68.js";const m=o=>e(s,{...o,variant:"error",heading:"Error",children:[r(n,{}),r(t,{children:r(a,{onClick:o.onModalClose,children:"OK"})})]});export{m as E};
