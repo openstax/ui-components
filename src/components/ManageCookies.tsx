@@ -7,6 +7,7 @@ const GlobalStyle = createGlobalStyle`
 `
 
 type ManageCookiesLinkProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
+  ssr?: boolean;
   wrapper?: (button: React.ReactElement) => React.ReactElement
 }
 
@@ -14,8 +15,14 @@ type ManageCookiesLinkProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
 export const ManageCookiesLink = (props: ManageCookiesLinkProps) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any 
   const osano = typeof window === 'undefined' ? undefined : (window as any).Osano
+  const osanoDisabled = osano === undefined || osano.cm.mode === 'debug';
+  const [show, setShow] = React.useState(!osanoDisabled && props.ssr !== true)
 
-  if (osano === undefined || osano.cm.mode === 'debug') {
+  React.useEffect(() => {
+    setShow(!osanoDisabled);
+  }, [setShow]);
+
+  if (!show) {
     return null;
   }
 
