@@ -1,6 +1,6 @@
 import { PropsWithChildren } from "react";
 import { colors } from "../theme";
-import styled from "styled-components";
+import styled from "styled-components/macro";
 import { InputHTMLAttributes } from "react";
 
 type CheckboxVariant = keyof typeof checkboxVariants;

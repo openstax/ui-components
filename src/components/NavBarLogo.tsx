@@ -1,5 +1,5 @@
 import theme from "../../src/theme";
-import styled, { css } from "styled-components";
+import styled, { css } from "styled-components/macro";
 import { navLogoDesktopHeight, navLogoMobileHeight } from "../../src/constants";
 
 

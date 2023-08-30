@@ -1,4 +1,4 @@
-import { css } from "styled-components";
+import { css } from "styled-components/macro";
 import { palette } from "./palette";
 
 export type ButtonVariant = keyof typeof buttonStyleSets;

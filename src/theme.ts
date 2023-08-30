@@ -1,4 +1,4 @@
-import { css, FlattenSimpleInterpolation } from "styled-components";
+import { css, FlattenSimpleInterpolation } from "styled-components/macro";
 import { palette } from "./theme/palette";
 
 export const colors = {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { ButtonLink } from "./Button";
-import { createGlobalStyle } from "styled-components";
+import { createGlobalStyle } from "styled-components/macro";
 
 const GlobalStyle = createGlobalStyle`
   .osano-cm-widget { display: none; }

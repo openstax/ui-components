@@ -1,6 +1,6 @@
 import React from "react";
 import { ModalBody, ModalBodyHeading } from "./Modal";
-import styled from "styled-components";
+import styled from "styled-components/macro";
 import { colors } from "../../src/theme";
 import { ErrorContext } from "../contexts";
 

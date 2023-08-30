@@ -1,5 +1,5 @@
 import { colors, zIndex } from "../../src/theme";
-import styled, { css } from "styled-components";
+import styled, { css } from "styled-components/macro";
 
 const Times = (props: React.HTMLAttributes<SVGElement>) => (
   <svg width='15px' height='15px' viewBox='0 0 15 15' version='1.1' {...props}>

@@ -1,6 +1,6 @@
 import { GlobalProvider } from "@ladle/react";
 import { useEffect } from "react";
-import styled from "styled-components";
+import styled from "styled-components/macro";
 
 const Wrapper = styled.div`
   *, ::before, ::after {

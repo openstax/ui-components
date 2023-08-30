@@ -1,4 +1,4 @@
-import styled, {css} from "styled-components";
+import styled, {css} from "styled-components/macro";
 import theme from '../../src/theme';
 import { applyButtonVariantStyles, ButtonVariant } from "../theme/buttons";
 
