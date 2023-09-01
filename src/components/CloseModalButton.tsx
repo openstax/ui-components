@@ -2,7 +2,7 @@ import styled, { css } from "styled-components";
 import { Times } from "./svgs/Times";
 import { colors } from "../theme";
 
-export const CloseModalButton = styled(({ variant, ...props }) => (
+export const CloseModalButton = styled(({variant: undefined, ...props}) => (
   <button {...props} type='button' aria-label='Close'>
     <Times aria-hidden='true' focusable='false' />
   </button>
