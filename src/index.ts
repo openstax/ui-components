@@ -12,5 +12,6 @@ export * from './components/NavBarLogo';
 export * from './components/RiceLogo';
 export * from './components/Text';
 export * from './components/ToastContainer';
+export * from './components/forms';
 export * from './theme';
 export * from './types';
