@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import { FormInputWrapper, FormLabelText, HelpText, InputProps, RequiredIndicator } from "./inputs";
+import { FormInputWrapper, FormLabelText, HelpText, InputProps, RequiredIndicator } from "./inputDecorations";
 import { AbstractFormData } from "../controlled/hooks";
-import { partitionSequence } from "@openstax/ts-utils/misc/partitionSequence";
+import { partitionSequence } from "@openstax/ts-utils/misc/partitionSequence.js";
 
 /*
  * input element

@@ -1,8 +1,8 @@
 import React from 'react';
-import { FetchState } from "@openstax/ts-utils/fetch";
+import { FetchState } from "@openstax/ts-utils/fetch.js";
 import { merge } from "@openstax/ts-utils";
 
-const randomId = () => crypto.getRandomValues(new Uint32Array(1))[0].toString(16)
+const randomId = () => window.crypto.getRandomValues(new Uint32Array(1))[0].toString(16)
 
 export type AbstractFormData = Record<string, any>;
 

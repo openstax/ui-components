@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { stateHasError, FetchState } from "@openstax/ts-utils/fetch";
+import { stateHasError, FetchState } from "@openstax/ts-utils/fetch.js";
 
 export * from './inputs';
 
