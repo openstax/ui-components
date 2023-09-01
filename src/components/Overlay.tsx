@@ -2,15 +2,8 @@ import styled from "styled-components";
 import { CloseModalButton } from "./CloseModalButton";
 import { Mask, ModalWrapper } from "./Modal";
 
-const maskMargin = '2rem';
 export const OverlayMask = styled(Mask)`
   background-color: rgba(0, 0, 0, 0.89);
-  top: ${maskMargin};
-  bottom: ${maskMargin};
-  left: ${maskMargin};
-  right: ${maskMargin};
-  height: calc(100% - (${maskMargin} * 2));
-  width: calc(100% - (${maskMargin} * 2));
 `;
 
 const StyledCloseModalButton = styled(CloseModalButton)`
@@ -38,17 +31,19 @@ export const OverlayBody = styled.div`
 
 export const Overlay = ({
   className,
-  onModalClose,
+  onClose,
   children,
   show
 }: React.PropsWithChildren<{
-  onModalClose: () => void; className?: string; show?: boolean
+  onClose: () => void;
+  className?: string;
+  show?: boolean;
 }>) => {
   if (!show) { return null; }
   return (
     <OverlayWrapper className={className}>
       <OverlayBody>
-        <StyledCloseModalButton onClick={onModalClose} variant={'inverted-circle'} />
+        <StyledCloseModalButton onClick={onClose} variant={'inverted-circle'} />
         { children }
         </OverlayBody>
       <OverlayMask />

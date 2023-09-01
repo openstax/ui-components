@@ -1,21 +1,21 @@
 import renderer from 'react-test-renderer';
-import { Modal, ModalBody } from './Modal';
+import { Overlay } from './Overlay';
 
-describe('Modal', () => {
+describe('Overlay', () => {
   it('matches snapshot', () => {
     const tree = renderer.create(
-      <Modal onModalClose={jest.fn()} show={true} heading='Heading'>
-        <ModalBody>Modal Body</ModalBody>
-      </Modal>
+      <Overlay onClose={jest.fn()} show={true}>
+        Inner content
+      </Overlay>
     ).toJSON();
     expect(tree).toMatchSnapshot();
   });
 
   it('hides', () => {
     const tree = renderer.create(
-      <Modal onModalClose={jest.fn()} show={false} heading='Heading'>
-        <ModalBody>Modal Body</ModalBody>
-      </Modal>
+      <Overlay onClose={jest.fn()} show={false}>
+        Inner content
+      </Overlay>
     ).toJSON();
     expect(tree).toBeNull();
   });
