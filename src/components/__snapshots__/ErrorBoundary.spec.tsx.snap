@@ -2,11 +2,11 @@
 
 exports[`ErrorBoundary unhandled rejections are captured 1`] = `
 <div
-  className="sc-eCYdqJ GurhM"
+  className="sc-jSMfEi cWLUhq"
   data-testid="error"
 >
   <h3
-    className="sc-hKMtZM fYUfXw"
+    className="sc-eCYdqJ hrmHjt"
   >
     Uh-oh, there's been a glitch
   </h3>
@@ -28,11 +28,11 @@ exports[`ErrorBoundary unhandled rejections can be disabled 1`] = `"Content"`;
 
 exports[`ErrorBoundary unhandled rejections does not crash on undefined reasons 1`] = `
 <div
-  className="sc-eCYdqJ GurhM"
+  className="sc-jSMfEi cWLUhq"
   data-testid="error"
 >
   <h3
-    className="sc-hKMtZM fYUfXw"
+    className="sc-eCYdqJ hrmHjt"
   >
     Uh-oh, there's been a glitch
   </h3>
