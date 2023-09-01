@@ -157,8 +157,6 @@ export const Select = ({
  */
 type CheckboxProps = React.ComponentPropsWithoutRef<'input'> & InputProps & {
   onChangeValue?: (value: boolean | undefined) => void;
-  onDisabled?: () => void;
-  onEnabled?: (previousValue: boolean | undefined) => void;
   wrapperProps?: React.ComponentPropsWithoutRef<'label'>;
 };
 const CheckboxLine = styled.div`
@@ -167,30 +165,12 @@ const CheckboxLine = styled.div`
   align-items: center;
 `;
 export const Checkbox = ({
-  onDisabled,
-  onEnabled,
   label,
   help,
   wrapperProps,
   onChangeValue,
   ...props
 }: CheckboxProps) => {
-  const disabledRef = React.useRef<boolean | undefined>(props.disabled);
-  const valueWhenDisabled = React.useRef<boolean | undefined>(props.checked);
-  const {disabled, checked} = props;
-
-  React.useEffect(() => {
-    if (onDisabled && disabled && disabled !== disabledRef.current) {
-      valueWhenDisabled.current = checked;
-      onDisabled();
-    }
-    if (onEnabled && !disabled && disabled !== disabledRef.current) {
-      onEnabled(valueWhenDisabled.current);
-    }
-
-    disabledRef.current = disabled;
-  }, [onDisabled, disabled, checked, onEnabled]);
-
   return <FormInputWrapper {...wrapperProps}>
     <CheckboxLine>
       <input type="checkbox" {...props} onChange={e => {
