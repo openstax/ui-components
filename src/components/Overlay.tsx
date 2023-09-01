@@ -6,7 +6,7 @@ export const OverlayMask = styled(Mask)`
   background-color: rgba(0, 0, 0, 0.89);
 `;
 
-const StyledCloseModalButton = styled(CloseModalButton)`
+export const OverlayCloseButton = styled(CloseModalButton)`
   height: 4rem;
   width: 4rem;
   position: absolute;
@@ -43,7 +43,7 @@ export const Overlay = ({
   return (
     <OverlayWrapper className={className}>
       <OverlayBody>
-        <StyledCloseModalButton onClick={onClose} variant={'inverted-circle'} />
+        <OverlayCloseButton onClick={onClose} variant={'inverted-circle'} />
         { children }
         </OverlayBody>
       <OverlayMask />
