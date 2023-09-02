@@ -2,7 +2,8 @@ import styled, { css } from "styled-components";
 import { Times } from "./svgs/Times";
 import { colors } from "../theme";
 
-export const CloseModalButton = styled(({variant: undefined, ...props}) => (
+/* eslint-disable-next-line @typescript-eslint/no-unused-vars */
+export const CloseModalButton = styled(({variant, ...props}) => (
   <button {...props} type='button' aria-label='Close'>
     <Times aria-hidden='true' focusable='false' />
   </button>
