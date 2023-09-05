@@ -9,6 +9,7 @@ export * from './components/ManageCookies';
 export * from './components/Modal';
 export * from './components/NavBar';
 export * from './components/NavBarLogo';
+export * from './components/Overlay';
 export * from './components/RiceLogo';
 export * from './components/Text';
 export * from './components/ToastContainer';
