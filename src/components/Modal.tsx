@@ -2,7 +2,7 @@ import { colors, zIndex } from "../../src/theme";
 import styled, { css } from "styled-components";
 import { CloseModalButton } from "./CloseModalButton";
 
-const modalPadding = 3.0;
+const modalPadding = 3;
 
 export const ModalCard = styled.div`
   display: flex;
