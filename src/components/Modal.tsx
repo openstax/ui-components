@@ -4,7 +4,7 @@ import { CloseModalButton } from "./CloseModalButton";
 
 const modalPadding = 3.0;
 
-const Card = styled.div`
+export const ModalCard = styled.div`
   display: flex;
   flex-direction: column;
   margin: auto;
@@ -106,7 +106,7 @@ export const Modal = ({
   return (
     <ModalWrapper className={className}>
       <CardWrapper>
-        <Card>
+        <ModalCard>
           <Header variant={variant}>
             <Heading>
               {heading}
@@ -114,7 +114,7 @@ export const Modal = ({
             <CloseModalButton onClick={onModalClose} variant={variant}/>
           </Header>
           {children}
-        </Card>
+        </ModalCard>
       </CardWrapper>
       <Mask />
     </ModalWrapper>
