@@ -85,7 +85,7 @@ const SortableContext = React.createContext<() => React.MutableRefObject<boolean
   () => {throw new Error('context not provided');}
 );
 
-export const ListItems = (props: React.PropsWithChildren<{}>) => {
+export const ListItems = (props: {children: React.ReactNode}) => {
   const listState = useFormListHelpers();
   const sortableEnabledRef = React.useRef<boolean>();
   const draggingElementRef = React.useRef<string>();

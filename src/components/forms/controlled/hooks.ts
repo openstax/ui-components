@@ -6,7 +6,7 @@ const randomId = () => window.crypto.getRandomValues(new Uint32Array(1))[0].toSt
 
 export type AbstractFormData = Record<string, any>;
 
-type FormStateHelpers<T extends {}> = {
+type FormStateHelpers<T extends AbstractFormData> = {
   data: Partial<T>;
   submit: () => void;
   namespace: string;
@@ -24,7 +24,7 @@ export const FormStateContext = React.createContext<() => FormStateHelpers<Abstr
 
 export const useFormHelpers = () => React.useContext(FormStateContext)();
 
-const makeSetInput = <T extends {}>(setState: React.Dispatch<React.SetStateAction<T>>) => {
+const makeSetInput = <T extends AbstractFormData>(setState: React.Dispatch<React.SetStateAction<T>>) => {
   const mergeFields = (input: Partial<T>) => setState(previous => merge(previous, input) as T);
 
   const setInputField = <F extends keyof T>(fieldName: F) => (value: T[F]) => {
@@ -34,7 +34,7 @@ const makeSetInput = <T extends {}>(setState: React.Dispatch<React.SetStateActio
   return {field: setInputField, fields: setState, merge: mergeFields};
 };
 
-export const useFormState = <T extends {}>(
+export const useFormState = <T extends AbstractFormData>(
   state: FormStateHelpers<T>['state'],
   defaultValue?: Partial<T>,
   onSubmit?: (data: Partial<T>) => void

@@ -17,8 +17,7 @@ const FormElement = styled.form`
     border-bottom: 1px solid #ccc;
   }
 `;
-type FormProps = React.ComponentPropsWithoutRef<'form'> & {
-};
+type FormProps = React.ComponentPropsWithoutRef<'form'>;
 export const Form = ({children, ...props}: FormProps) => <FormElement {...props}>
   {children}
 </FormElement>;
@@ -63,13 +62,11 @@ export const Buttons = (props: ButtonsProps) => <ButtonsElement>
 // submit button
 const SubmitElement = styled.input`
 `;
-type SubmitButtonProps = React.ComponentPropsWithoutRef<'input'> & {
-};
+type SubmitButtonProps = React.ComponentPropsWithoutRef<'input'>;
 export const Submit = ({...props}: SubmitButtonProps) => <SubmitElement type="submit" value="Submit" {...props} />;
 
 // cancel button
 const CancelElement = styled.button`
 `;
-type CancelButtonProps = React.ComponentPropsWithoutRef<'button'> & {
-};
+type CancelButtonProps = React.ComponentPropsWithoutRef<'button'>;
 export const Cancel = ({...props}: CancelButtonProps) => <CancelElement {...props} />;

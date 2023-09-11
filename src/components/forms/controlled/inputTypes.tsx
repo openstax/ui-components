@@ -29,9 +29,7 @@ const useEmptyDisabledValue = (
   }, [disabled, emptyDisabledValue, value]);
 };
 
-type TextInputProps = {
-};
-export const TextInput = (props: MakeControlled<typeof Uncontrolled.TextInput> & TextInputProps) => {
+export const TextInput = (props: MakeControlled<typeof Uncontrolled.TextInput>) => {
   const {data, namespace, setInput} = useFormHelpers();
 
   const onChangeValue = (value: string | undefined) => {
@@ -50,9 +48,7 @@ export const TextInput = (props: MakeControlled<typeof Uncontrolled.TextInput> &
   />;
 };
 
-type TextAreaProps = {
-};
-export const TextArea = (props: MakeControlled<typeof Uncontrolled.TextArea> & TextAreaProps) => {
+export const TextArea = (props: MakeControlled<typeof Uncontrolled.TextArea>) => {
   const {data, namespace, setInput} = useFormHelpers();
 
   const onChangeValue = (value: string | undefined) => {
@@ -71,9 +67,7 @@ export const TextArea = (props: MakeControlled<typeof Uncontrolled.TextArea> & T
   />;
 };
 
-type CheckboxProps = {
-};
-export const Checkbox = (props: MakeControlled<typeof Uncontrolled.Checkbox> & CheckboxProps) => {
+export const Checkbox = (props: MakeControlled<typeof Uncontrolled.Checkbox>) => {
   const {data, namespace, setInput} = useFormHelpers();
 
   const onChangeValue = (value: boolean | undefined) => {
@@ -140,9 +134,7 @@ export const Select = (props: MakeControlled<typeof Uncontrolled.Select> & Selec
   />;
 };
 
-type FileProps = {
-};
-export const File = (props: MakeControlled<typeof Uncontrolled.File> & FileProps) => {
+export const File = (props: MakeControlled<typeof Uncontrolled.File>) => {
   const {data, namespace, setInput} = useFormHelpers();
 
   const onChangeValue = (value: string | undefined) => {
