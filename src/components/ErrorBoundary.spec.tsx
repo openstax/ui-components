@@ -16,6 +16,10 @@ describe('ErrorBoundary', () => {
       transport: sentryTransport,
     });
 
+    jest.spyOn(Sentry, 'lastEventId').mockReturnValue('someuuid');
+  });
+
+  afterEach(() => {
     jest.resetAllMocks();
   });
 
