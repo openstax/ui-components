@@ -74,7 +74,7 @@ export const ErrorBoundary = ({
           name: e.type,
           message: e.reason?.toString(),
         },
-        type: getTypeFromError(e.reason),
+        type: getTypeFromError(e.reason)
       });
     };
 

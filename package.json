@@ -33,6 +33,7 @@
     "@ladle/react": "^2.1.2",
     "@openstax/ts-utils": "^1.1.42",
     "@playwright/test": "^1.25.0",
+    "@testing-library/react": "12",
     "@types/jest": "^28.1.4",
     "@types/node": "^18.7.5",
     "@types/node-fetch": "^2.6.2",
