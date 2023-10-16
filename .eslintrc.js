@@ -19,8 +19,10 @@ module.exports = {
     "import"
   ],
   "rules": {
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-unused-vars": ["error", { "ignoreRestSiblings": true }],
+
     "no-unused-vars": "off",
-    "@typescript-eslint/no-unused-vars": ["error"],
     "import/no-default-export": "error"
   }
 }
