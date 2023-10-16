@@ -28,7 +28,8 @@ describe('useSetAppError', () => {
       <ErrorContext.Provider value={{ error: null, setError: setErrorMock }}>
         <ErrorComponent />
       </ErrorContext.Provider>
-    )
+    );
+
     expect(testkit.reports()).toHaveLength(1);
     expect(setErrorMock).toHaveBeenCalledWith({
       error: new Error('test'),
@@ -41,11 +42,12 @@ describe('useSetAppError', () => {
       useSetAppError()(null);
       return null;
     }
+
     render(
       <ErrorContext.Provider value={{ error: null, setError: setErrorMock }}>
         <ResetComponent />
       </ErrorContext.Provider>
-    )
+    );
 
     expect(testkit.reports()).toHaveLength(0);
     expect(setErrorMock).toHaveBeenCalledWith(null);
