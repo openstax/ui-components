@@ -9,14 +9,12 @@ export const useSetAppError = () => {
   const { setError } = React.useContext(ErrorContext);
 
   return React.useCallback((error: Error | null) => {
-    if (error) {
-      Sentry.captureException(error);
-    }
     setError(
       // ErrorBoundary expects a wrapped SentryError
       error ? {
         error: error,
         type: getTypeFromError(error),
+        eventId: Sentry.captureException(error)
       } : null
     );
   }, [setError])

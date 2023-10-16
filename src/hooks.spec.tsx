@@ -33,7 +33,8 @@ describe('useSetAppError', () => {
     expect(testkit.reports()).toHaveLength(1);
     expect(setErrorMock).toHaveBeenCalledWith({
       error: new Error('test'),
-      type: 'Error'
+      type: 'Error',
+      eventId: testkit.reports()[0].originalReport.event_id
      });
   });
 
