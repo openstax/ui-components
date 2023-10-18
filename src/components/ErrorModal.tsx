@@ -2,7 +2,7 @@ import { Button } from "./Button";
 import { Modal, ModalFooter, ModalPropTypes } from "./Modal";
 import { Error } from "./Error";
 
-type ErrorModalProps = React.PropsWithChildren<Omit<ModalPropTypes, 'variant'>>;
+type ErrorModalProps = React.PropsWithChildren<Omit<ModalPropTypes, 'heading' | 'variant'> & { heading?: string }>;
 
 export const ErrorModal = (props: ErrorModalProps) => {
   const { children, heading, ...modalProps } = props;
