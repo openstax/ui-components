@@ -4,7 +4,6 @@ import { Error as ErrorComponent, ErrorPropTypes } from './Error';
 import type { ErrorBoundaryProps } from '@sentry/react/types/errorboundary';
 import { ErrorContext } from '../contexts';
 import { SentryError } from '../types';
-import { getTypeFromError } from '../utils';
 
 const Error = ({ children, ...props }: React.PropsWithChildren<ErrorPropTypes>) =>
   <ErrorComponent data-testid='error-fallback' {...props}>{children}</ErrorComponent>;
@@ -20,20 +19,30 @@ const defaultErrorFallbacks = {
   </Error>
 };
 
+export const getTypeFromError = (error: Error | PromiseRejectionEvent['reason']) => {
+  if (!error) { return undefined; }
+  const { TYPE, name } = error.constructor;
+  return TYPE && typeof TYPE === 'string' ? TYPE : name;
+};
+
 export const ErrorBoundary = ({
   children,
   renderFallback,
   fallback = defaultErrorFallbacks['generic'],
+  catchUnhandledRejections = true,
+  windowImpl = window,
   sentryDsn,
   sentryInit,
   ...props
 }: ErrorBoundaryProps & {
   renderFallback?: boolean;
+  catchUnhandledRejections?: boolean;
+  windowImpl?: Window | Pick<Window, 'addEventListener' | 'removeEventListener'>;
   sentryDsn?: string;
   sentryInit?: Sentry.BrowserOptions;
   errorFallbacks?: { [_: string]: JSX.Element }
 }) => {
-  const [error, setError] = React.useState<SentryError | null>(null);
+  const [error, setError] = React.useState<SentryError & { type?: string } | null>(null);
   const errorFallbacks = { ...defaultErrorFallbacks, ...props.errorFallbacks };
   const typedFallback = error?.type ? errorFallbacks[error.type] : undefined;
 
@@ -54,10 +63,28 @@ export const ErrorBoundary = ({
     });
   }, []);
 
-  // There are two references to the render element here because the Sentry fallback (and
-  // onError) are not used for unhandledrejection events. To support those events, we provide
-  // setError in a context to reuse the same error state and render logic.
-  return <ErrorContext.Provider value={{ error, setError }}>
+  React.useEffect(() => {
+    if (!catchUnhandledRejections) {
+      return;
+    }
+
+    const handleRejection = (e: PromiseRejectionEvent) => {
+      setError({
+        error: {
+          name: e.type,
+          message: e.reason?.toString(),
+        },
+        type: getTypeFromError(e.reason)
+      });
+    };
+
+    windowImpl.addEventListener('unhandledrejection', handleRejection);
+    return () => windowImpl.removeEventListener('unhandledrejection', handleRejection);
+  }, []);
+  // There are two references to the render element here because the Sentry fallback (and onError)
+  // are not used for unhandledrejection events. To support those events, we add a listener and
+  // reuse the same error state and rendering logic.
+  return <ErrorContext.Provider value={error}>
     <Sentry.ErrorBoundary
       fallback={renderElement}
       onError={(error, componentStack, eventId) => {

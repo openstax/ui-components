@@ -5,10 +5,10 @@ export const ErrorMessage = ({ message, showEventId = true }: {
   message?: string;
   showEventId?: boolean;
 }) => {
-  const { error } = React.useContext(ErrorContext);
+  const context = React.useContext(ErrorContext);
 
   return <>
-    {message || error?.error?.message }
-    {showEventId ? <div>{error?.eventId}</div> : null}
+    {message || context?.error.message}
+    {showEventId ? <div>{context?.eventId}</div> : null}
   </>
 };

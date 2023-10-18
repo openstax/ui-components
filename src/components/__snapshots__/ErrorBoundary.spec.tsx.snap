@@ -1,0 +1,57 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ErrorBoundary unhandled rejections are captured 1`] = `
+<div
+  className="sc-jSMfEi cWLUhq"
+  data-testid="error"
+>
+  <h3
+    className="sc-eCYdqJ hrmHjt"
+  >
+    Uh-oh, there's been a glitch
+  </h3>
+  We're not quite sure what went wrong. Restart your browser. If this doesn't solve the problem, visit our 
+  <a
+    href="https://openstax.secure.force.com/help"
+    target="_blank"
+  >
+    Support Center
+  </a>
+  .
+  <div
+    className="sc-jqUVSM iQgvmr"
+    data-testid="event-id"
+  >
+    someuuid
+  </div>
+</div>
+`;
+
+exports[`ErrorBoundary unhandled rejections can be disabled 1`] = `"Content"`;
+
+exports[`ErrorBoundary unhandled rejections does not crash on undefined reasons 1`] = `
+<div
+  className="sc-jSMfEi cWLUhq"
+  data-testid="error"
+>
+  <h3
+    className="sc-eCYdqJ hrmHjt"
+  >
+    Uh-oh, there's been a glitch
+  </h3>
+  We're not quite sure what went wrong. Restart your browser. If this doesn't solve the problem, visit our 
+  <a
+    href="https://openstax.secure.force.com/help"
+    target="_blank"
+  >
+    Support Center
+  </a>
+  .
+  <div
+    className="sc-jqUVSM iQgvmr"
+    data-testid="event-id"
+  >
+    someuuid
+  </div>
+</div>
+`;
