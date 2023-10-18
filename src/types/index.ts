@@ -13,4 +13,5 @@ export type SentryError = {
   error: Error;
   componentStack?: string;
   eventId?: string;
+  type?: string;
 };

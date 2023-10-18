@@ -14,5 +14,7 @@ export * from './components/RiceLogo';
 export * from './components/Text';
 export * from './components/ToastContainer';
 export * as Forms from './components/forms';
+export * from './contexts';
+export * from './hooks';
 export * from './theme';
 export * from './types';
