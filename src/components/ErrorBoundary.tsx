@@ -34,7 +34,7 @@ export const ErrorBoundary = ({
   errorFallbacks?: { [_: string]: JSX.Element }
 }) => {
   const [error, setError] = React.useState<SentryError | null>(null);
-  const errorFallbacks = { ...defaultErrorFallbacks, ...props.errorFallbacks };
+  const errorFallbacks: { [_: string]: JSX.Element } = { ...defaultErrorFallbacks, ...props.errorFallbacks };
   const typedFallback = error?.type ? errorFallbacks[error.type] : undefined;
 
   // Optionally re-render with the children so they can display inline errors with <ErrorMessage />
