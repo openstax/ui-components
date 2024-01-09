@@ -1,6 +1,6 @@
 import React, { AnchorHTMLAttributes } from 'react';
-import { ButtonVariant, applyButtonVariantStyles } from '../theme/buttons';
 import styled from 'styled-components';
+import { ButtonVariant, applyButtonVariantStyles } from '../theme/buttons';
 
 const openRotateDeg = 135;
 const closedRotateDeg = -45;
@@ -59,22 +59,24 @@ const StyledDropdownMenuButton = styled.button<{ open: boolean; variant: ButtonV
 `;
 
 const DropdownMenuButton = ({
-    parentRef,
-    buttonId,
+    disabled,
+    id,
     menuId,
-    message,
+    parentRef,
+    text,
     variant,
 }: {
-    parentRef: React.RefObject<HTMLDivElement>;
-    buttonId: string;
+    disabled?: boolean;
+    id: string;
     menuId: string;
-    message: string;
+    parentRef: React.RefObject<HTMLDivElement>;
+    text: string;
     variant: ButtonVariant;
 }) => {
     const [isOpen, setOpen] = React.useState<boolean>(false);
     const toggleMenu = React.useCallback(() => {
-        setOpen(!isOpen);
-    }, [isOpen]);
+        setOpen(!disabled && !isOpen);
+    }, [disabled, isOpen]);
 
     // This is supposed to close it when another opens
     React.useEffect(() => {
@@ -91,43 +93,46 @@ const DropdownMenuButton = ({
 
     return (
         <StyledDropdownMenuButton
-            id={buttonId}
-            type='button'
+            disabled={disabled}
             aria-haspopup='true'
             aria-controls={menuId}
             aria-expanded={isOpen}
+            id={id}
             onClick={toggleMenu}
             open={isOpen}
+            type='button'
             variant={variant}
-        >{message}</StyledDropdownMenuButton>
+        >{text}</StyledDropdownMenuButton>
     );
 }
 
 export type DropdownMenuProps = {
-    buttonId: string;
-    buttonMessage: string;
-    buttonVariant: ButtonVariant;
-    menuId: string;
+    id: string;
+    disabled?: boolean;
+    text: string;
+    variant: ButtonVariant;
 }
 
 export const DropdownMenu = ({
-    buttonId,
-    buttonMessage,
-    buttonVariant,
+    id,
+    disabled,
+    text,
+    variant,
     children,
-    menuId
 }: React.PropsWithChildren<DropdownMenuProps>) => {
+    const buttonId = `${id}-button`;
     const ref = React.useRef<HTMLDivElement>(null);
 
     return <div className='navmenu' ref={ref}>
         <DropdownMenuButton
+            disabled={disabled}
+            id={buttonId}
+            menuId={id}
             parentRef={ref}
-            buttonId={buttonId}
-            menuId={menuId}
-            message={buttonMessage}
-            variant={buttonVariant}
+            text={text}
+            variant={variant}
         />
-        <div id={menuId} role='menu' aria-labelledby={buttonId}>
+        <div id={id} role='menu' aria-labelledby={buttonId}>
             {children}
         </div>
     </div>;

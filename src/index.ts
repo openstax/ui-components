@@ -1,5 +1,6 @@
 export * from './components/Button';
 export * from './components/Checkbox';
+export * from './components/DropdownMenu';
 export * from './components/Error';
 export * from './components/ErrorBoundary';
 export * from './components/ErrorMessage';
