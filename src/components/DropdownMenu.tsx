@@ -2,15 +2,7 @@ import React, { AnchorHTMLAttributes } from 'react';
 import styled from 'styled-components';
 import { ButtonVariant, applyButtonVariantStyles } from '../theme/buttons';
 
-const openRotateDeg = 135;
-const closedRotateDeg = -45;
-
-const openPositioning = `left: calc(50% - 0.5rem);
-    bottom: -0.57rem;`;
-const closedPositioning = `right: 0;
-    top: calc(50% - 0.7rem);`;
-
-const StyledDropdownMenuButton = styled.button<{ open: boolean; variant: ButtonVariant }>`
+const StyledDropdownMenuButton = styled.button<{ variant: ButtonVariant }>`
   ${props => applyButtonVariantStyles(props.variant)}
 
   font-size: 1.6rem;
@@ -22,7 +14,7 @@ const StyledDropdownMenuButton = styled.button<{ open: boolean; variant: ButtonV
   justify-content: center;
   align-items: center;
   height: 4rem;
-  padding: 0 3rem;
+  padding: 0 0.5rem;
   border: 0;
   border-radius: 5px;
   box-shadow: 0px 0.2rem 0.4rem rgba(0, 0, 0, 0.2);
@@ -38,109 +30,140 @@ const StyledDropdownMenuButton = styled.button<{ open: boolean; variant: ButtonV
     opacity: 0.4;
   }
 
-  & + & {
-    margin-left: 1.6rem;
-  }
-
   :after {
-    position: absolute;
-    content: ' ';
-    left: -0.57rem;
-    clip-path: polygon(0 0, 100% 100%, 100% 0);
-    display: block;
-    height: 1rem;
-    width: 1rem;
     background: #fff;
     border: 1px solid #ccc;
-    transform: rotate(${(props) => props.open ? openRotateDeg : closedRotateDeg}deg);
-
-    ${(props) => props.open ? openPositioning : closedPositioning}
+    clip-path: polygon(0 0, 100% 100%, 100% 0);
+    content: ' ';
+    display: block;
+    height: 0.5rem;
+    margin: -0.5rem 0 0 0.5rem;
+    transform: rotate(135deg);
+    width: 0.5rem;
   }
 `;
 
 const DropdownMenuButton = ({
-    disabled,
-    id,
-    menuId,
-    parentRef,
-    text,
-    variant,
+  disabled,
+  id,
+  isOpen,
+  menuId,
+  text,
+  toggleMenu,
+  variant,
 }: {
-    disabled?: boolean;
-    id: string;
-    menuId: string;
-    parentRef: React.RefObject<HTMLDivElement>;
-    text: string;
-    variant: ButtonVariant;
-}) => {
-    const [isOpen, setOpen] = React.useState<boolean>(false);
-    const toggleMenu = React.useCallback(() => {
-        setOpen(!disabled && !isOpen);
-    }, [disabled, isOpen]);
+  disabled?: boolean;
+  id: string;
+  isOpen: boolean;
+  menuId: string;
+  parentRef: React.RefObject<HTMLDivElement>;
+  text: string;
+  toggleMenu: () => void,
+  variant: ButtonVariant;
+}) => (
+  <StyledDropdownMenuButton
+    disabled={disabled}
+    aria-haspopup='true'
+    aria-controls={menuId}
+    aria-expanded={isOpen}
+    id={id}
+    onClick={toggleMenu}
+    type='button'
+    variant={variant}
+  >
+    {text}
+  </StyledDropdownMenuButton>
+);
 
-    // This is supposed to close it when another opens
-    React.useEffect(() => {
-        const outsideClick = (e: MouseEvent) => {
-            if (isOpen && !parentRef.current?.contains(e.target as Node)) {
-                setOpen(false);
-            }
-        };
+export const useDropdownMenu = (options?: { disabled: boolean }) => {
+  const { disabled } = options ?? { disabled: false };
 
-        window.addEventListener('click', outsideClick);
+  const [isOpen, setOpen] = React.useState<boolean>(false);
 
-        return () => window.removeEventListener('click', outsideClick);
-    }, [isOpen, parentRef]);
+  const closeMenu = React.useCallback(() => setOpen(false), []);
 
-    return (
-        <StyledDropdownMenuButton
-            disabled={disabled}
-            aria-haspopup='true'
-            aria-controls={menuId}
-            aria-expanded={isOpen}
-            id={id}
-            onClick={toggleMenu}
-            open={isOpen}
-            type='button'
-            variant={variant}
-        >{text}</StyledDropdownMenuButton>
-    );
-}
+  const toggleMenu = React.useCallback(() => {
+    setOpen(!disabled && !isOpen);
+  }, [disabled, isOpen]);
+
+  return { disabled, closeMenu, isOpen, toggleMenu };
+};
+
+export type DropdownMenuState = ReturnType<typeof useDropdownMenu>;
 
 export type DropdownMenuProps = {
-    id: string;
-    disabled?: boolean;
-    text: string;
-    variant: ButtonVariant;
-}
+  id: string;
+  state: DropdownMenuState;
+  text: string;
+  variant: ButtonVariant;
+};
 
 export const DropdownMenu = ({
-    id,
-    disabled,
-    text,
-    variant,
-    children,
+  id,
+  state,
+  text,
+  variant,
+  children,
 }: React.PropsWithChildren<DropdownMenuProps>) => {
-    const buttonId = `${id}-button`;
-    const ref = React.useRef<HTMLDivElement>(null);
+  const buttonId = `${id}-button`;
 
-    return <div className='navmenu' ref={ref}>
-        <DropdownMenuButton
-            disabled={disabled}
-            id={buttonId}
-            menuId={id}
-            parentRef={ref}
-            text={text}
-            variant={variant}
-        />
-        <div id={id} role='menu' aria-labelledby={buttonId}>
-            {children}
-        </div>
-    </div>;
+  const { disabled, closeMenu, isOpen, toggleMenu } = state;
+
+  const ref = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    // Focus the first child when opened
+    if (isOpen && ref.current) {
+      const firstChild = ref.current.firstElementChild;
+      if (firstChild instanceof HTMLElement) { firstChild.focus(); }
+    }
+
+    // Close the menu when clicking outside
+    const closeOnOutsideClick = (e: MouseEvent) => {
+      if (isOpen && !ref.current?.contains(e.target as Node)) {
+          closeMenu();
+      }
+    };
+
+    window.addEventListener('click', closeOnOutsideClick);
+
+    return () => window.removeEventListener('click', closeOnOutsideClick);
+  }, [isOpen, ref]);
+
+  return <div className='navmenu' ref={ref}>
+    <DropdownMenuButton
+      disabled={disabled}
+      id={buttonId}
+      isOpen={isOpen}
+      menuId={id}
+      parentRef={ref}
+      toggleMenu={toggleMenu}
+      text={text}
+      variant={variant}
+    />
+    <div id={id} role='menu' aria-labelledby={buttonId}>
+      {isOpen ? children : null}
+    </div>
+  </div>;
+};
+
+export type DropdownMenuItemProps = React.PropsWithChildren<AnchorHTMLAttributes<HTMLAnchorElement>> & {
+  state: DropdownMenuState;
 };
 
 export const DropdownMenuItem = ({
-    children,
-    ...aProps
-}: React.PropsWithChildren<AnchorHTMLAttributes<HTMLAnchorElement>>) => (
-  <a role='menuitem' href='#' {...aProps}>{children}</a>
-);
+  children,
+  onClick,
+  state,
+  ...aProps
+}: DropdownMenuItemProps) => {
+  const { closeMenu } = state;
+
+  const handleClick = React.useCallback((event: React.MouseEvent<HTMLAnchorElement>) => {
+    if (onClick) { onClick(event); }
+
+    closeMenu();
+  }, [closeMenu, onClick]);
+
+  return <a role='menuitem' href='#' onClick={handleClick} {...aProps}>{children}</a>;
+};

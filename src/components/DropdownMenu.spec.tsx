@@ -1,17 +1,28 @@
 import renderer from 'react-test-renderer';
-import { DropdownMenu, DropdownMenuItem } from './DropdownMenu';
+import { DropdownMenu, DropdownMenuItem, useDropdownMenu } from './DropdownMenu';
 
 describe('DropdownMenu', () => {
-  it('should render', () => {
-    const tree = renderer.create(
-      <DropdownMenu
-        id='test-menu'
-        text='Test Menu'
-        variant='light'
-      >
-        <DropdownMenuItem onClick={jest.fn()}>Test Menu Item</DropdownMenuItem>
-      </DropdownMenu>
-    ).toJSON();
-    expect(tree).toMatchSnapshot();
+  const TestMenu = () => {
+    const state = useDropdownMenu();
+
+    return <DropdownMenu
+      id='test-menu'
+      state={state}
+      text='Test Menu'
+      variant='light'
+    >
+      <DropdownMenuItem onClick={jest.fn()} state={state}>Test Menu Item</DropdownMenuItem>
+    </DropdownMenu>;
+  };
+
+  it('should render only the button if closed', () => {
+    const component = renderer.create(<TestMenu/>);
+    expect(component.toJSON()).toMatchSnapshot();
+  });
+
+  it('should render the menu if open', () => {
+    const component = renderer.create(<TestMenu/>);
+    component.root.findByProps({ id: 'test-menu-button' }).props.toggleMenu();
+    expect(component.toJSON()).toMatchSnapshot();
   });
 });

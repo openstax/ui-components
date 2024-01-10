@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`DropdownMenu should render 1`] = `
+exports[`DropdownMenu should render only the button if closed 1`] = `
 <div
   className="navmenu"
 >
@@ -8,10 +8,34 @@ exports[`DropdownMenu should render 1`] = `
     aria-controls="test-menu"
     aria-expanded={false}
     aria-haspopup="true"
-    className="sc-bczRLJ fZzamD"
+    className="sc-bczRLJ eJQcq"
+    disabled={false}
     id="test-menu-button"
     onClick={[Function]}
-    open={false}
+    type="button"
+  >
+    Test Menu
+  </button>
+  <div
+    aria-labelledby="test-menu-button"
+    id="test-menu"
+    role="menu"
+  />
+</div>
+`;
+
+exports[`DropdownMenu should render the menu if open 1`] = `
+<div
+  className="navmenu"
+>
+  <button
+    aria-controls="test-menu"
+    aria-expanded={true}
+    aria-haspopup="true"
+    className="sc-bczRLJ eJQcq"
+    disabled={false}
+    id="test-menu-button"
+    onClick={[Function]}
     type="button"
   >
     Test Menu
@@ -23,7 +47,7 @@ exports[`DropdownMenu should render 1`] = `
   >
     <a
       href="#"
-      onClick={[MockFunction]}
+      onClick={[Function]}
       role="menuitem"
     >
       Test Menu Item
