@@ -5,12 +5,11 @@ import { palette } from '../theme/palette';
 
 const StyledDropdownMenu = styled.div`
   font-size: 1.6rem;
-  padding: 0 1rem;
   position: relative;
 `;
 
-const StyledDropdownMenuButton = styled.button<{ variant: ButtonVariant }>`
-  ${props => applyButtonVariantStyles(props.variant)}
+const StyledDropdownMenuButton = styled.button<{ variant: ButtonVariant; width?: string }>`
+  ${(props) => applyButtonVariantStyles(props.variant)}
 
   align-items: center;
   border: 0;
@@ -18,7 +17,7 @@ const StyledDropdownMenuButton = styled.button<{ variant: ButtonVariant }>`
   box-shadow: 0px 0.2rem 0.4rem rgba(0, 0, 0, 0.2);
   display: inline-flex;
   flex-direction: row;
-  height: 4rem;
+  height: 2.5rem;
   justify-content: center;
   line-height: 2rem;
   padding: 0 0.5rem;
@@ -26,6 +25,7 @@ const StyledDropdownMenuButton = styled.button<{ variant: ButtonVariant }>`
   transition: all 0.2s ease-in-out;
   user-select: none;
   white-space: nowrap;
+  ${(props) => props.width ? `width: ${props.width}` : null}
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
 
@@ -50,7 +50,9 @@ const StyledDropdownMenuButton = styled.button<{ variant: ButtonVariant }>`
 `;
 
 const StyledDropdownMenuItemContainer = styled.div`
+  background-color: ${palette.white};
   border: 1px solid ${palette.pale};
+  padding: 0.3rem 0;
   position: fixed;
 `;
 
@@ -58,20 +60,22 @@ const StyledDropdownMenuItem = styled.button`
   align-items: center;
   background-color: ${palette.white};
   border: 0;
-  border-radius: 5px;
-  box-shadow: 0px 0.2rem 0.4rem rgba(0, 0, 0, 0.2);
+  border-radius: 0;
+  box-shadow: none;
   cursor: pointer;
   display: block;
   flex-direction: row;
-  height: 4rem;
+  height: 2.5rem;
   justify-content: center;
   line-height: 2rem;
   margin: 0;
   padding: 0 0.5rem;
+  text-align: left;
   text-decoration: none;
   transition: all 0.2s ease-in-out;
   user-select: none;
   white-space: nowrap;
+  width: 100%;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
 
@@ -178,9 +182,9 @@ export const DropdownMenu = ({
       text={text}
       variant={variant}
     />
-    <StyledDropdownMenuItemContainer id={id} role='menu' aria-labelledby={buttonId}>
-      {isOpen ? children : null}
-    </StyledDropdownMenuItemContainer>
+    {isOpen ? <StyledDropdownMenuItemContainer id={id} role='menu' aria-labelledby={buttonId}>
+      {children}
+    </StyledDropdownMenuItemContainer> : null}
   </StyledDropdownMenu>;
 };
 
