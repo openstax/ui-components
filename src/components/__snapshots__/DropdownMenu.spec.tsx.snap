@@ -2,13 +2,13 @@
 
 exports[`DropdownMenu should render only the button if closed 1`] = `
 <div
-  className="navmenu"
+  className="sc-bczRLJ ehiAyy"
 >
   <button
     aria-controls="test-menu"
     aria-expanded={false}
     aria-haspopup="true"
-    className="sc-bczRLJ eJQcq"
+    className="sc-gsnTZi dZzvyu"
     disabled={false}
     id="test-menu-button"
     onClick={[Function]}
@@ -16,23 +16,18 @@ exports[`DropdownMenu should render only the button if closed 1`] = `
   >
     Test Menu
   </button>
-  <div
-    aria-labelledby="test-menu-button"
-    id="test-menu"
-    role="menu"
-  />
 </div>
 `;
 
 exports[`DropdownMenu should render the menu if open 1`] = `
 <div
-  className="navmenu"
+  className="sc-bczRLJ ehiAyy"
 >
   <button
     aria-controls="test-menu"
     aria-expanded={true}
     aria-haspopup="true"
-    className="sc-bczRLJ eJQcq"
+    className="sc-gsnTZi dZzvyu"
     disabled={false}
     id="test-menu-button"
     onClick={[Function]}
@@ -42,16 +37,17 @@ exports[`DropdownMenu should render the menu if open 1`] = `
   </button>
   <div
     aria-labelledby="test-menu-button"
+    className="sc-dkzDqf gQoqTP"
     id="test-menu"
     role="menu"
   >
-    <a
-      href="#"
+    <button
+      className="sc-hKMtZM fPZkae"
       onClick={[Function]}
       role="menuitem"
     >
       Test Menu Item
-    </a>
+    </button>
   </div>
 </div>
 `;
