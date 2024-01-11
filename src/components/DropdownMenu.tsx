@@ -4,7 +4,6 @@ import { ButtonVariant, applyButtonVariantStyles } from '../theme/buttons';
 import { palette } from '../theme/palette';
 
 const StyledDropdownMenu = styled.div`
-  font-size: 1.6rem;
   position: relative;
 `;
 
@@ -17,6 +16,7 @@ const StyledDropdownMenuButton = styled.button<{ variant: ButtonVariant; width?:
   box-shadow: 0px 0.2rem 0.4rem rgba(0, 0, 0, 0.2);
   display: inline-flex;
   flex-direction: row;
+  font-size: 1.6rem;
   height: 2.5rem;
   justify-content: center;
   line-height: 2rem;
@@ -65,6 +65,7 @@ const StyledDropdownMenuItem = styled.button`
   cursor: pointer;
   display: block;
   flex-direction: row;
+  font-size: 1.6rem;
   height: 2.5rem;
   justify-content: center;
   line-height: 2rem;
@@ -92,6 +93,7 @@ const DropdownMenuButton = ({
   text,
   toggleMenu,
   variant,
+  width,
 }: {
   disabled?: boolean;
   id: string;
@@ -101,6 +103,7 @@ const DropdownMenuButton = ({
   text: string;
   toggleMenu: () => void,
   variant: ButtonVariant;
+  width?: string;
 }) => (
   <StyledDropdownMenuButton
     aria-haspopup='true'
@@ -111,6 +114,7 @@ const DropdownMenuButton = ({
     onClick={toggleMenu}
     type='button'
     variant={variant}
+    width={width}
   >
     {text}
   </StyledDropdownMenuButton>
@@ -137,6 +141,7 @@ export type DropdownMenuProps = {
   state: DropdownMenuState;
   text: string;
   variant: ButtonVariant;
+  width?: string;
 };
 
 export const DropdownMenu = ({
@@ -145,6 +150,7 @@ export const DropdownMenu = ({
   text,
   variant,
   children,
+  width,
 }: React.PropsWithChildren<DropdownMenuProps>) => {
   const buttonId = `${id}-button`;
 
@@ -181,6 +187,7 @@ export const DropdownMenu = ({
       toggleMenu={toggleMenu}
       text={text}
       variant={variant}
+      width={width}
     />
     {isOpen ? <StyledDropdownMenuItemContainer id={id} role='menu' aria-labelledby={buttonId}>
       {children}
