@@ -1,45 +1,82 @@
-import React, { AnchorHTMLAttributes } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { ButtonVariant, applyButtonVariantStyles } from '../theme/buttons';
+import { palette } from '../theme/palette';
+
+const StyledDropdownMenu = styled.div`
+  font-size: 1.6rem;
+  padding: 0 1rem;
+  position: relative;
+`;
 
 const StyledDropdownMenuButton = styled.button<{ variant: ButtonVariant }>`
   ${props => applyButtonVariantStyles(props.variant)}
 
-  font-size: 1.6rem;
-  line-height: 2rem;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-font-smoothing: antialiased;
-  display: inline-flex;
-  flex-direction: row;
-  justify-content: center;
   align-items: center;
-  height: 4rem;
-  padding: 0 0.5rem;
   border: 0;
   border-radius: 5px;
   box-shadow: 0px 0.2rem 0.4rem rgba(0, 0, 0, 0.2);
-  transition: all 0.2s ease-in-out;
+  display: inline-flex;
+  flex-direction: row;
+  height: 4rem;
+  justify-content: center;
+  line-height: 2rem;
+  padding: 0 0.5rem;
   text-decoration: none;
+  transition: all 0.2s ease-in-out;
   user-select: none;
   white-space: nowrap;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
 
-  &:not([disabled]) {
-    cursor: pointer;
-  }
   &:disabled {
     opacity: 0.4;
   }
 
+  &:not([disabled]) {
+    cursor: pointer;
+  }
+
   :after {
-    background: #fff;
-    border: 1px solid #ccc;
+    background: ${palette.white};
     clip-path: polygon(0 0, 100% 100%, 100% 0);
     content: ' ';
     display: block;
     height: 0.5rem;
-    margin: -0.5rem 0 0 0.5rem;
+    margin: -0.25rem 0 0 0.5rem;
     transform: rotate(135deg);
     width: 0.5rem;
+  }
+`;
+
+const StyledDropdownMenuItemContainer = styled.div`
+  border: 1px solid ${palette.pale};
+  position: fixed;
+`;
+
+const StyledDropdownMenuItem = styled.button`
+  align-items: center;
+  background-color: ${palette.white};
+  border: 0;
+  border-radius: 5px;
+  box-shadow: 0px 0.2rem 0.4rem rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  display: block;
+  flex-direction: row;
+  height: 4rem;
+  justify-content: center;
+  line-height: 2rem;
+  margin: 0;
+  padding: 0 0.5rem;
+  text-decoration: none;
+  transition: all 0.2s ease-in-out;
+  user-select: none;
+  white-space: nowrap;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+
+  &:hover {
+    background-color: ${palette.pale};
   }
 `;
 
@@ -62,10 +99,10 @@ const DropdownMenuButton = ({
   variant: ButtonVariant;
 }) => (
   <StyledDropdownMenuButton
-    disabled={disabled}
     aria-haspopup='true'
     aria-controls={menuId}
     aria-expanded={isOpen}
+    disabled={disabled}
     id={id}
     onClick={toggleMenu}
     type='button'
@@ -130,7 +167,7 @@ export const DropdownMenu = ({
     return () => window.removeEventListener('click', closeOnOutsideClick);
   }, [isOpen, ref]);
 
-  return <div className='navmenu' ref={ref}>
+  return <StyledDropdownMenu ref={ref}>
     <DropdownMenuButton
       disabled={disabled}
       id={buttonId}
@@ -141,13 +178,13 @@ export const DropdownMenu = ({
       text={text}
       variant={variant}
     />
-    <div id={id} role='menu' aria-labelledby={buttonId}>
+    <StyledDropdownMenuItemContainer id={id} role='menu' aria-labelledby={buttonId}>
       {isOpen ? children : null}
-    </div>
-  </div>;
+    </StyledDropdownMenuItemContainer>
+  </StyledDropdownMenu>;
 };
 
-export type DropdownMenuItemProps = React.PropsWithChildren<AnchorHTMLAttributes<HTMLAnchorElement>> & {
+export type DropdownMenuItemProps = React.PropsWithChildren<React.HTMLAttributes<HTMLButtonElement>> & {
   state: DropdownMenuState;
 };
 
@@ -159,11 +196,13 @@ export const DropdownMenuItem = ({
 }: DropdownMenuItemProps) => {
   const { closeMenu } = state;
 
-  const handleClick = React.useCallback((event: React.MouseEvent<HTMLAnchorElement>) => {
+  const handleClick = React.useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
     if (onClick) { onClick(event); }
 
     closeMenu();
   }, [closeMenu, onClick]);
 
-  return <a role='menuitem' href='#' onClick={handleClick} {...aProps}>{children}</a>;
+  return <StyledDropdownMenuItem role='menuitem' onClick={handleClick} {...aProps}>
+    {children}
+  </StyledDropdownMenuItem>;
 };
