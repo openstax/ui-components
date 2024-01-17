@@ -38,7 +38,7 @@ const StyledDropdownMenuButton = styled.button<{ variant: ButtonVariant; width?:
   }
 
   :after {
-    background: ${palette.white};
+    background: ${(props) => props.variant === 'light' ? palette.black : palette.white};
     clip-path: polygon(0 0, 100% 100%, 100% 0);
     content: ' ';
     display: block;
@@ -53,7 +53,8 @@ const StyledDropdownMenuItemContainer = styled.div`
   background-color: ${palette.white};
   border: 1px solid ${palette.pale};
   padding: 0.3rem 0;
-  position: fixed;
+  position: absolute;
+  z-index: 10;
 `;
 
 const StyledDropdownMenuItem = styled.button`

@@ -20,8 +20,10 @@ export const Primary = () => {
       </DropdownMenuItem>
     </DropdownMenu>
 
+    <br/>
+
     <DropdownMenu id='disabled-grades-menu' state={disabledState} text='Sync/Export Grades' variant='primary'>
-    <DropdownMenuItem onClick={onClick} state={disabledState}>
+      <DropdownMenuItem onClick={onClick} state={disabledState}>
         Sync only completed grades to LMS
       </DropdownMenuItem>
       <DropdownMenuItem onClick={onClick} state={disabledState}>
@@ -50,6 +52,8 @@ export const Light = () => {
         Export grades to .csv
       </DropdownMenuItem>
     </DropdownMenu>
+
+    <br/>
 
     <DropdownMenu id='disabled-grades-menu' state={disabledState} text='Sync/Export Grades' variant='light'>
     <DropdownMenuItem onClick={onClick} state={disabledState}>
@@ -81,6 +85,8 @@ export const Secondary = () => {
         Export grades to .csv
       </DropdownMenuItem>
     </DropdownMenu>
+
+    <br/>
 
     <DropdownMenu id='disabled-grades-menu' state={disabledState} text='Sync/Export Grades' variant='secondary'>
     <DropdownMenuItem onClick={onClick} state={disabledState}>
