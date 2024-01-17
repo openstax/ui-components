@@ -12,7 +12,7 @@ const StyledDropdownMenuButton = styled.button<{ variant: ButtonVariant; width?:
 
   align-items: center;
   border: 0;
-  border-radius: 5px;
+  border-radius: 0.5rem;
   box-shadow: 0px 0.2rem 0.4rem rgba(0, 0, 0, 0.2);
   display: inline-flex;
   flex-direction: row;
