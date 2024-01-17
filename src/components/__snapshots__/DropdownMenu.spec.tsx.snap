@@ -8,7 +8,7 @@ exports[`DropdownMenu should render only the button if closed 1`] = `
     aria-controls="test-menu"
     aria-expanded={false}
     aria-haspopup="true"
-    className="sc-gsnTZi bNlMve"
+    className="sc-gsnTZi dHrSBS"
     disabled={false}
     id="test-menu-button"
     onClick={[Function]}
@@ -27,7 +27,7 @@ exports[`DropdownMenu should render the menu if open 1`] = `
     aria-controls="test-menu"
     aria-expanded={true}
     aria-haspopup="true"
-    className="sc-gsnTZi bNlMve"
+    className="sc-gsnTZi dHrSBS"
     disabled={false}
     id="test-menu-button"
     onClick={[Function]}
@@ -37,7 +37,7 @@ exports[`DropdownMenu should render the menu if open 1`] = `
   </button>
   <div
     aria-labelledby="test-menu-button"
-    className="sc-dkzDqf gQoqTP"
+    className="sc-dkzDqf ealgGp"
     id="test-menu"
     role="menu"
   >

@@ -1,7 +1,9 @@
 import { MouseEvent } from 'react';
 import { DropdownMenu, DropdownMenuItem, useDropdownMenu } from './DropdownMenu';
 
-const onClick = (e: MouseEvent<HTMLButtonElement>) => alert(`Clicked on menu item for "${e.currentTarget.innerText}"`);
+const onClick = (e: MouseEvent<HTMLButtonElement>) => {
+  console.log(`Clicked on "${e.currentTarget.innerText}"`);
+};
 
 export const Primary = () => {
   const enabledState = useDropdownMenu();
