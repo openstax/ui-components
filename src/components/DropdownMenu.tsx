@@ -203,7 +203,7 @@ export const DropdownMenuItem = ({
   children,
   onClick,
   state,
-  ...aProps
+  ...buttonProps
 }: DropdownMenuItemProps) => {
   const { closeMenu } = state;
 
@@ -213,7 +213,7 @@ export const DropdownMenuItem = ({
     closeMenu();
   }, [closeMenu, onClick]);
 
-  return <StyledDropdownMenuItem role='menuitem' onClick={handleClick} {...aProps}>
+  return <StyledDropdownMenuItem role='menuitem' onClick={handleClick} {...buttonProps}>
     {children}
   </StyledDropdownMenuItem>;
 };
