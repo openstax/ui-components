@@ -1,5 +1,5 @@
 import renderer from 'react-test-renderer';
-import { DropdownMenu, DropdownMenuItem, useDropdownMenu } from './DropdownMenu';
+import { DropdownMenu, DropdownMenuItemButton, useDropdownMenu } from './DropdownMenu';
 
 describe('DropdownMenu', () => {
   const TestMenu = () => {
@@ -11,7 +11,7 @@ describe('DropdownMenu', () => {
       text='Test Menu'
       variant='light'
     >
-      <DropdownMenuItem onClick={jest.fn()} state={state}>Test Menu Item</DropdownMenuItem>
+      <DropdownMenuItemButton onClick={jest.fn()} state={state}>Test Menu Item</DropdownMenuItemButton>
     </DropdownMenu>;
   };
 

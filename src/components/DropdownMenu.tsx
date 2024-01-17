@@ -57,7 +57,7 @@ const StyledDropdownMenuItemContainer = styled.div`
   z-index: 10;
 `;
 
-const StyledDropdownMenuItem = styled.button`
+const StyledDropdownMenuItemButton = styled.button`
   align-items: center;
   background-color: ${palette.white};
   border: 0;
@@ -196,16 +196,16 @@ export const DropdownMenu = ({
   </StyledDropdownMenu>;
 };
 
-export type DropdownMenuItemProps = React.PropsWithChildren<React.HTMLAttributes<HTMLButtonElement>> & {
+export type DropdownMenuItemButtonProps = React.PropsWithChildren<React.HTMLAttributes<HTMLButtonElement>> & {
   state: DropdownMenuState;
 };
 
-export const DropdownMenuItem = ({
+export const DropdownMenuItemButton = ({
   children,
   onClick,
   state,
   ...buttonProps
-}: DropdownMenuItemProps) => {
+}: DropdownMenuItemButtonProps) => {
   const { closeMenu } = state;
 
   const handleClick = React.useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
@@ -214,7 +214,7 @@ export const DropdownMenuItem = ({
     closeMenu();
   }, [closeMenu, onClick]);
 
-  return <StyledDropdownMenuItem role='menuitem' onClick={handleClick} {...buttonProps}>
+  return <StyledDropdownMenuItemButton role='menuitem' onClick={handleClick} {...buttonProps}>
     {children}
-  </StyledDropdownMenuItem>;
+  </StyledDropdownMenuItemButton>;
 };
