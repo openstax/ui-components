@@ -116,7 +116,7 @@ const DropdownMenuButton = ({
       case 'ArrowUp':
         openMenu('last');
         break;
-    };
+    }
   }, [openMenu]);
 
   return <StyledDropdownMenuButton
@@ -281,7 +281,7 @@ export const DropdownMenuItemButton = ({
             }
           }
         }
-    };
+    }
   }, [closeMenu]);
 
   return <StyledDropdownMenuItemButton
