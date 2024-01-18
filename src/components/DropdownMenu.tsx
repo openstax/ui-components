@@ -91,6 +91,7 @@ const DropdownMenuButton = ({
   id,
   isOpen,
   menuId,
+  openMenu,
   text,
   toggleMenu,
   variant,
@@ -100,39 +101,72 @@ const DropdownMenuButton = ({
   id: string;
   isOpen: boolean;
   menuId: string;
-  parentRef: React.RefObject<HTMLDivElement>;
   text: string;
+  openMenu: (focus: 'first' | 'last') => void,
   toggleMenu: () => void,
   variant: ButtonVariant;
   width?: string;
-}) => (
-  <StyledDropdownMenuButton
+}) => {
+  const onKeyDown = React.useCallback((event: React.KeyboardEvent<HTMLButtonElement>) => {
+    // The browser already handles 'Enter', 'Space'
+    switch (event.key) {
+      case 'ArrowDown':
+        openMenu('first');
+        break;
+      case 'ArrowUp':
+        openMenu('last');
+        break;
+    };
+  }, [openMenu]);
+
+  return <StyledDropdownMenuButton
     aria-haspopup='true'
     aria-controls={menuId}
     aria-expanded={isOpen}
     disabled={disabled}
     id={id}
     onClick={toggleMenu}
+    onKeyDown={onKeyDown}
     type='button'
     variant={variant}
     width={width}
   >
     {text}
-  </StyledDropdownMenuButton>
-);
+  </StyledDropdownMenuButton>;
+};
 
 export const useDropdownMenu = (options?: { disabled: boolean }) => {
   const { disabled } = options ?? { disabled: false };
 
-  const [isOpen, setOpen] = React.useState<boolean>(false);
+  const [openFocus, setOpenFocus] = React.useState<'first' | 'last'>();
+  const isOpen = openFocus !== undefined;
 
-  const closeMenu = React.useCallback(() => setOpen(false), []);
+  const closeMenu = React.useCallback(() => setOpenFocus(undefined), []);
+  const openMenu = React.useCallback(
+    (focus: 'first' | 'last') => setOpenFocus(disabled ? undefined : focus), [disabled]
+  );
+  const toggleMenu = React.useCallback(() => isOpen ? closeMenu() : openMenu('first'), [isOpen]);
 
-  const toggleMenu = React.useCallback(() => {
-    setOpen(!disabled && !isOpen);
-  }, [disabled, isOpen]);
+  return { disabled, closeMenu, isOpen, openFocus, openMenu, toggleMenu };
+};
 
-  return { disabled, closeMenu, isOpen, toggleMenu };
+const focus = (element?: Element | null) => {
+  if (element instanceof HTMLElement) { element.focus(); }
+}
+
+const DropdownMenuItemContainer = ({
+  children, openFocus, ...divProps
+}: React.PropsWithChildren<React.HTMLAttributes<HTMLDivElement>> & { openFocus: 'first' | 'last' | undefined }) => {
+  const ref = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    // Focus the first or last child when opened
+    focus(openFocus === 'first' ? ref.current?.firstElementChild : ref.current?.lastElementChild);
+  }, [openFocus, ref]);
+
+  return <StyledDropdownMenuItemContainer {...divProps} ref={ref} role='menu'>
+    {children}
+  </StyledDropdownMenuItemContainer>;
 };
 
 export type DropdownMenuState = ReturnType<typeof useDropdownMenu>;
@@ -153,30 +187,24 @@ export const DropdownMenu = ({
   children,
   width,
 }: React.PropsWithChildren<DropdownMenuProps>) => {
-  const buttonId = `${id}-button`;
-
-  const { disabled, closeMenu, isOpen, toggleMenu } = state;
-
   const ref = React.useRef<HTMLDivElement>(null);
 
-  React.useEffect(() => {
-    // Focus the first child when opened
-    if (isOpen && ref.current) {
-      const firstChild = ref.current.firstElementChild;
-      if (firstChild instanceof HTMLElement) { firstChild.focus(); }
-    }
+  const { closeMenu, disabled, isOpen, openFocus, openMenu, toggleMenu } = state;
 
+  React.useEffect(() => {
     // Close the menu when clicking outside
-    const closeOnOutsideClick = (e: MouseEvent) => {
-      if (isOpen && !ref.current?.contains(e.target as Node)) {
-          closeMenu();
+    const closeOnOutsideClick = (event: MouseEvent) => {
+      if (!ref.current?.contains(event.target as Node)) {
+        closeMenu();
       }
     };
 
     window.addEventListener('click', closeOnOutsideClick);
 
     return () => window.removeEventListener('click', closeOnOutsideClick);
-  }, [isOpen, ref]);
+  }, [ref]);
+
+  const buttonId = `${id}-button`;
 
   return <StyledDropdownMenu ref={ref}>
     <DropdownMenuButton
@@ -184,21 +212,26 @@ export const DropdownMenu = ({
       id={buttonId}
       isOpen={isOpen}
       menuId={id}
-      parentRef={ref}
+      openMenu={openMenu}
       toggleMenu={toggleMenu}
       text={text}
       variant={variant}
       width={width}
     />
-    {isOpen ? <StyledDropdownMenuItemContainer id={id} role='menu' aria-labelledby={buttonId}>
+    {isOpen ? <DropdownMenuItemContainer aria-labelledby={buttonId} id={id} openFocus={openFocus}>
       {children}
-    </StyledDropdownMenuItemContainer> : null}
+    </DropdownMenuItemContainer> : null}
   </StyledDropdownMenu>;
 };
 
 export type DropdownMenuItemButtonProps = React.PropsWithChildren<React.HTMLAttributes<HTMLButtonElement>> & {
   state: DropdownMenuState;
 };
+
+const firstSibling = (element: Element) => element.parentElement?.firstElementChild;
+const lastSibling = (element: Element) => element.parentElement?.lastElementChild;
+const nextWithWraparound = (element: Element) => element.nextElementSibling ?? firstSibling(element);
+const previousWithWraparound = (element: Element) => element.previousElementSibling ?? lastSibling(element);
 
 export const DropdownMenuItemButton = ({
   children,
@@ -214,7 +247,49 @@ export const DropdownMenuItemButton = ({
     closeMenu();
   }, [closeMenu, onClick]);
 
-  return <StyledDropdownMenuItemButton role='menuitem' onClick={handleClick} {...buttonProps}>
+  const ref = React.useRef<HTMLButtonElement>(null);
+
+  const onKeyDown = React.useCallback((event: React.KeyboardEvent<HTMLButtonElement>) => {
+    if (!ref.current) { return; }
+
+    // The browser already handles 'Enter', 'Space'
+    switch (event.key) {
+      case 'Escape':
+        closeMenu();
+        focus(ref.current.parentElement?.parentElement?.firstElementChild);
+        break;
+      case 'ArrowUp':
+        focus(previousWithWraparound(ref.current));
+        break;
+      case 'ArrowDown':
+        focus(nextWithWraparound(ref.current));
+        break;
+      case 'Home':
+        focus(firstSibling(ref.current));
+        break;
+      case 'End':
+        focus(lastSibling(ref.current));
+        break;
+      default:
+        if (/^[A-Za-z]$/.test(event.key)) {
+          for (let element: Element | null | undefined = nextWithWraparound(ref.current);
+               element !== ref.current && element instanceof HTMLElement;
+               element = nextWithWraparound(element)) {
+            if (element.innerText.toLowerCase().startsWith(event.key.toLowerCase())) {
+              focus(element);
+              break;
+            }
+          }
+        }
+    };
+  }, [closeMenu]);
+
+  return <StyledDropdownMenuItemButton
+           {...buttonProps}
+           onClick={handleClick}
+           onKeyDown={onKeyDown}
+           ref={ref}
+           role='menuitem'>
     {children}
   </StyledDropdownMenuItemButton>;
 };

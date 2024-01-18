@@ -2,7 +2,7 @@ import { MouseEvent } from 'react';
 import { DropdownMenu, DropdownMenuItemButton, useDropdownMenu } from './DropdownMenu';
 
 const onClick = (e: MouseEvent<HTMLButtonElement>) => {
-  console.log(`Clicked on "${e.currentTarget.innerText}"`);
+  console.log(`Activated "${e.currentTarget.innerText}"`);
 };
 
 export const Primary = () => {
