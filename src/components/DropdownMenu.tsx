@@ -112,9 +112,11 @@ const DropdownMenuButton = ({
     switch (event.key) {
       case 'ArrowDown':
         openMenu('first');
+        event.preventDefault();
         break;
       case 'ArrowUp':
         openMenu('last');
+        event.preventDefault();
         break;
     }
   }, [openMenu]);
@@ -260,15 +262,19 @@ export const DropdownMenuItemButton = ({
         break;
       case 'ArrowUp':
         focus(previousWithWraparound(ref.current));
+        event.preventDefault();
         break;
       case 'ArrowDown':
         focus(nextWithWraparound(ref.current));
+        event.preventDefault();
         break;
       case 'Home':
         focus(firstSibling(ref.current));
+        event.preventDefault();
         break;
       case 'End':
         focus(lastSibling(ref.current));
+        event.preventDefault();
         break;
       default:
         if (/^[A-Za-z]$/.test(event.key)) {
