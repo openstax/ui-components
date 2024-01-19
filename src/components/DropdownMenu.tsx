@@ -174,22 +174,20 @@ const DropdownMenuItemContainer = ({
   </StyledDropdownMenuItemContainer>;
 };
 
-export type DropdownMenuProps = {
+export const DropdownMenu = ({
+  children,
+  disabled,
+  id,
+  text,
+  variant,
+  width,
+}: React.PropsWithChildren<{
   disabled?: boolean;
   id: string;
   text: string;
   variant: ButtonVariant;
   width?: string;
-};
-
-export const DropdownMenu = ({
-  disabled,
-  id,
-  text,
-  variant,
-  children,
-  width,
-}: React.PropsWithChildren<DropdownMenuProps>) => {
+}>) => {
   const ref = React.useRef<HTMLDivElement>(null);
 
   const state = useDropdownMenu({ disabled });
@@ -225,17 +223,13 @@ export const DropdownMenu = ({
   </StyledDropdownMenu>;
 };
 
-export type DropdownMenuItemButtonProps = React.PropsWithChildren<React.HTMLAttributes<HTMLButtonElement>>;
-
 const firstSibling = (element: Element) => element.parentElement?.firstElementChild;
 const lastSibling = (element: Element) => element.parentElement?.lastElementChild;
 const nextWithWraparound = (element: Element) => element.nextElementSibling ?? firstSibling(element);
 const previousWithWraparound = (element: Element) => element.previousElementSibling ?? lastSibling(element);
 
 export const DropdownMenuItemButton = ({
-  children,
-  onClick,
-  ...buttonProps
+  children, onClick, ...buttonProps
 }: React.PropsWithChildren<React.HTMLAttributes<HTMLButtonElement>>) => {
   const { closeMenu } = React.useContext(DropdownMenuContext);
 
