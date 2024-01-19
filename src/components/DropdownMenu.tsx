@@ -86,27 +86,43 @@ const StyledDropdownMenuItemButton = styled.button`
   }
 `;
 
+const useDropdownMenu = ({ disabled }: { disabled?: boolean }) => {
+  const [openFocus, setOpenFocus] = React.useState<'first' | 'last'>();
+  const isOpen = openFocus !== undefined;
+
+  const closeMenu = React.useCallback(() => setOpenFocus(undefined), []);
+  const openMenu = React.useCallback(
+    (focus: 'first' | 'last') => setOpenFocus(disabled ? undefined : focus), [disabled]
+  );
+  const toggleMenu = React.useCallback(() => isOpen ? closeMenu() : openMenu('first'), [isOpen]);
+
+  return { disabled, closeMenu, isOpen, openFocus, openMenu, toggleMenu };
+};
+
+const DropdownMenuContext = React.createContext<ReturnType<typeof useDropdownMenu>>({
+  closeMenu: () => { throw new Error('Tried to call closeMenu() without a DropdownMenuContext') },
+  disabled: true,
+  isOpen: false,
+  openFocus: undefined,
+  openMenu: () => { throw new Error('Tried to call openMenu() without a DropdownMenuContext') },
+  toggleMenu: () => { throw new Error('Tried to call toggleMenu() without a DropdownMenuContext') },
+});
+
 const DropdownMenuButton = ({
-  disabled,
   id,
-  isOpen,
   menuId,
-  openMenu,
   text,
-  toggleMenu,
   variant,
   width,
 }: {
-  disabled?: boolean;
   id: string;
-  isOpen: boolean;
   menuId: string;
   text: string;
-  openMenu: (focus: 'first' | 'last') => void,
-  toggleMenu: () => void,
   variant: ButtonVariant;
   width?: string;
 }) => {
+  const { disabled, isOpen, openMenu, toggleMenu } = React.useContext(DropdownMenuContext);
+
   const onKeyDown = React.useCallback((event: React.KeyboardEvent<HTMLButtonElement>) => {
     // The browser already handles 'Enter', 'Space'
     switch (event.key) {
@@ -137,28 +153,15 @@ const DropdownMenuButton = ({
   </StyledDropdownMenuButton>;
 };
 
-export const useDropdownMenu = (options?: { disabled: boolean }) => {
-  const { disabled } = options ?? { disabled: false };
-
-  const [openFocus, setOpenFocus] = React.useState<'first' | 'last'>();
-  const isOpen = openFocus !== undefined;
-
-  const closeMenu = React.useCallback(() => setOpenFocus(undefined), []);
-  const openMenu = React.useCallback(
-    (focus: 'first' | 'last') => setOpenFocus(disabled ? undefined : focus), [disabled]
-  );
-  const toggleMenu = React.useCallback(() => isOpen ? closeMenu() : openMenu('first'), [isOpen]);
-
-  return { disabled, closeMenu, isOpen, openFocus, openMenu, toggleMenu };
-};
-
 const focus = (element?: Element | null) => {
   if (element instanceof HTMLElement) { element.focus(); }
-}
+};
 
 const DropdownMenuItemContainer = ({
-  children, openFocus, ...divProps
-}: React.PropsWithChildren<React.HTMLAttributes<HTMLDivElement>> & { openFocus: 'first' | 'last' | undefined }) => {
+  children, ...divProps
+}: React.PropsWithChildren<React.HTMLAttributes<HTMLDivElement>>) => {
+  const { openFocus } = React.useContext(DropdownMenuContext);
+
   const ref = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
@@ -171,19 +174,17 @@ const DropdownMenuItemContainer = ({
   </StyledDropdownMenuItemContainer>;
 };
 
-export type DropdownMenuState = ReturnType<typeof useDropdownMenu>;
-
 export type DropdownMenuProps = {
+  disabled?: boolean;
   id: string;
-  state: DropdownMenuState;
   text: string;
   variant: ButtonVariant;
   width?: string;
 };
 
 export const DropdownMenu = ({
+  disabled,
   id,
-  state,
   text,
   variant,
   children,
@@ -191,13 +192,13 @@ export const DropdownMenu = ({
 }: React.PropsWithChildren<DropdownMenuProps>) => {
   const ref = React.useRef<HTMLDivElement>(null);
 
-  const { closeMenu, disabled, isOpen, openFocus, openMenu, toggleMenu } = state;
+  const state = useDropdownMenu({ disabled });
 
   React.useEffect(() => {
     // Close the menu when clicking outside
     const closeOnOutsideClick = (event: MouseEvent) => {
       if (!ref.current?.contains(event.target as Node)) {
-        closeMenu();
+        state.closeMenu();
       }
     };
 
@@ -209,26 +210,22 @@ export const DropdownMenu = ({
   const buttonId = `${id}-button`;
 
   return <StyledDropdownMenu ref={ref}>
-    <DropdownMenuButton
-      disabled={disabled}
-      id={buttonId}
-      isOpen={isOpen}
-      menuId={id}
-      openMenu={openMenu}
-      toggleMenu={toggleMenu}
-      text={text}
-      variant={variant}
-      width={width}
-    />
-    {isOpen ? <DropdownMenuItemContainer aria-labelledby={buttonId} id={id} openFocus={openFocus}>
-      {children}
-    </DropdownMenuItemContainer> : null}
+    <DropdownMenuContext.Provider value={state}>
+      <DropdownMenuButton
+        id={buttonId}
+        menuId={id}
+        text={text}
+        variant={variant}
+        width={width}
+      />
+      {state.isOpen ? <DropdownMenuItemContainer aria-labelledby={buttonId} id={id}>
+        {children}
+      </DropdownMenuItemContainer> : null}
+    </DropdownMenuContext.Provider>
   </StyledDropdownMenu>;
 };
 
-export type DropdownMenuItemButtonProps = React.PropsWithChildren<React.HTMLAttributes<HTMLButtonElement>> & {
-  state: DropdownMenuState;
-};
+export type DropdownMenuItemButtonProps = React.PropsWithChildren<React.HTMLAttributes<HTMLButtonElement>>;
 
 const firstSibling = (element: Element) => element.parentElement?.firstElementChild;
 const lastSibling = (element: Element) => element.parentElement?.lastElementChild;
@@ -238,10 +235,9 @@ const previousWithWraparound = (element: Element) => element.previousElementSibl
 export const DropdownMenuItemButton = ({
   children,
   onClick,
-  state,
   ...buttonProps
-}: DropdownMenuItemButtonProps) => {
-  const { closeMenu } = state;
+}: React.PropsWithChildren<React.HTMLAttributes<HTMLButtonElement>>) => {
+  const { closeMenu } = React.useContext(DropdownMenuContext);
 
   const handleClick = React.useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
     if (onClick) { onClick(event); }
