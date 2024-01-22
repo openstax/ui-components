@@ -1,5 +1,5 @@
 import { GlobalProvider } from "@ladle/react";
-import { useEffect } from "react";
+import React from "react";
 import styled from "styled-components";
 
 const Wrapper = styled.div`
@@ -12,7 +12,7 @@ const Wrapper = styled.div`
 `;
 
 export const Provider: GlobalProvider = ({ children }) => {
-  useEffect(() => {
+  React.useEffect(() => {
     const style = document.createElement('style');
     style.innerText = 'html { font-size: 62.5%; }';
     document.head.append(style);

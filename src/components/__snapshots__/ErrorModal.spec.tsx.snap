@@ -80,7 +80,7 @@ exports[`Modal matches snapshot 1`] = `
         className="sc-iqcoie cqUGeK"
       >
         <button
-          className="sc-bczRLJ cJphOo"
+          className="sc-bczRLJ bIfFdM"
           onClick={[MockFunction]}
         >
           OK
@@ -175,7 +175,7 @@ exports[`Modal matches snapshot when heading and children are set 1`] = `
         className="sc-iqcoie cqUGeK"
       >
         <button
-          className="sc-bczRLJ cJphOo"
+          className="sc-bczRLJ bIfFdM"
           onClick={[MockFunction]}
         >
           OK

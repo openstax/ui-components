@@ -1,0 +1,54 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DropdownMenu should render only the button if closed 1`] = `
+<div
+  className="sc-bczRLJ ehiAyy"
+>
+  <button
+    aria-controls="test-menu"
+    aria-expanded={false}
+    aria-haspopup="true"
+    className="sc-gsnTZi dHrSBS"
+    id="test-menu-button"
+    onClick={[Function]}
+    onKeyDown={[Function]}
+    type="button"
+  >
+    Test Menu
+  </button>
+</div>
+`;
+
+exports[`DropdownMenu should render the menu if open 1`] = `
+<div
+  className="sc-bczRLJ ehiAyy"
+>
+  <button
+    aria-controls="test-menu"
+    aria-expanded={true}
+    aria-haspopup="true"
+    className="sc-gsnTZi dHrSBS"
+    id="test-menu-button"
+    onClick={[Function]}
+    onKeyDown={[Function]}
+    type="button"
+  >
+    Test Menu
+  </button>
+  <div
+    aria-labelledby="test-menu-button"
+    className="sc-dkzDqf ealgGp"
+    id="test-menu"
+    role="menu"
+  >
+    <button
+      className="sc-hKMtZM fPZkae"
+      onClick={[Function]}
+      onKeyDown={[Function]}
+      role="menuitem"
+    >
+      Test Menu Item
+    </button>
+  </div>
+</div>
+`;
