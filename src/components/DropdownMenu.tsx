@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { ButtonVariant, applyButtonVariantStyles } from '../theme/buttons';
 import { palette } from '../theme/palette';
+import { assertNotNull, focusElement } from '../utils';
 
 const StyledDropdownMenu = styled.div`
   position: relative;
@@ -153,10 +154,6 @@ const DropdownMenuButton = ({
   </StyledDropdownMenuButton>;
 };
 
-const focus = (element?: Element | null) => {
-  if (element instanceof HTMLElement) { element.focus(); }
-};
-
 const DropdownMenuItemContainer = ({
   children, ...divProps
 }: React.PropsWithChildren<React.HTMLAttributes<HTMLDivElement>>) => {
@@ -166,7 +163,9 @@ const DropdownMenuItemContainer = ({
 
   React.useEffect(() => {
     // Focus the first or last child when opened
-    focus(openFocus === 'first' ? ref.current?.firstElementChild : ref.current?.lastElementChild);
+    if (ref.current) {
+      focusElement(openFocus === 'first' ? ref.current.firstElementChild : ref.current.lastElementChild);
+    }
   }, [openFocus, ref]);
 
   return <StyledDropdownMenuItemContainer {...divProps} ref={ref} role='menu'>
@@ -223,8 +222,12 @@ export const DropdownMenu = ({
   </StyledDropdownMenu>;
 };
 
-const firstSibling = (element: Element) => element.parentElement?.firstElementChild;
-const lastSibling = (element: Element) => element.parentElement?.lastElementChild;
+const firstSibling = (element: Element) => assertNotNull(
+  assertNotNull(element.parentElement, 'menuItem has no parent').firstElementChild, 'menuItemContainer is empty'
+);
+const lastSibling = (element: Element) => assertNotNull(
+  assertNotNull(element.parentElement, 'menuItem has no parent').lastElementChild, 'menuItemContainer is empty'
+);
 const nextWithWraparound = (element: Element) => element.nextElementSibling ?? firstSibling(element);
 const previousWithWraparound = (element: Element) => element.previousElementSibling ?? lastSibling(element);
 
@@ -244,22 +247,25 @@ export const DropdownMenuItemButton = ({
     switch (event.key) {
       case 'Escape':
         closeMenu();
-        focus(event.currentTarget.parentElement?.parentElement?.firstElementChild);
+        focusElement(assertNotNull(
+          assertNotNull(event.currentTarget.parentElement, 'menuItem has no parent').parentElement,
+          'menuItemContainer has no parent'
+        ).firstElementChild);
         break;
       case 'ArrowUp':
-        focus(previousWithWraparound(event.currentTarget));
+        focusElement(previousWithWraparound(event.currentTarget));
         event.preventDefault();
         break;
       case 'ArrowDown':
-        focus(nextWithWraparound(event.currentTarget));
+        focusElement(nextWithWraparound(event.currentTarget));
         event.preventDefault();
         break;
       case 'Home':
-        focus(firstSibling(event.currentTarget));
+        focusElement(firstSibling(event.currentTarget));
         event.preventDefault();
         break;
       case 'End':
-        focus(lastSibling(event.currentTarget));
+        focusElement(lastSibling(event.currentTarget));
         event.preventDefault();
         break;
       default:
@@ -267,8 +273,9 @@ export const DropdownMenuItemButton = ({
           for (let element: Element | null | undefined = nextWithWraparound(event.currentTarget);
                element !== event.currentTarget && element instanceof HTMLElement;
                element = nextWithWraparound(element)) {
-            if (element.textContent?.toLowerCase()?.startsWith(event.key.toLowerCase())) {
-              focus(element);
+            const textContent = assertNotNull(element.textContent, 'menuItem has no textContent');
+            if (textContent.toLowerCase().startsWith(event.key.toLowerCase())) {
+              focusElement(element);
               break;
             }
           }

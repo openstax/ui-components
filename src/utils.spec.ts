@@ -1,4 +1,15 @@
-import { getTypeFromError } from "./utils";
+import { assertNotNull, getTypeFromError } from "./utils";
+
+describe('assertNotNull', () => {
+  it('throws if its argument is null', () => {
+    expect(() => assertNotNull(null, 'it is null')).toThrowError('it is null');
+  });
+
+  it('returns its argument if it is not null', () => {
+    const obj = {};
+    expect(assertNotNull(obj, 'it is not null')).toBe(obj);
+  });
+});
 
 describe('getTypeFromError', () => {
   it('returns name if the constuctor does not contain TYPE ', () => {
