@@ -1,6 +1,120 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`DropdownMenu should render only the button if closed 1`] = `
+exports[`DropdownMenu should handle keyboard events 1`] = `
+<DocumentFragment>
+  <div
+    class="sc-bczRLJ ehiAyy"
+  >
+    <button
+      aria-controls="test-menu"
+      aria-expanded="false"
+      aria-haspopup="true"
+      class="sc-gsnTZi dHrSBS"
+      id="test-menu-button"
+      type="button"
+    >
+      Test Menu
+    </button>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`DropdownMenu should handle keyboard events 2`] = `
+<DocumentFragment>
+  <div
+    class="sc-bczRLJ ehiAyy"
+  >
+    <button
+      aria-controls="test-menu"
+      aria-expanded="true"
+      aria-haspopup="true"
+      class="sc-gsnTZi dHrSBS"
+      id="test-menu-button"
+      type="button"
+    >
+      Test Menu
+    </button>
+    <div
+      aria-labelledby="test-menu-button"
+      class="sc-dkzDqf ealgGp"
+      id="test-menu"
+      role="menu"
+    >
+      <button
+        class="sc-hKMtZM fPZkae"
+        role="menuitem"
+      >
+        Test Menu Item 1
+      </button>
+      <button
+        class="sc-hKMtZM fPZkae"
+        role="menuitem"
+      >
+        Test Menu Item 2
+      </button>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`DropdownMenu should handle keyboard events 3`] = `
+<DocumentFragment>
+  <div
+    class="sc-bczRLJ ehiAyy"
+  >
+    <button
+      aria-controls="test-menu"
+      aria-expanded="false"
+      aria-haspopup="true"
+      class="sc-gsnTZi dHrSBS"
+      id="test-menu-button"
+      type="button"
+    >
+      Test Menu
+    </button>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`DropdownMenu should handle keyboard events 4`] = `
+<DocumentFragment>
+  <div
+    class="sc-bczRLJ ehiAyy"
+  >
+    <button
+      aria-controls="test-menu"
+      aria-expanded="true"
+      aria-haspopup="true"
+      class="sc-gsnTZi dHrSBS"
+      id="test-menu-button"
+      type="button"
+    >
+      Test Menu
+    </button>
+    <div
+      aria-labelledby="test-menu-button"
+      class="sc-dkzDqf ealgGp"
+      id="test-menu"
+      role="menu"
+    >
+      <button
+        class="sc-hKMtZM fPZkae"
+        role="menuitem"
+      >
+        Test Menu Item 1
+      </button>
+      <button
+        class="sc-hKMtZM fPZkae"
+        role="menuitem"
+      >
+        Test Menu Item 2
+      </button>
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`DropdownMenu should open on a button click and close on an item click or outside click 1`] = `
 <div
   className="sc-bczRLJ ehiAyy"
 >
@@ -19,7 +133,7 @@ exports[`DropdownMenu should render only the button if closed 1`] = `
 </div>
 `;
 
-exports[`DropdownMenu should render the menu if open 1`] = `
+exports[`DropdownMenu should open on a button click and close on an item click or outside click 2`] = `
 <div
   className="sc-bczRLJ ehiAyy"
 >
@@ -47,8 +161,96 @@ exports[`DropdownMenu should render the menu if open 1`] = `
       onKeyDown={[Function]}
       role="menuitem"
     >
-      Test Menu Item
+      Test Menu Item 1
+    </button>
+    <button
+      className="sc-hKMtZM fPZkae"
+      onClick={[Function]}
+      onKeyDown={[Function]}
+      role="menuitem"
+    >
+      Test Menu Item 2
     </button>
   </div>
+</div>
+`;
+
+exports[`DropdownMenu should open on a button click and close on an item click or outside click 3`] = `
+<div
+  className="sc-bczRLJ ehiAyy"
+>
+  <button
+    aria-controls="test-menu"
+    aria-expanded={false}
+    aria-haspopup="true"
+    className="sc-gsnTZi dHrSBS"
+    id="test-menu-button"
+    onClick={[Function]}
+    onKeyDown={[Function]}
+    type="button"
+  >
+    Test Menu
+  </button>
+</div>
+`;
+
+exports[`DropdownMenu should open on a button click and close on an item click or outside click 4`] = `
+<div
+  className="sc-bczRLJ ehiAyy"
+>
+  <button
+    aria-controls="test-menu"
+    aria-expanded={true}
+    aria-haspopup="true"
+    className="sc-gsnTZi dHrSBS"
+    id="test-menu-button"
+    onClick={[Function]}
+    onKeyDown={[Function]}
+    type="button"
+  >
+    Test Menu
+  </button>
+  <div
+    aria-labelledby="test-menu-button"
+    className="sc-dkzDqf ealgGp"
+    id="test-menu"
+    role="menu"
+  >
+    <button
+      className="sc-hKMtZM fPZkae"
+      onClick={[Function]}
+      onKeyDown={[Function]}
+      role="menuitem"
+    >
+      Test Menu Item 1
+    </button>
+    <button
+      className="sc-hKMtZM fPZkae"
+      onClick={[Function]}
+      onKeyDown={[Function]}
+      role="menuitem"
+    >
+      Test Menu Item 2
+    </button>
+  </div>
+</div>
+`;
+
+exports[`DropdownMenu should open on a button click and close on an item click or outside click 5`] = `
+<div
+  className="sc-bczRLJ ehiAyy"
+>
+  <button
+    aria-controls="test-menu"
+    aria-expanded={false}
+    aria-haspopup="true"
+    className="sc-gsnTZi dHrSBS"
+    id="test-menu-button"
+    onClick={[Function]}
+    onKeyDown={[Function]}
+    type="button"
+  >
+    Test Menu
+  </button>
 </div>
 `;
