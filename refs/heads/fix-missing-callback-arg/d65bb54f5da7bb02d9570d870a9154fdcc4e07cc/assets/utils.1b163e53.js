@@ -1,0 +1,1 @@
+const o=(t,r)=>{if(t!==null)return t;throw new Error(r)},s=t=>{t instanceof HTMLElement&&t.focus()},e=t=>{if(!t)return;const{TYPE:r,name:n}=t.constructor;return r&&typeof r=="string"?r:n};export{o as a,s as f,e as g};
