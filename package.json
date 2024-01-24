@@ -25,6 +25,7 @@
     "ladle-build": "NODE_ENV=production yarn ladle build"
   },
   "peerDependencies": {
+    "@openstax/ts-utils": "*",
     "react": "*",
     "react-dom": "*",
     "styled-components": "*"

@@ -1,8 +1,8 @@
+import { assertInstanceOf, assertString } from '@openstax/ts-utils/assertions';
 import React from 'react';
 import styled from 'styled-components';
 import { ButtonVariant, applyButtonVariantStyles } from '../theme/buttons';
 import { palette } from '../theme/palette';
-import { assertNotNull, focusElement } from '../utils';
 
 const StyledDropdownMenu = styled.div`
   position: relative;
@@ -154,6 +154,10 @@ const DropdownMenuButton = ({
   </StyledDropdownMenuButton>;
 };
 
+const focusElement = (element?: Element | null) => {
+  if (element instanceof HTMLElement) { element.focus(); }
+};
+
 const DropdownMenuItemContainer = ({
   children, ...divProps
 }: React.PropsWithChildren<React.HTMLAttributes<HTMLDivElement>>) => {
@@ -222,11 +226,13 @@ export const DropdownMenu = ({
   </StyledDropdownMenu>;
 };
 
-const firstSibling = (element: Element) => assertNotNull(
-  assertNotNull(element.parentElement, 'menuItem has no parent').firstElementChild, 'menuItemContainer is empty'
+const assertElement = (element: Element | null, failed: string) => assertInstanceOf(element, Element, failed);
+
+const firstSibling = (element: Element) => assertElement(
+  assertElement(element.parentElement, 'menuItem has no parent').firstElementChild, 'menuItemContainer is empty'
 );
-const lastSibling = (element: Element) => assertNotNull(
-  assertNotNull(element.parentElement, 'menuItem has no parent').lastElementChild, 'menuItemContainer is empty'
+const lastSibling = (element: Element) => assertElement(
+  assertElement(element.parentElement, 'menuItem has no parent').lastElementChild, 'menuItemContainer is empty'
 );
 const nextWithWraparound = (element: Element) => element.nextElementSibling ?? firstSibling(element);
 const previousWithWraparound = (element: Element) => element.previousElementSibling ?? lastSibling(element);
@@ -247,8 +253,8 @@ export const DropdownMenuItemButton = ({
     switch (event.key) {
       case 'Escape':
         closeMenu();
-        focusElement(assertNotNull(
-          assertNotNull(event.currentTarget.parentElement, 'menuItem has no parent').parentElement,
+        focusElement(assertElement(
+          assertElement(event.currentTarget.parentElement, 'menuItem has no parent').parentElement,
           'menuItemContainer has no parent'
         ).firstElementChild);
         break;
@@ -273,7 +279,7 @@ export const DropdownMenuItemButton = ({
           for (let element: Element | null | undefined = nextWithWraparound(event.currentTarget);
                element !== event.currentTarget && element instanceof HTMLElement;
                element = nextWithWraparound(element)) {
-            const textContent = assertNotNull(element.textContent, 'menuItem has no textContent');
+            const textContent = assertString(element.textContent, 'menuItem has no textContent');
             if (textContent.toLowerCase().startsWith(event.key.toLowerCase())) {
               focusElement(element);
               break;
