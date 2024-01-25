@@ -1,3 +1,4 @@
+import { assertInstanceOf, assertString } from '@openstax/ts-utils/assertions';
 import React from 'react';
 import styled from 'styled-components';
 import { ButtonVariant, applyButtonVariantStyles } from '../theme/buttons';
@@ -94,12 +95,12 @@ const useDropdownMenu = ({ disabled }: { disabled?: boolean }) => {
   const openMenu = React.useCallback(
     (focus: 'first' | 'last') => setOpenFocus(disabled ? undefined : focus), [disabled]
   );
-  const toggleMenu = React.useCallback(() => isOpen ? closeMenu() : openMenu('first'), [isOpen]);
+  const toggleMenu = React.useCallback(() => isOpen ? closeMenu() : openMenu('first'), [closeMenu, isOpen, openMenu]);
 
   return { disabled, closeMenu, isOpen, openFocus, openMenu, toggleMenu };
 };
 
-const DropdownMenuContext = React.createContext<ReturnType<typeof useDropdownMenu>>({
+export const DropdownMenuContext = React.createContext<ReturnType<typeof useDropdownMenu>>({
   closeMenu: () => { throw new Error('Tried to call closeMenu() without a DropdownMenuContext') },
   disabled: true,
   isOpen: false,
@@ -153,7 +154,7 @@ const DropdownMenuButton = ({
   </StyledDropdownMenuButton>;
 };
 
-const focus = (element?: Element | null) => {
+const focusElement = (element?: Element | null) => {
   if (element instanceof HTMLElement) { element.focus(); }
 };
 
@@ -166,7 +167,9 @@ const DropdownMenuItemContainer = ({
 
   React.useEffect(() => {
     // Focus the first or last child when opened
-    focus(openFocus === 'first' ? ref.current?.firstElementChild : ref.current?.lastElementChild);
+    if (ref.current) {
+      focusElement(openFocus === 'first' ? ref.current.firstElementChild : ref.current.lastElementChild);
+    }
   }, [openFocus, ref]);
 
   return <StyledDropdownMenuItemContainer {...divProps} ref={ref} role='menu'>
@@ -223,8 +226,14 @@ export const DropdownMenu = ({
   </StyledDropdownMenu>;
 };
 
-const firstSibling = (element: Element) => element.parentElement?.firstElementChild;
-const lastSibling = (element: Element) => element.parentElement?.lastElementChild;
+const assertElement = (element: Element | null, failed: string) => assertInstanceOf(element, Element, failed);
+
+const firstSibling = (element: Element) => assertElement(
+  assertElement(element.parentElement, 'menuItem has no parent').firstElementChild, 'menuItemContainer is empty'
+);
+const lastSibling = (element: Element) => assertElement(
+  assertElement(element.parentElement, 'menuItem has no parent').lastElementChild, 'menuItemContainer is empty'
+);
 const nextWithWraparound = (element: Element) => element.nextElementSibling ?? firstSibling(element);
 const previousWithWraparound = (element: Element) => element.previousElementSibling ?? lastSibling(element);
 
@@ -239,40 +248,40 @@ export const DropdownMenuItemButton = ({
     closeMenu();
   }, [closeMenu, onClick]);
 
-  const ref = React.useRef<HTMLButtonElement>(null);
-
   const onKeyDown = React.useCallback((event: React.KeyboardEvent<HTMLButtonElement>) => {
-    if (!ref.current) { return; }
-
     // The browser already handles 'Enter', 'Space'
     switch (event.key) {
       case 'Escape':
         closeMenu();
-        focus(ref.current.parentElement?.parentElement?.firstElementChild);
+        focusElement(assertElement(
+          assertElement(event.currentTarget.parentElement, 'menuItem has no parent').parentElement,
+          'menuItemContainer has no parent'
+        ).firstElementChild);
         break;
       case 'ArrowUp':
-        focus(previousWithWraparound(ref.current));
+        focusElement(previousWithWraparound(event.currentTarget));
         event.preventDefault();
         break;
       case 'ArrowDown':
-        focus(nextWithWraparound(ref.current));
+        focusElement(nextWithWraparound(event.currentTarget));
         event.preventDefault();
         break;
       case 'Home':
-        focus(firstSibling(ref.current));
+        focusElement(firstSibling(event.currentTarget));
         event.preventDefault();
         break;
       case 'End':
-        focus(lastSibling(ref.current));
+        focusElement(lastSibling(event.currentTarget));
         event.preventDefault();
         break;
       default:
         if (/^[A-Za-z]$/.test(event.key)) {
-          for (let element: Element | null | undefined = nextWithWraparound(ref.current);
-               element !== ref.current && element instanceof HTMLElement;
+          for (let element: Element | null | undefined = nextWithWraparound(event.currentTarget);
+               element !== event.currentTarget && element instanceof HTMLElement;
                element = nextWithWraparound(element)) {
-            if (element.innerText.toLowerCase().startsWith(event.key.toLowerCase())) {
-              focus(element);
+            const textContent = assertString(element.textContent, 'menuItem has no textContent');
+            if (textContent.toLowerCase().startsWith(event.key.toLowerCase())) {
+              focusElement(element);
               break;
             }
           }
@@ -284,7 +293,6 @@ export const DropdownMenuItemButton = ({
            {...buttonProps}
            onClick={handleClick}
            onKeyDown={onKeyDown}
-           ref={ref}
            role='menuitem'>
     {children}
   </StyledDropdownMenuItemButton>;
