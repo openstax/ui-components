@@ -13,7 +13,4 @@ module.exports = {
     "json",
     "node"
   ],
-  moduleNameMapper: {
-    "(.*)@openstax/ts-utils(.*)": "$1@openstax/ts-utils/$2.js"
-  },
 };

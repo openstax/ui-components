@@ -198,7 +198,7 @@ export const DropdownMenu = ({
   React.useEffect(() => {
     // Close the menu when clicking outside
     const closeOnOutsideClick = (event: MouseEvent) => {
-      if (!ref.current?.contains(event.target as Node)) {
+      if (!(ref.current && ref.current?.contains(event.target as Node))) {
         state.closeMenu();
       }
     };

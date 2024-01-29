@@ -1,6 +1,6 @@
 import React from 'react';
 import { FetchState } from "@openstax/ts-utils/fetch.js";
-import { merge } from "@openstax/ts-utils";
+import { merge } from "@openstax/ts-utils/misc/merge.js";
 
 const randomId = () => window.crypto.getRandomValues(new Uint32Array(1))[0].toString(16)
 

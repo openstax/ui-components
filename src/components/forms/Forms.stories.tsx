@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import {Controlled as Forms, Uncontrolled} from '.';
-import { fetchSuccess } from "@openstax/ts-utils/fetch";
+import { fetchSuccess } from "@openstax/ts-utils/fetch.js";
 
 export const BasicControlledForm = () => {
   const data = {
@@ -48,7 +48,7 @@ export const FormRepeatableElements = () => {
           {sortable ? <Forms.ListRecordSortableHandle style={{height: 'auto'}} /> : null}
           <Forms.TextInput name="interest" label="Interest" />
           <Forms.ListRecordRemoveButton>remove interest</Forms.ListRecordRemoveButton>
-        </FormRow> 
+        </FormRow>
       </Forms.ListItems>
       <Forms.ListRecordAddButton>add interest</Forms.ListRecordAddButton>
     </Forms.List>
@@ -89,14 +89,14 @@ export const DataReferencesInNamespaces = () => {
 
   return <Forms.Form state={state}>
     <Forms.TextInput name="name" label="Name" />
-    <p>in a loop or namespace <code>Forms.GetFormData</code> and <code>Forms.GetFormValue</code> will return only values within the namespace</p> 
+    <p>in a loop or namespace <code>Forms.GetFormData</code> and <code>Forms.GetFormValue</code> will return only values within the namespace</p>
     <Forms.GetFormData>{formData => <>
       <Forms.NameSpace name="address">
         <Forms.TextInput name="line1" label="line1" />
         <Forms.GetFormData>
           {data => <pre>{JSON.stringify(data, null, 2)}</pre>}
         </Forms.GetFormData>
-        
+
         <p>if you need the parent context data in a subcomponent, you can wrap the entire section</p>
         <pre>{JSON.stringify(formData, null, 2)}</pre>
       </Forms.NameSpace>
@@ -105,7 +105,7 @@ export const DataReferencesInNamespaces = () => {
           <FormRow>
             <Forms.TextInput name="interest" label="Interest" />
             <Forms.ListRecordRemoveButton>remove interest</Forms.ListRecordRemoveButton>
-          </FormRow> 
+          </FormRow>
             <Forms.GetFormData>
               {data => <pre>{JSON.stringify(data, null, 2)}</pre>}
             </Forms.GetFormData>
