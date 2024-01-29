@@ -1,4 +1,4 @@
-import { Paragraph, H2, H3, H4 } from './Text';
+import { Paragraph, H2, H3, H4, H5 } from './Text';
 import renderer from 'react-test-renderer';
 
 describe('Text', () => {
@@ -15,6 +15,7 @@ describe('Text', () => {
         <H2>This is an h2</H2>
         <H3>This is an h3</H3>
         <H4>This is an h4</H4>
+        <H5>This is an h5</H5>
       </>
     ).toJSON();
     expect(tree).toMatchSnapshot();

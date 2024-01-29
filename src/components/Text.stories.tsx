@@ -1,11 +1,12 @@
-import { H2, H3, H4, Paragraph } from "./Text";
+import { H2, H3, H4, H5, Paragraph } from "./Text";
 
 export const PText = () => <>
   <Paragraph>Body text</Paragraph>
 </>;
 
 export const Headings = () => <>
-  <H2>Heading text</H2>
-  <H3>Heading text</H3>
-  <H4>Heading text</H4>
+  <H2>This is an h2</H2>
+  <H3>This is an h3</H3>
+  <H4>This is an h4</H4>
+  <H5>This is an h5</H5>
 </>;
