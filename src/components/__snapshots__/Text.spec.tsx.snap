@@ -2,16 +2,33 @@
 
 exports[`Text matches body snapshot 1`] = `
 <p
-  className="sc-gsnTZi eGRQDn"
+  className="sc-eCYdqJ jlZafi"
 >
   This is a paragraph
 </p>
 `;
 
 exports[`Text matches heading snapshot 1`] = `
-<h2
-  className="sc-bczRLJ fZeHof"
->
-  This is a heading
-</h2>
+Array [
+  <h2
+    className="sc-bczRLJ fZeHof"
+  >
+    This is an h2
+  </h2>,
+  <h3
+    className="sc-gsnTZi dsraNS"
+  >
+    This is an h3
+  </h3>,
+  <h4
+    className="sc-dkzDqf ibtgXn"
+  >
+    This is an h4
+  </h4>,
+  <h5
+    className="sc-hKMtZM jocjt"
+  >
+    This is an h5
+  </h5>,
+]
 `;
