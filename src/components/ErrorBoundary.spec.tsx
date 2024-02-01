@@ -3,7 +3,7 @@ import { ErrorBoundary } from './ErrorBoundary';
 import sentryTestkit from 'sentry-testkit';
 import * as Sentry from '@sentry/react';
 import { findByTestId } from '../test/utils';
-import { SessionExpiredError } from '@openstax/ts-utils/errors';
+import { SessionExpiredError } from '@openstax/ts-utils/errors.js';
 
 const { testkit, sentryTransport } = sentryTestkit();
 

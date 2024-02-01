@@ -1,4 +1,4 @@
-import { assertInstanceOf, assertString } from '@openstax/ts-utils/assertions';
+import { assertInstanceOf, assertString } from '@openstax/ts-utils/assertions.js';
 import React from 'react';
 import styled from 'styled-components';
 import { ButtonVariant, applyButtonVariantStyles } from '../theme/buttons';
@@ -198,7 +198,7 @@ export const DropdownMenu = ({
   React.useEffect(() => {
     // Close the menu when clicking outside
     const closeOnOutsideClick = (event: MouseEvent) => {
-      if (!ref.current?.contains(event.target as Node)) {
+      if (!(ref.current && ref.current.contains(event.target as Node))) {
         state.closeMenu();
       }
     };

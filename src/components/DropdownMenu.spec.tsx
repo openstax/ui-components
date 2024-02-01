@@ -1,4 +1,4 @@
-import { fireEvent, render } from '@testing-library/react';
+import { act, fireEvent, render } from '@testing-library/react';
 import React from 'react';
 import renderer from 'react-test-renderer';
 import { DropdownMenu, DropdownMenuContext, DropdownMenuItemButton } from './DropdownMenu';
@@ -17,36 +17,16 @@ describe('DropdownMenu', () => {
     </DropdownMenu>
   );
 
-  it('should open on a button click and close on another button click', () => {
-    const component = renderer.create(<TestMenu variant='light'/>);
-    expect(component.toJSON()).toMatchSnapshot();
-
-    component.root.findByProps({ 'aria-controls': 'test-menu' }).props.onClick();
-    expect(component.toJSON()).toMatchSnapshot();
-    component.root.findByProps({ 'aria-controls': 'test-menu' }).props.onClick();
-    expect(component.toJSON()).toMatchSnapshot();
-  });
-
-  it('should open on a button click and close on an item click', () => {
-    const component = renderer.create(<TestMenu variant='light'/>);
-    expect(component.toJSON()).toMatchSnapshot();
-
-    component.root.findByProps({ 'aria-controls': 'test-menu' }).props.onClick();
-    expect(component.toJSON()).toMatchSnapshot();
-    component.root.findAllByProps({ role: 'menuitem' })[0].props.onClick();
-    expect(component.toJSON()).toMatchSnapshot();
-  });
-
   it('should open on a button click and close on an outside click', () => {
     const { asFragment, getByText } = render(<TestMenu variant='primary'/>);
     expect(asFragment()).toMatchSnapshot();
 
     const menuButton = getByText('Test Menu');
-    menuButton.click();
+    act(() => menuButton.click());
     expect(asFragment()).toMatchSnapshot();
-    getByText('Test Menu Item 1').parentElement?.click();
+    act(() => getByText('Test Menu Item 1').parentElement?.click());
     expect(asFragment()).toMatchSnapshot();
-    menuButton.parentElement?.parentElement?.click();
+    act(() => menuButton.parentElement?.parentElement?.click());
     expect(asFragment()).toMatchSnapshot();
   });
 
@@ -75,11 +55,31 @@ describe('DropdownMenu', () => {
     expect(asFragment()).toMatchSnapshot();
   });
 
+  it('should open on a button click and close on another button click', () => {
+    const component = renderer.create(<TestMenu variant='light'/>);
+    expect(component.toJSON()).toMatchSnapshot();
+
+    renderer.act(() => component.root.findByProps({ 'aria-controls': 'test-menu' }).props.onClick());
+    expect(component.toJSON()).toMatchSnapshot();
+    renderer.act(() => component.root.findByProps({ 'aria-controls': 'test-menu' }).props.onClick());
+    expect(component.toJSON()).toMatchSnapshot();
+  });
+
+  it('should open on a button click and close on an item click', () => {
+    const component = renderer.create(<TestMenu variant='light'/>);
+    expect(component.toJSON()).toMatchSnapshot();
+
+    renderer.act(() => component.root.findByProps({ 'aria-controls': 'test-menu' }).props.onClick());
+    expect(component.toJSON()).toMatchSnapshot();
+    renderer.act(() => component.root.findAllByProps({ role: 'menuitem' })[0].props.onClick());
+    expect(component.toJSON()).toMatchSnapshot();
+  });
+
   it('should not open when disabled', () => {
     const component = renderer.create(<TestMenu disabled={true} variant='light'/>);
     expect(component.toJSON()).toMatchSnapshot();
 
-    component.root.findByProps({ 'aria-controls': 'test-menu' }).props.onClick();
+    renderer.act(() => component.root.findByProps({ 'aria-controls': 'test-menu' }).props.onClick());
     expect(component.toJSON()).toMatchSnapshot();
   });
 });
@@ -93,9 +93,11 @@ describe('DropdownMenuContext', () => {
       <div data-testid='open' onClick={() => openMenu('first')}/>
       <div data-testid='close' onClick={closeMenu}/>
     </>;
-  }
+  };
+
   it('throws errors if used without a context provider', () => {
     const component = renderer.create(<ContextTester/>);
+
     expect(() => component.root.findByProps({ 'data-testid': 'toggle' }).props.onClick()).toThrowError(
       'Tried to call toggleMenu() without a DropdownMenuContext'
     );
