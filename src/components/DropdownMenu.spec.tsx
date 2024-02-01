@@ -17,75 +17,70 @@ describe('DropdownMenu', () => {
     </DropdownMenu>
   );
 
-  // Need to isolate tests from the 2 libraries in these blocks otherwise we get warnings about using the wrong act()
-  describe('@testing-library/react', () => {
-    it('should open on a button click and close on an outside click', () => {
-      const { asFragment, getByText } = render(<TestMenu variant='primary'/>);
-      expect(asFragment()).toMatchSnapshot();
+  it('should open on a button click and close on an outside click', () => {
+    const { asFragment, getByText } = render(<TestMenu variant='primary'/>);
+    expect(asFragment()).toMatchSnapshot();
 
-      const menuButton = getByText('Test Menu');
-      act(() => menuButton.click());
-      expect(asFragment()).toMatchSnapshot();
-      act(() => getByText('Test Menu Item 1').parentElement?.click());
-      expect(asFragment()).toMatchSnapshot();
-      act(() => menuButton.parentElement?.parentElement?.click());
-      expect(asFragment()).toMatchSnapshot();
-    });
-
-    it('should handle keyboard events', () => {
-      const { asFragment, getByText } = render(<TestMenu variant='secondary' width='10rem'/>);
-      const menuButton = getByText('Test Menu');
-      expect(asFragment()).toMatchSnapshot();
-
-      fireEvent.keyDown(menuButton, { key: 'ArrowUp' });
-      expect(asFragment()).toMatchSnapshot();
-
-      const menuItem1 = getByText('Test Menu Item 1');
-      const menuItem2 = getByText('Test Menu Item 2');
-      fireEvent.keyDown(menuItem2, { key: 'ArrowDown' });
-      fireEvent.keyDown(menuItem1, { key: 'ArrowUp' });
-      fireEvent.keyDown(menuItem2, { key: 'Home' });
-      fireEvent.keyDown(menuItem1, { key: 'End' });
-      fireEvent.keyDown(menuItem2, { key: 'ArrowUp' });
-      fireEvent.keyDown(menuItem1, { key: 'ArrowDown' });
-      fireEvent.keyDown(menuItem2, { key: 't' });
-      fireEvent.keyDown(menuItem1, { key: 'T' });
-      fireEvent.keyDown(menuItem2, { key: 'Escape' });
-      expect(asFragment()).toMatchSnapshot();
-
-      fireEvent.keyDown(menuButton, { key: 'ArrowDown' });
-      expect(asFragment()).toMatchSnapshot();
-    });
+    const menuButton = getByText('Test Menu');
+    act(() => menuButton.click());
+    expect(asFragment()).toMatchSnapshot();
+    act(() => getByText('Test Menu Item 1').parentElement?.click());
+    expect(asFragment()).toMatchSnapshot();
+    act(() => menuButton.parentElement?.parentElement?.click());
+    expect(asFragment()).toMatchSnapshot();
   });
 
-  describe('react-test-renderer', () => {
-    it('should open on a button click and close on another button click', () => {
-      const component = renderer.create(<TestMenu variant='light'/>);
-      expect(component.toJSON()).toMatchSnapshot();
+  it('should handle keyboard events', () => {
+    const { asFragment, getByText } = render(<TestMenu variant='secondary' width='10rem'/>);
+    const menuButton = getByText('Test Menu');
+    expect(asFragment()).toMatchSnapshot();
 
-      renderer.act(() => component.root.findByProps({ 'aria-controls': 'test-menu' }).props.onClick());
-      expect(component.toJSON()).toMatchSnapshot();
-      renderer.act(() => component.root.findByProps({ 'aria-controls': 'test-menu' }).props.onClick());
-      expect(component.toJSON()).toMatchSnapshot();
-    });
+    fireEvent.keyDown(menuButton, { key: 'ArrowUp' });
+    expect(asFragment()).toMatchSnapshot();
 
-    it('should open on a button click and close on an item click', () => {
-      const component = renderer.create(<TestMenu variant='light'/>);
-      expect(component.toJSON()).toMatchSnapshot();
+    const menuItem1 = getByText('Test Menu Item 1');
+    const menuItem2 = getByText('Test Menu Item 2');
+    fireEvent.keyDown(menuItem2, { key: 'ArrowDown' });
+    fireEvent.keyDown(menuItem1, { key: 'ArrowUp' });
+    fireEvent.keyDown(menuItem2, { key: 'Home' });
+    fireEvent.keyDown(menuItem1, { key: 'End' });
+    fireEvent.keyDown(menuItem2, { key: 'ArrowUp' });
+    fireEvent.keyDown(menuItem1, { key: 'ArrowDown' });
+    fireEvent.keyDown(menuItem2, { key: 't' });
+    fireEvent.keyDown(menuItem1, { key: 'T' });
+    fireEvent.keyDown(menuItem2, { key: 'Escape' });
+    expect(asFragment()).toMatchSnapshot();
 
-      renderer.act(() => component.root.findByProps({ 'aria-controls': 'test-menu' }).props.onClick());
-      expect(component.toJSON()).toMatchSnapshot();
-      renderer.act(() => component.root.findAllByProps({ role: 'menuitem' })[0].props.onClick());
-      expect(component.toJSON()).toMatchSnapshot();
-    });
+    fireEvent.keyDown(menuButton, { key: 'ArrowDown' });
+    expect(asFragment()).toMatchSnapshot();
+  });
 
-    it('should not open when disabled', () => {
-      const component = renderer.create(<TestMenu disabled={true} variant='light'/>);
-      expect(component.toJSON()).toMatchSnapshot();
+  it('should open on a button click and close on another button click', () => {
+    const component = renderer.create(<TestMenu variant='light'/>);
+    expect(component.toJSON()).toMatchSnapshot();
 
-      renderer.act(() => component.root.findByProps({ 'aria-controls': 'test-menu' }).props.onClick());
-      expect(component.toJSON()).toMatchSnapshot();
-    });
+    renderer.act(() => component.root.findByProps({ 'aria-controls': 'test-menu' }).props.onClick());
+    expect(component.toJSON()).toMatchSnapshot();
+    renderer.act(() => component.root.findByProps({ 'aria-controls': 'test-menu' }).props.onClick());
+    expect(component.toJSON()).toMatchSnapshot();
+  });
+
+  it('should open on a button click and close on an item click', () => {
+    const component = renderer.create(<TestMenu variant='light'/>);
+    expect(component.toJSON()).toMatchSnapshot();
+
+    renderer.act(() => component.root.findByProps({ 'aria-controls': 'test-menu' }).props.onClick());
+    expect(component.toJSON()).toMatchSnapshot();
+    renderer.act(() => component.root.findAllByProps({ role: 'menuitem' })[0].props.onClick());
+    expect(component.toJSON()).toMatchSnapshot();
+  });
+
+  it('should not open when disabled', () => {
+    const component = renderer.create(<TestMenu disabled={true} variant='light'/>);
+    expect(component.toJSON()).toMatchSnapshot();
+
+    renderer.act(() => component.root.findByProps({ 'aria-controls': 'test-menu' }).props.onClick());
+    expect(component.toJSON()).toMatchSnapshot();
   });
 });
 
