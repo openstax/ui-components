@@ -124,7 +124,7 @@ export const Tabs = ({
   className,
   children,
   ...restProps
-}: TabsProps & AC.TabsProps) => {
+}: TabsProps) => {
   return (
     <StyledTabs
       variant={variant}
