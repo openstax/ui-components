@@ -1,0 +1,265 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Tabs component button-bar styling renders correctly with button-bar variant 1`] = `
+<DocumentFragment>
+  <div
+    class="sc-bczRLJ gnsHrW"
+    data-orientation="horizontal"
+    data-rac=""
+  >
+    <div
+      aria-label="Items"
+      aria-orientation="horizontal"
+      class="react-aria-TabList"
+      data-orientation="horizontal"
+      data-rac=""
+      id="react-aria-3"
+      role="tablist"
+    >
+      <div
+        aria-controls="react-aria-3-tabpanel-one"
+        aria-selected="true"
+        class="react-aria-Tab"
+        data-key="one"
+        data-rac=""
+        data-selected="true"
+        id="react-aria-3-tab-one"
+        role="tab"
+        tabindex="0"
+      >
+        First Item
+      </div>
+      <div
+        aria-selected="false"
+        class="react-aria-Tab"
+        data-key="two"
+        data-rac=""
+        id="react-aria-3-tab-two"
+        role="tab"
+        tabindex="-1"
+      >
+        Second Item
+      </div>
+      <div
+        aria-selected="false"
+        class="react-aria-Tab"
+        data-key="three"
+        data-rac=""
+        id="react-aria-3-tab-three"
+        role="tab"
+        tabindex="-1"
+      >
+        Last Item
+      </div>
+    </div>
+    <div
+      aria-labelledby="react-aria-3-tab-one"
+      class="react-aria-TabPanel"
+      data-rac=""
+      id="react-aria-3-tabpanel-one"
+      role="tabpanel"
+      tabindex="0"
+    >
+      First Content Panel
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`Tabs component button-bar styling renders correctly with button-bar variant and small size 1`] = `
+<DocumentFragment>
+  <div
+    class="sc-bczRLJ jrvfUi"
+    data-orientation="horizontal"
+    data-rac=""
+  >
+    <div
+      aria-label="Items"
+      aria-orientation="horizontal"
+      class="react-aria-TabList"
+      data-orientation="horizontal"
+      data-rac=""
+      id="react-aria-4"
+      role="tablist"
+    >
+      <div
+        aria-controls="react-aria-4-tabpanel-one"
+        aria-selected="true"
+        class="react-aria-Tab"
+        data-key="one"
+        data-rac=""
+        data-selected="true"
+        id="react-aria-4-tab-one"
+        role="tab"
+        tabindex="0"
+      >
+        First Item
+      </div>
+      <div
+        aria-selected="false"
+        class="react-aria-Tab"
+        data-key="two"
+        data-rac=""
+        id="react-aria-4-tab-two"
+        role="tab"
+        tabindex="-1"
+      >
+        Second Item
+      </div>
+      <div
+        aria-selected="false"
+        class="react-aria-Tab"
+        data-key="three"
+        data-rac=""
+        id="react-aria-4-tab-three"
+        role="tab"
+        tabindex="-1"
+      >
+        Last Item
+      </div>
+    </div>
+    <div
+      aria-labelledby="react-aria-4-tab-one"
+      class="react-aria-TabPanel"
+      data-rac=""
+      id="react-aria-4-tabpanel-one"
+      role="tabpanel"
+      tabindex="0"
+    >
+      First Content Panel
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`Tabs component normal styling renders correctly 1`] = `
+<DocumentFragment>
+  <div
+    class="sc-bczRLJ bCHaXV"
+    data-orientation="horizontal"
+    data-rac=""
+  >
+    <div
+      aria-label="Items"
+      aria-orientation="horizontal"
+      class="react-aria-TabList"
+      data-orientation="horizontal"
+      data-rac=""
+      id="react-aria-1"
+      role="tablist"
+    >
+      <div
+        aria-controls="react-aria-1-tabpanel-one"
+        aria-selected="true"
+        class="react-aria-Tab"
+        data-key="one"
+        data-rac=""
+        data-selected="true"
+        id="react-aria-1-tab-one"
+        role="tab"
+        tabindex="0"
+      >
+        First Item
+      </div>
+      <div
+        aria-selected="false"
+        class="react-aria-Tab"
+        data-key="two"
+        data-rac=""
+        id="react-aria-1-tab-two"
+        role="tab"
+        tabindex="-1"
+      >
+        Second Item
+      </div>
+      <div
+        aria-selected="false"
+        class="react-aria-Tab"
+        data-key="three"
+        data-rac=""
+        id="react-aria-1-tab-three"
+        role="tab"
+        tabindex="-1"
+      >
+        Last Item
+      </div>
+    </div>
+    <div
+      aria-labelledby="react-aria-1-tab-one"
+      class="react-aria-TabPanel"
+      data-rac=""
+      id="react-aria-1-tabpanel-one"
+      role="tabpanel"
+      tabindex="0"
+    >
+      First Content Panel
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`Tabs component normal styling renders correctly with small size 1`] = `
+<DocumentFragment>
+  <div
+    class="sc-bczRLJ kFgpLZ"
+    data-orientation="horizontal"
+    data-rac=""
+  >
+    <div
+      aria-label="Items"
+      aria-orientation="horizontal"
+      class="react-aria-TabList"
+      data-orientation="horizontal"
+      data-rac=""
+      id="react-aria-2"
+      role="tablist"
+    >
+      <div
+        aria-controls="react-aria-2-tabpanel-one"
+        aria-selected="true"
+        class="react-aria-Tab"
+        data-key="one"
+        data-rac=""
+        data-selected="true"
+        id="react-aria-2-tab-one"
+        role="tab"
+        tabindex="0"
+      >
+        First Item
+      </div>
+      <div
+        aria-selected="false"
+        class="react-aria-Tab"
+        data-key="two"
+        data-rac=""
+        id="react-aria-2-tab-two"
+        role="tab"
+        tabindex="-1"
+      >
+        Second Item
+      </div>
+      <div
+        aria-selected="false"
+        class="react-aria-Tab"
+        data-key="three"
+        data-rac=""
+        id="react-aria-2-tab-three"
+        role="tab"
+        tabindex="-1"
+      >
+        Last Item
+      </div>
+    </div>
+    <div
+      aria-labelledby="react-aria-2-tab-one"
+      class="react-aria-TabPanel"
+      data-rac=""
+      id="react-aria-2-tabpanel-one"
+      role="tabpanel"
+      tabindex="0"
+    >
+      First Content Panel
+    </div>
+  </div>
+</DocumentFragment>
+`;
