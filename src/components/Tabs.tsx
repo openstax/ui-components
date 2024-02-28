@@ -2,10 +2,11 @@ import React from "react";
 import * as AC from "react-aria-components";
 import { colors } from "../theme";
 import styled, { css } from "styled-components";
+import { palette } from "../../src/theme/palette";
 
 type TabsProps = {
   variant?: "button-bar";
-  size?: "large" | "small";
+  size?: "large" | "medium" | "small";
   className?: string;
   children?: React.ReactNode;
 } & AC.TabsProps;
@@ -19,7 +20,7 @@ const buttonBarCss = css`
   .react-aria-Tab {
     padding: 0 1.6rem;
     min-height: ${({ size }: TabsProps) =>
-      size === "large" ? "4.8rem" : "2.8rem"};
+      ({ large: '4.8', medium: '4.8', small: '2.8'}[size || 'medium'])}rem;
 
     &[data-selected] {
       background: ${colors.palette.neutralLight};
@@ -43,58 +44,32 @@ const buttonBarCss = css`
       border-right: 0;
     }
   }
-
-  &[data-orientation="vertical"] .react-aria-Tab {
-    border-bottom: 0.1rem solid ${colors.palette.pale};
-
-    &:first-child {
-      border-top-left-radius: 0.4rem;
-      border-top-right-radius: 0.4rem;
-      border-top: 0;
-    }
-    &:last-child {
-      border-bottom-left-radius: 0.4rem;
-      border-bottom-right-radius: 0.4rem;
-      border-bottom: 0;
-    }
-  }
 `;
 
 const tabsCss = css`
-  .react-aria-TabList {
+  &[data-orientation="horizontal"] .react-aria-TabList {
     border-bottom: 0.1rem solid ${colors.palette.pale};
-  }
-
-  &[data-orientation="vertical"] .react-aria-TabList {
-    border: none;
   }
 
   .react-aria-Tab {
     padding: 0 1.6rem;
     height: ${({ size }: TabsProps) =>
-      size === "large" ? "4.8rem" : "2.8rem"};
+      size === 'small' ? '2.9' : '4.8'}rem;
     border-bottom: 0.4rem solid transparent;
 
-    &[data-selected] {
-      border-color: #63a524;
-    }
-    &:hover:not([data-selected]) {
-      border-color: ${colors.palette.neutralLighter};
+    &[data-selected], &:hover {
+      border-color: ${palette.darkGreen};
     }
   }
 `;
 
 const StyledTabs = styled(AC.Tabs)`
   .react-aria-TabList {
-    overflow-y: scroll;
+    overflow-x: auto;
     overscroll-behavior: contain;
     display: flex;
   }
 
-  &[data-orientation="vertical"] .react-aria-TabList {
-    flex-direction: column;
-    overflow: scroll;
-  }
   &[data-orientation="horizontal"] .react-aria-TabList {
     flex-direction: row;
   }
@@ -107,7 +82,7 @@ const StyledTabs = styled(AC.Tabs)`
     outline-offset: -0.1rem; // Prevent overflow scroll from clipping outline
     white-space: nowrap;
     font-size: ${({ size }: TabsProps) =>
-      size === "large" ? "1.6rem" : "1.4rem"};
+      ({ large: '2.4', medium: '1.8', small: '1.6'}[size || 'medium'])}rem;
 
     &:hover {
       cursor: pointer;
@@ -120,7 +95,7 @@ const StyledTabs = styled(AC.Tabs)`
 
 export const Tabs = ({
   variant,
-  size = "large",
+  size = "medium",
   className,
   children,
   ...restProps
