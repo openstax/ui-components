@@ -20,7 +20,7 @@ const buttonBarCss = css`
   .react-aria-Tab {
     padding: 0 1.6rem;
     min-height: ${({ size }: TabsProps) =>
-      ({ large: '4.8', medium: '4.8', small: '2.8'}[size || 'medium'])}rem;
+      size === 'small' ? '2.8' : '4.8'}rem;
 
     &[data-selected] {
       background: ${colors.palette.neutralLight};
@@ -82,7 +82,7 @@ const StyledTabs = styled(AC.Tabs)`
     outline-offset: -0.1rem; // Prevent overflow scroll from clipping outline
     white-space: nowrap;
     font-size: ${({ size }: TabsProps) =>
-      ({ large: '2.4', medium: '1.8', small: '1.6'}[size || 'medium'])}rem;
+      size === 'small' ? '1.6' : (size === 'large' ? '2.4' : '1.8')}rem;
 
     &:hover {
       cursor: pointer;
