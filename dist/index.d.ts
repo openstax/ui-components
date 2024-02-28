@@ -12,6 +12,7 @@ export * from './components/NavBar';
 export * from './components/NavBarLogo';
 export * from './components/Overlay';
 export * from './components/RiceLogo';
+export * from './components/Tabs';
 export * from './components/Text';
 export * from './components/ToastContainer';
 export * as Forms from './components/forms';
