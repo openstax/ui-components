@@ -13,6 +13,72 @@ exports[`Tabs component button-bar styling renders correctly with button-bar var
       class="react-aria-TabList"
       data-orientation="horizontal"
       data-rac=""
+      id="react-aria-3"
+      role="tablist"
+    >
+      <div
+        aria-controls="react-aria-3-tabpanel-one"
+        aria-selected="true"
+        class="react-aria-Tab"
+        data-key="one"
+        data-rac=""
+        data-selected="true"
+        id="react-aria-3-tab-one"
+        role="tab"
+        tabindex="0"
+      >
+        First Item
+      </div>
+      <div
+        aria-selected="false"
+        class="react-aria-Tab"
+        data-key="two"
+        data-rac=""
+        id="react-aria-3-tab-two"
+        role="tab"
+        tabindex="-1"
+      >
+        Second Item
+      </div>
+      <div
+        aria-selected="false"
+        class="react-aria-Tab"
+        data-key="three"
+        data-rac=""
+        id="react-aria-3-tab-three"
+        role="tab"
+        tabindex="-1"
+      >
+        Last Item
+      </div>
+    </div>
+    <div
+      aria-labelledby="react-aria-3-tab-one"
+      class="react-aria-TabPanel"
+      data-rac=""
+      id="react-aria-3-tabpanel-one"
+      role="tabpanel"
+      tabindex="0"
+    >
+      First Content Panel
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`Tabs component button-bar styling renders correctly with button-bar variant and small size 1`] = `
+<DocumentFragment>
+  <div
+    class="sc-bczRLJ ijWZwy"
+    data-orientation="horizontal"
+    data-rac=""
+  >
+    <div
+      aria-label="Items"
+      aria-orientation="horizontal"
+      class="react-aria-TabList"
+      data-orientation="horizontal"
+      data-rac=""
       id="react-aria-4"
       role="tablist"
     >
@@ -66,10 +132,10 @@ exports[`Tabs component button-bar styling renders correctly with button-bar var
 </DocumentFragment>
 `;
 
-exports[`Tabs component button-bar styling renders correctly with button-bar variant and small size 1`] = `
+exports[`Tabs component button-bar styling renders large size 1`] = `
 <DocumentFragment>
   <div
-    class="sc-bczRLJ ijWZwy"
+    class="sc-bczRLJ bgDxaZ"
     data-orientation="horizontal"
     data-rac=""
   >
@@ -123,138 +189,6 @@ exports[`Tabs component button-bar styling renders correctly with button-bar var
       class="react-aria-TabPanel"
       data-rac=""
       id="react-aria-5-tabpanel-one"
-      role="tabpanel"
-      tabindex="0"
-    >
-      First Content Panel
-    </div>
-  </div>
-</DocumentFragment>
-`;
-
-exports[`Tabs component button-bar styling renders large size 1`] = `
-<DocumentFragment>
-  <div
-    class="sc-bczRLJ bgDxaZ"
-    data-orientation="horizontal"
-    data-rac=""
-  >
-    <div
-      aria-label="Items"
-      aria-orientation="horizontal"
-      class="react-aria-TabList"
-      data-orientation="horizontal"
-      data-rac=""
-      id="react-aria-6"
-      role="tablist"
-    >
-      <div
-        aria-controls="react-aria-6-tabpanel-one"
-        aria-selected="true"
-        class="react-aria-Tab"
-        data-key="one"
-        data-rac=""
-        data-selected="true"
-        id="react-aria-6-tab-one"
-        role="tab"
-        tabindex="0"
-      >
-        First Item
-      </div>
-      <div
-        aria-selected="false"
-        class="react-aria-Tab"
-        data-key="two"
-        data-rac=""
-        id="react-aria-6-tab-two"
-        role="tab"
-        tabindex="-1"
-      >
-        Second Item
-      </div>
-      <div
-        aria-selected="false"
-        class="react-aria-Tab"
-        data-key="three"
-        data-rac=""
-        id="react-aria-6-tab-three"
-        role="tab"
-        tabindex="-1"
-      >
-        Last Item
-      </div>
-    </div>
-    <div
-      aria-labelledby="react-aria-6-tab-one"
-      class="react-aria-TabPanel"
-      data-rac=""
-      id="react-aria-6-tabpanel-one"
-      role="tabpanel"
-      tabindex="0"
-    >
-      First Content Panel
-    </div>
-  </div>
-</DocumentFragment>
-`;
-
-exports[`Tabs component normal styling defaults size 1`] = `
-<DocumentFragment>
-  <div
-    class="sc-bczRLJ ftrhBa"
-    data-orientation="horizontal"
-    data-rac=""
-  >
-    <div
-      aria-label="Items"
-      aria-orientation="horizontal"
-      class="react-aria-TabList"
-      data-orientation="horizontal"
-      data-rac=""
-      id="react-aria-3"
-      role="tablist"
-    >
-      <div
-        aria-controls="react-aria-3-tabpanel-one"
-        aria-selected="true"
-        class="react-aria-Tab"
-        data-key="one"
-        data-rac=""
-        data-selected="true"
-        id="react-aria-3-tab-one"
-        role="tab"
-        tabindex="0"
-      >
-        First Item
-      </div>
-      <div
-        aria-selected="false"
-        class="react-aria-Tab"
-        data-key="two"
-        data-rac=""
-        id="react-aria-3-tab-two"
-        role="tab"
-        tabindex="-1"
-      >
-        Second Item
-      </div>
-      <div
-        aria-selected="false"
-        class="react-aria-Tab"
-        data-key="three"
-        data-rac=""
-        id="react-aria-3-tab-three"
-        role="tab"
-        tabindex="-1"
-      >
-        Last Item
-      </div>
-    </div>
-    <div
-      aria-labelledby="react-aria-3-tab-one"
-      class="react-aria-TabPanel"
-      data-rac=""
-      id="react-aria-3-tabpanel-one"
       role="tabpanel"
       tabindex="0"
     >
