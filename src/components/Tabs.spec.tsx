@@ -85,9 +85,9 @@ describe("Tabs component", () => {
       expect(asFragment()).toMatchSnapshot();
     });
 
-    it("defaults size", () => {
+    it("renders large size", () => {
       const { asFragment } = render(
-        <Tabs size={undefined}>
+        <Tabs size="large">
           <TabList aria-label="Items">
             <Tab id="one">First Item</Tab>
             <Tab id="two">Second Item</Tab>
