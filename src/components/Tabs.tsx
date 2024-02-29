@@ -12,12 +12,12 @@ type TabsProps = {
 } & AC.TabsProps;
 
 const buttonBarCss = css`
-  .react-aria-TabList {
+  [role="tablist"] {
     border: 0.1rem solid ${colors.palette.pale};
     border-radius: 0.5rem;
   }
 
-  .react-aria-Tab {
+  [role="tab"] {
     padding: 0 1.6rem;
     min-height: ${({ size }: TabsProps) =>
       size === 'small' ? '2.8' : ( size === 'large' ? '4.8' : '4.0')}rem;
@@ -31,7 +31,7 @@ const buttonBarCss = css`
     }
   }
 
-  &[data-orientation="horizontal"] .react-aria-Tab {
+  &[data-orientation="horizontal"] [role="tab"] {
     border-right: 0.1rem solid ${colors.palette.pale};
 
     &:first-child {
@@ -48,11 +48,11 @@ const buttonBarCss = css`
 `;
 
 const tabsCss = css`
-  &[data-orientation="horizontal"] .react-aria-TabList {
+  &[data-orientation="horizontal"] [role="tablist"] {
     border-bottom: 0.1rem solid ${colors.palette.pale};
   }
 
-  .react-aria-Tab {
+  [role="tab"] {
     padding: 0 1.6rem;
     height: ${({ size }: TabsProps) =>
       size === 'small' ? '2.9' : '4.8'}rem;
@@ -65,17 +65,17 @@ const tabsCss = css`
 `;
 
 const StyledTabs = styled(AC.Tabs)`
-  .react-aria-TabList {
+  [role="tablist"] {
     overflow-x: auto;
     overscroll-behavior: contain;
     display: flex;
   }
 
-  &[data-orientation="horizontal"] .react-aria-TabList {
+  &[data-orientation="horizontal"] [role="tablist"] {
     flex-direction: row;
   }
 
-  .react-aria-Tab {
+  [role="tab"] {
     flex: 1 1 auto;
     display: flex;
     align-items: center;
