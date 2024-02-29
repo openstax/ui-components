@@ -29,8 +29,9 @@ export const Examples = () => {
   return <Wrapper>
     <label>
       <b>Size</b><br/>
-      <select onChange={handleSetSize}>
-        {['large', 'medium', 'small'].map((v) => <option value={v} selected={size === v}>{v}</option>)}
+      <select onChange={handleSetSize} defaultValue={size}>
+        {['large', 'medium', 'small'].map((v) =>
+          <option key={v}>{v}</option>)}
       </select>
     </label>
     <Tabs size={size}>
