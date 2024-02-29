@@ -20,7 +20,8 @@ const buttonBarCss = css`
   .react-aria-Tab {
     padding: 0 1.6rem;
     min-height: ${({ size }: TabsProps) =>
-      size === 'small' ? '2.8' : '4.8'}rem;
+      size === 'small' ? '2.8' : ( size === 'large' ? '4.8' : '4.0')}rem;
+    background: #fff;
 
     &[data-selected] {
       background: ${colors.palette.neutralLight};
