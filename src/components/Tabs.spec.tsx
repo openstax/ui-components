@@ -3,7 +3,7 @@ import { Tabs, Tab, TabList, TabPanel } from "./Tabs";
 
 describe("Tabs component", () => {
   describe("normal styling", () => {
-    it("renders correctly", () => {
+    it("renders", () => {
       const { asFragment } = render(
         <Tabs>
           <TabList aria-label="Items">
@@ -19,7 +19,7 @@ describe("Tabs component", () => {
       expect(asFragment()).toMatchSnapshot();
     });
 
-    it("renders correctly with small size", () => {
+    it("renders small size", () => {
       const { asFragment } = render(
         <Tabs size="small">
           <TabList aria-label="Items">
@@ -53,7 +53,7 @@ describe("Tabs component", () => {
   });
 
   describe("button-bar styling", () => {
-    it("renders correctly with button-bar variant", () => {
+    it("renders", () => {
       const { asFragment } = render(
         <Tabs variant="button-bar">
           <TabList aria-label="Items">
@@ -69,7 +69,7 @@ describe("Tabs component", () => {
       expect(asFragment()).toMatchSnapshot();
     });
 
-    it("renders correctly with button-bar variant and small size", () => {
+    it("renders small size", () => {
       const { asFragment } = render(
         <Tabs size="small" variant="button-bar">
           <TabList aria-label="Items">
