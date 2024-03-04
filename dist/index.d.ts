@@ -1,4 +1,5 @@
 export * from './components/Button';
+export * from './components/ButtonBar';
 export * from './components/Checkbox';
 export * from './components/DropdownMenu';
 export * from './components/Error';
