@@ -1,5 +1,5 @@
 import React from "react";
-import * as AC from "react-aria-components";
+import * as RAC from "react-aria-components";
 import { colors } from "../theme";
 import styled, { css } from "styled-components";
 import { palette } from "../../src/theme/palette";
@@ -9,7 +9,7 @@ type TabsProps = {
   size?: "large" | "medium" | "small";
   className?: string;
   children?: React.ReactNode;
-} & AC.TabsProps;
+} & RAC.TabsProps;
 
 const buttonBarCss = css`
   [role="tablist"] {
@@ -64,7 +64,7 @@ const tabsCss = css`
   }
 `;
 
-const StyledTabs = styled(AC.Tabs)`
+const StyledTabs = styled(RAC.Tabs)`
   [role="tablist"] {
     overflow-x: auto;
     overscroll-behavior: contain;
@@ -113,4 +113,4 @@ export const Tabs = ({
   );
 };
 
-export { TabList, Tab, TabPanel } from "react-aria-components";
+export { TabList, Tab, TabPanel, TabsContext, TabListStateContext } from "react-aria-components";
