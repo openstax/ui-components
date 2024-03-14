@@ -81,7 +81,6 @@ export const Radio = (props: MakeControlled<typeof Uncontrolled.Radio>) => {
   return <Uncontrolled.Radio
     {...props}
     name={namespace + '.' + props.name}
-    checked={!!checked}
     onChangeValue={onChangeValue}
   />;
 };
