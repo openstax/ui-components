@@ -67,6 +67,25 @@ export const TextArea = (props: MakeControlled<typeof Uncontrolled.TextArea>) =>
   />;
 };
 
+export const Radio = (props: MakeControlled<typeof Uncontrolled.Radio>) => {
+  const {data, namespace, setInput} = useFormHelpers();
+
+  const onChangeValue = (value: boolean | undefined) => {
+    props.onChangeValue?.(value);
+    setInput.field(props.name)(value);
+  };
+
+  const checked = data[props.name];
+  useEmptyDisabledValue(props, checked, onChangeValue);
+
+  return <Uncontrolled.Radio
+    {...props}
+    name={namespace + '.' + props.name}
+    checked={!!checked}
+    onChangeValue={onChangeValue}
+  />;
+};
+
 export const Checkbox = (props: MakeControlled<typeof Uncontrolled.Checkbox>) => {
   const {data, namespace, setInput} = useFormHelpers();
 
