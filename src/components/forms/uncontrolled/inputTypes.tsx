@@ -153,6 +153,37 @@ export const Select = ({
 };
 
 /*
+ * radio element
+ */
+type RadioProps = React.ComponentPropsWithoutRef<'input'> & InputProps & {
+  onChangeValue?: (value: boolean | undefined) => void;
+  wrapperProps?: React.ComponentPropsWithoutRef<'label'>;
+};
+const RadioLine = styled.div`
+  flex-direction: row;
+  display: flex;
+  align-items: center;
+`;
+export const Radio = ({
+  label,
+  help,
+  wrapperProps,
+  onChangeValue,
+  ...props
+}: RadioProps) => {
+  return <FormInputWrapper {...wrapperProps}>
+    <RadioLine>
+      <input type="radio" {...props} onChange={e => {
+        onChangeValue?.(!!e.target.checked);
+        props.onChange?.(e);
+      }}/>
+      <FormLabelText><RequiredIndicator show={props.required} />{label}</FormLabelText>
+    </RadioLine>
+    <HelpText value={help} />
+  </FormInputWrapper>;
+};
+
+/*
  * checkbox element
  */
 type CheckboxProps = React.ComponentPropsWithoutRef<'input'> & InputProps & {
