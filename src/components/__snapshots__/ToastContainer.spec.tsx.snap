@@ -5,6 +5,7 @@ exports[`ToastContainer matches snapshot 1`] = `
   className="sc-gsnTZi bQKHKA"
 >
   <div
+    aria-live="polite"
     className="sc-bczRLJ jAZNhq"
   >
     <div
@@ -23,6 +24,7 @@ exports[`ToastContainer matches snapshot 1`] = `
     </div>
   </div>
   <div
+    aria-live="polite"
     className="sc-bczRLJ cWrNHg"
   >
     <div
@@ -41,6 +43,7 @@ exports[`ToastContainer matches snapshot 1`] = `
     </div>
   </div>
   <div
+    aria-live="polite"
     className="sc-bczRLJ loazPe"
   >
     <div
@@ -66,6 +69,7 @@ exports[`ToastContainer uses inline prop 1`] = `
   className="sc-gsnTZi gRYEVl"
 >
   <div
+    aria-live="polite"
     className="sc-bczRLJ jSNerL"
   >
     <div
@@ -84,6 +88,7 @@ exports[`ToastContainer uses inline prop 1`] = `
     </div>
   </div>
   <div
+    aria-live="polite"
     className="sc-bczRLJ fgCwHl"
   >
     <div
@@ -102,6 +107,7 @@ exports[`ToastContainer uses inline prop 1`] = `
     </div>
   </div>
   <div
+    aria-live="polite"
     className="sc-bczRLJ dGEkoL"
   >
     <div
