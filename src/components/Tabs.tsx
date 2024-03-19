@@ -56,10 +56,10 @@ export const buttonBarItemCss = css`
     border-right: 0;
   }
 
-  &[data-selected] {
+  &[data-selected=true] {
     background: ${colors.palette.neutralLight};
   }
-  &:hover:not([data-selected]) {
+  &:hover:not([data-selected=true]) {
     background: ${colors.palette.neutralLighter};
   }
 `;
@@ -85,7 +85,7 @@ const tabsCss = css`
       size === 'small' ? '2.9' : '4.8'}rem;
     border-bottom: 0.4rem solid transparent;
 
-    &[data-selected], &:hover {
+    &[data-selected=true], &:hover {
       border-color: ${palette.darkGreen};
     }
   }
