@@ -3,7 +3,7 @@
 exports[`Tabs component button-bar styling renders 1`] = `
 <DocumentFragment>
   <div
-    class="sc-bczRLJ hHYngg"
+    class="sc-bczRLJ kWkDUg"
     data-orientation="horizontal"
     data-rac=""
   >
@@ -69,7 +69,7 @@ exports[`Tabs component button-bar styling renders 1`] = `
 exports[`Tabs component button-bar styling renders large size 1`] = `
 <DocumentFragment>
   <div
-    class="sc-bczRLJ inwxob"
+    class="sc-bczRLJ kTnZrf"
     data-orientation="horizontal"
     data-rac=""
   >
@@ -135,7 +135,7 @@ exports[`Tabs component button-bar styling renders large size 1`] = `
 exports[`Tabs component button-bar styling renders small size 1`] = `
 <DocumentFragment>
   <div
-    class="sc-bczRLJ eCkhPk"
+    class="sc-bczRLJ kFnuyo"
     data-orientation="horizontal"
     data-rac=""
   >
@@ -201,7 +201,7 @@ exports[`Tabs component button-bar styling renders small size 1`] = `
 exports[`Tabs component normal styling renders 1`] = `
 <DocumentFragment>
   <div
-    class="sc-bczRLJ bnsdNj"
+    class="sc-bczRLJ lljHPQ"
     data-orientation="horizontal"
     data-rac=""
   >
@@ -267,7 +267,7 @@ exports[`Tabs component normal styling renders 1`] = `
 exports[`Tabs component normal styling renders large size 1`] = `
 <DocumentFragment>
   <div
-    class="sc-bczRLJ kCBRtE"
+    class="sc-bczRLJ AsoTD"
     data-orientation="horizontal"
     data-rac=""
   >
@@ -333,7 +333,7 @@ exports[`Tabs component normal styling renders large size 1`] = `
 exports[`Tabs component normal styling renders small size 1`] = `
 <DocumentFragment>
   <div
-    class="sc-bczRLJ WLJAu"
+    class="sc-bczRLJ mEdVR"
     data-orientation="horizontal"
     data-rac=""
   >
