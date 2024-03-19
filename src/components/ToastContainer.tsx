@@ -18,7 +18,7 @@ const StyledToastContainer = styled.div`
 export const ToastContainer = ({ toasts, onDismissToast, inline = false }: {
   toasts: ToastData[], onDismissToast?: ToastData['onDismiss'], inline?: boolean
 }) => {
-  return <StyledToastContainer inline={inline}>
+  return <StyledToastContainer inline={inline} aria-live="polite">
     {toasts.map((toast, index) => <Toast
       key={`toast-${index}`}
       onDismiss={onDismissToast}

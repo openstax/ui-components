@@ -150,7 +150,6 @@ export const Toast = ({
   return <StyledToast
     dismissAfterMs={dismissAfterMs}
     inline={inline}
-    aria-live='polite'
   >
     <div className={variant}>
       <div className='title'>{title}</div>
