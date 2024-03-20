@@ -2,7 +2,6 @@
 
 exports[`Toast has variants and inlines 1`] = `
 <div
-  aria-live="polite"
   className="sc-bczRLJ jAZNhq"
 >
   <div
@@ -24,7 +23,6 @@ exports[`Toast has variants and inlines 1`] = `
 
 exports[`Toast has variants and inlines 2`] = `
 <div
-  aria-live="polite"
   className="sc-bczRLJ jAZNhq"
 >
   <div
@@ -46,7 +44,6 @@ exports[`Toast has variants and inlines 2`] = `
 
 exports[`Toast has variants and inlines 3`] = `
 <div
-  aria-live="polite"
   className="sc-bczRLJ jSNerL"
 >
   <div
@@ -68,7 +65,6 @@ exports[`Toast has variants and inlines 3`] = `
 
 exports[`Toast matches snapshot 1`] = `
 <div
-  aria-live="polite"
   className="sc-bczRLJ jAZNhq"
 >
   <div
