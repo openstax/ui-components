@@ -1,0 +1,48 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ButtonBar renders 1`] = `
+<DocumentFragment>
+  <div
+    class="sc-gsnTZi bqPtVr"
+  >
+    <a>
+      One
+    </a>
+    <a>
+      Two
+    </a>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`ButtonBar renders large size 1`] = `
+<DocumentFragment>
+  <div
+    class="sc-gsnTZi eOLdKk"
+  >
+    <button>
+      One
+    </button>
+    <button
+      data-selected="true"
+    >
+      Two
+    </button>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`ButtonBar renders small size 1`] = `
+<DocumentFragment>
+  <div
+    class="sc-gsnTZi fgJhCT"
+  >
+    <button>
+      One
+    </button>
+    <button>
+      Two
+    </button>
+  </div>
+</DocumentFragment>
+`;
