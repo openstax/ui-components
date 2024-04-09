@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Radio matches snapshot 1`] = `
+<label
+  className="sc-bczRLJ gxloeV"
+>
+  <input
+    className="sc-gsnTZi dmkejP"
+    type="radio"
+  />
+  Click Me
+</label>
+`;

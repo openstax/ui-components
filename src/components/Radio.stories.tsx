@@ -11,12 +11,12 @@ const RadioGroup = styled.div`
 `;
 
 type RadioProps = React.ComponentProps<typeof Radio>;
-const renderRadios = (variant: RadioProps['variant']) => <RadioGroup>
-  <Radio name='primary' {...{variant}}>Label 1</Radio>
-  <Radio name='primary' {...{variant}} defaultChecked>Label 2</Radio>
-  <Radio name='primary' {...{variant}}>Label 3</Radio>
+const renderRadios = (props: RadioProps) => <RadioGroup>
+  <Radio {...props}>Label 1</Radio>
+  <Radio {...props} defaultChecked>Label 2</Radio>
+  <Radio {...props}>Label 3</Radio>
 </RadioGroup>;
 
-export const Primary = () => <>
-  {renderRadios('primary')}
+export const Default = () => <>
+  {renderRadios({name: 'default'})}
 </>;
