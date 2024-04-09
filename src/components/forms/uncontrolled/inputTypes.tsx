@@ -173,7 +173,7 @@ export const Radio = ({
 }: RadioProps) => {
   return <FormInputWrapper {...wrapperProps}>
     <RadioLine>
-      <input type="radio" {...props} onChange={e => {
+      <Radio {...props} label={label} onChange={e => {
         onChangeValue?.(!!e.target.checked);
         props.onChange?.(e);
       }}/>
