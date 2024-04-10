@@ -3,10 +3,11 @@ import { colors } from "../theme";
 import styled from "styled-components";
 import { InputHTMLAttributes } from "react";
 
-const StyledLabel = styled.label`
+const StyledLabel = styled.label<{disabled?: boolean}>`
   font-size: 1.4rem;
   display: flex;
   align-items: center;
+  color: ${(props => props.disabled ? colors.palette.neutral : 'inherit')}
 `;
 
 // https://moderncss.dev/pure-css-custom-styled-radio-buttons/
@@ -24,6 +25,10 @@ const StyledInput = styled.input`
   margin: 0 1.6rem 0 0;
   display: grid;
   place-content: center;
+
+  &:disabled {
+    background-color: ${colors.palette.neutralLightest};
+  }
 
   &::before {
     content: "";
@@ -44,7 +49,7 @@ type RadioProps = PropsWithChildren<
 
 export const Radio = ({ children, ...props }: RadioProps) => {
   return (
-    <StyledLabel>
+    <StyledLabel disabled={props.disabled}>
       <StyledInput {...props} type="radio" />
       {children}
     </StyledLabel>

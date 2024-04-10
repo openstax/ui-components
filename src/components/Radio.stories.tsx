@@ -12,9 +12,10 @@ const RadioGroup = styled.div`
 
 type RadioProps = React.ComponentProps<typeof Radio>;
 const renderRadios = (props: RadioProps) => <RadioGroup>
-  <Radio {...props}>Label 1</Radio>
-  <Radio {...props} defaultChecked>Label 2</Radio>
-  <Radio {...props}>Label 3</Radio>
+  <Radio {...props}>Label</Radio>
+  <Radio {...props} defaultChecked>Label</Radio>
+  <Radio {...props}>Label</Radio>
+  <Radio disabled {...props}>Disabled label</Radio>
 </RadioGroup>;
 
 export const Default = () => <>
