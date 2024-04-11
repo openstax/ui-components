@@ -2,10 +2,10 @@
 
 exports[`Radio matches snapshot 1`] = `
 <label
-  className="sc-bczRLJ gxloeV"
+  className="sc-bczRLJ lIBCu"
 >
   <input
-    className="sc-gsnTZi dmkejP"
+    className="sc-gsnTZi cbyEwJ"
     type="radio"
   />
   Click Me
