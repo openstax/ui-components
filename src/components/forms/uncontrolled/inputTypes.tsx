@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { FormInputWrapper, FormLabelText, HelpText, InputProps, RequiredIndicator } from "./inputDecorations";
 import { AbstractFormData } from "../controlled/hooks";
 import { partitionSequence } from "@openstax/ts-utils/misc/partitionSequence.js";
+import { Radio as StyledRadio } from "../../Radio";
 
 /*
  * input element
@@ -173,7 +174,7 @@ export const Radio = ({
 }: RadioProps) => {
   return <FormInputWrapper {...wrapperProps}>
     <RadioLine>
-      <input type="radio" {...props} onChange={e => {
+      <StyledRadio {...props} onChange={e => {
         onChangeValue?.(!!e.target.checked);
         props.onChange?.(e);
       }}/>
