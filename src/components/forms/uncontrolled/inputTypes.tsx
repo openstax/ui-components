@@ -177,8 +177,9 @@ export const Radio = ({
       <StyledRadio {...props} onChange={e => {
         onChangeValue?.(!!e.target.checked);
         props.onChange?.(e);
-      }}/>
-      <FormLabelText><RequiredIndicator show={props.required} />{label}</FormLabelText>
+      }}>
+        <FormLabelText><RequiredIndicator show={props.required} />{label}</FormLabelText>
+      </StyledRadio>
     </RadioLine>
     <HelpText value={help} />
   </FormInputWrapper>;
