@@ -32,7 +32,7 @@
   },
   "devDependencies": {
     "@ladle/react": "^2.1.2",
-    "@openstax/ts-utils": "^1.1.42",
+    "@openstax/ts-utils": "^1.8.0",
     "@playwright/test": "^1.25.0",
     "@testing-library/react": "12",
     "@types/jest": "^28.1.4",
