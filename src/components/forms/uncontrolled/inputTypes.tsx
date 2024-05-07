@@ -159,6 +159,7 @@ export const Select = ({
 type RadioProps = React.ComponentPropsWithoutRef<'input'> & InputProps & {
   onChangeValue?: (value: boolean | undefined) => void;
   wrapperProps?: React.ComponentPropsWithoutRef<'label'>;
+  tooltipText?: string;
 };
 const RadioLine = styled.div`
   flex-direction: row;
