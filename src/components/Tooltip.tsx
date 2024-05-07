@@ -34,6 +34,7 @@ const tooltipStyles = `
   }
 
   &[data-placement=right] {
+    left: 100%;
     margin-left: 8px;
     --origin: translateX(-4px);
     & .react-aria-OverlayArrow {

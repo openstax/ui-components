@@ -22,11 +22,9 @@ const Row = styled.div`
   }
 `;
 
-const text = 'Tooltip content goes here.';
-
 export const Default = () => <Wrapper>
   {(['right', 'top', 'bottom'] as Placement[]).map((placement) =>
-    <Row><TooltipGroup isOpen={true} placement={placement}>{text}</TooltipGroup>{placement}</Row>
+    <Row><TooltipGroup placement={placement}>Tooltip content goes here.</TooltipGroup>{placement}</Row>
   )}
   </Wrapper>
 ;

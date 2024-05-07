@@ -58,15 +58,13 @@ export const Radio = ({ children, disabled, ...props }: RadioProps & {tooltipTex
 
   let state = useTooltipTriggerState({delay: 0});
   let ref = React.useRef(null);
-  let inputRef = React.useRef(null);
 
-  // Get props for the trigger and its tooltip
   let { triggerProps, tooltipProps } = useTooltipTrigger({delay: 0}, state, ref);
 
   return props.tooltipText && disabled
     ? <LabelWithTooltipWrapper>
         <StyledLabel ref={ref} isDisabled={true} aria-disabled={true} {...triggerProps}>
-          <StyledInput ref={inputRef} onFocus={() => state.open()} isDisabled={true} aria-disabled={true} {...props} type="radio" />
+          <StyledInput type="radio" onFocus={() => state.open()} isDisabled={true} aria-disabled={true} {...props} />
           {children}
         {state.isOpen && (
           <CustomTooltip state={state} {...tooltipProps} placement='right'>{props.tooltipText}</CustomTooltip>
@@ -74,7 +72,7 @@ export const Radio = ({ children, disabled, ...props }: RadioProps & {tooltipTex
         </StyledLabel>
       </LabelWithTooltipWrapper>
     : <StyledLabel isDisabled={disabled} aria-disabled={disabled}>
-        <StyledInput isDisabled={disabled} aria-disabled={disabled} {...props} type="radio" />
+        <StyledInput type="radio" isDisabled={disabled} aria-disabled={disabled} {...props} />
         {children}
       </StyledLabel>;
 };

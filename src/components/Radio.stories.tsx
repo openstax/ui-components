@@ -13,9 +13,9 @@ const RadioGroup = styled.div`
 type RadioProps = React.ComponentProps<typeof Radio>;
 const renderRadios = (props: RadioProps) => <RadioGroup>
   <Radio {...props}>Label</Radio>
-  <Radio disabled {...props}>Disabled label</Radio>
   <Radio {...props} defaultChecked>Label</Radio>
   <Radio {...props}>Label</Radio>
+  <Radio disabled {...props}>Disabled label</Radio>
 </RadioGroup>;
 
 export const Default = () => <>
@@ -23,5 +23,5 @@ export const Default = () => <>
 </>;
 
 export const WithTooltip = () => <>
-  {renderRadios({name: 'withTooltip', tooltipText: 'This option is unavailable when \'Allow smart attempts\' is selected.'})}
+  {renderRadios({name: 'withTooltip', tooltipText: 'Tooltip text for radio input goes here'})}
 </>;
