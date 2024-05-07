@@ -4,9 +4,7 @@ import { TooltipGroup } from './Tooltip';
 
 describe('Tooltip', () => {
   beforeAll(() => {
-    ReactDOM.createPortal = jest.fn((element, _node) => {
-      return element;
-    }) as any;
+    ReactDOM.createPortal = jest.fn((element) => element) as any;
   })
   it('matches snapshot', () => {
     const tree = renderer.create(

@@ -56,10 +56,10 @@ type RadioProps = PropsWithChildren<
 
 export const Radio = ({ children, disabled, ...props }: RadioProps & {tooltipText?: string}) => {
 
-  let state = useTooltipTriggerState({delay: 0});
-  let ref = React.useRef(null);
+  const state = useTooltipTriggerState({delay: 0});
+  const ref = React.useRef(null);
 
-  let { triggerProps, tooltipProps } = useTooltipTrigger({delay: 0}, state, ref);
+  const { triggerProps, tooltipProps } = useTooltipTrigger({delay: 0}, state, ref);
 
   return props.tooltipText && disabled
     ? <LabelWithTooltipWrapper>

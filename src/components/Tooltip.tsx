@@ -98,7 +98,7 @@ export const TooltipGroup = ({children, placement, icon, ...props}: React.PropsW
   </TooltipTrigger>;
 
 export const CustomTooltip = ({ state, ...props }: any) => {
-  let { tooltipProps } = useTooltip(props, state);
+  const { tooltipProps } = useTooltip(props, state);
 
   return (
     <StyledCustomTooltip data-placement={props.placement} {...mergeProps(props, tooltipProps)}>
