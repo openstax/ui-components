@@ -1,4 +1,4 @@
-import { assertInstanceOf, assertString } from '@openstax/ts-utils/assertions.js';
+import { assertInstanceOf, assertString } from '@openstax/ts-utils/assertions';
 import React from 'react';
 import styled from 'styled-components';
 import { ButtonVariant, applyButtonVariantStyles } from '../theme/buttons';

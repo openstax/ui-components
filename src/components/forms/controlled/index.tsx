@@ -1,5 +1,5 @@
 import React from 'react';
-import { FetchState } from "@openstax/ts-utils/fetch.js";
+import { FetchState } from "@openstax/ts-utils/fetch";
 import * as Uncontrolled from '../uncontrolled';
 import {
   useFormHelpers,

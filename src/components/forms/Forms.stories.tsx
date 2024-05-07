@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import {Controlled as Forms, Uncontrolled} from '.';
-import { fetchSuccess } from "@openstax/ts-utils/fetch.js";
+import { fetchSuccess } from "@openstax/ts-utils/fetch";
 
 export const BasicControlledForm = () => {
   const data = {
