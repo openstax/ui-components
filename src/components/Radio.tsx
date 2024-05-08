@@ -20,12 +20,13 @@ export const StyledLabel = styled.label<{isDisabled?: boolean}>`
 export const StyledInput = styled.input<{isDisabled?: boolean}>`
   appearance: none;
   /* For iOS < 15 to remove gradient background */
-  background-color: ${(props => props.isDisabled ? '#f7f7f7' : '#fff')};
+  background-color: ${colors.palette.white};
+  opacity: ${(props => props.isDisabled ? '0.4' : '1')};
   font: inherit;
   color: ${colors.palette.pale};
   width: 2rem;
   height: 2rem;
-  border: 1px solid ${(props => props.isDisabled ? '#e6e6e6' : 'currentColor')};
+  border: 1px solid currentColor;
   border-radius: 50%;
   transform: translateY(-0.075em);
   margin: 0 1.6rem 0 0;
