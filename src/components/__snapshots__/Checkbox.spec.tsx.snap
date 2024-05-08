@@ -1,5 +1,18 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Checkbox allows setting props on label 1`] = `
+<label
+  aria-label="custom label"
+  className="sc-bczRLJ bYTfrb"
+>
+  <input
+    className="sc-gsnTZi hvmWuC"
+    type="checkbox"
+  />
+  Click Me
+</label>
+`;
+
 exports[`Checkbox handles options 1`] = `
 <label
   className="sc-bczRLJ bYTfrb"
