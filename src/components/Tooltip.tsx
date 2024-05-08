@@ -5,12 +5,11 @@ import { Info } from './svgs/Info';
 import {mergeProps, Placement, useTooltip} from 'react-aria';
 
 const tooltipStyles = `
-  box-shadow: 0 8px 20px rgba(0 0 0 / 0.1);
+  box-shadow: 0 0.8rem 2rem rgba(0 0 0 / 0.1);
   border-radius: 0.3rem;
   border: 1px solid #ccc;
   background: ${colors.palette.white};
   color: ${colors.palette.neutralThin};
-  forced-color-adjust: none;
   outline: none;
   padding: 1rem;
   /* fixes FF gap */
@@ -20,14 +19,14 @@ const tooltipStyles = `
   z-index: 1000;
 
   &[data-placement=top] {
-    margin-bottom: 8px;
-    --origin: translateY(4px);
+    margin-bottom: 0.8rem;
+    --origin: translateY(0.4rem);
   }
 
   &[data-placement=bottom] {
-    margin-top: 8px;
+    margin-top: 0.8rem;
     top: 50%;
-    --origin: translateY(-4px);
+    --origin: translateY(-0.4rem);
     & .react-aria-OverlayArrow svg {
       transform: rotate(180deg);
     }
@@ -35,8 +34,8 @@ const tooltipStyles = `
 
   &[data-placement=right] {
     left: 100%;
-    margin-left: 8px;
-    --origin: translateX(-4px);
+    margin-left: 0.8rem;
+    --origin: translateX(-0.4rem);
     & .react-aria-OverlayArrow {
       top: 50%;
       svg {
@@ -46,8 +45,8 @@ const tooltipStyles = `
   }
 
   &[data-placement=left] {
-    margin-right: 8px;
-    --origin: translateX(4px);
+    margin-right: 0.8rem;
+    --origin: translateX(0.4rem);
     & .react-aria-OverlayArrow svg {
       transform: rotate(-90deg);
     }
