@@ -76,7 +76,7 @@ Array [
     data-overlay-container={true}
   >
     <div
-      className="sc-bczRLJ jeBdiR"
+      className="sc-bczRLJ dvhbKn"
       data-rac=""
       id="react-aria-1"
       onMouseEnter={[Function]}
@@ -112,7 +112,7 @@ Array [
           <path
             d="M0 0 L4 4 L8 0"
             stroke="#ccc"
-            stroke-width="1"
+            strokeWidth="1"
           />
         </svg>
       </div>
