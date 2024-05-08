@@ -20,8 +20,7 @@ export const StyledLabel = styled.label<{isDisabled?: boolean}>`
 export const StyledInput = styled.input<{isDisabled?: boolean}>`
   appearance: none;
   /* For iOS < 15 to remove gradient background */
-  background-color: ${colors.palette.white};
-  opacity: ${(props => props.isDisabled ? '40%' : '100%')};
+  background-color: ${(props => props.isDisabled ? '#f7f7f7' : '#fff')};
   font: inherit;
   color: ${colors.palette.pale};
   width: 2rem;
@@ -61,10 +60,10 @@ export const Radio = ({ children, disabled, ...props }: RadioProps & {tooltipTex
 
   const { triggerProps, tooltipProps } = useTooltipTrigger({delay: 0}, state, ref);
 
-  return props.tooltipText && disabled
+  return props.tooltipText
     ? <LabelWithTooltipWrapper>
-        <StyledLabel ref={ref} isDisabled={true} aria-disabled={true} {...triggerProps}>
-          <StyledInput type="radio" onFocus={() => state.open()} isDisabled={true} aria-disabled={true} {...props} />
+        <StyledLabel ref={ref} isDisabled={disabled} aria-disabled={disabled} {...triggerProps}>
+          <StyledInput type="radio" onFocus={() => state.open()} isDisabled={disabled} aria-disabled={disabled} {...props} />
           {children}
         {state.isOpen && (
           <CustomTooltip state={state} {...tooltipProps} placement='right'>{props.tooltipText}</CustomTooltip>
