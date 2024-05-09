@@ -21,3 +21,7 @@ const renderRadios = (props: RadioProps) => <RadioGroup>
 export const Default = () => <>
   {renderRadios({name: 'default'})}
 </>;
+
+export const WithTooltip = () => <>
+  {renderRadios({name: 'withTooltip', tooltipText: 'Tooltip text for radio input goes here'})}
+</>;
