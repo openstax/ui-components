@@ -79,14 +79,14 @@ type TooltipProps = {
 };
 
 export const Tooltip = ({children, placement, icon, ...props}: React.PropsWithChildren<TooltipProps>) => 
-  <Tooltip {...props} placement={placement}>
+  <StyledTooltip {...props} placement={placement}>
   <OverlayArrow>
     <svg width={8} height={8} viewBox="0 0 8 8">
       <path d="M0 0 L4 4 L8 0" stroke="#ccc" strokeWidth="1" />
     </svg>
   </OverlayArrow>
   {children}
-</Tooltip>;
+</StyledTooltip>;
 
 export const TooltipGroup = ({icon, ...props}: React.PropsWithChildren<TooltipProps>) =>
   <TooltipTrigger delay={0}>
