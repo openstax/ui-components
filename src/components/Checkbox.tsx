@@ -1,4 +1,4 @@
-import { PropsWithChildren } from "react";
+import { LabelHTMLAttributes, PropsWithChildren } from "react";
 import { colors } from "../theme";
 import styled from "styled-components";
 import { InputHTMLAttributes } from "react";
@@ -39,11 +39,12 @@ type CheckboxProps = PropsWithChildren<
   variant?: CheckboxVariant;
   size?: CheckboxSize;
   bold?: boolean;
+  labelProps?: LabelHTMLAttributes<HTMLLabelElement>;
 }>;
 
-export const Checkbox = ({ children, variant = 'primary', bold = false, size = 1.6, ...props }: CheckboxProps) => {
+export const Checkbox = ({ children, variant = 'primary', bold = false, size = 1.6, labelProps, ...props }: CheckboxProps) => {
   return (
-    <StyledLabel bold={bold}>
+    <StyledLabel bold={bold} {...labelProps}>
       <StyledInput {...props} type="checkbox" variant={variant} checkboxSize={size} />
       {children}
     </StyledLabel>

@@ -15,4 +15,13 @@ describe('Checkbox', () => {
     ).toJSON();
     expect(tree).toMatchSnapshot();
   });
+
+  it('allows setting props on label', () => {
+    const tree = renderer.create(
+      <Checkbox bold size={2} variant='light' labelProps={{ "aria-label": "custom label"}}>
+        Click Me
+      </Checkbox>
+    ).toJSON();
+    expect(tree).toMatchSnapshot();
+  });
 });
