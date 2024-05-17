@@ -134,7 +134,7 @@ export const Select = ({
   , [options]);
 
   return <FormInputWrapper {...wrapperProps}>
-    <RadioFormLabelText><RequiredIndicator show={props.required} />{label}:</RadioFormLabelText>
+    <FormLabelText><RequiredIndicator show={props.required} />{label}:</FormLabelText>
     <select {...props} onChange={e => {
       changedSinceLastOptionUpdate.current = true;
       onChangeValue?.(props.transformValue ? props.transformValue(e.target.value) : e.target.value);
@@ -182,7 +182,7 @@ export const Radio = ({
         onChangeValue?.(!!e.target.checked);
         props.onChange?.(e);
       }}>
-        <FormLabelText><RequiredIndicator show={props.required} />{label}</FormLabelText>
+        <RadioFormLabelText><RequiredIndicator show={props.required} />{label}</RadioFormLabelText>
       </StyledRadio>
     </RadioLine>
     <HelpText value={help} />
