@@ -134,7 +134,7 @@ export const Select = ({
   , [options]);
 
   return <FormInputWrapper {...wrapperProps}>
-    <FormLabelText><RequiredIndicator show={props.required} />{label}:</FormLabelText>
+    <RadioFormLabelText><RequiredIndicator show={props.required} />{label}:</RadioFormLabelText>
     <select {...props} onChange={e => {
       changedSinceLastOptionUpdate.current = true;
       onChangeValue?.(props.transformValue ? props.transformValue(e.target.value) : e.target.value);
@@ -165,6 +165,9 @@ const RadioLine = styled.div`
   flex-direction: row;
   display: flex;
   align-items: center;
+`;
+const RadioFormLabelText = styled(FormLabelText)`
+  white-space: normal;
 `;
 export const Radio = ({
   label,
