@@ -166,6 +166,9 @@ const RadioLine = styled.div`
   display: flex;
   align-items: center;
 `;
+const RadioFormLabelText = styled(FormLabelText)`
+  white-space: normal;
+`;
 export const Radio = ({
   label,
   help,
@@ -179,7 +182,7 @@ export const Radio = ({
         onChangeValue?.(!!e.target.checked);
         props.onChange?.(e);
       }}>
-        <FormLabelText><RequiredIndicator show={props.required} />{label}</FormLabelText>
+        <RadioFormLabelText><RequiredIndicator show={props.required} />{label}</RadioFormLabelText>
       </StyledRadio>
     </RadioLine>
     <HelpText value={help} />

@@ -1,6 +1,6 @@
 {
   "name": "@openstax/ui-components",
-  "version": "1.7.6",
+  "version": "1.7.8",
   "license": "MIT",
   "source": "./src/index.ts",
   "types": "./dist/index.d.ts",
