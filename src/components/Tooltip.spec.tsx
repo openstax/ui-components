@@ -19,4 +19,11 @@ describe('Tooltip', () => {
     ).toJSON();
     expect(tree).toMatchSnapshot();
   });
+
+  it('uses icon', () => {
+    const tree = renderer.create(
+      <TooltipGroup isOpen={false} placement='right' icon={'icon'}>Tooltip content</TooltipGroup>
+    ).toJSON();
+    expect(tree).toMatchSnapshot();
+  });
 });

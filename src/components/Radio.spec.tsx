@@ -1,5 +1,6 @@
 import { Radio } from './Radio';
 import renderer from 'react-test-renderer';
+import { render, fireEvent } from '@testing-library/react';
 
 describe('Radio', () => {
   it('matches snapshot', () => {
@@ -16,4 +17,9 @@ describe('Radio', () => {
     expect(tree).toMatchSnapshot();
   });
 
+  it('calls onFocus handler', () => {
+    const { getByRole } = render(<Radio tooltipText='hi'>Click Me</Radio>);
+    const radioButton = getByRole('radio');
+    fireEvent.focus(radioButton);
+  });
 });
