@@ -8,4 +8,12 @@ describe('Radio', () => {
     ).toJSON();
     expect(tree).toMatchSnapshot();
   });
+
+  it('matches disabled snapshot', () => {
+    const tree = renderer.create(
+      <Radio disabled>Disabled</Radio>
+    ).toJSON();
+    expect(tree).toMatchSnapshot();
+  });
+
 });
