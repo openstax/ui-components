@@ -1,4 +1,4 @@
-import { navDesktopHeight, navMobileHeight } from '../../src/constants';
+import * as Constants from '../../src/constants';
 import styled, { css } from 'styled-components';
 import theme from '../../src/theme';
 import { NavBarLogo as OpenstaxLogo } from './NavBarLogo';
@@ -44,18 +44,18 @@ type NavBarProps = React.PropsWithChildren<{
   justifyContent?: string;
 }>
 
-export const NavBar = ({ logo = false, maxWidth, ...props }: NavBarProps) => {
+export const NavBar = ({ logo = false, maxWidth, navDesktopHeight, navMobileHeight, justifyContent, ...props }: NavBarProps) => {
   const logoIsObject = typeof logo === 'object';
   const renderAnchor = logoIsObject && 'href' in logo;
   const {alt = 'OpenStax Logo', ...anchorProps} = logoIsObject ? logo : {};
   const logoComponent = logo ? <OpenstaxLogo alt={alt} /> : null;
 
-  return <BarWrapper>
+  return <BarWrapper role="toolbar" {...props}>
     <StyledNavBar
       maxWidth={maxWidth}
-      navDesktopHeight={props.navDesktopHeight || navDesktopHeight}
-      navMobileHeight={props.navMobileHeight || navMobileHeight}
-      justifyContent={props.justifyContent}
+      navDesktopHeight={navDesktopHeight || Constants.navDesktopHeight}
+      navMobileHeight={navMobileHeight || Constants.navMobileHeight}
+      justifyContent={justifyContent}
     >
       {renderAnchor ? <a {...anchorProps}>{logoComponent}</a> : logoComponent}
       {props.children}
