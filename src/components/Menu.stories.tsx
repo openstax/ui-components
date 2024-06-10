@@ -4,6 +4,10 @@ import { Info } from './svgs/Info';
 
 export const Default = () =>
   <>
+    <Menu buttonLabel="Menu">
+      <button>Example button</button>
+      <button>Another button</button>
+    </Menu>
     <Menu buttonLabel="Test menu" buttonIcon={Info}>
       <button>Example button</button>
       <button>Another button</button>
