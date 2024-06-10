@@ -448,6 +448,9 @@ import{jsx as e,jsxs as A,Fragment as t}from"react/jsx-runtime.js";import n,{css
   .osano-cm-widget { display: none; }
 `)),nt=n=>{const r="undefined"==typeof window?void 0:window.Osano;if(void 0===r||"debug"===r.cm.mode)return null;const s=e(Ae,Y({},n,{onClick:e=>{r.cm.showDrawer("osano-cm-dom-info-dialog-open"),null==n.onClick||n.onClick(e)},children:n.children||"Manage Cookies"}));return A(t,{children:[e(tt,{}),"function"==typeof n.wrapper?n.wrapper(s):s]})},rt=["buttonLabel","buttonIcon"];let st,it,ot=e=>e;const mt=n(m)(st||(st=ot`
 `)),at=n(a)(it||(it=ot`
+  padding: 1.6rem;
+  border-top: 0.4rem solid #63A524;
+  box-shadow: 0 0.4rem 0.4rem 0 #00000033;
 `)),lt=t=>{let{buttonLabel:n,buttonIcon:r}=t,s=L(t,rt);return A(l,{children:[e(mt,Y({"aria-label":n},s.buttonProps,{children:"string"==typeof r?e("img",{"aria-hidden":"true",src:r,alt:""}):r})),e(at,Y({},s.popoverProps,{children:e(c,{children:s.children})}))]})};let ct,dt,Zt=e=>e;const Mt=n.svg(ct||(ct=Zt`
   display: block;
   width: auto;
