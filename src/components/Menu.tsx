@@ -6,8 +6,8 @@ export const MenuButton = styled(Button)`
   border: none;
   background: none;
   padding: 0;
-  min-height: 4.2rem;
-  min-width: 4.2rem;
+  min-height: 4rem;
+  min-width: 4rem;
   display: inline-flex;
   place-content: center;
   align-items: center;
