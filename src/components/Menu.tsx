@@ -6,6 +6,9 @@ const StyledButton = styled(Button)`
 `;
 
 const StyledPopover = styled(Popover)`
+  padding: 1.6rem;
+  border-top: 0.4rem solid #63A524;
+  box-shadow: 0 0.4rem 0.4rem 0 #00000033;
 `;
 
 export interface MenuProps {
