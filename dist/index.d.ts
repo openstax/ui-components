@@ -8,6 +8,7 @@ export * from './components/ErrorMessage';
 export * from './components/ErrorModal';
 export * from './components/Loader';
 export * from './components/ManageCookies';
+export * from './components/Menu';
 export * from './components/Modal';
 export * from './components/NavBar';
 export * from './components/NavBarLogo';
