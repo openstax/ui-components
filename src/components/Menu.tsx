@@ -2,13 +2,16 @@ import React from 'react';
 import styled from "styled-components";
 import { Button, ButtonProps, Dialog, DialogTrigger, Popover, PopoverProps } from 'react-aria-components';
 
-const StyledButton = styled(Button)`
+export const MenuButton = styled(Button)`
+  border: none;
+  background: none;
 `;
 
-const StyledPopover = styled(Popover)`
+export const MenuPopover = styled(Popover)`
   padding: 1.6rem;
   border-top: 0.4rem solid #63A524;
   box-shadow: 0 0.4rem 0.4rem 0 #00000033;
+  background: #fff;
 `;
 
 export interface MenuProps {
@@ -21,15 +24,15 @@ export interface MenuProps {
 export const Menu = ({ buttonLabel, buttonIcon, ...props }: React.PropsWithChildren<MenuProps>) => {
   return (
     <DialogTrigger>
-      <StyledButton aria-label={buttonLabel} {...props.buttonProps}>
+      <MenuButton aria-label={buttonLabel} {...props.buttonProps}>
         {typeof buttonIcon === 'string' ?
           <img aria-hidden='true' src={buttonIcon} alt='' /> : buttonIcon}
-      </StyledButton>
-      <StyledPopover {...props.popoverProps}>
+      </MenuButton>
+      <MenuPopover {...props.popoverProps}>
         <Dialog>
           {props.children}
         </Dialog>
-      </StyledPopover>
+      </MenuPopover>
     </DialogTrigger>
   );
 };
