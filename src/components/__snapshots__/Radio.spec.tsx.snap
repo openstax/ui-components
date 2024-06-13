@@ -1,5 +1,19 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Radio matches disabled snapshot 1`] = `
+<label
+  aria-disabled={true}
+  className="sc-hKMtZM fMGZzH"
+>
+  <input
+    aria-disabled={true}
+    className="sc-eCYdqJ bstnXk"
+    type="radio"
+  />
+  Disabled
+</label>
+`;
+
 exports[`Radio matches snapshot 1`] = `
 <label
   className="sc-hKMtZM jREXRM"
