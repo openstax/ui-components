@@ -39,6 +39,10 @@ const NavBarPopover = styled(Popover)`
     &:active {
       font-weight: bold;
     }
+
+    &:not(:last-child) {
+      border-bottom: 0.1rem solid ${colors.palette.neutralBright};
+    }
   }
 `;
 
