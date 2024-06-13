@@ -1,6 +1,6 @@
 import { Menu, MenuItem } from "react-aria-components";
 import renderer from "react-test-renderer";
-import { NavBarMenuButton, NavBarPopoverButton } from "./NavBarPopover";
+import { NavBarMenuButton, NavBarPopoverButton } from "./NavBarMenuButtons";
 
 describe("NavBarPopoverButton", () => {
   it("matches snapshot", () => {

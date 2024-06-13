@@ -6,7 +6,7 @@ export type NavBarButtonProps = {
   icon?: string | React.ReactNode;
   className?: string;
   "aria-label"?: string;
-} & ({ label: string } | { "aria-label": string });
+} & ({ label: string } | { "aria-label": string | undefined });
 
 export const NavBarButton = styled(
   ({

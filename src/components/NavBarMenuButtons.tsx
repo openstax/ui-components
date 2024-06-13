@@ -18,7 +18,7 @@ export const PopoverContainer = styled.div`
   padding: 1.6rem;
 `;
 
-export const NavBarPopover = styled(Popover)`
+const NavBarPopover = styled(Popover)`
   margin-top: -1rem;
   border-top: 0.4rem solid ${colors.palette.darkGreen};
   box-shadow: 0 0.4rem 0.4rem 0 #00000033;
@@ -71,7 +71,7 @@ const NavBarBaseButton = ({
     <Trigger>
       <NavBarButton
         className={className}
-        aria-label={ariaLabel || label as string}
+        aria-label={ariaLabel || label}
         label={label}
         icon={icon}
         {...props.buttonProps}
