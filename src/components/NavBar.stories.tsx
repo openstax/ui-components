@@ -2,7 +2,7 @@ import { colors } from "../../src/theme";
 import styled from "styled-components";
 import { NavBar } from "./NavBar";
 import { NavBarButton } from "./NavBarButton";
-import { PopoverContainer, NavBarPopoverButton, NavBarMenuButton, NavBarMenuItem } from "./NavBarPopover";
+import { PopoverContainer, NavBarPopoverButton, NavBarMenuButton, NavBarMenuItem } from "./NavBarMenuButtons";
 import { Info } from "./svgs/Info";
 import { Tab, Tabs, TabList, TabPanel } from "./Tabs";
 
