@@ -3,7 +3,6 @@ import { PopoverProps } from "react-aria-components";
 import { NavBarButtonProps } from "./NavBarButton";
 export declare const NavBarMenuItem: import("styled-components").StyledComponent<(<T extends object>(props: import("react-aria-components").MenuItemProps<T> & React.RefAttributes<HTMLDivElement>) => React.ReactElement<any, string | React.JSXElementConstructor<any>>), any, {}, never>;
 export declare const PopoverContainer: import("styled-components").StyledComponent<"div", any, {}, never>;
-export declare const NavBarPopover: import("styled-components").StyledComponent<(props: PopoverProps & React.RefAttributes<HTMLElement>) => React.ReactElement<any, string | React.JSXElementConstructor<any>>, any, {}, never>;
 export declare type NavBarItemProps = React.PropsWithChildren<{
     label?: string;
     icon?: string | React.ReactNode;

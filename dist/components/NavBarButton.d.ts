@@ -8,6 +8,6 @@ export declare type NavBarButtonProps = {
 } & ({
     label: string;
 } | {
-    "aria-label": string;
+    "aria-label": string | undefined;
 });
 export declare const NavBarButton: import("styled-components").StyledComponent<({ label, icon, className, "aria-label": ariaLabel, ...props }: Omit<ButtonProps, "aria-label"> & NavBarButtonProps) => JSX.Element, any, {}, never>;
