@@ -4,6 +4,7 @@ import { applyButtonVariantStyles, ButtonVariant } from "../theme/buttons";
 
 const StyledButton = styled.button<{ variant: ButtonVariant }>`
   ${props => applyButtonVariantStyles(props.variant)}
+
   font-size: 1.6rem;
   line-height: 2rem;
   -moz-osx-font-smoothing: grayscale;
