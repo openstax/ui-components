@@ -22,10 +22,13 @@ const StyledButton = styled.button<{ variant: ButtonVariant }>`
   user-select: none;
   white-space: nowrap;
 
-  &:focus {
-    outline: solid ${theme.colors.palette.white};
-    box-shadow: inset 0 0 0 3px ${theme.colors.palette.black};
-  }
+  ${props => props.variant === 'primary' ? `
+    &:focus {
+      outline: solid ${theme.colors.palette.white};
+      box-shadow: inset 0 0 0 3px ${theme.colors.palette.black};
+    }
+  `: ''}
+
   &:not([disabled]) {
     cursor: pointer;
   }
