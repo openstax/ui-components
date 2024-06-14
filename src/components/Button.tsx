@@ -4,7 +4,6 @@ import { applyButtonVariantStyles, ButtonVariant } from "../theme/buttons";
 
 const StyledButton = styled.button<{ variant: ButtonVariant }>`
   ${props => applyButtonVariantStyles(props.variant)}
-
   font-size: 1.6rem;
   line-height: 2rem;
   -moz-osx-font-smoothing: grayscale;
@@ -23,6 +22,10 @@ const StyledButton = styled.button<{ variant: ButtonVariant }>`
   user-select: none;
   white-space: nowrap;
 
+  &:focus {
+    outline: solid ${theme.colors.palette.white};
+    box-shadow: inset 0 0 0 3px ${theme.colors.palette.black};
+  }
   &:not([disabled]) {
     cursor: pointer;
   }
