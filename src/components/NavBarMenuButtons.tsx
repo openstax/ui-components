@@ -46,26 +46,16 @@ const NavBarPopover = styled(Popover)`
   }
 `;
 
-export type NavBarItemProps = React.PropsWithChildren<{
-  label?: string;
-  icon?: string | React.ReactNode;
-  buttonProps?: NavBarButtonProps;
+export type NavBarBaseButtonProps = React.PropsWithChildren<{
   popoverProps?: PopoverProps;
-  className?: string;
-}> & (
-  | { label: string; icon?: React.ReactNode; "aria-label"?: string }
-  | { label?: never; icon: React.ReactNode; "aria-label": string }
-);
+}> & NavBarButtonProps;
 
 const NavBarBaseButton = ({
   isMenu,
   children,
-  className,
-  label,
-  icon,
-  "aria-label": ariaLabel,
+  popoverProps,
   ...props
-}: NavBarItemProps & {
+}: NavBarBaseButtonProps & {
   isMenu: boolean;
 }) => {
   const Trigger = isMenu ? MenuTrigger : DialogTrigger;
@@ -73,24 +63,18 @@ const NavBarBaseButton = ({
 
   return (
     <Trigger>
-      <NavBarButton
-        className={className}
-        aria-label={ariaLabel || label}
-        label={label}
-        icon={icon}
-        {...props.buttonProps}
-      />
-      <NavBarPopover {...props.popoverProps}>
+      <NavBarButton {...props} />
+      <NavBarPopover {...popoverProps}>
         <Content>{children}</Content>
       </NavBarPopover>
     </Trigger>
   );
 };
 
-export const NavBarPopoverButton = (props: NavBarItemProps) => (
+export const NavBarPopoverButton = (props: NavBarBaseButtonProps) => (
   <NavBarBaseButton {...props} isMenu={false} />
 );
 
-export const NavBarMenuButton = (props: NavBarItemProps) => (
+export const NavBarMenuButton = (props: NavBarBaseButtonProps) => (
   <NavBarBaseButton {...props} isMenu={true} />
 );

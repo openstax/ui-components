@@ -1,12 +1,12 @@
 import { Button, ButtonProps } from "react-aria-components";
 import styled from "styled-components";
 
-export type NavBarButtonProps = {
+export type NavBarButtonProps = Omit<ButtonProps, "aria-label"> & {
   label?: string;
   icon?: string | React.ReactNode;
   className?: string;
   "aria-label"?: string;
-} & ({ label: string } | { "aria-label": string | undefined });
+} & ({ label: string } | { "aria-label": string });
 
 export const NavBarButton = styled(
   ({
@@ -15,7 +15,7 @@ export const NavBarButton = styled(
     className,
     "aria-label": ariaLabel,
     ...props
-  }: Omit<ButtonProps, "aria-label"> & NavBarButtonProps) => (
+  }: NavBarButtonProps) => (
     <Button className={className} {...props}>
       {icon &&
         (typeof icon === "string" ? (
