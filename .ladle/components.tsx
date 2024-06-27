@@ -1,26 +1,27 @@
 import { GlobalProvider } from "@ladle/react";
 import React from "react";
-import styled from "styled-components";
+import { createGlobalStyle } from "styled-components";
 
-const Wrapper = styled.div`
+const GlobalStyle = createGlobalStyle`
   *, ::before, ::after {
     box-sizing: border-box;
   }
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  color: #424242;
-  height: 100%;
+  html {
+    font-size: 62.5%;
+  }
+  body {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: #424242;
+    height: 100%;
+    margin: 0;
+  }
 `;
 
 export const Provider: GlobalProvider = ({ children }) => {
-  React.useEffect(() => {
-    const style = document.createElement('style');
-    style.innerText = 'html { font-size: 62.5%; }';
-    document.head.append(style);
-  }, []);
-
   return (
-    <Wrapper>
+    <>
+      <GlobalStyle />
       {children}
-    </Wrapper>
+    </>
   )
 };

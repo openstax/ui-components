@@ -27,7 +27,7 @@ export const padding = {
 
 const mobileBreak = 75; // 1200px
 const desktopBreak = mobileBreak + .0625; // 1201px
-const breakpoints = {
+export const breakpoints = {
   desktop: (style: FlattenSimpleInterpolation) => css`
     @media screen and (min-width: ${desktopBreak}em) {
       ${style}
