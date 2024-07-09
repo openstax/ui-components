@@ -61,7 +61,7 @@ const tooltipStyles = `
 export const StyledTooltip = styled(AriaTooltip)`${tooltipStyles}`;
 
 const StyledCustomTooltip = styled.div`
-  ${tooltipStyles}  
+  ${tooltipStyles}
 `;
 
 export const StyledTrigger = styled(Button)`
@@ -78,7 +78,7 @@ type TooltipProps = {
   isOpen?: boolean;
 };
 
-export const Tooltip = ({children, placement, icon, ...props}: React.PropsWithChildren<TooltipProps>) => 
+export const Tooltip = ({children, placement, icon, ...props}: React.PropsWithChildren<TooltipProps>) =>
   <StyledTooltip {...props} placement={placement}>
   <OverlayArrow>
     <svg width={8} height={8} viewBox="0 0 8 8">
@@ -113,3 +113,5 @@ export const CustomTooltip = ({ state, ...props }: any) => {
     </StyledCustomTooltip>
   );
 }
+
+export { TooltipTrigger };
