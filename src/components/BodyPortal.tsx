@@ -7,7 +7,7 @@ const getInsertBeforeTarget = (bodyPortalSlots: string[], slot?: string) => {
 
   for (let index = bodyPortalSlots.findIndex((sl) => sl === slot) + 1; index < bodyPortalSlots.length; index++) {
     const sl = bodyPortalSlots[index];
-    const tag = sl === 'root' ? document.querySelector('#root') : document.querySelector(`[data-portal-slot="${sl}"]`);
+    const tag = sl === 'main' ? document.querySelector('main') : document.querySelector(`[data-portal-slot="${sl}"]`);
     if (tag) { return tag; }
   }
 
@@ -15,8 +15,8 @@ const getInsertBeforeTarget = (bodyPortalSlots: string[], slot?: string) => {
 }
 
 export const BodyPortal = ({
-  children, slot, tagName, className
-}: React.PropsWithChildren<{slot?: string; tagName?: string; className?: string}>) => {
+  children, className, role, slot, tagName
+}: React.PropsWithChildren<{className?: string; role?: string; slot?: string; tagName?: string}>) => {
   const tag = tagName?.toUpperCase() ?? 'DIV';
   const ref = React.useRef<HTMLElement>(document.createElement(tag));
   if (ref.current.tagName !== tag) {
@@ -28,13 +28,11 @@ export const BodyPortal = ({
   React.useLayoutEffect(() => {
     const element = ref.current;
 
-    if (className) {
-      element.classList.add(className);
-    }
+    if (className) { element.classList.add(className); }
 
-    if (slot) {
-      element.dataset['portalSlot'] = slot;
-    }
+    if (role) { element.setAttribute('role', role); }
+
+    if (slot) { element.dataset['portalSlot'] = slot; }
 
     document.body.insertBefore(element, getInsertBeforeTarget(bodyPortalOrderedRefs, slot));
 
@@ -43,15 +41,13 @@ export const BodyPortal = ({
         element.parentNode.removeChild(element);
       }
 
-      if (slot) {
-        delete element.dataset['portalSlot'];
-      }
+      if (slot) { delete element.dataset['portalSlot']; }
 
-      if (className) {
-        element.classList.remove(className);
-      }
+      if (role) { element.removeAttribute('role'); }
+
+      if (className) { element.classList.remove(className); }
     };
-  }, [bodyPortalOrderedRefs, className, slot, tag]);
+  }, [bodyPortalOrderedRefs, className, role, slot, tag]);
 
   return createPortal(children, ref.current);
 };

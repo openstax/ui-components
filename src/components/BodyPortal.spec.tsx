@@ -81,14 +81,14 @@ describe('BodyPortal', () => {
     render(<BodyPortalSlotsContext.Provider value={[
       'thefirst',
       'thesecond',
-      'root',
+      'main',
       'thesecondtolast',
       'thelast',
     ]}>
       <BodyPortal slot='thefirst' tagName='header'>Header stuff</BodyPortal>
-      <BodyPortal slot='thesecond' tagName='nav'><ol><li>link text</li></ol></BodyPortal>
-      <BodyPortal slot='thesecondtolast' tagName='div'>Footer stuff</BodyPortal>
-      <BodyPortal slot='thelast' tagName='footer'>Second footer?</BodyPortal>
+      <BodyPortal slot='thesecond' tagName='nav' role='toolbar'><ol><li>link text</li></ol></BodyPortal>
+      <BodyPortal slot='thesecondtolast' tagName='footer'>Footer stuff</BodyPortal>
+      <BodyPortal slot='thelast' tagName='div' className='modal'>Modal</BodyPortal>
       <h1>Title</h1>
     </BodyPortalSlotsContext.Provider>, { container: root });
     expect(document.body).toMatchInlineSnapshot(`
@@ -100,6 +100,7 @@ describe('BodyPortal', () => {
   </header>
   <nav
     data-portal-slot="thesecond"
+    role="toolbar"
   >
     <ol>
       <li>
@@ -114,16 +115,17 @@ describe('BodyPortal', () => {
       Title
     </h1>
   </main>
-  <div
+  <footer
     data-portal-slot="thesecondtolast"
   >
     Footer stuff
-  </div>
-  <footer
+  </footer>
+  <div
+    class="modal"
     data-portal-slot="thelast"
   >
-    Second footer?
-  </footer>
+    Modal
+  </div>
 </body>
 `);
   });
@@ -135,15 +137,15 @@ describe('BodyPortal', () => {
     render(<BodyPortalSlotsContext.Provider value={[
       'thefirst',
       'thesecond',
-      'root',
+      'main',
       'thesecondtolast',
       'thelast',
     ]}>
-      <BodyPortal slot='thelast' tagName='footer'>Second footer?</BodyPortal>
-      <BodyPortal slot='thesecondtolast' tagName='div'>Footer stuff</BodyPortal>
-      <BodyPortal slot='thesecond' tagName='nav'><ol><li>link text</li></ol></BodyPortal>
-      <BodyPortal slot='thefirst' tagName='header'>Header stuff</BodyPortal>
       <h1>Title</h1>
+      <BodyPortal slot='thelast' tagName='div' className='modal'>Modal</BodyPortal>
+      <BodyPortal slot='thesecondtolast' tagName='footer'>Footer stuff</BodyPortal>
+      <BodyPortal slot='thesecond' tagName='nav' role='toolbar'><ol><li>link text</li></ol></BodyPortal>
+      <BodyPortal slot='thefirst' tagName='header'>Header stuff</BodyPortal>
     </BodyPortalSlotsContext.Provider>, { container: root });
     expect(document.body).toMatchInlineSnapshot(`
 <body>
@@ -154,6 +156,7 @@ describe('BodyPortal', () => {
   </header>
   <nav
     data-portal-slot="thesecond"
+    role="toolbar"
   >
     <ol>
       <li>
@@ -168,16 +171,17 @@ describe('BodyPortal', () => {
       Title
     </h1>
   </main>
-  <div
+  <footer
     data-portal-slot="thesecondtolast"
   >
     Footer stuff
-  </div>
-  <footer
+  </footer>
+  <div
+    class="modal"
     data-portal-slot="thelast"
   >
-    Second footer?
-  </footer>
+    Modal
+  </div>
 </body>
 `);
   });
