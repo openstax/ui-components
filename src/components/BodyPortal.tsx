@@ -1,38 +1,57 @@
-import React, { useLayoutEffect } from 'react';
+import React from 'react';
 import { createPortal } from 'react-dom';
+import { BodyPortalSlotsContext } from './BodyPortalSlotsContext';
+
+const getInsertBeforeTarget = (bodyPortalSlots: string[], slot?: string) => {
+  if (!slot) { return null; }
+
+  for (let index = bodyPortalSlots.findIndex((sl) => sl === slot) + 1; index < bodyPortalSlots.length; index++) {
+    const sl = bodyPortalSlots[index];
+    const tag = sl === 'root' ? document.querySelector('#root') : document.querySelector(`[data-portal-slot="${sl}"]`);
+    if (tag) { return tag; }
+  }
+
+  return null;
+}
 
 export const BodyPortal = ({
-  children, tagName, className, append
-}: React.PropsWithChildren<{tagName?: string; className?: string; append?: boolean}>) => {
+  children, slot, tagName, className
+}: React.PropsWithChildren<{slot?: string; tagName?: string; className?: string}>) => {
   const tag = tagName?.toUpperCase() ?? 'DIV';
   const ref = React.useRef<HTMLElement>(document.createElement(tag));
   if (ref.current.tagName !== tag) {
     ref.current = document.createElement(tag);
   }
 
-  // The default is to add the tag before the root element
-  // Pass append: true to append it to the body
-  const before = append ? null : document.body.querySelector('#root');
+  const bodyPortalOrderedRefs = React.useContext(BodyPortalSlotsContext);
 
-  useLayoutEffect(() => {
+  React.useLayoutEffect(() => {
     const element = ref.current;
 
     if (className) {
       element.classList.add(className);
     }
 
-    document.body.insertBefore(element, before);
+    if (slot) {
+      element.dataset['portalSlot'] = slot;
+    }
+
+    document.body.insertBefore(element, getInsertBeforeTarget(bodyPortalOrderedRefs, slot));
 
     return () => {
       if (element.parentNode) {
         element.parentNode.removeChild(element);
       }
 
+      if (slot) {
+        delete element.dataset['portalSlot'];
+      }
+
       if (className) {
         element.classList.remove(className);
       }
     };
-  }, [before, className, tag]);
+  }, [bodyPortalOrderedRefs, className, slot, tag]);
 
   return createPortal(children, ref.current);
 };
