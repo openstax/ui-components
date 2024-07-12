@@ -16,10 +16,10 @@ const StyledToastContainer = styled(BodyPortal)`
   gap: 1vh;
 `;
 
-export const ToastContainer = ({ toasts, onDismissToast, inline = false }: {
-  toasts: ToastData[], onDismissToast?: ToastData['onDismiss'], inline?: boolean
+export const ToastContainer = ({ toasts, onDismissToast, inline = false, className }: {
+  toasts: ToastData[], onDismissToast?: ToastData['onDismiss'], inline?: boolean, className?: string
 }) => {
-  return <StyledToastContainer inline={inline} aria-live="polite" slot='toast'>
+  return <StyledToastContainer inline={inline} aria-live="polite" slot='toast' className={className}>
     {toasts.map((toast, index) => <Toast
       key={`toast-${index}`}
       onDismiss={onDismissToast}
