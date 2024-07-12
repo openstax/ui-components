@@ -7,8 +7,8 @@ const getInsertBeforeTarget = (bodyPortalSlots: string[], slot: string) => {
   //       This is not recommended usage, as the ordering will then depend on the rendering order and may change
   for (let index = bodyPortalSlots.findIndex((sl) => sl === slot) + 1; index < bodyPortalSlots.length; index++) {
     const sl = bodyPortalSlots[index];
-    const tag = sl === 'main'
-    ? document.body.querySelector('main')
+    const tag = sl === 'root'
+    ? document.body.querySelector('#root')
     : document.body.querySelector(`[data-portal-slot="${sl}"]`);
     if (tag) { return tag; }
   }

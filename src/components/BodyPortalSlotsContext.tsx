@@ -1,3 +1,3 @@
 import React from 'react';
 
-export const BodyPortalSlotsContext = React.createContext<string[]>(['main']);
+export const BodyPortalSlotsContext = React.createContext<string[]>(['root']);

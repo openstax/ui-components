@@ -85,7 +85,7 @@ describe('BodyPortal', () => {
     render(<BodyPortalSlotsContext.Provider value={[
       'thefirst',
       'thesecond',
-      'main',
+      'root',
       'thesecondtolast',
       'thelast',
     ]}>
@@ -138,7 +138,7 @@ describe('BodyPortal', () => {
     render(<BodyPortalSlotsContext.Provider value={[
       'thefirst',
       'thesecond',
-      'main',
+      'root',
       'thesecondtolast',
       'thelast',
     ]}>
