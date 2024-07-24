@@ -10,6 +10,9 @@ exports[`Overlay hides 1`] = `
 
 exports[`Overlay matches snapshot 1`] = `
 <body>
+  <main
+    id="root"
+  />
   <div
     class="sc-iBkjds sc-iqcoie cbXHOy dHqhuo"
     data-portal-slot="overlay"
@@ -57,8 +60,5 @@ exports[`Overlay matches snapshot 1`] = `
       class="sc-gKXOVf sc-jqUVSM etxkPo hjYSJA"
     />
   </div>
-  <main
-    id="root"
-  />
 </body>
 `;

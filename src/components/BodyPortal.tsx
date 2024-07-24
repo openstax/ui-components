@@ -2,10 +2,14 @@ import React from 'react';
 import { createPortal } from 'react-dom';
 import { BodyPortalSlotsContext } from './BodyPortalSlotsContext';
 
-const getInsertBeforeTarget = (bodyPortalSlots: string[], slot: string) => {
-  // Note: If the slot is not found in bodyPortalSlots, this code will insert the tag before the first slot
-  //       This is not recommended usage, as the ordering will then depend on the rendering order and may change
-  for (let index = bodyPortalSlots.findIndex((sl) => sl === slot) + 1; index < bodyPortalSlots.length; index++) {
+const getInsertBeforeTarget = (bodyPortalSlots: string[], slot?: string) => {
+  // Note: If the slot is not found in bodyPortalSlots, this code will append the tag instead,
+  //       meaning the ordering will then depend on the rendering order and may change
+  const slotIndex = bodyPortalSlots.findIndex((sl) => sl === slot);
+  if (slotIndex === -1) { return null; }
+
+  // Find the next slot that is present in the DOM and return it
+  for (let index = slotIndex + 1; index < bodyPortalSlots.length; index++) {
     const sl = bodyPortalSlots[index];
     const tag = sl === 'root'
     ? document.body.querySelector('#root')
@@ -19,7 +23,7 @@ const getInsertBeforeTarget = (bodyPortalSlots: string[], slot: string) => {
 
 export const BodyPortal = ({
   children, className, role, slot, tagName
-}: React.PropsWithChildren<{className?: string; role?: string; slot: string; tagName?: string}>) => {
+}: React.PropsWithChildren<{className?: string; role?: string; slot?: string; tagName?: string}>) => {
   const tag = tagName?.toUpperCase() ?? 'DIV';
   const ref = React.useRef<HTMLElement>(document.createElement(tag));
   if (ref.current.tagName !== tag) {

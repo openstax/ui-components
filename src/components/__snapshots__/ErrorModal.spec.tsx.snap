@@ -2,6 +2,9 @@
 
 exports[`Modal matches snapshot 1`] = `
 <body>
+  <main
+    id="root"
+  />
   <div
     class="sc-jqUVSM gdnNrV"
     data-portal-slot="modal"
@@ -92,14 +95,14 @@ exports[`Modal matches snapshot 1`] = `
       class="sc-papXJ dLOChU"
     />
   </div>
-  <main
-    id="root"
-  />
 </body>
 `;
 
 exports[`Modal matches snapshot when heading and children are set 1`] = `
 <body>
+  <main
+    id="root"
+  />
   <div
     class="sc-jqUVSM gdnNrV"
     data-portal-slot="modal"
@@ -191,8 +194,5 @@ exports[`Modal matches snapshot when heading and children are set 1`] = `
       class="sc-papXJ dLOChU"
     />
   </div>
-  <main
-    id="root"
-  />
 </body>
 `;

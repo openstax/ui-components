@@ -12,19 +12,10 @@ describe('BodyPortal', () => {
   });
 
   it('renders the tag into document.body using a React portal', () => {
-    render(<><BodyPortal slot='nav' tagName='nav'><ol><li>link text</li></ol></BodyPortal>
+    render(<><BodyPortal slot='footer' tagName='footer'>Footer stuff</BodyPortal>
              <h1>Title</h1></>, { container: root });
     expect(document.body).toMatchInlineSnapshot(`
 <body>
-  <nav
-    data-portal-slot="nav"
-  >
-    <ol>
-      <li>
-        link text
-      </li>
-    </ol>
-  </nav>
   <main
     id="root"
   >
@@ -32,21 +23,20 @@ describe('BodyPortal', () => {
       Title
     </h1>
   </main>
+  <footer
+    data-portal-slot="footer"
+  >
+    Footer stuff
+  </footer>
 </body>
 `);
   });
 
   it('re-renders correctly when props are updated', () => {
-    render(<><BodyPortal className='test header' slot='header' tagName='header'>Header stuff</BodyPortal>
+    render(<><BodyPortal className='test footer' slot='footer' tagName='footer'>Footer stuff</BodyPortal>
              <h1>Title</h1></>, { container: root });
     expect(document.body).toMatchInlineSnapshot(`
 <body>
-  <header
-    class="test header"
-    data-portal-slot="header"
-  >
-    Header stuff
-  </header>
   <main
     id="root"
   >
@@ -54,22 +44,18 @@ describe('BodyPortal', () => {
       Title
     </h1>
   </main>
+  <footer
+    class="test footer"
+    data-portal-slot="footer"
+  >
+    Footer stuff
+  </footer>
 </body>
 `);
-    render(<><BodyPortal className='test nav' slot='nav' tagName='nav'><ol><li>link text</li></ol></BodyPortal>
+    render(<><BodyPortal className='test modal' slot='modal' tagName='div'>Modal stuff</BodyPortal>
              <h1>Title</h1></>, { container: root });
     expect(document.body).toMatchInlineSnapshot(`
 <body>
-  <nav
-    class="test nav"
-    data-portal-slot="nav"
-  >
-    <ol>
-      <li>
-        link text
-      </li>
-    </ol>
-  </nav>
   <main
     id="root"
   >
@@ -77,6 +63,12 @@ describe('BodyPortal', () => {
       Title
     </h1>
   </main>
+  <div
+    class="test modal"
+    data-portal-slot="modal"
+  >
+    Modal stuff
+  </div>
 </body>
 `);
   });

@@ -2,6 +2,9 @@
 
 exports[`ToastContainer matches snapshot 1`] = `
 <body>
+  <main
+    id="root"
+  />
   <div
     class="sc-gsnTZi bQKHKA"
     data-portal-slot="toast"
@@ -61,14 +64,14 @@ exports[`ToastContainer matches snapshot 1`] = `
       </div>
     </div>
   </div>
-  <main
-    id="root"
-  />
 </body>
 `;
 
 exports[`ToastContainer uses inline prop 1`] = `
 <body>
+  <main
+    id="root"
+  />
   <div
     class="sc-gsnTZi gRYEVl"
     data-portal-slot="toast"
@@ -128,8 +131,5 @@ exports[`ToastContainer uses inline prop 1`] = `
       </div>
     </div>
   </div>
-  <main
-    id="root"
-  />
 </body>
 `;

@@ -10,6 +10,9 @@ exports[`Modal hides 1`] = `
 
 exports[`Modal matches snapshot 1`] = `
 <body>
+  <main
+    id="root"
+  />
   <div
     class="sc-iBkjds cbXHOy"
     data-portal-slot="modal"
@@ -74,8 +77,5 @@ exports[`Modal matches snapshot 1`] = `
       class="sc-gKXOVf etxkPo"
     />
   </div>
-  <main
-    id="root"
-  />
 </body>
 `;
