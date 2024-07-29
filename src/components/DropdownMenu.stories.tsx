@@ -3,21 +3,20 @@ import { DropdownMenu, DropdownMenuItem } from './DropdownMenu';
 
 const Menus = (variant: 'light' | 'primary' | 'secondary') => {
   const [disabled, setDisabled] = React.useState(false);
-  const onClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleAction = () => {
     setDisabled(true);
-    console.log(`Activated "${e.currentTarget.innerText}"`);
     setTimeout(() => { setDisabled(false); }, 1000);
   };
 
   return <>
     <DropdownMenu disabled={disabled} id='enabled-grades-menu' text='Sync/Export Grades' variant={variant}>
-      <DropdownMenuItem onAction={onClick}>
+      <DropdownMenuItem onAction={handleAction}>
         Sync only completed grades to LMS
       </DropdownMenuItem>
-      <DropdownMenuItem onAction={onClick}>
+      <DropdownMenuItem onAction={handleAction}>
         Sync all grades to LMS (including partial)
       </DropdownMenuItem>
-      <DropdownMenuItem onAction={onClick}>
+      <DropdownMenuItem onAction={handleAction}>
         Export grades to .csv
       </DropdownMenuItem>
     </DropdownMenu>
@@ -25,13 +24,13 @@ const Menus = (variant: 'light' | 'primary' | 'secondary') => {
     <br/>
 
     <DropdownMenu disabled={true} id='disabled-grades-menu' text='Sync/Export Grades' variant={variant}>
-      <DropdownMenuItem onAction={onClick}>
+      <DropdownMenuItem onAction={handleAction}>
         Sync only completed grades to LMS
       </DropdownMenuItem>
-      <DropdownMenuItem onAction={onClick}>
+      <DropdownMenuItem onAction={handleAction}>
         Sync all grades to LMS (including partial)
       </DropdownMenuItem>
-      <DropdownMenuItem onAction={onClick}>
+      <DropdownMenuItem onAction={handleAction}>
         Export grades to .csv
       </DropdownMenuItem>
     </DropdownMenu>

@@ -85,7 +85,7 @@ Array [
       role="tooltip"
       style={
         Object {
-          "maxHeight": undefined,
+          "maxHeight": "100vh",
           "position": "absolute",
           "zIndex": 100000,
         }
