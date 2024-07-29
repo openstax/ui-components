@@ -9474,7 +9474,7 @@ raw-body@2.5.2:
     iconv-lite "0.4.24"
     unpipe "1.0.0"
 
-react-aria-components@^1.1.1:
+react-aria-components@^1.3.1:
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/react-aria-components/-/react-aria-components-1.3.1.tgz#96b62c06e39c6e65df5e7f83edff662eb1aaafd2"
   integrity sha512-yUTA8uHbioQHU5d7iNvSLZLEfQlcTAmyhhkY+NMc8pIGPdtf0qnrlF0nPtJq8Mro5irpVrgUlqKBvvCiKwFNiQ==
