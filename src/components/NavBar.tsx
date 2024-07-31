@@ -1,9 +1,10 @@
-import * as Constants from '../../src/constants';
 import styled, { css } from 'styled-components';
+import * as Constants from '../../src/constants';
 import theme from '../../src/theme';
+import { BodyPortal } from './BodyPortal';
 import { NavBarLogo as OpenstaxLogo } from './NavBarLogo';
 
-const BarWrapper = styled.div`
+const BarWrapper = styled(BodyPortal)`
   overflow: visible;
   z-index: ${theme.zIndex.navbar};
   background: ${theme.colors.palette.white};
@@ -50,7 +51,7 @@ export const NavBar = ({ logo = false, maxWidth, navDesktopHeight, navMobileHeig
   const {alt = 'OpenStax Logo', ...anchorProps} = logoIsObject ? logo : {};
   const logoComponent = logo ? <OpenstaxLogo alt={alt} /> : null;
 
-  return <BarWrapper role="toolbar" {...props}>
+  return <BarWrapper role="toolbar" slot='nav' {...props}>
     <StyledNavBar
       maxWidth={maxWidth}
       navDesktopHeight={navDesktopHeight || Constants.navDesktopHeight}

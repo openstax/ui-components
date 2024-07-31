@@ -42,7 +42,7 @@ export const Overlay = ({
 }>) => {
   if (!show) { return null; }
   return (
-    <OverlayWrapper className={className}>
+    <OverlayWrapper className={className} slot='overlay'>
       <OverlayBody>
         <OverlayCloseButton onClick={onClose} variant={'inverted-circle'} />
         { children }

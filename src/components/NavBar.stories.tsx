@@ -29,24 +29,30 @@ const StyledWrapper = styled.div`
   height: 100%
 `;
 
+const StyledNavBar = styled(NavBar)`
+  position: fixed;
+  left: 2rem;
+  top: 2rem;
+  width: calc(100% - 36rem);
+`;
 
-export const Plain = () => <NavBar>NavBar</NavBar>;
-export const LogoAndChildren = () => <NavBar logo>Menu</NavBar>;
-export const AltTextLinkedLogo = () => <NavBar logo={{alt: 'custom alt', href: '/'}} />;
-export const AltTextNoLinkedLogo = () => <NavBar logo={{alt: 'custom alt unlinked'}} />;
-export const OverrideJustifyContent = () => <NavBar justifyContent='center'>
+export const Plain = () => <StyledNavBar>NavBar</StyledNavBar>;
+export const LogoAndChildren = () => <StyledNavBar logo>Menu</StyledNavBar>;
+export const AltTextLinkedLogo = () => <StyledNavBar logo={{alt: 'custom alt', href: '/'}} />;
+export const AltTextNoLinkedLogo = () => <StyledNavBar logo={{alt: 'custom alt unlinked'}} />;
+export const OverrideJustifyContent = () => <StyledNavBar justifyContent='center'>
   <strong>Centered Menu</strong>
-</NavBar>;
+</StyledNavBar>;
 
 export const Controls_NavBarButton = () =>
-  <NavBar>
+  <StyledNavBar>
     <NavBarButton label="Help" />
     <NavBarButton label="Info" icon={<Info />} />
     <NavBarButton style={{ padding: '1rem' }} icon="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAiIGhlaWdodD0iNTYiIHZpZXdCb3g9IjAgMCAxMCA1NiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8Y2lyY2xlIGN4PSI1IiBjeT0iNSIgcj0iNSIgZmlsbD0iIzAwMCIvPgogIDxjaXJjbGUgY3g9IjUiIGN5PSIyOCIgcj0iNSIgZmlsbD0iIzAwMCIvPgogIDxjaXJjbGUgY3g9IjUiIGN5PSI1MSIgcj0iNSIgZmlsbD0iIzAwMCIvPgo8L3N2Zz4K" aria-label="Menu" />
-  </NavBar>
+  </StyledNavBar>
 
 export const PopoverAndMenu = () =>
-  <NavBar>
+  <StyledNavBar>
     <InfoMenuButton label="Menu">
       <PopoverContainer>
         <button>Example button</button>
@@ -76,4 +82,4 @@ export const PopoverAndMenu = () =>
         <StyledNavBarMenuItem>Styled menu item</StyledNavBarMenuItem>
       </DotsMenuButton>
     </StyledWrapper>
-  </NavBar>;
+  </StyledNavBar>;

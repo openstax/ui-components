@@ -1,22 +1,30 @@
-import renderer from 'react-test-renderer';
+import { render } from '@testing-library/react';
 import { Modal, ModalBody } from './Modal';
 
 describe('Modal', () => {
+  let root: HTMLElement;
+
+  beforeEach(() => {
+    root = document.createElement('main');
+    root.id = 'root';
+    document.body.append(root);
+  });
+
   it('matches snapshot', () => {
-    const tree = renderer.create(
+    render(
       <Modal onModalClose={jest.fn()} show={true} heading='Heading'>
         <ModalBody>Modal Body</ModalBody>
-      </Modal>
-    ).toJSON();
-    expect(tree).toMatchSnapshot();
+      </Modal>, { container: root }
+    );
+    expect(document.body).toMatchSnapshot();
   });
 
   it('hides', () => {
-    const tree = renderer.create(
+    render(
       <Modal onModalClose={jest.fn()} show={false} heading='Heading'>
         <ModalBody>Modal Body</ModalBody>
-      </Modal>
-    ).toJSON();
-    expect(tree).toBeNull();
+      </Modal>, { container: root }
+    );
+    expect(document.body).toMatchSnapshot();
   });
 });

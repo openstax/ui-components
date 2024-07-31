@@ -1,22 +1,30 @@
-import renderer from 'react-test-renderer';
+import { render } from '@testing-library/react';
 import { Overlay } from './Overlay';
 
 describe('Overlay', () => {
+  let root: HTMLElement;
+
+  beforeEach(() => {
+    root = document.createElement('main');
+    root.id = 'root';
+    document.body.append(root);
+  });
+
   it('matches snapshot', () => {
-    const tree = renderer.create(
+    render(
       <Overlay onClose={jest.fn()} show={true}>
         Inner content
-      </Overlay>
-    ).toJSON();
-    expect(tree).toMatchSnapshot();
+      </Overlay>, { container: root }
+    );
+    expect(document.body).toMatchSnapshot();
   });
 
   it('hides', () => {
-    const tree = renderer.create(
+    render(
       <Overlay onClose={jest.fn()} show={false}>
         Inner content
-      </Overlay>
-    ).toJSON();
-    expect(tree).toBeNull();
+      </Overlay>, { container: root }
+    );
+    expect(document.body).toMatchSnapshot();
   });
 });
