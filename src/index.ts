@@ -16,6 +16,7 @@ export * from './components/NavBarMenuButtons';
 export * from './components/Overlay';
 export * from './components/Radio';
 export * from './components/RiceLogo';
+export * from './components/SidebarNav';
 export * from './components/Tabs';
 export * from './components/Text';
 export * from './components/ToastContainer';
