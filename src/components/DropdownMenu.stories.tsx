@@ -1,39 +1,38 @@
 import React from 'react';
-import { DropdownMenu, DropdownMenuItemButton } from './DropdownMenu';
+import { DropdownMenu, DropdownMenuItem } from './DropdownMenu';
 
 const Menus = (variant: 'light' | 'primary' | 'secondary') => {
   const [disabled, setDisabled] = React.useState(false);
-  const onClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleAction = () => {
     setDisabled(true);
-    console.log(`Activated "${e.currentTarget.innerText}"`);
     setTimeout(() => { setDisabled(false); }, 1000);
   };
 
   return <>
     <DropdownMenu disabled={disabled} id='enabled-grades-menu' text='Sync/Export Grades' variant={variant}>
-      <DropdownMenuItemButton onClick={onClick}>
+      <DropdownMenuItem onAction={handleAction}>
         Sync only completed grades to LMS
-      </DropdownMenuItemButton>
-      <DropdownMenuItemButton onClick={onClick}>
+      </DropdownMenuItem>
+      <DropdownMenuItem onAction={handleAction}>
         Sync all grades to LMS (including partial)
-      </DropdownMenuItemButton>
-      <DropdownMenuItemButton onClick={onClick}>
+      </DropdownMenuItem>
+      <DropdownMenuItem onAction={handleAction}>
         Export grades to .csv
-      </DropdownMenuItemButton>
+      </DropdownMenuItem>
     </DropdownMenu>
 
     <br/>
 
     <DropdownMenu disabled={true} id='disabled-grades-menu' text='Sync/Export Grades' variant={variant}>
-      <DropdownMenuItemButton onClick={onClick}>
+      <DropdownMenuItem onAction={handleAction}>
         Sync only completed grades to LMS
-      </DropdownMenuItemButton>
-      <DropdownMenuItemButton onClick={onClick}>
+      </DropdownMenuItem>
+      <DropdownMenuItem onAction={handleAction}>
         Sync all grades to LMS (including partial)
-      </DropdownMenuItemButton>
-      <DropdownMenuItemButton onClick={onClick}>
+      </DropdownMenuItem>
+      <DropdownMenuItem onAction={handleAction}>
         Export grades to .csv
-      </DropdownMenuItemButton>
+      </DropdownMenuItem>
     </DropdownMenu>
   </>;
 };
