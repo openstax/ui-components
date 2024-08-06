@@ -154,7 +154,7 @@ export const SidebarNav = styled(
       setNavAnimation(value ? "collapsing" : "expanding");
     };
 
-    const MaybeModal = ({ children }: React.PropsWithChildren<{}>) =>
+    const MaybeModal = ({ children }: React.PropsWithChildren<React.ReactNode>) =>
       isMobile && !navIsCollapsed ? (
         <StyledModal
           data-testid="sidebarnav-modal"
