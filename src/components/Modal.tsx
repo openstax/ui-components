@@ -1,6 +1,8 @@
-import { colors, zIndex } from "../../src/theme";
 import styled, { css } from "styled-components";
+import { colors, zIndex } from "../../src/theme";
+import { BodyPortal } from './BodyPortal';
 import { CloseModalButton } from "./CloseModalButton";
+
 
 const modalPadding = 3;
 
@@ -60,7 +62,7 @@ export const Mask = styled.div`
   background-color: rgba(0, 0, 0, 0.3);
 `;
 
-export const ModalWrapper = styled.div`
+export const ModalWrapper = styled(BodyPortal)`
   top: 0;
   z-index: ${zIndex.modals};
   left: 0;
@@ -104,7 +106,7 @@ export const Modal = ({
 }: React.PropsWithChildren<ModalPropTypes>) => {
   if (!show) { return null; }
   return (
-    <ModalWrapper className={className}>
+    <ModalWrapper className={className} slot='modal'>
       <CardWrapper>
         <ModalCard>
           <Header variant={variant}>

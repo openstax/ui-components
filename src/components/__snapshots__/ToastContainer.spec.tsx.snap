@@ -1,125 +1,135 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`ToastContainer matches snapshot 1`] = `
-<div
-  aria-live="polite"
-  className="sc-gsnTZi bQKHKA"
->
+<body>
+  <main
+    id="root"
+  />
   <div
-    className="sc-bczRLJ jAZNhq"
+    class="sc-gsnTZi bQKHKA"
+    data-portal-slot="toast"
   >
     <div
-      className="neutral"
+      class="sc-bczRLJ jAZNhq"
     >
       <div
-        className="title"
+        class="neutral"
       >
-        Neutral
+        <div
+          class="title"
+        >
+          Neutral
+        </div>
+        <div
+          class="body"
+        >
+          message
+        </div>
       </div>
+    </div>
+    <div
+      class="sc-bczRLJ cWrNHg"
+    >
       <div
-        className="body"
+        class="failure"
       >
-        message
+        <div
+          class="title"
+        >
+          Error
+        </div>
+        <div
+          class="body"
+        >
+          message
+        </div>
+      </div>
+    </div>
+    <div
+      class="sc-bczRLJ loazPe"
+    >
+      <div
+        class="success"
+      >
+        <div
+          class="title"
+        >
+          Success
+        </div>
+        <div
+          class="body"
+        >
+          message
+        </div>
       </div>
     </div>
   </div>
-  <div
-    className="sc-bczRLJ cWrNHg"
-  >
-    <div
-      className="failure"
-    >
-      <div
-        className="title"
-      >
-        Error
-      </div>
-      <div
-        className="body"
-      >
-        message
-      </div>
-    </div>
-  </div>
-  <div
-    className="sc-bczRLJ loazPe"
-  >
-    <div
-      className="success"
-    >
-      <div
-        className="title"
-      >
-        Success
-      </div>
-      <div
-        className="body"
-      >
-        message
-      </div>
-    </div>
-  </div>
-</div>
+</body>
 `;
 
 exports[`ToastContainer uses inline prop 1`] = `
-<div
-  aria-live="polite"
-  className="sc-gsnTZi gRYEVl"
->
+<body>
+  <main
+    id="root"
+  />
   <div
-    className="sc-bczRLJ jSNerL"
+    class="sc-gsnTZi gRYEVl"
+    data-portal-slot="toast"
   >
     <div
-      className="neutral"
+      class="sc-bczRLJ jSNerL"
     >
       <div
-        className="title"
+        class="neutral"
       >
-        Neutral
+        <div
+          class="title"
+        >
+          Neutral
+        </div>
+        <div
+          class="body"
+        >
+          message
+        </div>
       </div>
+    </div>
+    <div
+      class="sc-bczRLJ fgCwHl"
+    >
       <div
-        className="body"
+        class="failure"
       >
-        message
+        <div
+          class="title"
+        >
+          Error
+        </div>
+        <div
+          class="body"
+        >
+          message
+        </div>
+      </div>
+    </div>
+    <div
+      class="sc-bczRLJ dGEkoL"
+    >
+      <div
+        class="success"
+      >
+        <div
+          class="title"
+        >
+          Success
+        </div>
+        <div
+          class="body"
+        >
+          message
+        </div>
       </div>
     </div>
   </div>
-  <div
-    className="sc-bczRLJ fgCwHl"
-  >
-    <div
-      className="failure"
-    >
-      <div
-        className="title"
-      >
-        Error
-      </div>
-      <div
-        className="body"
-      >
-        message
-      </div>
-    </div>
-  </div>
-  <div
-    className="sc-bczRLJ dGEkoL"
-  >
-    <div
-      className="success"
-    >
-      <div
-        className="title"
-      >
-        Success
-      </div>
-      <div
-        className="body"
-      >
-        message
-      </div>
-    </div>
-  </div>
-</div>
+</body>
 `;

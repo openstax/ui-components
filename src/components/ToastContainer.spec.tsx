@@ -1,5 +1,5 @@
+import { render, act } from '@testing-library/react';
 import { ToastContainer } from './ToastContainer';
-import renderer from 'react-test-renderer';
 import { ToastData } from '../../src/types';
 
 jest.useFakeTimers();
@@ -11,23 +11,31 @@ const toasts: ToastData[] = [
 ];
 
 describe('ToastContainer', () => {
+  let root: HTMLElement;
+
+  beforeEach(() => {
+    root = document.createElement('main');
+    root.id = 'root';
+    document.body.append(root);
+  });
+
   it('matches snapshot', () => {
-    const tree = renderer.create(<ToastContainer toasts={toasts} />).toJSON();
-    expect(tree).toMatchSnapshot();
+    render(<ToastContainer toasts={toasts} />, { container: root });
+    expect(document.body).toMatchSnapshot();
   });
 
   it('uses inline prop', () => {
-    const tree = renderer.create(<ToastContainer toasts={toasts} inline={true} />).toJSON();
-    expect(tree).toMatchSnapshot();
+    render(<ToastContainer toasts={toasts} inline={true} />, { container: root });
+    expect(document.body).toMatchSnapshot();
   });
 
   it('runs callback', () => {
     const callback = jest.fn();
-    renderer.create(<ToastContainer toasts={toasts.splice(0)} onDismissToast={callback} />).toJSON();
-    renderer.act(() => {
+    render(<ToastContainer toasts={toasts.splice(0)} onDismissToast={callback} />, { container: root });
+    act(() => {
       jest.advanceTimersByTime(10000);
-      expect(callback).toHaveBeenCalledWith('3')
-      expect(callback).toHaveBeenCalledWith('2')
+      expect(callback).toHaveBeenCalledWith('3');
+      expect(callback).toHaveBeenCalledWith('2');
     });
   });
 });

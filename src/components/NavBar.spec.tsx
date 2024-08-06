@@ -1,41 +1,39 @@
+import { render } from '@testing-library/react';
 import { NavBar } from './NavBar';
-import renderer from 'react-test-renderer';
 
 describe('NavBar', () => {
+  let root: HTMLElement;
+
+  beforeEach(() => {
+    root = document.createElement('main');
+    root.id = 'root';
+    document.body.append(root);
+  });
+
   it('matches snapshot', () => {
-    const tree = renderer.create(
-      <NavBar>NavBar content</NavBar>
-    ).toJSON();
-    expect(tree).toMatchSnapshot();
+    render(<NavBar>NavBar content</NavBar>, { container: root });
+    expect(document.body).toMatchSnapshot();
   });
 
   it('sets the maxWidth', () => {
-    const tree = renderer.create(
-      <NavBar maxWidth={128}>NavBar content</NavBar>
-    ).toJSON();
-    expect(tree).toMatchSnapshot();
-  });
-});
-
-describe('NavBar with a logo', () => {
-  it('matches snapshot', () => {
-    const tree = renderer.create(
-      <NavBar logo={true}>NavBar content</NavBar>
-    ).toJSON();
-    expect(tree).toMatchSnapshot();
+    render(<NavBar maxWidth={128}>NavBar content</NavBar>, { container: root });
+    expect(document.body).toMatchSnapshot();
   });
 
-  it('links the logo', () => {
-    const tree = renderer.create(
-      <NavBar logo={{alt: 'Logo', href:'/'}}>NavBar content</NavBar>
-    ).toJSON();
-    expect(tree).toMatchSnapshot();
-  });
+  describe('with a logo', () => {
+    it('matches snapshot', () => {
+      render(<NavBar logo={true}>NavBar content</NavBar>, { container: root });
+      expect(document.body).toMatchSnapshot();
+    });
 
-  it('customizes the alt text', () => {
-    const tree = renderer.create(
-      <NavBar logo={{alt: 'Custom alt text'}}>NavBar content</NavBar>
-    ).toJSON();
-    expect(tree).toMatchSnapshot();
+    it('links the logo', () => {
+      render(<NavBar logo={{alt: 'Logo', href:'/'}}>NavBar content</NavBar>, { container: root });
+      expect(document.body).toMatchSnapshot();
+    });
+
+    it('customizes the alt text', () => {
+      render(<NavBar logo={{alt: 'Custom alt text'}}>NavBar content</NavBar>, { container: root });
+      expect(document.body).toMatchSnapshot();
+    });
   });
 });
