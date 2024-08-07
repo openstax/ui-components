@@ -1,0 +1,17 @@
+import{s as e,a as o,j as i}from"./index.db5b4afc.js";import{T as r}from"./Tooltip.fe2ed584.js";import"./theme.23fb1031.js";import"./palette.15e4d008.js";import"./Button.module.6bd29747.js";import"./context.module.92dacfde.js";import"./useFocusRing.module.2d7a5aff.js";import"./OverlayArrow.module.58795d6b.js";import"./Info.d01d4b14.js";const m=e.div`
+  width: 50%;
+  margin: 0 auto;
+  font-size: 1.6rem;
+  position: relative;
+
+  > * {
+    margin-bottom: 1rem;
+  }
+`,n=e.div`
+  display: flex;
+  align-items: center;
+
+  > * {
+    margin-right: 1rem;
+  }
+`,g=()=>o(m,{children:["right","top","bottom"].map(t=>i(n,{children:[o(r,{placement:t,children:"Tooltip content goes here."}),t]}))});typeof window<"u"&&window.document&&window.document.createElement&&document.documentElement.setAttribute("data-storyloaded","");export{g as Default};
