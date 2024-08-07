@@ -233,6 +233,7 @@ export const SidebarNavStyles = {
   NavHeader,
   NavBody,
   NavFooter,
+  ToggleButton,
   expandedWidth,
   collapsedWidth
 };
