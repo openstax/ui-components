@@ -1,6 +1,6 @@
 import { useMatchMediaQuery } from "../../src/hooks";
 import styled, { createGlobalStyle } from "styled-components";
-import { SidebarNav, sidebarNavCollapsedWidth } from "./SidebarNav";
+import { SidebarNav, SidebarNavStyles } from "./SidebarNav";
 
 const GlobalStyle = createGlobalStyle`
   html, body, #ladle-root {
@@ -72,7 +72,7 @@ export const Default = () => {
           </>
         )}
       </StyledSidebarNav>
-        <StyledMain style={{ padding: "4rem", marginLeft: (isMobile ? sidebarNavCollapsedWidth : '') }}>
+        <StyledMain style={{ padding: "4rem", marginLeft: (isMobile ? SidebarNavStyles.collapsedWidth : '') }}>
         <h1>Main content</h1>
       </StyledMain>
     </Wrapper>

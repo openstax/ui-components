@@ -7,8 +7,8 @@ import { breakpoints, colors } from "../theme";
 import { Dialog, Modal } from "react-aria-components";
 import { useMatchMediaQuery } from "../hooks";
 
-export const sidebarNavCollapsedWidth = "5.6rem";
-export const sidebarNavExpandedWidth = "24rem";
+const collapsedWidth = "5.6rem";
+const expandedWidth = "24rem";
 
 const GlobalStyle = createGlobalStyle`
   .react-aria-ModalOverlay {
@@ -20,7 +20,7 @@ const GlobalStyle = createGlobalStyle`
     background: rgba(0 0 0 / .7);
     z-index: 100;
   }
-xb`;
+`;
 
 const StyledModal = styled(Modal)`
   position: fixed;
@@ -28,9 +28,9 @@ const StyledModal = styled(Modal)`
   left: 0;
 `;
 
-export const Nav = styled.nav`
-  --collapsed-width: ${sidebarNavCollapsedWidth};
-  --expanded-width: ${sidebarNavExpandedWidth};
+const Nav = styled.nav`
+  --collapsed-width: ${collapsedWidth};
+  --expanded-width: ${expandedWidth};
   width: var(--expanded-width);
   display: flex;
   justify-content: space-between;
@@ -99,7 +99,7 @@ const NavFooter = styled.footer`
   }
 `;
 
-export const ToggleButton = styled.button`
+const ToggleButton = styled.button`
   position: absolute;
   right: 0;
   top: 1.8rem;
@@ -227,3 +227,12 @@ export const SidebarNav = styled(
     );
   },
 )``;
+
+export const SidebarNavStyles = {
+  Nav,
+  NavHeader,
+  NavBody,
+  NavFooter,
+  expandedWidth,
+  collapsedWidth
+};
