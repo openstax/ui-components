@@ -81,14 +81,14 @@ const Nav = styled.nav`
   }
 `;
 
-export const NavHeader = styled.header`
+const NavHeader = styled.header`
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   align-items: center;
 `;
 
-export const NavBody = styled.div`
+const NavBody = styled.div`
   height: 100%;
   overflow-y: auto;
 `;
