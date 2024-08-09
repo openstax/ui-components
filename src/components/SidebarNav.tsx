@@ -3,7 +3,7 @@ import classNames from "classnames";
 import styled, { createGlobalStyle } from "styled-components";
 import { LeftArrow } from "./svgs/LeftArrow";
 import { RightArrow } from "./svgs/RightArrow";
-import { breakpoints, colors } from "../theme";
+import { breakpoints, colors, zIndex } from "../theme";
 import { Dialog, Modal } from "react-aria-components";
 import { useMatchMediaQuery } from "../hooks";
 
@@ -39,6 +39,7 @@ const Nav = styled.nav`
   box-shadow: -0.2rem 0 0.4rem rgba(0, 0, 0, 0.1) inset;
   background: ${colors.palette.neutralBright};
   color: ${colors.palette.neutralThin};
+  z-index: ${zIndex.navbar - 1};
 
   @media (max-width: 15em) {
     --expanded-width: 100vw;
