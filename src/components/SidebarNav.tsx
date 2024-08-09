@@ -179,6 +179,7 @@ export const SidebarNav = styled(
       <MaybeModal>
         <GlobalStyle />
         <Nav
+          aria-expanded={!navIsCollapsed}
           data-testid="sidebarnav"
           className={classNames(className, {
             collapsed: navIsCollapsed,

@@ -3,8 +3,9 @@
 exports[`SidebarNav toggles nav collapse on button click 1`] = `
 <DocumentFragment>
   <nav
+    aria-expanded="true"
     aria-label="Navigation"
-    class="sc-gsnTZi gzQuTk sc-gKXOVf"
+    class="sc-gsnTZi foRCKf sc-gKXOVf"
     data-testid="sidebarnav"
   >
     <button
@@ -36,8 +37,9 @@ exports[`SidebarNav toggles nav collapse on button click 1`] = `
 exports[`SidebarNav toggles nav collapse on button click 2`] = `
 <DocumentFragment>
   <nav
+    aria-expanded="false"
     aria-label="Navigation"
-    class="sc-gsnTZi gzQuTk sc-gKXOVf collapsed collapsing"
+    class="sc-gsnTZi foRCKf sc-gKXOVf collapsed collapsing"
     data-testid="sidebarnav"
   >
     <button

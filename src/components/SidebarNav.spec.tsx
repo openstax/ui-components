@@ -75,12 +75,14 @@ describe("SidebarNav", () => {
     expect(component.asFragment()).toMatchSnapshot();
 
     expect(screen.getByRole("navigation")).not.toHaveClass("collapsed");
+    expect(screen.getByRole("navigation")).toHaveAttribute("aria-expanded", "true");
 
     act(() => {
       fireEvent.click(screen.getByTestId("sidebarnav-toggle"));
     });
 
     expect(screen.getByRole("navigation")).toHaveClass("collapsed");
+    expect(screen.getByRole("navigation")).toHaveAttribute("aria-expanded", "false");
     expect(component.asFragment()).toMatchSnapshot();
 
     act(() => {
