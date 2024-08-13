@@ -1,37 +1,20 @@
 import React from "react";
 import classNames from "classnames";
-import styled, { createGlobalStyle } from "styled-components";
+import styled from "styled-components";
 import { LeftArrow } from "./svgs/LeftArrow";
 import { RightArrow } from "./svgs/RightArrow";
 import { breakpoints, colors, zIndex } from "../theme";
-import { Dialog, Modal } from "react-aria-components";
 import { useMatchMediaQuery } from "../hooks";
+import { FocusScope } from "react-aria";
 
 const collapsedWidth = "5.6rem";
 const expandedWidth = "24rem";
-
-const GlobalStyle = createGlobalStyle`
-  .react-aria-ModalOverlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: var(--visual-viewport-height);
-    background: rgba(0 0 0 / .7);
-    z-index: 100;
-  }
-`;
-
-const StyledModal = styled(Modal)`
-  position: fixed;
-  outline: none;
-  left: 0;
-`;
 
 const Nav = styled.nav`
   --collapsed-width: ${collapsedWidth};
   --expanded-width: ${expandedWidth};
   width: var(--expanded-width);
+  transition: width 300ms ease-in-out;
   display: flex;
   justify-content: space-between;
   flex-direction: column;
@@ -55,30 +38,27 @@ const Nav = styled.nav`
     height: 100%;
   }
 
-  @keyframes expandSidebarNav {
-    from {
-      width: var(--collapsed-width);
-    }
-    to {
-      width: var(--expanded-width);
-    }
+  &.mobile ~ main::before {
+    content: "";
+    background: none;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    position: fixed;
+    opacity: 0;
+    transition: opacity 300ms ease-in-out;
   }
 
-  @keyframes collapseSidebarNav {
-    from {
-      width: var(--expanded-width);
-    }
-    to {
-      width: var(--collapsed-width);
-    }
-  }
-
-  &.expanding {
-    animation: expandSidebarNav 0.3s forwards;
-  }
-
-  &.collapsing {
-    animation: collapseSidebarNav 0.3s forwards;
+  &.mobile[aria-expanded="true"] ~ main::before {
+    background: rgba(0 0 0 / .7);
+    opacity: 1;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
   }
 `;
 
@@ -141,67 +121,71 @@ export const SidebarNav = styled(
     const isMobile = props.isMobile ?? mobileQueryMatches;
 
     const [navIsCollapsed, setNavIsCollapsed] = React.useState(isMobile);
-    const [navAnimation, setNavAnimation] = React.useState<
-      "expanding" | "collapsing" | "idle"
-    >("idle");
     const toggleButtonRef = React.useRef<HTMLButtonElement>(null);
+    const sidebarNavRef = React.useRef<HTMLDivElement>(null);
 
-    React.useEffect(() => {
+    React.useLayoutEffect(() => {
       setNavIsCollapsed(isMobile);
     }, [isMobile]);
 
-    const handleCollapseChange = (value: boolean) => {
-      setNavIsCollapsed(value);
-      setNavAnimation(value ? "collapsing" : "expanding");
-    };
+    React.useEffect(() => {
+      if (!isMobile || navIsCollapsed) {
+        return;
+      }
 
-    const MaybeModal = ({ children }: React.PropsWithChildren<React.ReactNode>) =>
-      isMobile && !navIsCollapsed ? (
-        <StyledModal
-          data-testid="sidebarnav-modal"
-          defaultOpen={true}
-          isDismissable={true}
-          onOpenChange={() => handleCollapseChange(true)}
-        >
-          <Dialog aria-label={props["aria-label"] || "Navigation"}>
-            {children}
-          </Dialog>
-        </StyledModal>
-      ) : (
-        <>{children}</>
-      );
+      const handleOutsideEvent = (event: any) => {
+        if (
+          isMobile &&
+          !navIsCollapsed &&
+          sidebarNavRef.current &&
+          !sidebarNavRef.current.contains(event.target)
+        ) {
+          setNavIsCollapsed(true);
+        }
+      };
+
+      const handleKeyPress = (event: KeyboardEvent) => {
+        if (isMobile && !navIsCollapsed && event.key === "Escape") {
+          setNavIsCollapsed(true);
+        }
+      };
+
+      document.addEventListener("mousedown", handleOutsideEvent);
+      document.addEventListener("touchstart", handleOutsideEvent);
+      document.addEventListener("keydown", handleKeyPress);
+
+      return () => {
+        document.removeEventListener("mousedown", handleOutsideEvent);
+        document.removeEventListener("touchstart", handleOutsideEvent);
+        document.removeEventListener("keydown", handleKeyPress);
+      };
+    }, [isMobile, navIsCollapsed, setNavIsCollapsed, sidebarNavRef]);
 
     const functionRenderArguments = {
       navIsCollapsed,
-      setNavIsCollapsed: handleCollapseChange,
+      setNavIsCollapsed,
     };
 
     return (
-      <MaybeModal>
-        <GlobalStyle />
+      <FocusScope contain={isMobile && !navIsCollapsed}>
         <Nav
+          ref={sidebarNavRef}
           aria-expanded={!navIsCollapsed}
           data-testid="sidebarnav"
           className={classNames(className, {
             collapsed: navIsCollapsed,
             mobile: isMobile,
-            collapsing: navAnimation === "collapsing",
-            expanding: navAnimation === "expanding",
           })}
-          aria-label="Navigation"
-          onAnimationEnd={() => {
-            if (navAnimation !== "idle") {
-              setTimeout(() => toggleButtonRef.current?.focus(), 0);
-              setNavAnimation("idle");
-            }
-          }}
           {...props}
         >
           <ToggleButton
             ref={toggleButtonRef}
             data-testid="sidebarnav-toggle"
             className={classNames({ collapsed: navIsCollapsed })}
-            onClick={() => handleCollapseChange(!navIsCollapsed)}
+            onClick={() => setNavIsCollapsed(!navIsCollapsed)}
+            aria-label={
+              navIsCollapsed ? "Expand navigation" : "Collapse navigation"
+            }
           >
             {navIsCollapsed ? <RightArrow /> : <LeftArrow />}
           </ToggleButton>
@@ -212,20 +196,20 @@ export const SidebarNav = styled(
                 : navHeader}
             </NavHeader>
           ) : null}
-          <NavBody className={classNames({ collapsed: navIsCollapsed })}>
-            {typeof children === "function"
-              ? children(functionRenderArguments)
-              : children}
+          <NavBody>
+              {typeof children === "function"
+                ? children(functionRenderArguments)
+                : children}
           </NavBody>
           {navFooter ? (
-            <NavFooter className={classNames({ collapsed: navIsCollapsed })}>
+            <NavFooter>
               {typeof navFooter === "function"
                 ? navFooter(functionRenderArguments)
                 : navFooter}
             </NavFooter>
           ) : null}
         </Nav>
-      </MaybeModal>
+      </FocusScope>
     );
   },
 )``;
@@ -237,5 +221,5 @@ export const SidebarNavStyles = {
   NavFooter,
   ToggleButton,
   expandedWidth,
-  collapsedWidth
+  collapsedWidth,
 };
