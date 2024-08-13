@@ -197,9 +197,9 @@ export const SidebarNav = styled(
             </NavHeader>
           ) : null}
           <NavBody>
-              {typeof children === "function"
-                ? children(functionRenderArguments)
-                : children}
+            {typeof children === "function"
+              ? children(functionRenderArguments)
+              : children}
           </NavBody>
           {navFooter ? (
             <NavFooter>
