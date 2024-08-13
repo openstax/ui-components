@@ -22,6 +22,7 @@ export * from './components/Text';
 export * from './components/ToastContainer';
 export * from './components/Tooltip';
 export * as Forms from './components/forms';
+export * from './constants';
 export * from './contexts';
 export * from './hooks';
 export * from './theme';
