@@ -1,3 +1,5 @@
+export * from './components/BodyPortal';
+export * from './components/BodyPortalSlotsContext';
 export * from './components/Button';
 export * from './components/ButtonBar';
 export * from './components/Checkbox';
