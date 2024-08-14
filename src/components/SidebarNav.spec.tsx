@@ -90,19 +90,9 @@ describe("SidebarNav", () => {
     });
 
     expect(screen.getByRole("navigation")).not.toHaveClass("collapsed");
-
-    act(() => {
-      fireEvent.click(screen.getByTestId("sidebarnav-toggle"));
-    });
-    // Separate act so the classname gets updated
-    act(() => {
-      fireEvent.animationEnd(screen.getByTestId("sidebarnav"));
-    });
-
-    expect(screen.getByRole("navigation")).not.toHaveClass("expanding");
   });
 
-  it("displays modal on mobile", async () => {
+  it("is dismissable on mobile", async () => {
     render(
       <SidebarNav isMobile={true}>
         {({ setNavIsCollapsed }) => (
@@ -120,14 +110,60 @@ describe("SidebarNav", () => {
       fireEvent.click(screen.getByTestId("sidebarnav-toggle"));
     });
 
-    expect(screen.getByRole("dialog")).toBeInTheDocument();
-
     act(() => {
       user.type(document.body, "{Escape}");
     });
 
     await waitFor(() => {
-      expect(screen.queryByTestId("sidebarnav-modal")).not.toBeInTheDocument();
+      expect(screen.getByRole("navigation")).toHaveClass("collapsed");
+    });
+  });
+
+  it("collapses on outside click", async () => {
+    render(
+      <SidebarNav isMobile={true}>
+        Content
+      </SidebarNav>
+    );
+
+    act(() => {
+      fireEvent.click(screen.getByTestId("sidebarnav-toggle"));
+    });
+
+    fireEvent.mouseDown(screen.getByTestId("sidebarnav"));
+
+    await waitFor(() => {
+      expect(screen.getByTestId("sidebarnav")).not.toHaveClass("collapsed");
+    });
+
+    fireEvent.mouseDown(document);
+
+    await waitFor(() => {
+      expect(screen.getByTestId("sidebarnav")).toHaveClass("collapsed");
+    });
+  });
+
+  it("doesn't collapse on outside click when mobile is false", async () => {
+    render(
+      <SidebarNav isMobile={false}>
+        Content
+      </SidebarNav>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId("sidebarnav")).not.toHaveClass("collapsed");
+    });
+
+    fireEvent.mouseDown(screen.getByTestId("sidebarnav"));
+
+    await waitFor(() => {
+      expect(screen.getByTestId("sidebarnav")).not.toHaveClass("collapsed");
+    });
+
+    fireEvent.mouseDown(document);
+
+    await waitFor(() => {
+      expect(screen.getByTestId("sidebarnav")).not.toHaveClass("collapsed");
     });
   });
 });
