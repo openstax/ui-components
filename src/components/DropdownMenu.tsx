@@ -13,14 +13,14 @@ const StyledButton = styled(Button)<{ variant: ButtonVariant; width?: string }>`
   display: inline-flex;
   flex-direction: row;
   font-size: 1.6rem;
-  height: 2.5rem;
+  min-height: 2.5rem;
   justify-content: center;
   line-height: 2rem;
   padding: 0 0.5rem;
   text-decoration: none;
   transition: all 0.2s ease-in-out;
   user-select: none;
-  white-space: nowrap;
+  text-align: left;
   ${(props) => props.width ? `width: ${props.width}` : null}
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
@@ -55,7 +55,7 @@ const StyledMenu = styled(Menu)`
 
   [role="menuitem"] {
     font-size: 1.6rem;
-    height: 2.5rem;
+    min-height: 2.5rem;
     line-height: 2rem;
     padding: 0 0.5rem;
     cursor: pointer;
