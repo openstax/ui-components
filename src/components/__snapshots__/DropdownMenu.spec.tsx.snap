@@ -5,7 +5,7 @@ exports[`DropdownMenu matches snapshots 1`] = `
   <button
     aria-expanded="false"
     aria-haspopup="true"
-    class="sc-bczRLJ hycKDG"
+    class="sc-bczRLJ Ecumh"
     data-rac=""
     id="react-aria-1"
     type="button"
@@ -20,7 +20,7 @@ exports[`DropdownMenu matches snapshots 2`] = `
   <button
     aria-expanded="false"
     aria-haspopup="true"
-    class="sc-bczRLJ dQDpcb"
+    class="sc-bczRLJ ilnBtE"
     data-rac=""
     id="react-aria-3"
     type="button"
