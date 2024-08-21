@@ -155,7 +155,7 @@ export const SidebarNav = styled(
       document.addEventListener("keydown", handleKeyPress);
 
       return () => {
-        document.removeEventListener("click", handleOutsideEvent);
+        document.removeEventListener("mousedown", handleOutsideEvent);
         document.removeEventListener("touchstart", handleOutsideEvent);
         document.removeEventListener("keydown", handleKeyPress);
       };
