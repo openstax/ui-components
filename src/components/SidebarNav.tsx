@@ -94,6 +94,7 @@ const ToggleButton = styled.button`
   border: 0.1rem solid #959595;
   border-right: 0;
   border-radius: 0.4rem 0 0 0.4rem;
+  z-index: 1;
 `;
 
 type FunctionRender = (_: {
