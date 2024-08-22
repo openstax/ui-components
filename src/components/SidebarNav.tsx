@@ -50,7 +50,8 @@ const Nav = styled.nav`
     transition: opacity 300ms ease-in-out;
   }
 
-  &.mobile[aria-expanded="true"] ~ main::before {
+  &.mobile[aria-expanded="true"] ~ main::before,
+  &.mobile[aria-expanded="true"] ~ [data-backdrop-target]::before {
     background: rgba(0 0 0 / .7);
     opacity: 1;
     top: 0;
@@ -93,6 +94,7 @@ const ToggleButton = styled.button`
   border: 0.1rem solid #959595;
   border-right: 0;
   border-radius: 0.4rem 0 0 0.4rem;
+  z-index: 1;
 `;
 
 type FunctionRender = (_: {
