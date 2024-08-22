@@ -152,13 +152,13 @@ export const SidebarNav = styled(
         }
       };
 
-      document.addEventListener("mousedown", handleOutsideEvent);
-      document.addEventListener("touchstart", handleOutsideEvent);
+      document.addEventListener("click", handleOutsideEvent);
+      document.addEventListener("touchend", handleOutsideEvent);
       document.addEventListener("keydown", handleKeyPress);
 
       return () => {
         document.removeEventListener("click", handleOutsideEvent);
-        document.removeEventListener("touchstart", handleOutsideEvent);
+        document.removeEventListener("touchend", handleOutsideEvent);
         document.removeEventListener("keydown", handleKeyPress);
       };
     }, [isMobile, navIsCollapsed, setNavIsCollapsed, sidebarNavRef]);
