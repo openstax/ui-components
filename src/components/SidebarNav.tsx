@@ -50,7 +50,8 @@ const Nav = styled.nav`
     transition: opacity 300ms ease-in-out;
   }
 
-  &.mobile[aria-expanded="true"] ~ main::before {
+  &.mobile[aria-expanded="true"] ~ main::before,
+  &.mobile[aria-expanded="true"] ~ [data-backdrop-target]::before {
     background: rgba(0 0 0 / .7);
     opacity: 1;
     top: 0;
