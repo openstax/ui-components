@@ -38,7 +38,8 @@ const Nav = styled.nav`
     height: 100%;
   }
 
-  &.mobile ~ main::before {
+  &.mobile ~ main::before,
+  &.mobile ~ [data-backdrop-target]::before {
     content: "";
     background: none;
     top: 0;
