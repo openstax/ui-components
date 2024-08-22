@@ -8,7 +8,7 @@ exports[`SidebarNav toggles nav collapse on button click 1`] = `
   />
   <nav
     aria-expanded="true"
-    class="sc-bczRLJ bjLBxB sc-jSMfEi"
+    class="sc-bczRLJ cLBJwt sc-jSMfEi"
     data-testid="sidebarnav"
   >
     <button
@@ -50,7 +50,7 @@ exports[`SidebarNav toggles nav collapse on button click 2`] = `
   />
   <nav
     aria-expanded="false"
-    class="sc-bczRLJ bjLBxB sc-jSMfEi collapsed"
+    class="sc-bczRLJ cLBJwt sc-jSMfEi collapsed"
     data-testid="sidebarnav"
   >
     <button
