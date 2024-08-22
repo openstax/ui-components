@@ -8,12 +8,12 @@ exports[`SidebarNav toggles nav collapse on button click 1`] = `
   />
   <nav
     aria-expanded="true"
-    class="sc-bczRLJ fLqWsF sc-jSMfEi"
+    class="sc-bczRLJ bjLBxB sc-jSMfEi"
     data-testid="sidebarnav"
   >
     <button
       aria-label="Collapse navigation"
-      class="sc-eCYdqJ eKnMif"
+      class="sc-eCYdqJ dqWmhQ"
       data-testid="sidebarnav-toggle"
     >
       <svg
@@ -50,12 +50,12 @@ exports[`SidebarNav toggles nav collapse on button click 2`] = `
   />
   <nav
     aria-expanded="false"
-    class="sc-bczRLJ fLqWsF sc-jSMfEi collapsed"
+    class="sc-bczRLJ bjLBxB sc-jSMfEi collapsed"
     data-testid="sidebarnav"
   >
     <button
       aria-label="Expand navigation"
-      class="sc-eCYdqJ eKnMif collapsed"
+      class="sc-eCYdqJ dqWmhQ collapsed"
       data-testid="sidebarnav-toggle"
     >
       <svg
