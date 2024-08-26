@@ -21,21 +21,24 @@ const getInsertBeforeTarget = (bodyPortalSlots: string[], slot?: string) => {
   return null;
 }
 
-export const BodyPortal = ({
-  children, className, ref, role, slot, tagName
-}: React.PropsWithChildren<{
+export const BodyPortal = React.forwardRef<HTMLElement, React.PropsWithChildren<{
   className?: string;
-  ref?: React.MutableRefObject<HTMLElement | null>;
   role?: string;
   slot?: string;
-  tagName?: string
-}>) => {
+  tagName?: string;
+}>>(({ children, className, role, slot, tagName }, ref) => {
   const tag = tagName?.toUpperCase() ?? 'DIV';
   const internalRef = React.useRef<HTMLElement>(document.createElement(tag));
   if (internalRef.current.tagName !== tag) {
     internalRef.current = document.createElement(tag);
   }
-  if (ref) { ref.current = internalRef.current; }
+  if (ref) {
+    if (typeof ref === 'function') {
+      ref(internalRef.current);
+    } else {
+      ref.current = internalRef.current;
+    }
+  }
 
   const bodyPortalOrderedRefs = React.useContext(BodyPortalSlotsContext);
 
@@ -64,4 +67,4 @@ export const BodyPortal = ({
   }, [bodyPortalOrderedRefs, className, role, slot, tag]);
 
   return createPortal(children, internalRef.current);
-};
+});
