@@ -181,7 +181,7 @@ describe('BodyPortal', () => {
   });
 
   it('accepts an optional ref parameter that will be set', () => {
-    const TestPortal = ({ children }: React.PropsWithChildren<{}>) => {
+    const TestPortal = ({ children }: React.PropsWithChildren<unknown>) => {
       const ref = React.useRef<HTMLElement | null>(null);
       expect(ref.current).toBeNull();
 

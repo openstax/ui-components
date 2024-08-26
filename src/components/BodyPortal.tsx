@@ -21,12 +21,16 @@ const getInsertBeforeTarget = (bodyPortalSlots: string[], slot?: string) => {
   return null;
 }
 
-export const BodyPortal = React.forwardRef<HTMLElement, React.PropsWithChildren<{
+export type BodyPortalProps = React.PropsWithChildren<{
   className?: string;
   role?: string;
   slot?: string;
   tagName?: string;
-}>>(({ children, className, role, slot, tagName }, ref) => {
+}>;
+
+export const BodyPortal = React.forwardRef<HTMLElement, BodyPortalProps>((
+  { children, className, role, slot, tagName }, ref?: React.ForwardedRef<HTMLElement>
+) => {
   const tag = tagName?.toUpperCase() ?? 'DIV';
   const internalRef = React.useRef<HTMLElement>(document.createElement(tag));
   if (internalRef.current.tagName !== tag) {
