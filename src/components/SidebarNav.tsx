@@ -1,16 +1,16 @@
 import React from "react";
 import classNames from "classnames";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { LeftArrow } from "./svgs/LeftArrow";
 import { RightArrow } from "./svgs/RightArrow";
 import { breakpoints, colors, zIndex } from "../theme";
 import { useMatchMediaQuery } from "../hooks";
 import { FocusScope } from "react-aria";
+import { BodyPortal } from "./BodyPortal";
 
 const collapsedWidth = "5.6rem";
 const expandedWidth = "24rem";
-
-const Nav = styled.nav`
+const navStyles = css`
   --collapsed-width: ${collapsedWidth};
   --expanded-width: ${expandedWidth};
   width: var(--expanded-width);
@@ -53,7 +53,7 @@ const Nav = styled.nav`
 
   &.mobile[aria-expanded="true"] ~ main::before,
   &.mobile[aria-expanded="true"] ~ [data-backdrop-target]::before {
-    background: rgba(0 0 0 / .7);
+    background: rgba(0 0 0 / 0.7);
     opacity: 1;
     top: 0;
     bottom: 0;
@@ -62,6 +62,13 @@ const Nav = styled.nav`
     width: 100%;
     height: 100%;
   }
+`;
+
+const StandardNav = styled.nav`
+  ${navStyles}
+`;
+const BodyPortalNav = styled(BodyPortal)`
+  ${navStyles}
 `;
 
 const NavHeader = styled.header`
@@ -105,6 +112,7 @@ type FunctionRender = (_: {
 
 export const SidebarNav = styled(
   ({
+    useBodyPortal = true,
     navHeader,
     navFooter,
     children,
@@ -112,20 +120,23 @@ export const SidebarNav = styled(
     mobileBreakpoint = `${breakpoints.mobileBreak}em`,
     ...props
   }: React.HTMLAttributes<HTMLElement> & {
+    useBodyPortal?: boolean;
     navHeader?: React.ReactNode | FunctionRender;
     navFooter?: React.ReactNode | FunctionRender;
     children: React.ReactNode | FunctionRender;
     isMobile?: boolean;
     mobileBreakpoint?: string;
   }) => {
+    const Component: React.ElementType = useBodyPortal
+      ? BodyPortalNav
+      : StandardNav;
     const mobileQueryMatches = useMatchMediaQuery(
       `(max-width: ${mobileBreakpoint})`,
     );
     const isMobile = props.isMobile ?? mobileQueryMatches;
-
     const [navIsCollapsed, setNavIsCollapsed] = React.useState(isMobile);
     const toggleButtonRef = React.useRef<HTMLButtonElement>(null);
-    const sidebarNavRef = React.useRef<HTMLDivElement>(null);
+    const sidebarNavRef = React.useRef<HTMLElement>(null);
 
     React.useLayoutEffect(() => {
       setNavIsCollapsed(isMobile);
