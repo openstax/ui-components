@@ -26,7 +26,7 @@ export const StyledInput = styled.input<{isDisabled?: boolean}>`
   color: ${colors.palette.pale};
   width: 2rem;
   height: 2rem;
-  border: 1px solid currentColor;
+  border: 1px solid #767676;
   border-radius: 50%;
   transform: translateY(-0.075em);
   margin: 0 1.6rem 0 0;
