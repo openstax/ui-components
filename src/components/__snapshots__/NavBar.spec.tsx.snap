@@ -6,7 +6,7 @@ exports[`NavBar matches snapshot 1`] = `
     id="root"
   />
   <nav
-    class="sc-gsnTZi hyQLKk"
+    class="sc-gsnTZi dMcFZD"
     data-portal-slot="nav"
   >
     <div
@@ -24,7 +24,7 @@ exports[`NavBar sets the maxWidth 1`] = `
     id="root"
   />
   <nav
-    class="sc-gsnTZi hyQLKk"
+    class="sc-gsnTZi dMcFZD"
     data-portal-slot="nav"
   >
     <div
@@ -42,7 +42,7 @@ exports[`NavBar with a logo customizes the alt text 1`] = `
     id="root"
   />
   <nav
-    class="sc-gsnTZi hyQLKk"
+    class="sc-gsnTZi dMcFZD"
     data-portal-slot="nav"
   >
     <div
@@ -100,7 +100,7 @@ exports[`NavBar with a logo links the logo 1`] = `
     id="root"
   />
   <nav
-    class="sc-gsnTZi hyQLKk"
+    class="sc-gsnTZi dMcFZD"
     data-portal-slot="nav"
   >
     <div
@@ -162,7 +162,7 @@ exports[`NavBar with a logo matches snapshot 1`] = `
     id="root"
   />
   <nav
-    class="sc-gsnTZi hyQLKk"
+    class="sc-gsnTZi dMcFZD"
     data-portal-slot="nav"
   >
     <div

@@ -6,7 +6,7 @@ exports[`Modal matches snapshot 1`] = `
     id="root"
   />
   <div
-    class="sc-jqUVSM bFEkvX"
+    class="sc-jqUVSM keToMA"
     data-portal-slot="modal"
   >
     <div
@@ -104,7 +104,7 @@ exports[`Modal matches snapshot when heading and children are set 1`] = `
     id="root"
   />
   <div
-    class="sc-jqUVSM bFEkvX"
+    class="sc-jqUVSM keToMA"
     data-portal-slot="modal"
   >
     <div

@@ -231,7 +231,7 @@ describe("SidebarNav", () => {
       expect(document.body).toMatchInlineSnapshot(`
 <body>
   <nav
-    class="sc-jSMfEi Upkiz"
+    class="sc-jSMfEi iwbLXv"
     data-portal-slot="sidebar"
     data-testid="sidebarnav"
   >

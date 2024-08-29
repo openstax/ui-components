@@ -10,7 +10,6 @@ export const colors = {
 };
 
 export const zIndex = [
-  'main',
   'navbar',
   'sidebar',
   'modals',
