@@ -22,7 +22,7 @@ const navStyles = css`
   box-shadow: -0.2rem 0 0.4rem rgba(0, 0, 0, 0.1) inset;
   background: ${colors.palette.neutralBright};
   color: ${colors.palette.neutralThin};
-  z-index: ${zIndex.sidebar};
+  z-index: ${zIndex.navbar - 1};
 
   @media (max-width: 15em) {
     --expanded-width: 100vw;
@@ -54,19 +54,24 @@ const navStyles = css`
     position: fixed;
     opacity: 0;
     transition: opacity 300ms ease-in-out;
-    z-index: ${zIndex.main + 1};
+    z-index: ${zIndex.navbar + 1};
   }
 
-  &.mobile:not(.collapsed) ~ main::before,
-  &.mobile:not(.collapsed) ~ [data-backdrop-target]::before {
-    background: rgba(0 0 0 / 0.7);
-    opacity: 1;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
-    height: 100%;
+  &.mobile:not(.collapsed) {
+    z-index: ${zIndex.sidebar};
+
+    & ~ main::before,
+    & ~ [data-backdrop-target]::before {
+      background: rgba(0 0 0 / 0.7);
+      opacity: 1;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      width: 100%;
+      height: 100%;
+      z-index: ${zIndex.sidebar - 1};
+    }
   }
 
   @keyframes expandSidebarNav {

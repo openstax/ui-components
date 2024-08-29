@@ -195,7 +195,7 @@ const BodyPortalSidebarNavAndMain = () => {
   const [activeItem, setActiveItem] = React.useState<string | null>(null);
 
   return (
-    <>
+    <BodyPortalSlotsContext.Provider value={["sidebar", "nav", "main"]}>
       <BodyPortalGlobalStyle />
       <Wrapper>
         <StyledBodyPortalSidebarNav
@@ -237,7 +237,7 @@ const BodyPortalSidebarNavAndMain = () => {
           </h1>
         </StyledBodyPortalMain>
       </Wrapper>
-    </>
+    </BodyPortalSlotsContext.Provider>
   );
 };
 
