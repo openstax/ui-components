@@ -234,4 +234,34 @@ describe('BodyPortal', () => {
 </body>
 `);
   });
+
+  it('takes an id and testid', () => {
+    render(
+      <BodyPortalSlotsContext.Provider value={['header', 'root']}>
+        <div>
+          <BodyPortal slot='header' tagName='header' id='orange' data-testid='blue'>
+            Now you're thinking with portals
+          </BodyPortal>
+        </div>
+      </BodyPortalSlotsContext.Provider>,
+      { container: root }
+    );
+
+    expect(document.body).toMatchInlineSnapshot(`
+<body>
+  <header
+    data-portal-slot="header"
+    data-testid="blue"
+    id="orange"
+  >
+    Now you're thinking with portals
+  </header>
+  <main
+    id="root"
+  >
+    <div />
+  </main>
+</body>
+`);
+  });
 });

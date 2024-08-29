@@ -311,7 +311,7 @@ export const BodyPortalSidebarNav = styled(
 
     return (
       <BodyPortal
-        externalRef={ref}
+        ref={ref}
         tagName="nav"
         slot="sidebar"
         data-testid="sidebarnav"
