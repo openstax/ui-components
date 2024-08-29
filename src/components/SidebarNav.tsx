@@ -149,6 +149,7 @@ type FunctionRender = (_: {
 }) => React.ReactNode;
 
 interface SidebarNavSharedProps {
+  id?: string;
   navHeader?: React.ReactNode | FunctionRender;
   navFooter?: React.ReactNode | FunctionRender;
   children: React.ReactNode | FunctionRender;
@@ -253,13 +254,14 @@ export const SidebarNavBase = ({
 };
 
 export const SidebarNav = styled(
-  ({ className, ...props }: SidebarNavSharedProps) => {
+  ({ className, id, ...props }: SidebarNavSharedProps) => {
     const { isMobile, navIsCollapsed, setNavIsCollapsed } =
       useSidebarNavProps(props);
     const sidebarNavRef = React.useRef<HTMLElement>(null);
 
     return (
       <nav
+        id={id}
         ref={sidebarNavRef}
         data-testid="sidebarnav"
         className={classNames(className, {
@@ -284,7 +286,7 @@ export const SidebarNav = styled(
 `;
 
 export const BodyPortalSidebarNav = styled(
-  ({ className, ...props }: SidebarNavSharedProps) => {
+  ({ className, id, ...props }: SidebarNavSharedProps) => {
     const { isMobile, navIsCollapsed, setNavIsCollapsed } =
       useSidebarNavProps(props);
 
@@ -312,6 +314,7 @@ export const BodyPortalSidebarNav = styled(
     return (
       <BodyPortal
         ref={ref}
+        id={id}
         tagName="nav"
         slot="sidebar"
         data-testid="sidebarnav"
