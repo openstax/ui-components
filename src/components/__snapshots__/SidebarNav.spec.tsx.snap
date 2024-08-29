@@ -2,18 +2,18 @@
 
 exports[`SidebarNav toggles nav collapse on button click 1`] = `
 <DocumentFragment>
-  <span
-    data-focus-scope-start="true"
-    hidden=""
-  />
   <nav
-    aria-expanded="true"
-    class="sc-bczRLJ cLBJwt sc-jSMfEi"
+    class="sc-eCYdqJ fNWSBR"
     data-testid="sidebarnav"
   >
+    <span
+      data-focus-scope-start="true"
+      hidden=""
+    />
     <button
+      aria-expanded="true"
       aria-label="Collapse navigation"
-      class="sc-eCYdqJ dqWmhQ"
+      class="sc-hKMtZM brWRpF"
       data-testid="sidebarnav-toggle"
     >
       <svg
@@ -30,32 +30,32 @@ exports[`SidebarNav toggles nav collapse on button click 1`] = `
       </svg>
     </button>
     <div
-      class="sc-dkzDqf eDaswd"
+      class="sc-gsnTZi hSiqlK"
     >
       Content
     </div>
+    <span
+      data-focus-scope-end="true"
+      hidden=""
+    />
   </nav>
-  <span
-    data-focus-scope-end="true"
-    hidden=""
-  />
 </DocumentFragment>
 `;
 
 exports[`SidebarNav toggles nav collapse on button click 2`] = `
 <DocumentFragment>
-  <span
-    data-focus-scope-start="true"
-    hidden=""
-  />
   <nav
-    aria-expanded="false"
-    class="sc-bczRLJ cLBJwt sc-jSMfEi collapsed"
+    class="sc-eCYdqJ fNWSBR collapsed"
     data-testid="sidebarnav"
   >
+    <span
+      data-focus-scope-start="true"
+      hidden=""
+    />
     <button
+      aria-expanded="false"
       aria-label="Expand navigation"
-      class="sc-eCYdqJ dqWmhQ collapsed"
+      class="sc-hKMtZM brWRpF collapsed"
       data-testid="sidebarnav-toggle"
     >
       <svg
@@ -72,14 +72,14 @@ exports[`SidebarNav toggles nav collapse on button click 2`] = `
       </svg>
     </button>
     <div
-      class="sc-dkzDqf eDaswd"
+      class="sc-gsnTZi hSiqlK"
     >
       Content
     </div>
+    <span
+      data-focus-scope-end="true"
+      hidden=""
+    />
   </nav>
-  <span
-    data-focus-scope-end="true"
-    hidden=""
-  />
 </DocumentFragment>
 `;

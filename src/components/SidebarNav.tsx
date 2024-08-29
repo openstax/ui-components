@@ -57,8 +57,8 @@ const navStyles = css`
     z-index: ${zIndex.main + 1};
   }
 
-  &.mobile[aria-expanded="true"] ~ main::before,
-  &.mobile[aria-expanded="true"] ~ [data-backdrop-target]::before {
+  &.mobile:not(.collapsed) ~ main::before,
+  &.mobile:not(.collapsed) ~ [data-backdrop-target]::before {
     background: rgba(0 0 0 / 0.7);
     opacity: 1;
     top: 0;
@@ -127,28 +127,44 @@ const ToggleButton = styled.button`
   z-index: 1;
 `;
 
+const useSidebarNavProps = ({
+  mobileBreakpoint = `${breakpoints.mobileBreak}em`,
+  ...props
+}: {
+  isMobile?: boolean;
+  mobileBreakpoint?: string;
+}) => {
+  const mobileQueryMatches = useMatchMediaQuery(
+    `(max-width: ${mobileBreakpoint})`,
+  );
+  const isMobile = props.isMobile ?? mobileQueryMatches;
+  const [navIsCollapsed, setNavIsCollapsed] = React.useState(isMobile);
+
+  return { isMobile, navIsCollapsed, setNavIsCollapsed };
+};
+
 type FunctionRender = (_: {
   navIsCollapsed: boolean;
   setNavIsCollapsed: (_: boolean) => void;
 }) => React.ReactNode;
 
-type SidebarNavSharedProps = {
+interface SidebarNavSharedProps {
   navHeader?: React.ReactNode | FunctionRender;
   navFooter?: React.ReactNode | FunctionRender;
   children: React.ReactNode | FunctionRender;
   isMobile?: boolean;
   mobileBreakpoint?: string;
   className?: string;
-};
+}
 
-const SidebarNavBase = ({
+export const SidebarNavBase = ({
+  sidebarNavRef,
   navHeader,
   navFooter,
   children,
   isMobile,
   navIsCollapsed,
   setNavIsCollapsed,
-  ...props
 }: SidebarNavSharedProps & {
   sidebarNavRef?: React.MutableRefObject<HTMLElement | null>;
   navIsCollapsed: boolean;
@@ -156,7 +172,6 @@ const SidebarNavBase = ({
   isMobile: boolean;
 }) => {
   const toggleButtonRef = React.useRef<HTMLButtonElement>(null);
-  const sidebarNavRef = props.sidebarNavRef ?? React.useRef<HTMLElement>();
 
   React.useLayoutEffect(() => {
     setNavIsCollapsed(isMobile);
@@ -203,6 +218,7 @@ const SidebarNavBase = ({
   return (
     <FocusScope contain={isMobile && !navIsCollapsed}>
       <ToggleButton
+        aria-expanded={!navIsCollapsed}
         ref={toggleButtonRef}
         data-testid="sidebarnav-toggle"
         className={classNames({ collapsed: navIsCollapsed })}
@@ -237,23 +253,14 @@ const SidebarNavBase = ({
 };
 
 export const SidebarNav = styled(
-  ({
-    mobileBreakpoint = `${breakpoints.mobileBreak}em`,
-    className,
-    ...props
-  }: SidebarNavSharedProps) => {
-    const mobileQueryMatches = useMatchMediaQuery(
-      `(max-width: ${mobileBreakpoint})`,
-    );
-    const isMobile = props.isMobile ?? mobileQueryMatches;
-    const [navIsCollapsed, setNavIsCollapsed] = React.useState(isMobile);
-
+  ({ className, ...props }: SidebarNavSharedProps) => {
+    const { isMobile, navIsCollapsed, setNavIsCollapsed } =
+      useSidebarNavProps(props);
     const sidebarNavRef = React.useRef<HTMLElement>(null);
 
     return (
       <nav
         ref={sidebarNavRef}
-        aria-expanded={!navIsCollapsed}
         data-testid="sidebarnav"
         className={classNames(className, {
           collapsed: navIsCollapsed,
@@ -277,20 +284,13 @@ export const SidebarNav = styled(
 `;
 
 export const BodyPortalSidebarNav = styled(
-  ({
-    mobileBreakpoint = `${breakpoints.mobileBreak}em`,
-    className,
-    ...props
-  }: SidebarNavSharedProps) => {
-    const mobileQueryMatches = useMatchMediaQuery(
-      `(max-width: ${mobileBreakpoint})`,
-    );
-    const isMobile = React.useMemo(
-      () => props.isMobile ?? mobileQueryMatches,
-      [props.isMobile],
-    );
-    const [navIsCollapsed, setNavIsCollapsed] = React.useState(isMobile);
+  ({ className, ...props }: SidebarNavSharedProps) => {
+    const { isMobile, navIsCollapsed, setNavIsCollapsed } =
+      useSidebarNavProps(props);
+
     const ref = React.useRef<HTMLElement>(document.createElement("NAV"));
+    // Transition CSS rules won't work with the BodyPortal becase the
+    // nodes get reinserted, so use a class name for @keyframes instead
     const [navAnimation, setNavAnimation] = React.useState<
       "expanding" | "collapsing" | "idle"
     >("idle");
@@ -311,9 +311,9 @@ export const BodyPortalSidebarNav = styled(
 
     return (
       <BodyPortal
+        externalRef={ref}
         tagName="nav"
         slot="sidebar"
-        aria-expanded={!navIsCollapsed}
         data-testid="sidebarnav"
         className={classNames(className, {
           collapsed: navIsCollapsed,

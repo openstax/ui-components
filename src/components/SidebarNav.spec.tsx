@@ -4,11 +4,14 @@ import {
   fireEvent,
   act,
   waitFor,
+  cleanup,
 } from "@testing-library/react";
 import userEvent, { UserEvent } from "@testing-library/user-event";
-import { BodyPortalSidebarNav, SidebarNav } from "./SidebarNav";
+import { BodyPortalSidebarNav, SidebarNav, SidebarNavBase } from "./SidebarNav";
 import "@testing-library/jest-dom";
 import { BodyPortalSlotsContext } from "./BodyPortalSlotsContext";
+
+jest.useFakeTimers();
 
 describe("SidebarNav", () => {
   let user: UserEvent;
@@ -76,14 +79,20 @@ describe("SidebarNav", () => {
     expect(component.asFragment()).toMatchSnapshot();
 
     expect(screen.getByRole("navigation")).not.toHaveClass("collapsed");
-    expect(screen.getByRole("navigation")).toHaveAttribute("aria-expanded", "true");
+    expect(screen.getByTestId("sidebarnav-toggle")).toHaveAttribute(
+      "aria-expanded",
+      "true",
+    );
 
     act(() => {
       fireEvent.click(screen.getByTestId("sidebarnav-toggle"));
     });
 
     expect(screen.getByRole("navigation")).toHaveClass("collapsed");
-    expect(screen.getByRole("navigation")).toHaveAttribute("aria-expanded", "false");
+    expect(screen.getByTestId("sidebarnav-toggle")).toHaveAttribute(
+      "aria-expanded",
+      "false",
+    );
     expect(component.asFragment()).toMatchSnapshot();
 
     act(() => {
@@ -121,11 +130,7 @@ describe("SidebarNav", () => {
   });
 
   it("collapses on outside click", async () => {
-    render(
-      <SidebarNav isMobile={true}>
-        Content
-      </SidebarNav>
-    );
+    render(<SidebarNav isMobile={true}>Content</SidebarNav>);
 
     act(() => {
       fireEvent.click(screen.getByTestId("sidebarnav-toggle"));
@@ -145,11 +150,7 @@ describe("SidebarNav", () => {
   });
 
   it("doesn't collapse on outside click when mobile is false", async () => {
-    render(
-      <SidebarNav isMobile={false}>
-        Content
-      </SidebarNav>
-    );
+    render(<SidebarNav isMobile={false}>Content</SidebarNav>);
 
     await waitFor(() => {
       expect(screen.getByTestId("sidebarnav")).not.toHaveClass("collapsed");
@@ -168,15 +169,156 @@ describe("SidebarNav", () => {
     });
   });
 
-  it("uses a body portal", async () => {
-    expect(render(
-      <BodyPortalSlotsContext.Provider value={[
-        'sidebar'
-      ]}>
-        <BodyPortalSidebarNav isMobile={false}>
+  describe("SidebarNavBase", () => {
+    it("outside clicks don't set nav to collapsed if the ref is null", async () => {
+      const setNavCollapsedFn = jest.fn();
+      render(
+        <SidebarNavBase
+          isMobile={true}
+          navIsCollapsed={false}
+          setNavIsCollapsed={setNavCollapsedFn}
+        >
           Content
-        </BodyPortalSidebarNav>
-      </BodyPortalSlotsContext.Provider>
-    ).baseElement).toMatchSnapshot();
+        </SidebarNavBase>,
+      );
+      // setNavIsCollapsed fires on mount
+      expect(setNavCollapsedFn).toHaveBeenCalledTimes(1);
+      setNavCollapsedFn.mockReset();
+      fireEvent.mouseDown(document);
+
+      expect(setNavCollapsedFn).not.toHaveBeenCalled();
+
+      cleanup();
+
+      render(
+        <SidebarNavBase
+          isMobile={true}
+          navIsCollapsed={false}
+          setNavIsCollapsed={setNavCollapsedFn}
+          sidebarNavRef={{ current: null }}
+        >
+          Content
+        </SidebarNavBase>,
+      );
+
+      setNavCollapsedFn.mockReset();
+      fireEvent.mouseDown(document);
+
+      expect(setNavCollapsedFn).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("BodyPortalSidebarNav", () => {
+    let root: HTMLElement;
+
+    beforeEach(() => {
+      root = document.createElement("main");
+      root.id = "root";
+      document.body.append(root);
+    });
+
+    it("uses a BodyPortal", async () => {
+      render(
+        <BodyPortalSlotsContext.Provider value={["sidebar", "root"]}>
+          <BodyPortalSidebarNav isMobile={false}>
+            Sidebar Nav
+          </BodyPortalSidebarNav>
+          Main
+        </BodyPortalSlotsContext.Provider>,
+        { container: root },
+      );
+
+      expect(document.body).toMatchInlineSnapshot(`
+<body>
+  <nav
+    class="sc-jSMfEi Upkiz"
+    data-portal-slot="sidebar"
+    data-testid="sidebarnav"
+  >
+    <span
+      data-focus-scope-start="true"
+      hidden=""
+    />
+    <button
+      aria-expanded="true"
+      aria-label="Collapse navigation"
+      class="sc-hKMtZM brWRpF"
+      data-testid="sidebarnav-toggle"
+    >
+      <svg
+        fill="none"
+        height="10"
+        viewBox="0 0 8 10"
+        width="8"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M1.1266 5.38862L5.57702 9.83902C5.79166 10.0537 6.13964 10.0537 6.35426 9.83902L6.87333 9.31995C7.0876 9.10568 7.08801 8.75841 6.87424 8.54363L3.34721 4.99999L6.87424 1.45637C7.08801 1.24159 7.0876 0.89432 6.87333 0.680047L6.35426 0.160979C6.13962 -0.0536598 5.79164 -0.0536598 5.57702 0.160979L1.12662 4.61138C0.911981 4.826 0.911981 5.17398 1.1266 5.38862Z"
+          fill="#959595"
+        />
+      </svg>
+    </button>
+    <div
+      class="sc-gsnTZi hSiqlK"
+    >
+      Sidebar Nav
+    </div>
+    <span
+      data-focus-scope-end="true"
+      hidden=""
+    />
+  </nav>
+  <main
+    id="root"
+  >
+    Main
+  </main>
+</body>
+`);
+    });
+
+    it("adds animation classes when opening and closing", () => {
+      // Start expanded
+      render(
+        <BodyPortalSlotsContext.Provider value={["sidebar", "root"]}>
+          <BodyPortalSidebarNav isMobile={false}>
+            Sidebar Nav
+          </BodyPortalSidebarNav>
+          Main
+        </BodyPortalSlotsContext.Provider>,
+        { container: root },
+      );
+
+      expect(screen.getByRole("navigation")).not.toHaveClass("collapsing");
+      expect(screen.getByRole("navigation")).not.toHaveClass("expanding");
+
+      // collapse
+      act(() => {
+        fireEvent.click(screen.getByTestId("sidebarnav-toggle"));
+      });
+
+      expect(screen.getByRole("navigation")).toHaveClass("collapsing");
+      expect(screen.getByRole("navigation")).not.toHaveClass("expanding");
+
+      act(() => {
+        jest.advanceTimersByTime(300);
+      });
+
+      expect(screen.getByRole("navigation")).not.toHaveClass("collapsing");
+
+      // expand
+      act(() => {
+        fireEvent.click(screen.getByTestId("sidebarnav-toggle"));
+      });
+
+      expect(screen.getByRole("navigation")).not.toHaveClass("collapsing");
+      expect(screen.getByRole("navigation")).toHaveClass("expanding");
+
+      act(() => {
+        jest.advanceTimersByTime(300);
+      });
+
+      expect(screen.getByRole("navigation")).not.toHaveClass("expanding");
+    });
   });
 });
