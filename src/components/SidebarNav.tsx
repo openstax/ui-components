@@ -159,9 +159,7 @@ const SidebarNavBase = ({
   const sidebarNavRef = props.sidebarNavRef ?? React.useRef<HTMLElement>();
 
   React.useLayoutEffect(() => {
-    if (isMobile !== navIsCollapsed) {
-      setNavIsCollapsed(isMobile);
-    }
+    setNavIsCollapsed(isMobile);
   }, [isMobile]);
 
   React.useEffect(() => {
@@ -298,7 +296,10 @@ export const BodyPortalSidebarNav = styled(
     >("idle");
 
     const handleSetNavIsCollapsed = (value: boolean) => {
-      setNavAnimation(value ? "collapsing" : "expanding");
+      if (value !== navIsCollapsed) {
+        setNavAnimation(value ? "collapsing" : "expanding");
+      }
+
       setNavIsCollapsed(value);
     };
 
