@@ -10,7 +10,9 @@ export const colors = {
 };
 
 export const zIndex = [
+  'main',
   'navbar',
+  'sidebar',
   'modals',
   'toasts'
 ].reduce((result, key, index) => {

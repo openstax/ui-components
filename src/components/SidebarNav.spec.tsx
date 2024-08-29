@@ -6,8 +6,9 @@ import {
   waitFor,
 } from "@testing-library/react";
 import userEvent, { UserEvent } from "@testing-library/user-event";
-import { SidebarNav } from "./SidebarNav";
+import { BodyPortalSidebarNav, SidebarNav } from "./SidebarNav";
 import "@testing-library/jest-dom";
+import { BodyPortalSlotsContext } from "./BodyPortalSlotsContext";
 
 describe("SidebarNav", () => {
   let user: UserEvent;
@@ -165,5 +166,17 @@ describe("SidebarNav", () => {
     await waitFor(() => {
       expect(screen.getByTestId("sidebarnav")).not.toHaveClass("collapsed");
     });
+  });
+
+  it("uses a body portal", async () => {
+    expect(render(
+      <BodyPortalSlotsContext.Provider value={[
+        'sidebar'
+      ]}>
+        <BodyPortalSidebarNav isMobile={false}>
+          Content
+        </BodyPortalSidebarNav>
+      </BodyPortalSlotsContext.Provider>
+    ).baseElement).toMatchSnapshot();
   });
 });
