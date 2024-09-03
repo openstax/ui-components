@@ -57,9 +57,13 @@ const navStyles = css`
     z-index: ${zIndex.navbar + 1};
   }
 
-  &.mobile:not(.collapsed) {
+  &.mobile:not(.collapsed),
+  &.mobile.collapsing {
     z-index: ${zIndex.sidebar};
+  }
 
+  &.mobile:not(.collapsed),
+  &.mobile.collapsing {
     & ~ main::before,
     & ~ [data-backdrop-target]::before {
       background: rgba(0 0 0 / 0.7);
@@ -71,6 +75,13 @@ const navStyles = css`
       width: 100%;
       height: 100%;
       z-index: ${zIndex.sidebar - 1};
+    }
+  }
+
+  &.mobile.collapsing {
+    & ~ main::before,
+    & ~ [data-backdrop-target]::before {
+      opacity: 0;
     }
   }
 
@@ -148,6 +159,24 @@ const useSidebarNavProps = ({
   return { isMobile, navIsCollapsed, setNavIsCollapsed };
 };
 
+const useNavAnimation = () => {
+  // Transition CSS rules won't work with the BodyPortal becase the
+  // nodes get reinserted, so use a class name for @keyframes instead.
+  // There is an awkward empty state here - we need to distinguish
+  // "idle after an interaction" vs. the initial page load.
+  const [navAnimation, setNavAnimation] = React.useState<
+    "expanding" | "collapsing" | "idle" | ""
+  >("");
+
+  React.useEffect(() => {
+    if (navAnimation && navAnimation !== "idle") {
+      setTimeout(() => setNavAnimation("idle"), 300);
+    }
+  }, [navAnimation]);
+
+  return { navAnimation, setNavAnimation };
+};
+
 type FunctionRender = (_: {
   navIsCollapsed: boolean;
   setNavIsCollapsed: (_: boolean) => void;
@@ -171,11 +200,13 @@ export const SidebarNavBase = ({
   isMobile,
   navIsCollapsed,
   setNavIsCollapsed,
+  navAnimation,
 }: SidebarNavSharedProps & {
   sidebarNavRef?: React.MutableRefObject<HTMLElement | null>;
   navIsCollapsed: boolean;
   setNavIsCollapsed: React.Dispatch<boolean>;
   isMobile: boolean;
+  navAnimation?: string;
 }) => {
   const toggleButtonRef = React.useRef<HTMLButtonElement>(null);
 
@@ -221,6 +252,12 @@ export const SidebarNavBase = ({
     setNavIsCollapsed,
   };
 
+  React.useEffect(() => {
+    if (navAnimation === "idle") {
+      toggleButtonRef.current?.focus();
+    }
+  }, [navAnimation]);
+
   return (
     <FocusScope contain={isMobile && !navIsCollapsed}>
       <ToggleButton
@@ -228,7 +265,9 @@ export const SidebarNavBase = ({
         ref={toggleButtonRef}
         data-testid="sidebarnav-toggle"
         className={classNames({ collapsed: navIsCollapsed })}
-        onClick={() => setNavIsCollapsed(!navIsCollapsed)}
+        onClick={() => {
+          setNavIsCollapsed(!navIsCollapsed);
+        }}
         aria-label={
           navIsCollapsed ? "Expand navigation" : "Collapse navigation"
         }
@@ -263,6 +302,15 @@ export const SidebarNav = styled(
     const { isMobile, navIsCollapsed, setNavIsCollapsed } =
       useSidebarNavProps(props);
     const sidebarNavRef = React.useRef<HTMLElement>(null);
+    const { navAnimation, setNavAnimation } = useNavAnimation();
+
+    const handleSetNavIsCollapsed = (value: boolean) => {
+      if (value !== navIsCollapsed) {
+        setNavAnimation(value ? "collapsing" : "expanding");
+      }
+
+      setNavIsCollapsed(value);
+    };
 
     return (
       <nav
@@ -272,6 +320,8 @@ export const SidebarNav = styled(
         className={classNames(className, {
           collapsed: navIsCollapsed,
           mobile: isMobile,
+          collapsing: navAnimation === "collapsing",
+          expanding: navAnimation === "expanding",
         })}
       >
         <SidebarNavBase
@@ -279,7 +329,7 @@ export const SidebarNav = styled(
           sidebarNavRef={sidebarNavRef}
           isMobile={isMobile}
           navIsCollapsed={navIsCollapsed}
-          setNavIsCollapsed={setNavIsCollapsed}
+          setNavIsCollapsed={handleSetNavIsCollapsed}
         >
           {props.children}
         </SidebarNavBase>
@@ -296,11 +346,7 @@ export const BodyPortalSidebarNav = styled(
       useSidebarNavProps(props);
 
     const ref = React.useRef<HTMLElement>(document.createElement("NAV"));
-    // Transition CSS rules won't work with the BodyPortal becase the
-    // nodes get reinserted, so use a class name for @keyframes instead
-    const [navAnimation, setNavAnimation] = React.useState<
-      "expanding" | "collapsing" | "idle"
-    >("idle");
+    const { navAnimation, setNavAnimation } = useNavAnimation();
 
     const handleSetNavIsCollapsed = (value: boolean) => {
       if (value !== navIsCollapsed) {
@@ -309,12 +355,6 @@ export const BodyPortalSidebarNav = styled(
 
       setNavIsCollapsed(value);
     };
-
-    React.useEffect(() => {
-      if (navAnimation !== "idle") {
-        setTimeout(() => setNavAnimation("idle"), 300);
-      }
-    }, [navAnimation]);
 
     return (
       <BodyPortal
@@ -336,6 +376,7 @@ export const BodyPortalSidebarNav = styled(
           navIsCollapsed={navIsCollapsed}
           setNavIsCollapsed={handleSetNavIsCollapsed}
           sidebarNavRef={ref}
+          navAnimation={navAnimation}
         />
       </BodyPortal>
     );
