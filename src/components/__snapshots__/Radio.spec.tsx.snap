@@ -7,7 +7,7 @@ exports[`Radio matches disabled snapshot 1`] = `
 >
   <input
     aria-disabled={true}
-    className="sc-eCYdqJ bstnXk"
+    className="sc-eCYdqJ fazssI"
     type="radio"
   />
   Disabled
@@ -19,7 +19,7 @@ exports[`Radio matches snapshot 1`] = `
   className="sc-hKMtZM jREXRM"
 >
   <input
-    className="sc-eCYdqJ cvkvUS"
+    className="sc-eCYdqJ lbbITm"
     type="radio"
   />
   Click Me
