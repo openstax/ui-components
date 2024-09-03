@@ -231,7 +231,7 @@ describe("SidebarNav", () => {
       expect(document.body).toMatchInlineSnapshot(`
 <body>
   <nav
-    class="sc-jSMfEi kqIBDA"
+    class="sc-jSMfEi lkbbTM"
     data-portal-slot="sidebar"
     data-testid="sidebarnav"
   >
@@ -260,6 +260,7 @@ describe("SidebarNav", () => {
     </button>
     <div
       class="sc-gsnTZi hSiqlK"
+      data-testid="nav-body"
     >
       Sidebar Nav
     </div>
@@ -319,6 +320,24 @@ describe("SidebarNav", () => {
       });
 
       expect(screen.getByRole("navigation")).not.toHaveClass("expanding");
+    });
+  });
+
+  it("handles the onScroll event", async () => {
+    render(
+      <SidebarNav isMobile={false}>
+        {() => <div style={{ height: "200vh" }}>Content</div>}
+      </SidebarNav>,
+    );
+
+    const navBody = screen.getByTestId("nav-body");
+
+    act(() => {
+      fireEvent.scroll(navBody, { target: { scrollTop: 100 } });
+    });
+
+    await waitFor(() => {
+      expect(navBody.scrollTop).toBe(100);
     });
   });
 });

@@ -3,7 +3,7 @@
 exports[`SidebarNav toggles nav collapse on button click 1`] = `
 <DocumentFragment>
   <nav
-    class="sc-eCYdqJ kkoCWq"
+    class="sc-eCYdqJ cJmHcS"
     data-testid="sidebarnav"
   >
     <span
@@ -31,6 +31,7 @@ exports[`SidebarNav toggles nav collapse on button click 1`] = `
     </button>
     <div
       class="sc-gsnTZi hSiqlK"
+      data-testid="nav-body"
     >
       Content
     </div>
@@ -45,7 +46,7 @@ exports[`SidebarNav toggles nav collapse on button click 1`] = `
 exports[`SidebarNav toggles nav collapse on button click 2`] = `
 <DocumentFragment>
   <nav
-    class="sc-eCYdqJ kkoCWq collapsed collapsing"
+    class="sc-eCYdqJ cJmHcS collapsed collapsing"
     data-testid="sidebarnav"
   >
     <span
@@ -73,6 +74,7 @@ exports[`SidebarNav toggles nav collapse on button click 2`] = `
     </button>
     <div
       class="sc-gsnTZi hSiqlK"
+      data-testid="nav-body"
     >
       Content
     </div>

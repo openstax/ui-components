@@ -14,7 +14,6 @@ const navStyles = css`
   --collapsed-width: ${collapsedWidth};
   --expanded-width: ${expandedWidth};
   width: var(--expanded-width);
-  transition: width 300ms ease-in-out;
   display: flex;
   justify-content: space-between;
   flex-direction: column;
@@ -169,10 +168,13 @@ const useNavAnimation = () => {
   >("");
 
   React.useEffect(() => {
-    if (navAnimation && navAnimation !== "idle") {
-      setTimeout(() => setNavAnimation("idle"), 300);
+    if (!navAnimation || navAnimation === "idle") {
+      return;
     }
-  }, [navAnimation]);
+
+    const idleCallback = setTimeout(() => setNavAnimation("idle"), 300);
+    return () => clearTimeout(idleCallback);
+  }, [navAnimation, setNavAnimation]);
 
   return { navAnimation, setNavAnimation };
 };
@@ -291,6 +293,7 @@ export const SidebarNavBase = ({
         </NavHeader>
       ) : null}
       <NavBody
+        data-testid="nav-body"
         ref={navBodyRef}
         onScroll={(e) =>
           setScrollPosition((e.target as HTMLDivElement).scrollTop)
