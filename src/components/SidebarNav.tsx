@@ -258,6 +258,15 @@ export const SidebarNavBase = ({
     }
   }, [navAnimation]);
 
+  const navBodyRef = React.useRef<HTMLDivElement>(null);
+  const [scrollPosition, setScrollPosition] = React.useState(0);
+
+  requestAnimationFrame(() => {
+    if (navBodyRef.current) {
+      navBodyRef.current.scrollTop = scrollPosition;
+    }
+  });
+
   return (
     <FocusScope contain={isMobile && !navIsCollapsed}>
       <ToggleButton
@@ -281,7 +290,12 @@ export const SidebarNavBase = ({
             : navHeader}
         </NavHeader>
       ) : null}
-      <NavBody>
+      <NavBody
+        ref={navBodyRef}
+        onScroll={(e) =>
+          setScrollPosition((e.target as HTMLDivElement).scrollTop)
+        }
+      >
         {typeof children === "function"
           ? children(functionRenderArguments)
           : children}
