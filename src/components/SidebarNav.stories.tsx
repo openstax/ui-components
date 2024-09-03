@@ -5,11 +5,11 @@ import {
   SidebarNav,
   SidebarNavStyles,
 } from "./SidebarNav";
-import React from "react";
 import { BodyPortalSlotsContext } from "./BodyPortalSlotsContext";
 import { BodyPortal } from "./BodyPortal";
 import { NavBar } from "./NavBar";
 import { NavBarLogo } from "./NavBarLogo";
+import React from "react";
 
 const GlobalStyle = createGlobalStyle`
   html, body, #ladle-root {
@@ -23,39 +23,37 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 const BodyPortalGlobalStyle = createGlobalStyle`
-body {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  grid-template-rows: auto 1fr;
-  grid-template-areas:
-    "sidebar nav"
-    "sidebar main";
-  overflow: hidden;
-  height: 100vh;
-  background: #fff;
+  body {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-rows: auto 1fr;
+    grid-template-areas: "sidebar nav" "sidebar main";
+    overflow: hidden;
+    height: 100vh;
+    background: #fff;
 
-  nav[data-portal-slot="sidebar"] {
-    grid-area: sidebar;
+    nav[data-portal-slot="sidebar"] {
+      grid-area: sidebar;
+    }
+
+    nav[data-portal-slot="nav"] {
+      grid-area: nav;
+    }
+
+    main {
+      grid-area: main;
+      overflow: hidden auto;
+      display: flex;
+      flex-direction: column;
+      place-content: center;
+      align-items: center;
+      text-align: center;
+    }
   }
 
-  nav[data-portal-slot="nav"] {
-    grid-area: nav;
+  .ladle-background, #ladle-root {
+    display: none;
   }
-
-  main {
-    grid-area: main;
-    overflow: hidden auto;
-    display: flex;
-    flex-direction: column;
-    place-content: center;
-    align-items: center;
-    text-align: center;
-  }
-}
-
-.ladle-background, #ladle-root {
-display: none;
-}
 `;
 
 const Wrapper = styled.div`
@@ -91,6 +89,12 @@ const sidebarStyles = css`
   }
 `;
 
+const mainStyles = css`
+  .mobile + & {
+    margin-left: 5.6rem;
+  }
+`;
+
 const StyledSidebarNav = styled(SidebarNav)`
   ${sidebarStyles}
 `;
@@ -100,15 +104,11 @@ const StyledBodyPortalSidebarNav = styled(BodyPortalSidebarNav)`
 `;
 
 const StyledMain = styled.main`
-  .mobile + & {
-    margin-left: 5.6rem;
-  }
+  ${mainStyles}
 `;
 
 const StyledBodyPortalMain = styled(BodyPortal)`
-  .mobile + & {
-    margin-left: 5.6rem;
-  }
+  ${mainStyles}
 
   padding: 4rem;
   margin-left: ${(props: { isMobile: boolean }) =>
@@ -140,6 +140,43 @@ const items = [
   ...Array.from({ length: 50 }, (_, i) => (i + 1).toString()),
 ];
 
+const NavItemsList = ({
+  items,
+  activeItem,
+  setActiveItem,
+  setNavIsCollapsed,
+  navIsCollapsed,
+  isMobile,
+}: {
+  items: string[];
+  activeItem: string | null;
+  setActiveItem: (_: string) => void;
+  setNavIsCollapsed: (_: boolean) => void;
+  navIsCollapsed: boolean;
+  isMobile: boolean;
+}) => (
+  <ul>
+    {items.map((item, index) => (
+      <NavItem key={index} active={activeItem === item}>
+        <a
+          href="#"
+          onClick={(e) => {
+            e.preventDefault();
+            if (navIsCollapsed) {
+              setNavIsCollapsed(false);
+            } else {
+              setActiveItem(item);
+              setNavIsCollapsed(isMobile);
+            }
+          }}
+        >
+          {item}
+        </a>
+      </NavItem>
+    ))}
+  </ul>
+);
+
 const SidebarNavAndMain = () => {
   const isMobile = useMatchMediaQuery("(max-width: 620px)");
   const [activeItem, setActiveItem] = React.useState<string | null>(null);
@@ -150,26 +187,14 @@ const SidebarNavAndMain = () => {
       <Wrapper>
         <StyledSidebarNav isMobile={isMobile}>
           {({ setNavIsCollapsed, navIsCollapsed }) => (
-            <ul>
-              {items.map((item, index) => (
-                <NavItem key={index} active={activeItem === item}>
-                  <a
-                    href="#"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      if (navIsCollapsed) {
-                        setNavIsCollapsed(false);
-                      } else {
-                        setActiveItem(item);
-                        setNavIsCollapsed(isMobile);
-                      }
-                    }}
-                  >
-                    {item}
-                  </a>
-                </NavItem>
-              ))}
-            </ul>
+            <NavItemsList
+              items={items}
+              activeItem={activeItem}
+              setActiveItem={setActiveItem}
+              setNavIsCollapsed={setNavIsCollapsed}
+              navIsCollapsed={navIsCollapsed}
+              isMobile={isMobile}
+            />
           )}
         </StyledSidebarNav>
         <StyledMain
@@ -203,26 +228,14 @@ const BodyPortalSidebarNavAndMain = () => {
           navHeader={<NavBarLogo alt="logo" />}
         >
           {({ setNavIsCollapsed, navIsCollapsed }) => (
-            <ul>
-              {items.map((item, index) => (
-                <NavItem key={index} active={activeItem === item}>
-                  <a
-                    href="#"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      if (navIsCollapsed) {
-                        setNavIsCollapsed(false);
-                      } else {
-                        setActiveItem(item);
-                        setNavIsCollapsed(isMobile);
-                      }
-                    }}
-                  >
-                    {item}
-                  </a>
-                </NavItem>
-              ))}
-            </ul>
+            <NavItemsList
+              items={items}
+              activeItem={activeItem}
+              setActiveItem={setActiveItem}
+              setNavIsCollapsed={setNavIsCollapsed}
+              navIsCollapsed={navIsCollapsed}
+              isMobile={isMobile}
+            />
           )}
         </StyledBodyPortalSidebarNav>
         <NavBar>
