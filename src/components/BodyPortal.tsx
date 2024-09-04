@@ -21,19 +21,33 @@ const getInsertBeforeTarget = (bodyPortalSlots: string[], slot?: string) => {
   return null;
 }
 
-export const BodyPortal = ({
-  children, className, role, slot, tagName
-}: React.PropsWithChildren<{className?: string; role?: string; slot?: string; tagName?: string}>) => {
+export type BodyPortalProps = React.PropsWithChildren<{
+  className?: string;
+  role?: string;
+  slot?: string;
+  tagName?: string;
+}>;
+
+export const BodyPortal = React.forwardRef<HTMLElement, BodyPortalProps>((
+  { children, className, role, slot, tagName }, ref?: React.ForwardedRef<HTMLElement>
+) => {
   const tag = tagName?.toUpperCase() ?? 'DIV';
-  const ref = React.useRef<HTMLElement>(document.createElement(tag));
-  if (ref.current.tagName !== tag) {
-    ref.current = document.createElement(tag);
+  const internalRef = React.useRef<HTMLElement>(document.createElement(tag));
+  if (internalRef.current.tagName !== tag) {
+    internalRef.current = document.createElement(tag);
+  }
+  if (ref) {
+    if (typeof ref === 'function') {
+      ref(internalRef.current);
+    } else {
+      ref.current = internalRef.current;
+    }
   }
 
   const bodyPortalOrderedRefs = React.useContext(BodyPortalSlotsContext);
 
   React.useLayoutEffect(() => {
-    const element = ref.current;
+    const element = internalRef.current;
 
     if (className) { element.classList.add(...className.split(' ')); }
 
@@ -56,5 +70,5 @@ export const BodyPortal = ({
     };
   }, [bodyPortalOrderedRefs, className, role, slot, tag]);
 
-  return createPortal(children, ref.current);
-};
+  return createPortal(children, internalRef.current);
+});

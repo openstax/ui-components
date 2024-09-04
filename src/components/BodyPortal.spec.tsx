@@ -1,3 +1,4 @@
+import React from 'react';
 import { render } from '@testing-library/react';
 import { BodyPortal } from './BodyPortal';
 import { BodyPortalSlotsContext } from './BodyPortalSlotsContext';
@@ -175,6 +176,61 @@ describe('BodyPortal', () => {
   >
     Modal
   </div>
+</body>
+`);
+  });
+
+  it('accepts an optional ref parameter that will be set', () => {
+    const TestPortal = ({ children }: React.PropsWithChildren<unknown>) => {
+      const ref = React.useRef<HTMLElement | null>(null);
+      expect(ref.current).toBeNull();
+
+      React.useEffect(() => {
+        expect(ref.current).toBeInstanceOf(HTMLElement);
+      }, []);
+
+      return <BodyPortal ref={ref} slot='footer' tagName='footer'>{children}</BodyPortal>;
+    };
+    render(<><TestPortal>Footer stuff</TestPortal><h1>Title</h1></>, { container: root });
+    expect(document.body).toMatchInlineSnapshot(`
+<body>
+  <main
+    id="root"
+  >
+    <h1>
+      Title
+    </h1>
+  </main>
+  <footer
+    data-portal-slot="footer"
+  >
+    Footer stuff
+  </footer>
+</body>
+`);
+  });
+
+  it('accepts a ref callback', () => {
+    const setRef = jest.fn().mockImplementation((element) => {
+      expect(element).toBeInstanceOf(HTMLElement);
+    });
+    render(<><BodyPortal ref={setRef} slot='footer' tagName='footer'>Footer stuff</BodyPortal>
+            <h1>Title</h1></>, { container: root });
+    expect(setRef).toHaveBeenCalled();
+    expect(document.body).toMatchInlineSnapshot(`
+<body>
+  <main
+    id="root"
+  >
+    <h1>
+      Title
+    </h1>
+  </main>
+  <footer
+    data-portal-slot="footer"
+  >
+    Footer stuff
+  </footer>
 </body>
 `);
   });
