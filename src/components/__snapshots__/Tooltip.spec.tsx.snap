@@ -2,6 +2,7 @@
 
 exports[`Tooltip hides 1`] = `
 <button
+  aria-label="More information"
   className="sc-dkzDqf dcHEnX"
   data-rac=""
   onBlur={[Function]}
@@ -39,6 +40,7 @@ exports[`Tooltip hides 1`] = `
 exports[`Tooltip matches snapshot 1`] = `
 Array [
   <button
+    aria-label="More information"
     className="sc-dkzDqf dcHEnX"
     data-rac=""
     onBlur={[Function]}
@@ -124,6 +126,7 @@ Array [
 
 exports[`Tooltip uses icon 1`] = `
 <button
+  aria-label="More information"
   className="sc-dkzDqf dcHEnX"
   data-rac=""
   onBlur={[Function]}
