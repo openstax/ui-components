@@ -26,9 +26,11 @@ export const padding = {
   },
 };
 
+const mobileNavBreak = 38.75; // 620px
 const mobileBreak = 75; // 1200px
 const desktopBreak = mobileBreak + .0625; // 1201px
 export const breakpoints = {
+  mobileNavBreak,
   mobileBreak,
   desktopBreak,
   desktop: (style: FlattenSimpleInterpolation) => css`

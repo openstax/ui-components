@@ -59,10 +59,7 @@ const navStyles = css`
   &.mobile:not(.collapsed),
   &.mobile.collapsing {
     z-index: ${zIndex.sidebar};
-  }
 
-  &.mobile:not(.collapsed),
-  &.mobile.collapsing {
     & ~ main::before,
     & ~ [data-backdrop-target]::before {
       background: rgba(0 0 0 / 0.7);
@@ -143,7 +140,7 @@ const ToggleButton = styled.button`
 `;
 
 const useSidebarNavProps = ({
-  mobileBreakpoint = `${breakpoints.mobileBreak}em`,
+  mobileBreakpoint = `${breakpoints.mobileNavBreak}em`,
   ...props
 }: {
   isMobile?: boolean;
@@ -182,6 +179,7 @@ const useNavAnimation = () => {
 type FunctionRender = (_: {
   navIsCollapsed: boolean;
   setNavIsCollapsed: (_: boolean) => void;
+  isMobile: boolean;
 }) => React.ReactNode;
 
 interface SidebarNavSharedProps {
@@ -189,8 +187,8 @@ interface SidebarNavSharedProps {
   navHeader?: React.ReactNode | FunctionRender;
   navFooter?: React.ReactNode | FunctionRender;
   children: React.ReactNode | FunctionRender;
-  isMobile?: boolean;
   mobileBreakpoint?: string;
+  isMobile?: boolean;
   className?: string;
 }
 
@@ -199,16 +197,16 @@ export const SidebarNavBase = ({
   navHeader,
   navFooter,
   children,
-  isMobile,
   navIsCollapsed,
   setNavIsCollapsed,
   navAnimation,
+  isMobile,
 }: SidebarNavSharedProps & {
   sidebarNavRef?: React.MutableRefObject<HTMLElement | null>;
   navIsCollapsed: boolean;
   setNavIsCollapsed: React.Dispatch<boolean>;
-  isMobile: boolean;
   navAnimation?: string;
+  isMobile: boolean;
 }) => {
   const toggleButtonRef = React.useRef<HTMLButtonElement>(null);
 
@@ -252,6 +250,7 @@ export const SidebarNavBase = ({
   const functionRenderArguments = {
     navIsCollapsed,
     setNavIsCollapsed,
+    isMobile,
   };
 
   React.useEffect(() => {
@@ -344,9 +343,9 @@ export const SidebarNav = styled(
         <SidebarNavBase
           {...props}
           sidebarNavRef={sidebarNavRef}
-          isMobile={isMobile}
           navIsCollapsed={navIsCollapsed}
           setNavIsCollapsed={handleSetNavIsCollapsed}
+          isMobile={isMobile}
         >
           {props.children}
         </SidebarNavBase>
@@ -389,11 +388,11 @@ export const BodyPortalSidebarNav = styled(
       >
         <SidebarNavBase
           {...props}
-          isMobile={isMobile}
           navIsCollapsed={navIsCollapsed}
           setNavIsCollapsed={handleSetNavIsCollapsed}
           sidebarNavRef={ref}
           navAnimation={navAnimation}
+          isMobile={isMobile}
         />
       </BodyPortal>
     );

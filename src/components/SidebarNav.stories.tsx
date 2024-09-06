@@ -10,6 +10,7 @@ import { BodyPortal } from "./BodyPortal";
 import { NavBar } from "./NavBar";
 import { NavBarLogo } from "./NavBarLogo";
 import React from "react";
+import { breakpoints } from "../../src/theme";
 
 const GlobalStyle = createGlobalStyle`
   html, body, #ladle-root {
@@ -109,10 +110,7 @@ const StyledMain = styled.main`
 
 const StyledBodyPortalMain = styled(BodyPortal)`
   ${mainStyles}
-
   padding: 4rem;
-  margin-left: ${(props: { isMobile: boolean }) =>
-    props.isMobile ? SidebarNavStyles.collapsedWidth : ""};
 `;
 
 const NavItem = styled.li`
@@ -142,55 +140,54 @@ const items = [
 
 const NavItemsList = ({
   items,
-  activeItem,
-  setActiveItem,
   setNavIsCollapsed,
   navIsCollapsed,
   isMobile,
 }: {
   items: string[];
-  activeItem: string | null;
-  setActiveItem: (_: string) => void;
   setNavIsCollapsed: (_: boolean) => void;
   navIsCollapsed: boolean;
   isMobile: boolean;
-}) => (
-  <ul>
-    {items.map((item, index) => (
-      <NavItem key={index} active={activeItem === item}>
-        <a
-          href="#"
-          onClick={(e) => {
-            e.preventDefault();
-            if (navIsCollapsed) {
-              setNavIsCollapsed(false);
-            } else {
-              setActiveItem(item);
-              setNavIsCollapsed(isMobile);
-            }
-          }}
-        >
-          {item}
-        </a>
-      </NavItem>
-    ))}
-  </ul>
-);
+}) => {
+  const [activeItem, setActiveItem] = React.useState<string | null>(null);
+
+  return (
+    <ul>
+      {items.map((item, index) => (
+        <NavItem key={index} active={activeItem === item}>
+          <a
+            href="#"
+            onClick={(e) => {
+              e.preventDefault();
+              if (navIsCollapsed) {
+                setNavIsCollapsed(false);
+              } else {
+                setActiveItem(item);
+                setNavIsCollapsed(isMobile);
+              }
+            }}
+          >
+            {item}
+          </a>
+        </NavItem>
+      ))}
+    </ul>
+  );
+};
 
 const SidebarNavAndMain = () => {
-  const isMobile = useMatchMediaQuery("(max-width: 620px)");
-  const [activeItem, setActiveItem] = React.useState<string | null>(null);
+  const isMobile = useMatchMediaQuery(
+    `(max-width: ${breakpoints.mobileNavBreak}em)`,
+  );
 
   return (
     <>
       <GlobalStyle />
       <Wrapper>
-        <StyledSidebarNav isMobile={isMobile}>
-          {({ setNavIsCollapsed, navIsCollapsed }) => (
+        <StyledSidebarNav>
+          {({ setNavIsCollapsed, navIsCollapsed, isMobile }) => (
             <NavItemsList
               items={items}
-              activeItem={activeItem}
-              setActiveItem={setActiveItem}
               setNavIsCollapsed={setNavIsCollapsed}
               navIsCollapsed={navIsCollapsed}
               isMobile={isMobile}
@@ -216,22 +213,14 @@ const SidebarNavAndMain = () => {
 };
 
 const BodyPortalSidebarNavAndMain = () => {
-  const isMobile = useMatchMediaQuery("(max-width: 620px)");
-  const [activeItem, setActiveItem] = React.useState<string | null>(null);
-
   return (
     <BodyPortalSlotsContext.Provider value={["sidebar", "nav", "main"]}>
       <BodyPortalGlobalStyle />
       <Wrapper>
-        <StyledBodyPortalSidebarNav
-          isMobile={isMobile}
-          navHeader={<NavBarLogo alt="logo" />}
-        >
-          {({ setNavIsCollapsed, navIsCollapsed }) => (
+        <StyledBodyPortalSidebarNav navHeader={<NavBarLogo alt="logo" />}>
+          {({ setNavIsCollapsed, navIsCollapsed, isMobile }) => (
             <NavItemsList
               items={items}
-              activeItem={activeItem}
-              setActiveItem={setActiveItem}
               setNavIsCollapsed={setNavIsCollapsed}
               navIsCollapsed={navIsCollapsed}
               isMobile={isMobile}
@@ -241,12 +230,13 @@ const BodyPortalSidebarNavAndMain = () => {
         <NavBar>
           <h1>Title</h1>
         </NavBar>
-        <StyledBodyPortalMain tagName="main" slot="main" isMobile={isMobile}>
+        <StyledBodyPortalMain tagName="main" slot="main">
           <h1>
             Main content
             <p>
               <a href="#">focusable element</a>
             </p>
+            <p>{Date.now().toString()}</p>
           </h1>
         </StyledBodyPortalMain>
       </Wrapper>
