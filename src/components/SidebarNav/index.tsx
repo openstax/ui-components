@@ -247,6 +247,5 @@ export const SidebarNavStyles = {
   NavFooter,
   ToggleButton,
   expandedWidth,
-  collapsedWidth,
-  navStyles,
+  collapsedWidth
 };
