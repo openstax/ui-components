@@ -1,180 +1,20 @@
 import React from "react";
 import classNames from "classnames";
-import styled, { css } from "styled-components";
-import { LeftArrow } from "./svgs/LeftArrow";
-import { RightArrow } from "./svgs/RightArrow";
-import { breakpoints, colors, zIndex } from "../theme";
-import { useMatchMediaQuery } from "../hooks";
+import styled from "styled-components";
+import { LeftArrow } from "../svgs/LeftArrow";
+import { RightArrow } from "../svgs/RightArrow";
 import { FocusScope } from "react-aria";
-import { BodyPortal } from "./BodyPortal";
-
-const collapsedWidth = "5.6rem";
-const expandedWidth = "24rem";
-const navStyles = css`
-  --collapsed-width: ${collapsedWidth};
-  --expanded-width: ${expandedWidth};
-  width: var(--expanded-width);
-  display: flex;
-  justify-content: space-between;
-  flex-direction: column;
-  position: relative;
-  box-shadow: -0.2rem 0 0.4rem rgba(0, 0, 0, 0.1) inset;
-  background: ${colors.palette.neutralBright};
-  color: ${colors.palette.neutralThin};
-  z-index: ${zIndex.navbar - 1};
-
-  @media (max-width: 15em) {
-    --expanded-width: 100vw;
-    width: 100vw;
-  }
-
-  &.collapsed {
-    width: 5.6rem;
-  }
-
-  &.mobile {
-    position: fixed;
-    height: 100%;
-  }
-
-  &.mobile + nav,
-  &.mobile + nav + main {
-    margin-left: ${collapsedWidth};
-  }
-
-  &.mobile ~ main::before,
-  &.mobile ~ [data-backdrop-target]::before {
-    content: "";
-    background: none;
-    top: 0;
-    left: 0;
-    width: 0;
-    height: 0;
-    position: fixed;
-    opacity: 0;
-    transition: opacity 300ms ease-in-out;
-    z-index: ${zIndex.navbar + 1};
-  }
-
-  &.mobile:not(.collapsed),
-  &.mobile.collapsing {
-    z-index: ${zIndex.sidebar};
-
-    & ~ main::before,
-    & ~ [data-backdrop-target]::before {
-      background: rgba(0 0 0 / 0.7);
-      opacity: 1;
-      top: 0;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      width: 100%;
-      height: 100%;
-      z-index: ${zIndex.sidebar - 1};
-    }
-  }
-
-  &.mobile.collapsing {
-    & ~ main::before,
-    & ~ [data-backdrop-target]::before {
-      opacity: 0;
-    }
-  }
-
-  @keyframes expandSidebarNav {
-    from {
-      width: var(--collapsed-width);
-    }
-    to {
-      width: var(--expanded-width);
-    }
-  }
-  @keyframes collapseSidebarNav {
-    from {
-      width: var(--expanded-width);
-    }
-    to {
-      width: var(--collapsed-width);
-    }
-  }
-  &.expanding {
-    animation: expandSidebarNav 300ms forwards;
-  }
-  &.collapsing {
-    animation: collapseSidebarNav 300ms forwards;
-  }
-`;
-
-const NavHeader = styled.header`
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  align-items: center;
-`;
-
-const NavBody = styled.div`
-  height: 100%;
-  overflow-y: auto;
-`;
-
-const NavFooter = styled.footer`
-  button {
-    width: 100%;
-  }
-`;
-
-const ToggleButton = styled.button`
-  position: absolute;
-  right: 0;
-  top: 1.8rem;
-  width: 1.6rem;
-  height: 2.4rem;
-  background: #fff;
-  padding: 0;
-  border: 0;
-  cursor: pointer;
-  border: 0.1rem solid #959595;
-  border-right: 0;
-  border-radius: 0.4rem 0 0 0.4rem;
-  z-index: 1;
-`;
-
-const useSidebarNavProps = ({
-  mobileBreakpoint = `${breakpoints.mobileNavBreak}em`,
-  ...props
-}: {
-  isMobile?: boolean;
-  mobileBreakpoint?: string;
-}) => {
-  const mobileQueryMatches = useMatchMediaQuery(
-    `(max-width: ${mobileBreakpoint})`,
-  );
-  const isMobile = props.isMobile ?? mobileQueryMatches;
-  const [navIsCollapsed, setNavIsCollapsed] = React.useState(isMobile);
-
-  return { isMobile, navIsCollapsed, setNavIsCollapsed };
-};
-
-const useNavAnimation = () => {
-  // Transition CSS rules won't work with the BodyPortal becase the
-  // nodes get reinserted, so use a class name for @keyframes instead.
-  // There is an awkward empty state here - we need to distinguish
-  // "idle after an interaction" vs. the initial page load.
-  const [navAnimation, setNavAnimation] = React.useState<
-    "expanding" | "collapsing" | "idle" | ""
-  >("");
-
-  React.useEffect(() => {
-    if (!navAnimation || navAnimation === "idle") {
-      return;
-    }
-
-    const idleCallback = setTimeout(() => setNavAnimation("idle"), 300);
-    return () => clearTimeout(idleCallback);
-  }, [navAnimation, setNavAnimation]);
-
-  return { navAnimation, setNavAnimation };
-};
+import { BodyPortal } from "../BodyPortal";
+import {
+  NavBody,
+  NavFooter,
+  NavHeader,
+  ToggleButton,
+  expandedWidth,
+  collapsedWidth,
+  navStyles,
+} from "./styles";
+import { useNavAnimation, useSidebarNavProps } from "./hooks";
 
 type FunctionRender = (_: {
   navIsCollapsed: boolean;
@@ -408,4 +248,5 @@ export const SidebarNavStyles = {
   ToggleButton,
   expandedWidth,
   collapsedWidth,
+  navStyles,
 };
