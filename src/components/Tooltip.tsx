@@ -76,6 +76,7 @@ type TooltipProps = {
   placement?: Placement;
   icon?: any;
   isOpen?: boolean;
+  ariaLabel?: string;
 };
 
 export const Tooltip = ({children, placement, icon, ...props}: React.PropsWithChildren<TooltipProps>) => 
@@ -88,9 +89,9 @@ export const Tooltip = ({children, placement, icon, ...props}: React.PropsWithCh
   {children}
 </StyledTooltip>;
 
-export const TooltipGroup = ({icon, ...props}: React.PropsWithChildren<TooltipProps>) =>
+export const TooltipGroup = ({icon, ariaLabel, ...props}: React.PropsWithChildren<TooltipProps>) =>
   <TooltipTrigger delay={0}>
-    <StyledTrigger>
+    <StyledTrigger aria-label={ariaLabel || 'More information'}>
       {icon
         ? <img src={icon} aria-hidden={true} alt='' />
         : <Info aria-hidden={true} />
