@@ -5,17 +5,16 @@ exports[`NavBar matches snapshot 1`] = `
   <main
     id="root"
   />
-  <div
+  <nav
     class="sc-gsnTZi dMcFZD"
     data-portal-slot="nav"
-    role="toolbar"
   >
     <div
       class="sc-dkzDqf bpDzAE"
     >
       NavBar content
     </div>
-  </div>
+  </nav>
 </body>
 `;
 
@@ -24,17 +23,16 @@ exports[`NavBar sets the maxWidth 1`] = `
   <main
     id="root"
   />
-  <div
+  <nav
     class="sc-gsnTZi dMcFZD"
     data-portal-slot="nav"
-    role="toolbar"
   >
     <div
       class="sc-dkzDqf gQjsvL"
     >
       NavBar content
     </div>
-  </div>
+  </nav>
 </body>
 `;
 
@@ -43,10 +41,9 @@ exports[`NavBar with a logo customizes the alt text 1`] = `
   <main
     id="root"
   />
-  <div
+  <nav
     class="sc-gsnTZi dMcFZD"
     data-portal-slot="nav"
-    role="toolbar"
   >
     <div
       class="sc-dkzDqf bpDzAE"
@@ -93,7 +90,7 @@ exports[`NavBar with a logo customizes the alt text 1`] = `
       </svg>
       NavBar content
     </div>
-  </div>
+  </nav>
 </body>
 `;
 
@@ -102,10 +99,9 @@ exports[`NavBar with a logo links the logo 1`] = `
   <main
     id="root"
   />
-  <div
+  <nav
     class="sc-gsnTZi dMcFZD"
     data-portal-slot="nav"
-    role="toolbar"
   >
     <div
       class="sc-dkzDqf bpDzAE"
@@ -156,7 +152,7 @@ exports[`NavBar with a logo links the logo 1`] = `
       </a>
       NavBar content
     </div>
-  </div>
+  </nav>
 </body>
 `;
 
@@ -165,10 +161,9 @@ exports[`NavBar with a logo matches snapshot 1`] = `
   <main
     id="root"
   />
-  <div
+  <nav
     class="sc-gsnTZi dMcFZD"
     data-portal-slot="nav"
-    role="toolbar"
   >
     <div
       class="sc-dkzDqf bpDzAE"
@@ -215,6 +210,6 @@ exports[`NavBar with a logo matches snapshot 1`] = `
       </svg>
       NavBar content
     </div>
-  </div>
+  </nav>
 </body>
 `;

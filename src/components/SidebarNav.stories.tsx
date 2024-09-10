@@ -1,19 +1,62 @@
 import { useMatchMediaQuery } from "../../src/hooks";
 import styled, { createGlobalStyle, css } from "styled-components";
-import { SidebarNav, SidebarNavStyles } from "./SidebarNav";
+import {
+  BodyPortalSidebarNav,
+  SidebarNav,
+  SidebarNavStyles,
+} from "./SidebarNav";
+import { BodyPortalSlotsContext } from "./BodyPortalSlotsContext";
+import { BodyPortal } from "./BodyPortal";
+import { NavBar } from "./NavBar";
+import { NavBarLogo } from "./NavBarLogo";
 import React from "react";
+import { breakpoints } from "../../src/theme";
 
 const GlobalStyle = createGlobalStyle`
   html, body, #ladle-root {
-    height: 100%;
     margin: 0;
     padding: 0;
   }
 
   #ladle-root {
-    display: flex;
+    height: 100vh;
   }
 `;
+
+const BodyPortalGlobalStyle = createGlobalStyle`
+  body {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-rows: auto 1fr;
+    grid-template-areas: "sidebar nav" "sidebar main";
+    overflow: hidden;
+    height: 100vh;
+    background: #fff;
+
+    nav[data-portal-slot="sidebar"] {
+      grid-area: sidebar;
+    }
+
+    nav[data-portal-slot="nav"] {
+      grid-area: nav;
+    }
+
+    main {
+      grid-area: main;
+      overflow: hidden auto;
+      display: flex;
+      flex-direction: column;
+      place-content: center;
+      align-items: center;
+      text-align: center;
+    }
+  }
+
+  .ladle-background, #ladle-root {
+    display: none;
+  }
+`;
+
 const Wrapper = styled.div`
   flex: 1;
   display: grid;
@@ -32,21 +75,42 @@ const Wrapper = styled.div`
   }
 `;
 
-const StyledSidebarNav = styled(SidebarNav)`
+const sidebarStyles = css`
   overflow: auto;
   grid-area: nav;
-  padding: 6rem 2rem;
+  padding: 2rem;
 
   ul {
     list-style: none;
     padding: 0;
   }
+
+  ${SidebarNavStyles.ToggleButton} {
+    margin-top: 3.2rem;
+  }
 `;
 
-const StyledMain = styled.main`
+const mainStyles = css`
   .mobile + & {
     margin-left: 5.6rem;
   }
+`;
+
+const StyledSidebarNav = styled(SidebarNav)`
+  ${sidebarStyles}
+`;
+
+const StyledBodyPortalSidebarNav = styled(BodyPortalSidebarNav)`
+  ${sidebarStyles}
+`;
+
+const StyledMain = styled.main`
+  ${mainStyles}
+`;
+
+const StyledBodyPortalMain = styled(BodyPortal)`
+  ${mainStyles}
+  padding: 4rem;
 `;
 
 const NavItem = styled.li`
@@ -66,42 +130,128 @@ const NavItem = styled.li`
   }
 `;
 
-const items = ["Home", "About", "Services", "Contact", ...Array.from({length: 50}, (_, i)=> (i + 1).toString())];
+const items = [
+  "Home",
+  "About",
+  "Services",
+  "Contact",
+  ...Array.from({ length: 50 }, (_, i) => (i + 1).toString()),
+];
 
-export const Default = () => {
-  const isMobile = useMatchMediaQuery("(max-width: 620px)");
+const NavItemsList = ({
+  items,
+  setNavIsCollapsed,
+  navIsCollapsed,
+  isMobile,
+}: {
+  items: string[];
+  setNavIsCollapsed: (_: boolean) => void;
+  navIsCollapsed: boolean;
+  isMobile: boolean;
+}) => {
   const [activeItem, setActiveItem] = React.useState<string | null>(null);
 
-  return <>
-    <GlobalStyle />
-    <Wrapper>
-      <StyledSidebarNav isMobile={isMobile}>
-        {({ setNavIsCollapsed, navIsCollapsed }) =>
-            <ul>
-              {items.map((item, index) => (
-                <NavItem key={index} active={activeItem === item}>
-                  <a href="#" onClick={(e) => {
-                    e.preventDefault();
-                    if (navIsCollapsed) {
-                      setNavIsCollapsed(false);
-                    } else {
-                      setActiveItem(item);
-                      setNavIsCollapsed(isMobile);
-                    }
-                  }}>
-                    {item}
-                  </a>
-                </NavItem>
-              ))}
-            </ul>
-        }
-      </StyledSidebarNav>
-      <StyledMain style={{ padding: "4rem", marginLeft: (isMobile ? SidebarNavStyles.collapsedWidth : '') }}>
-        <h1>
-          Main content
-          <p><a href="#">focusable element</a></p>
-        </h1>
-      </StyledMain>
-    </Wrapper>
-  </>
+  return (
+    <ul>
+      {items.map((item, index) => (
+        <NavItem key={index} active={activeItem === item}>
+          <a
+            href="#"
+            onClick={(e) => {
+              e.preventDefault();
+              if (navIsCollapsed) {
+                setNavIsCollapsed(false);
+              } else {
+                setActiveItem(item);
+                setNavIsCollapsed(isMobile);
+              }
+            }}
+          >
+            {item}
+          </a>
+        </NavItem>
+      ))}
+    </ul>
+  );
+};
+
+const SidebarNavAndMain = () => {
+  const isMobile = useMatchMediaQuery(
+    `(max-width: ${breakpoints.mobileNavBreak}em)`,
+  );
+
+  return (
+    <>
+      <GlobalStyle />
+      <Wrapper>
+        <StyledSidebarNav>
+          {({ setNavIsCollapsed, navIsCollapsed, isMobile }) => (
+            <NavItemsList
+              items={items}
+              setNavIsCollapsed={setNavIsCollapsed}
+              navIsCollapsed={navIsCollapsed}
+              isMobile={isMobile}
+            />
+          )}
+        </StyledSidebarNav>
+        <StyledMain
+          style={{
+            padding: "4rem",
+            marginLeft: isMobile ? SidebarNavStyles.collapsedWidth : "",
+          }}
+        >
+          <h1>
+            Main content
+            <p>
+              <a href="#">focusable element</a>
+            </p>
+          </h1>
+        </StyledMain>
+      </Wrapper>
+    </>
+  );
+};
+
+const BodyPortalSidebarNavAndMain = () => {
+  return (
+    <BodyPortalSlotsContext.Provider value={["sidebar", "nav", "main"]}>
+      <BodyPortalGlobalStyle />
+      <Wrapper>
+        <StyledBodyPortalSidebarNav navHeader={<NavBarLogo alt="logo" />}>
+          {({ setNavIsCollapsed, navIsCollapsed, isMobile }) => (
+            <NavItemsList
+              items={items}
+              setNavIsCollapsed={setNavIsCollapsed}
+              navIsCollapsed={navIsCollapsed}
+              isMobile={isMobile}
+            />
+          )}
+        </StyledBodyPortalSidebarNav>
+        <NavBar>
+          <h1>Title</h1>
+        </NavBar>
+        <StyledBodyPortalMain tagName="main" slot="main">
+          <h1>
+            Main content
+            <p>
+              <a href="#">focusable element</a>
+            </p>
+            <p>{Date.now().toString()}</p>
+          </h1>
+        </StyledBodyPortalMain>
+      </Wrapper>
+    </BodyPortalSlotsContext.Provider>
+  );
+};
+
+export const UsingBodyPortal = () => {
+  return (
+    <BodyPortalSlotsContext.Provider value={["sidebar", "nav", "main"]}>
+      <BodyPortalSidebarNavAndMain />
+    </BodyPortalSlotsContext.Provider>
+  );
+};
+
+export const WithoutBodyPortal = () => {
+  return <SidebarNavAndMain />;
 };

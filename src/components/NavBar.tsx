@@ -51,7 +51,7 @@ export const NavBar = ({ logo = false, maxWidth, navDesktopHeight, navMobileHeig
   const {alt = 'OpenStax Logo', ...anchorProps} = logoIsObject ? logo : {};
   const logoComponent = logo ? <OpenstaxLogo alt={alt} /> : null;
 
-  return <BarWrapper role="toolbar" slot='nav' {...props}>
+  return <BarWrapper tagName='nav' slot='nav' {...props}>
     <StyledNavBar
       maxWidth={maxWidth}
       navDesktopHeight={navDesktopHeight || Constants.navDesktopHeight}
