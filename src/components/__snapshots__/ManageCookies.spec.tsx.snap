@@ -2,7 +2,7 @@
 
 exports[`ManageCookies with osano renders button 1`] = `
 <button
-  className="sc-gsnTZi sc-dkzDqf czjxlp kMkEHE"
+  className="sc-gsnTZi sc-dkzDqf czjxlp jmylct"
   onClick={[Function]}
 >
   Manage Cookies
@@ -12,7 +12,7 @@ exports[`ManageCookies with osano renders button 1`] = `
 exports[`ManageCookies with osano renders button in wrapper 1`] = `
 <div>
   <button
-    className="sc-gsnTZi sc-dkzDqf czjxlp kMkEHE"
+    className="sc-gsnTZi sc-dkzDqf czjxlp jmylct"
     onClick={[Function]}
   >
     Manage Cookies
@@ -22,7 +22,7 @@ exports[`ManageCookies with osano renders button in wrapper 1`] = `
 
 exports[`ManageCookies with osano renders button with content 1`] = `
 <button
-  className="sc-gsnTZi sc-dkzDqf czjxlp kMkEHE"
+  className="sc-gsnTZi sc-dkzDqf czjxlp jmylct"
   onClick={[Function]}
 >
   some content

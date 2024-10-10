@@ -43,7 +43,7 @@ exports[`Button renders as a tag variant 1`] = `
 
 exports[`Button renders button that looks like a link 1`] = `
 <button
-  className="sc-gsnTZi sc-dkzDqf czjxlp kMkEHE"
+  className="sc-gsnTZi sc-dkzDqf czjxlp jmylct"
 >
   Click Me
 </button>
