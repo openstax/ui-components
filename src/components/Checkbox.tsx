@@ -3,8 +3,8 @@ import { colors } from "../theme";
 import styled from "styled-components";
 import { InputHTMLAttributes } from "react";
 
-type CheckboxVariant = keyof typeof checkboxVariants;
-type CheckboxSize = 1.4 | 1.6 | 1.8 | 2;
+export type CheckboxVariant = keyof typeof checkboxVariants;
+export type CheckboxSize = 1.4 | 1.6 | 1.8 | 2;
 
 export const checkboxVariants = {
   primary: {
@@ -14,6 +14,10 @@ export const checkboxVariants = {
   light: {
     accentColor: colors.palette.white,
     boxShadow: '0 0 1px 0',
+  },
+  error: {
+    accentColor: colors.palette.darkRed,
+    boxShadow: 'none',
   }
 } as const;
 
