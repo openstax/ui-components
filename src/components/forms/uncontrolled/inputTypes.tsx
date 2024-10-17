@@ -4,6 +4,7 @@ import { FormInputWrapper, FormLabelText, HelpText, InputProps, RequiredIndicato
 import { AbstractFormData } from "../controlled/hooks";
 import { partitionSequence } from "@openstax/ts-utils/misc/partitionSequence";
 import { Radio as StyledRadio } from "../../Radio";
+import { Checkbox as StyledCheckbox, CheckboxSize, CheckboxVariant} from "../../Checkbox"
 
 /*
  * input element
@@ -195,28 +196,44 @@ export const Radio = ({
 type CheckboxProps = React.ComponentPropsWithoutRef<'input'> & InputProps & {
   onChangeValue?: (value: boolean | undefined) => void;
   wrapperProps?: React.ComponentPropsWithoutRef<'label'>;
+  error?: string[];
+  size?: CheckboxSize;
+  variant?: CheckboxVariant;
 };
 const CheckboxLine = styled.div`
   flex-direction: row;
   display: flex;
   align-items: center;
 `;
+const StyledErrorMessage = styled.p`
+  color: #C22032;
+  font-size: 1.4rem;
+  margin: 0;
+  padding: 0;
+  line-height: 2.5rem;
+`
 export const Checkbox = ({
   label,
   help,
   wrapperProps,
+  error,
   onChangeValue,
   ...props
 }: CheckboxProps) => {
   return <FormInputWrapper {...wrapperProps}>
     <CheckboxLine>
-      <input type="checkbox" {...props} onChange={e => {
+      <StyledCheckbox {...props} onChange={e => {
         onChangeValue?.(!!e.target.checked);
         props.onChange?.(e);
-      }}/>
-      <FormLabelText><RequiredIndicator show={props.required} />{label}</FormLabelText>
+      }}
+      >
+        <FormLabelText><RequiredIndicator show={props.required} />{label}</FormLabelText>
+      </StyledCheckbox>
     </CheckboxLine>
     <HelpText value={help} />
+    {error !== undefined && error.length > 0 && 
+      <StyledErrorMessage>This activity has been deleted. Please deselect this activity to remove it from this assignment and avoid errors.</StyledErrorMessage>
+    }
   </FormInputWrapper>;
 };
 
