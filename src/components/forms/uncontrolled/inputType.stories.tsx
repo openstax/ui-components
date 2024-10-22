@@ -12,23 +12,31 @@ const CheckboxGroup = styled.div`
 `;
 
 type CheckboxProps = React.ComponentProps<typeof Checkbox>;
-const renderCheckboxes = (error: CheckboxProps['error'], label: CheckboxProps['label'], variant: CheckboxProps['variant'], size: CheckboxProps['size']) => 
+const renderCheckboxes = (props: CheckboxProps) => 
 <CheckboxGroup>
-  <h2>Size {size}</h2>
-  <Checkbox {...{error, label, variant, size}} defaultChecked></Checkbox>
-  <Checkbox {...{error, label, variant, size}} defaultChecked></Checkbox>
+  <h2>Size {props.size}</h2>
+  <Checkbox {...props} defaultChecked></Checkbox>
+  <Checkbox {...props} defaultChecked></Checkbox>
+  <Checkbox {...props} defaultChecked></Checkbox>
 </CheckboxGroup>;
 
 export const defaultCheckbox = () => <>
-  {renderCheckboxes([], 'Checkbox Label', 'primary', 1.4)}
-  {renderCheckboxes([], 'Checkbox Label', 'primary', 1.6)}
-  {renderCheckboxes(undefined, 'Checkbox Label', 'primary', 1.8)}
-  {renderCheckboxes(undefined, 'Checkbox Label', 'primary', 2.0)}
+  {renderCheckboxes({error: [], label: 'Checkbox Label', variant: 'primary', size: 1.4})}
+  {renderCheckboxes({error: [], label: 'Checkbox Label', variant: 'primary', size: 1.6})}
+  {renderCheckboxes({error: undefined, label: 'Checkbox Label', variant: 'primary', size: 1.8})}
+  {renderCheckboxes({error: undefined, label: 'Checkbox Label', variant: 'primary', size: 2.0})}
 </>;
 
 export const errorCheckbox = () => <>
-  {renderCheckboxes(['Error message goes here'], 'Checkbox Label', 'error', 1.4)}
-  {renderCheckboxes(['Error message goes here'], 'Checkbox Label', 'error', 1.6)}
-  {renderCheckboxes(['Error message goes here'], 'Checkbox Label', 'error', 1.8)}
-  {renderCheckboxes(['Error message goes here'], 'Checkbox Label', 'error', 2.0)}
+  {renderCheckboxes({error: ['Error messages go here'], label: 'Checkbox Label', variant: 'error', size: 1.4})}
+  {renderCheckboxes({error: ['Error messages go here'], label: 'Checkbox Label', variant: 'error', size: 1.6})}
+  {renderCheckboxes({error: ['Error messages go here'], label: 'Checkbox Label', variant: 'error', size: 1.8})}
+  {renderCheckboxes({error: ['Error messages go here'], label: 'Checkbox Label', variant: 'error', size: 2.0})}
+</>;
+
+export const disabledCheckbox = () => <>
+  {renderCheckboxes({error: [], disabled: true, label: 'Checkbox Label', variant: 'disabled', size: 1.4})}
+  {renderCheckboxes({error: [], disabled: true, label: 'Checkbox Label', variant: 'disabled', size: 1.6})}
+  {renderCheckboxes({error: [], disabled: true, label: 'Checkbox Label', variant: 'disabled', size: 1.8})}
+  {renderCheckboxes({error: [], disabled: true, label: 'Checkbox Label', variant: 'disabled', size: 2.0})}
 </>;
