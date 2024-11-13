@@ -231,7 +231,7 @@ export const Checkbox = ({
     </CheckboxLine>
     <HelpText value={help} />
     {error !== undefined && error.length > 0 && 
-      <StyledErrorMessage>This activity has been deleted. Please deselect this activity to remove it from this assignment and avoid errors.</StyledErrorMessage>
+      <StyledErrorMessage>{error[0]}</StyledErrorMessage>
     }
   </FormInputWrapper>;
 };
