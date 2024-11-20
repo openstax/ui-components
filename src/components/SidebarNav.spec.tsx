@@ -170,7 +170,7 @@ describe("SidebarNav", () => {
   });
 
   describe("SidebarNavBase", () => {
-    it("outside clicks don't set nav to collapsed if the ref is null", async () => {
+    it("outside clicks don't set nav to collapsed if the ref is null", () => {
       const setNavCollapsedFn = jest.fn();
       render(
         <SidebarNavBase
@@ -179,12 +179,13 @@ describe("SidebarNav", () => {
           setNavIsCollapsed={setNavCollapsedFn}
         >
           Content
-        </SidebarNavBase>,
+        </SidebarNavBase>
       );
       // setNavIsCollapsed fires on mount
       expect(setNavCollapsedFn).toHaveBeenCalledTimes(1);
       setNavCollapsedFn.mockReset();
-      fireEvent.mouseDown(document);
+      
+      fireEvent.click(document);
 
       expect(setNavCollapsedFn).not.toHaveBeenCalled();
 
@@ -198,11 +199,11 @@ describe("SidebarNav", () => {
           sidebarNavRef={{ current: null }}
         >
           Content
-        </SidebarNavBase>,
+        </SidebarNavBase>
       );
 
       setNavCollapsedFn.mockReset();
-      fireEvent.mouseDown(document);
+      fireEvent.click(document);
 
       expect(setNavCollapsedFn).not.toHaveBeenCalled();
     });
