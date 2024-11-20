@@ -230,9 +230,13 @@ export const Checkbox = ({
       </StyledCheckbox>
     </CheckboxLine>
     <HelpText value={help} />
-    {error !== undefined && error.length > 0 && 
-      <StyledErrorMessage>{error[0]}</StyledErrorMessage>
-    }
+    {error !== undefined && (
+        <>
+          {error.map((msg) => (
+            <StyledErrorMessage>{msg}</StyledErrorMessage>
+          ))}
+        </>
+      )}
   </FormInputWrapper>;
 };
 
