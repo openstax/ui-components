@@ -47,6 +47,7 @@ export const BodyPortal = React.forwardRef<HTMLElement, BodyPortalProps>((
   }
 
   const bodyPortalOrderedRefs = React.useContext(BodyPortalSlotsContext);
+  const testId = props['data-testid'];
 
   React.useLayoutEffect(() => {
     const element = internalRef.current;
@@ -55,7 +56,7 @@ export const BodyPortal = React.forwardRef<HTMLElement, BodyPortalProps>((
 
     if (id) { element.id = id; }
 
-    if (props['data-testid']) { element.dataset.testid = props['data-testid']; }
+    if (testId) { element.dataset.testid = testId; }
 
     if (role) { element.setAttribute('role', role); }
 
@@ -76,9 +77,9 @@ export const BodyPortal = React.forwardRef<HTMLElement, BodyPortalProps>((
 
       if (id) { element.id = ''; }
 
-      if (props['data-testid']) { delete element.dataset.testid; }
+      if (testId) { delete element.dataset.testid; }
     };
-  }, [bodyPortalOrderedRefs, className, role, slot, tag]);
+  }, [bodyPortalOrderedRefs, className, id, role, slot, tag, testId]);
 
   return createPortal(children, internalRef.current);
 });

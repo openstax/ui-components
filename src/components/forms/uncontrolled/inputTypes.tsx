@@ -232,8 +232,8 @@ export const Checkbox = ({
     <HelpText value={help} />
     {error !== undefined && (
         <>
-          {error.map((msg) => (
-            <StyledErrorMessage>{msg}</StyledErrorMessage>
+          {error.map((msg, i) => (
+            <StyledErrorMessage key={i}>{msg}</StyledErrorMessage>
           ))}
         </>
       )}

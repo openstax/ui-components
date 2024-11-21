@@ -53,7 +53,7 @@ export const SidebarNavBase = ({
 
   React.useLayoutEffect(() => {
     setNavIsCollapsed(isMobile);
-  }, [isMobile]);
+  }, [isMobile]); // eslint-disable-line react-hooks/exhaustive-deps
 
   React.useEffect(() => {
     if (!isMobile || navIsCollapsed) {

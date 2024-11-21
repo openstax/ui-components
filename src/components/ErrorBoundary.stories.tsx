@@ -18,7 +18,7 @@ const ErrorComponent = ({ doThrow, setShowError, error: error, errorMessage }: {
         error instanceof Error ? error : new Error(errorMessage || 'Test Error')
       );
     }
-  }, [doThrow]);
+  }, [doThrow, error, errorMessage, setShowError]);
 
   return null;
 };
