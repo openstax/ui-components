@@ -1,12 +1,13 @@
 import styled, { css } from "styled-components";
 import { colors, zIndex } from "../../src/theme";
-import { BodyPortal } from './BodyPortal';
 import { CloseModalButton } from "./CloseModalButton";
+import * as RAC from "react-aria-components";
+import React from "react";
 
 
 const modalPadding = 3;
 
-export const ModalCard = styled.div`
+export const ModalCard = styled(RAC.Dialog)`
   display: flex;
   flex-direction: column;
   margin: auto;
@@ -17,6 +18,7 @@ export const ModalCard = styled.div`
   color: ${colors.palette.neutralDarker};
   font-size: 1.6rem;
   line-height: 2.5rem;
+  outline: none;
 `;
 
 const Header = styled.header`
@@ -33,7 +35,7 @@ const Header = styled.header`
   `}
 `;
 
-const Heading = styled.h1`
+const Heading = styled(RAC.Heading)`
   display: flex;
   align-items: center;
   margin: 0;
@@ -52,7 +54,11 @@ export const ModalBody = styled.div`
   padding: ${modalPadding}rem;
 `;
 
-export const Mask = styled.div`
+export const Mask = styled(
+  (props: RAC.ModalOverlayProps & React.RefAttributes<HTMLDivElement>) => (
+    <RAC.ModalOverlay defaultOpen {...props}/>
+  )
+)`
   top: 0;
   left: 0;
   width: 100%;
@@ -60,19 +66,12 @@ export const Mask = styled.div`
   display: flex;
   position: fixed;
   background-color: rgba(0, 0, 0, 0.3);
-`;
-
-export const ModalWrapper = styled(BodyPortal)`
-  top: 0;
-  z-index: ${zIndex.modals};
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  position: fixed;
   justify-content: center;
   align-items: center;
+  z-index: ${zIndex.modals};
 `;
+
+export const ModalWrapper = RAC.Modal;
 
 const CardWrapper = styled.div`
   z-index: 1;
@@ -102,23 +101,30 @@ export const Modal = ({
   onModalClose,
   children,
   show,
-  variant
-}: React.PropsWithChildren<ModalPropTypes>) => {
+  variant,
+  ...props
+}: React.PropsWithChildren<ModalPropTypes> & RAC.ModalOverlayProps) => {
   if (!show) { return null; }
   return (
-    <ModalWrapper className={className} slot='modal'>
-      <CardWrapper>
-        <ModalCard>
-          <Header variant={variant}>
-            <Heading>
-              {heading}
-            </Heading>
-            <CloseModalButton onClick={onModalClose} variant={variant}/>
-          </Header>
-          {children}
-        </ModalCard>
-      </CardWrapper>
-      <Mask />
-    </ModalWrapper>
+    <Mask
+      className={className}
+      isDismissable
+      onOpenChange={(isOpen) => (!isOpen && onModalClose())}
+      {...props}
+    >
+      <ModalWrapper>
+        <CardWrapper>
+          <ModalCard>
+            <Header variant={variant}>
+              <Heading slot="title">
+                {heading}
+              </Heading>
+              <CloseModalButton onClick={onModalClose} variant={variant}/>
+            </Header>
+            {children}
+          </ModalCard>
+        </CardWrapper>
+      </ModalWrapper>
+    </Mask>
   );
 };
