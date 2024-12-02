@@ -4,7 +4,7 @@ export declare const ModalCard: import("styled-components").StyledComponent<(pro
 export declare const ModalBodyHeading: import("styled-components").StyledComponent<"h3", any, {}, never>;
 export declare const ModalBody: import("styled-components").StyledComponent<"div", any, {}, never>;
 export declare const Mask: import("styled-components").StyledComponent<(props: RAC.ModalOverlayProps & React.RefAttributes<HTMLDivElement>) => import("react/jsx-runtime").JSX.Element, any, {}, never>;
-export declare const ModalWrapper: import("styled-components").StyledComponent<(props: RAC.ModalOverlayProps & React.RefAttributes<HTMLDivElement>) => React.ReactElement<any, string | React.JSXElementConstructor<any>> | null, any, {}, never>;
+export declare const ModalWrapper: (props: RAC.ModalOverlayProps & React.RefAttributes<HTMLDivElement>) => React.ReactElement<any, string | React.JSXElementConstructor<any>> | null;
 export declare const ModalFooter: import("styled-components").StyledComponent<"div", any, {}, never>;
 export interface ModalPropTypes {
     onModalClose: () => void;
