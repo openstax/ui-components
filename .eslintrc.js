@@ -32,6 +32,6 @@ module.exports = {
     "react/prop-types": "off",
     "react/jsx-no-target-blank": "off",
     "react/display-name": "off",
-    "react/no-unescaped-entities": "warn",
+    "react/no-unescaped-entities": "off",
   }
 }

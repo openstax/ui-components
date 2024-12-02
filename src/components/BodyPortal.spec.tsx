@@ -239,7 +239,7 @@ describe('BodyPortal', () => {
     render(
       <BodyPortalSlotsContext.Provider value={['header', 'root']}>
         <BodyPortal slot='header' tagName='header' id='orange' data-testid='blue'>
-          Now you&apos;re thinking with portals
+          Now you're thinking with portals
         </BodyPortal>
       </BodyPortalSlotsContext.Provider>,
       { container: root }
