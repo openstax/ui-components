@@ -143,7 +143,7 @@ export const Toast = ({
     return () => {
       clearTimeout(timeoutId);
     };
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!show) { return null; }
 

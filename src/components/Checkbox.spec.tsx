@@ -24,4 +24,10 @@ describe('Checkbox', () => {
     ).toJSON();
     expect(tree).toMatchSnapshot();
   });
+  it('handles disabled state', () => {
+    const tree = renderer.create(
+      <Checkbox disabled>Click Me</Checkbox>
+    ).toJSON();
+    expect(tree).toMatchSnapshot();
+  });
 });

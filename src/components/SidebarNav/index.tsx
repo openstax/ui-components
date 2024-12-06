@@ -5,6 +5,7 @@ import { LeftArrow } from "../svgs/LeftArrow";
 import { RightArrow } from "../svgs/RightArrow";
 import { FocusScope } from "react-aria";
 import { BodyPortal } from "../BodyPortal";
+
 import {
   NavBody,
   NavFooter,
@@ -52,7 +53,7 @@ export const SidebarNavBase = ({
 
   React.useLayoutEffect(() => {
     setNavIsCollapsed(isMobile);
-  }, [isMobile]);
+  }, [isMobile]); // eslint-disable-line react-hooks/exhaustive-deps
 
   React.useEffect(() => {
     if (!isMobile || navIsCollapsed) {
@@ -64,7 +65,7 @@ export const SidebarNavBase = ({
         isMobile &&
         !navIsCollapsed &&
         sidebarNavRef?.current &&
-        !sidebarNavRef?.current.contains(event.target)
+        !sidebarNavRef.current.contains(event.target)
       ) {
         setNavIsCollapsed(true);
       }
@@ -95,7 +96,7 @@ export const SidebarNavBase = ({
 
   React.useEffect(() => {
     if (navAnimation === "idle") {
-      toggleButtonRef.current?.focus();
+      (toggleButtonRef.current as HTMLButtonElement).focus();
     }
   }, [navAnimation]);
 

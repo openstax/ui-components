@@ -40,6 +40,7 @@ export const Examples = () => {
           <a
             data-selected={selections[0] === i}
             onClick={() => updateSelection(0, i)}
+            key={i}
           >
             {label}
           </a>
@@ -52,6 +53,7 @@ export const Examples = () => {
           <a
             data-selected={selections[1] === i}
             onClick={() => updateSelection(1, i)}
+            key={i}
           >
             {label}
           </a>
@@ -68,6 +70,7 @@ export const Examples = () => {
           <a
             data-selected={selections[2] === i}
             onClick={() => updateSelection(2, i)}
+            key={i}
           >
             {label}
           </a>

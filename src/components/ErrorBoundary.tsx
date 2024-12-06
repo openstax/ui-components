@@ -52,7 +52,7 @@ export const ErrorBoundary = ({
         new Sentry.BrowserTracing(),
       ],
     });
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // There are two references to the render element here because the Sentry fallback (and
   // onError) are not used for unhandledrejection events. To support those events, we provide

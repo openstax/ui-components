@@ -13,6 +13,18 @@ exports[`Checkbox allows setting props on label 1`] = `
 </label>
 `;
 
+exports[`Checkbox handles disabled state 1`] = `
+<label
+  className="sc-bczRLJ hizTBt"
+>
+  <input
+    className="sc-gsnTZi cZFRiM"
+    type="checkbox"
+  />
+  Click Me
+</label>
+`;
+
 exports[`Checkbox handles options 1`] = `
 <label
   className="sc-bczRLJ brUlbM"
