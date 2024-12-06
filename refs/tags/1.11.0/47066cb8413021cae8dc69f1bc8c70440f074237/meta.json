@@ -1,0 +1,555 @@
+{
+  "about": {
+    "homepage": "https://www.ladle.dev",
+    "github": "https://github.com/tajo/ladle",
+    "version": 1
+  },
+  "stories": {
+    "button--primary": {
+      "name": "Primary",
+      "levels": [
+        "Button"
+      ],
+      "locStart": 3,
+      "locEnd": 7,
+      "filePath": "src/components/Button.stories.tsx",
+      "meta": {}
+    },
+    "button--light": {
+      "name": "Light",
+      "levels": [
+        "Button"
+      ],
+      "locStart": 9,
+      "locEnd": 13,
+      "filePath": "src/components/Button.stories.tsx",
+      "meta": {}
+    },
+    "button--secondary": {
+      "name": "Secondary",
+      "levels": [
+        "Button"
+      ],
+      "locStart": 15,
+      "locEnd": 19,
+      "filePath": "src/components/Button.stories.tsx",
+      "meta": {}
+    },
+    "button--link": {
+      "name": "Link",
+      "levels": [
+        "Button"
+      ],
+      "locStart": 21,
+      "locEnd": 24,
+      "filePath": "src/components/Button.stories.tsx",
+      "meta": {}
+    },
+    "button--linkish": {
+      "name": "Linkish",
+      "levels": [
+        "Button"
+      ],
+      "locStart": 26,
+      "locEnd": 28,
+      "filePath": "src/components/Button.stories.tsx",
+      "meta": {}
+    },
+    "button-bar--examples": {
+      "name": "Examples",
+      "levels": [
+        "Button bar"
+      ],
+      "locStart": 11,
+      "locEnd": 81,
+      "filePath": "src/components/ButtonBar.stories.tsx",
+      "meta": {}
+    },
+    "checkbox--primary": {
+      "name": "Primary",
+      "levels": [
+        "Checkbox"
+      ],
+      "locStart": 22,
+      "locEnd": 27,
+      "filePath": "src/components/Checkbox.stories.tsx",
+      "meta": {}
+    },
+    "checkbox--light": {
+      "name": "Light",
+      "levels": [
+        "Checkbox"
+      ],
+      "locStart": 29,
+      "locEnd": 34,
+      "filePath": "src/components/Checkbox.stories.tsx",
+      "meta": {}
+    },
+    "dropdown-menu--light": {
+      "name": "Light",
+      "levels": [
+        "Dropdown menu"
+      ],
+      "locStart": 40,
+      "locEnd": 40,
+      "filePath": "src/components/DropdownMenu.stories.tsx",
+      "meta": {}
+    },
+    "dropdown-menu--primary": {
+      "name": "Primary",
+      "levels": [
+        "Dropdown menu"
+      ],
+      "locStart": 41,
+      "locEnd": 41,
+      "filePath": "src/components/DropdownMenu.stories.tsx",
+      "meta": {}
+    },
+    "dropdown-menu--secondary": {
+      "name": "Secondary",
+      "levels": [
+        "Dropdown menu"
+      ],
+      "locStart": 42,
+      "locEnd": 42,
+      "filePath": "src/components/DropdownMenu.stories.tsx",
+      "meta": {}
+    },
+    "error--default": {
+      "name": "Default",
+      "levels": [
+        "Error"
+      ],
+      "locStart": 3,
+      "locEnd": 3,
+      "filePath": "src/components/Error.stories.tsx",
+      "meta": {}
+    },
+    "error--custom-text": {
+      "name": "Custom text",
+      "levels": [
+        "Error"
+      ],
+      "locStart": 4,
+      "locEnd": 6,
+      "filePath": "src/components/Error.stories.tsx",
+      "meta": {}
+    },
+    "error-boundary--inline-messages": {
+      "name": "Inline messages",
+      "levels": [
+        "Error boundary"
+      ],
+      "locStart": 35,
+      "locEnd": 47,
+      "filePath": "src/components/ErrorBoundary.stories.tsx",
+      "meta": {}
+    },
+    "error-boundary--fallback--generic-error--default": {
+      "name": "Default",
+      "levels": [
+        "Error boundary",
+        "Fallback",
+        "Generic error"
+      ],
+      "locStart": 49,
+      "locEnd": 60,
+      "filePath": "src/components/ErrorBoundary.stories.tsx",
+      "meta": {}
+    },
+    "error-boundary--fallback--generic-error--custom": {
+      "name": "Custom",
+      "levels": [
+        "Error boundary",
+        "Fallback",
+        "Generic error"
+      ],
+      "locStart": 62,
+      "locEnd": 81,
+      "filePath": "src/components/ErrorBoundary.stories.tsx",
+      "meta": {}
+    },
+    "error-boundary--fallback--special-error": {
+      "name": "Special error",
+      "levels": [
+        "Error boundary",
+        "Fallback"
+      ],
+      "locStart": 98,
+      "locEnd": 121,
+      "filePath": "src/components/ErrorBoundary.stories.tsx",
+      "meta": {}
+    },
+    "error-modal--default": {
+      "name": "Default",
+      "levels": [
+        "Error modal"
+      ],
+      "locStart": 5,
+      "locEnd": 18,
+      "filePath": "src/components/ErrorModal.stories.tsx",
+      "meta": {}
+    },
+    "loader--default": {
+      "name": "Default",
+      "levels": [
+        "Loader"
+      ],
+      "locStart": 3,
+      "locEnd": 3,
+      "filePath": "src/components/Loader.stories.tsx",
+      "meta": {}
+    },
+    "loader--large": {
+      "name": "Large",
+      "levels": [
+        "Loader"
+      ],
+      "locStart": 4,
+      "locEnd": 4,
+      "filePath": "src/components/Loader.stories.tsx",
+      "meta": {}
+    },
+    "loader--delay": {
+      "name": "Delay",
+      "levels": [
+        "Loader"
+      ],
+      "locStart": 5,
+      "locEnd": 5,
+      "filePath": "src/components/Loader.stories.tsx",
+      "meta": {}
+    },
+    "manage-cookies--without-osano": {
+      "name": "Without osano",
+      "levels": [
+        "Manage cookies"
+      ],
+      "locStart": 5,
+      "locEnd": 21,
+      "filePath": "src/components/ManageCookies.stories.tsx",
+      "meta": {}
+    },
+    "manage-cookies--with-osano": {
+      "name": "With osano",
+      "levels": [
+        "Manage cookies"
+      ],
+      "locStart": 33,
+      "locEnd": 56,
+      "filePath": "src/components/ManageCookies.stories.tsx",
+      "meta": {}
+    },
+    "modal--default": {
+      "name": "Default",
+      "levels": [
+        "Modal"
+      ],
+      "locStart": 5,
+      "locEnd": 10,
+      "filePath": "src/components/Modal.stories.tsx",
+      "meta": {}
+    },
+    "modal--error": {
+      "name": "Error",
+      "levels": [
+        "Modal"
+      ],
+      "locStart": 12,
+      "locEnd": 17,
+      "filePath": "src/components/Modal.stories.tsx",
+      "meta": {}
+    },
+    "nav-bar--plain": {
+      "name": "Plain",
+      "levels": [
+        "Nav bar"
+      ],
+      "locStart": 39,
+      "locEnd": 39,
+      "filePath": "src/components/NavBar.stories.tsx",
+      "meta": {}
+    },
+    "nav-bar--logo-and-children": {
+      "name": "Logo and children",
+      "levels": [
+        "Nav bar"
+      ],
+      "locStart": 40,
+      "locEnd": 40,
+      "filePath": "src/components/NavBar.stories.tsx",
+      "meta": {}
+    },
+    "nav-bar--alt-text-linked-logo": {
+      "name": "Alt text linked logo",
+      "levels": [
+        "Nav bar"
+      ],
+      "locStart": 41,
+      "locEnd": 41,
+      "filePath": "src/components/NavBar.stories.tsx",
+      "meta": {}
+    },
+    "nav-bar--alt-text-no-linked-logo": {
+      "name": "Alt text no linked logo",
+      "levels": [
+        "Nav bar"
+      ],
+      "locStart": 42,
+      "locEnd": 42,
+      "filePath": "src/components/NavBar.stories.tsx",
+      "meta": {}
+    },
+    "nav-bar--override-justify-content": {
+      "name": "Override justify content",
+      "levels": [
+        "Nav bar"
+      ],
+      "locStart": 43,
+      "locEnd": 45,
+      "filePath": "src/components/NavBar.stories.tsx",
+      "meta": {}
+    },
+    "nav-bar--controls--nav-bar-button": {
+      "name": "Nav bar button",
+      "levels": [
+        "Nav bar",
+        "Controls"
+      ],
+      "locStart": 47,
+      "locEnd": 52,
+      "filePath": "src/components/NavBar.stories.tsx",
+      "meta": {}
+    },
+    "nav-bar--popover-and-menu": {
+      "name": "Popover and menu",
+      "levels": [
+        "Nav bar"
+      ],
+      "locStart": 54,
+      "locEnd": 85,
+      "filePath": "src/components/NavBar.stories.tsx",
+      "meta": {}
+    },
+    "overlay--default": {
+      "name": "Default",
+      "levels": [
+        "Overlay"
+      ],
+      "locStart": 4,
+      "locEnd": 9,
+      "filePath": "src/components/Overlay.stories.tsx",
+      "meta": {}
+    },
+    "radio--default": {
+      "name": "Default",
+      "levels": [
+        "Radio"
+      ],
+      "locStart": 21,
+      "locEnd": 23,
+      "filePath": "src/components/Radio.stories.tsx",
+      "meta": {}
+    },
+    "radio--with-tooltip": {
+      "name": "With tooltip",
+      "levels": [
+        "Radio"
+      ],
+      "locStart": 25,
+      "locEnd": 27,
+      "filePath": "src/components/Radio.stories.tsx",
+      "meta": {}
+    },
+    "rice-logo--default": {
+      "name": "Default",
+      "levels": [
+        "Rice logo"
+      ],
+      "locStart": 3,
+      "locEnd": 3,
+      "filePath": "src/components/RiceLogo.stories.tsx",
+      "meta": {}
+    },
+    "sidebar-nav--using-body-portal": {
+      "name": "Using body portal",
+      "levels": [
+        "Sidebar nav"
+      ],
+      "locStart": 247,
+      "locEnd": 253,
+      "filePath": "src/components/SidebarNav.stories.tsx",
+      "meta": {}
+    },
+    "sidebar-nav--without-body-portal": {
+      "name": "Without body portal",
+      "levels": [
+        "Sidebar nav"
+      ],
+      "locStart": 255,
+      "locEnd": 257,
+      "filePath": "src/components/SidebarNav.stories.tsx",
+      "meta": {}
+    },
+    "tabs--examples": {
+      "name": "Examples",
+      "levels": [
+        "Tabs"
+      ],
+      "locStart": 23,
+      "locEnd": 59,
+      "filePath": "src/components/Tabs.stories.tsx",
+      "meta": {}
+    },
+    "text--p-text": {
+      "name": "P text",
+      "levels": [
+        "Text"
+      ],
+      "locStart": 3,
+      "locEnd": 7,
+      "filePath": "src/components/Text.stories.tsx",
+      "meta": {}
+    },
+    "text--heading": {
+      "name": "Heading",
+      "levels": [
+        "Text"
+      ],
+      "locStart": 9,
+      "locEnd": 14,
+      "filePath": "src/components/Text.stories.tsx",
+      "meta": {}
+    },
+    "toast--default": {
+      "name": "Default",
+      "levels": [
+        "Toast"
+      ],
+      "locStart": 3,
+      "locEnd": 3,
+      "filePath": "src/components/Toast.stories.tsx",
+      "meta": {}
+    },
+    "toast--success-with-timeout": {
+      "name": "Success with timeout",
+      "levels": [
+        "Toast"
+      ],
+      "locStart": 4,
+      "locEnd": 4,
+      "filePath": "src/components/Toast.stories.tsx",
+      "meta": {}
+    },
+    "toast--failure-with-timeout": {
+      "name": "Failure with timeout",
+      "levels": [
+        "Toast"
+      ],
+      "locStart": 5,
+      "locEnd": 5,
+      "filePath": "src/components/Toast.stories.tsx",
+      "meta": {}
+    },
+    "toast--inline-and-permanent": {
+      "name": "Inline and permanent",
+      "levels": [
+        "Toast"
+      ],
+      "locStart": 6,
+      "locEnd": 6,
+      "filePath": "src/components/Toast.stories.tsx",
+      "meta": {}
+    },
+    "toast-container--default": {
+      "name": "Default",
+      "levels": [
+        "Toast container"
+      ],
+      "locStart": 16,
+      "locEnd": 16,
+      "filePath": "src/components/ToastContainer.stories.tsx",
+      "meta": {}
+    },
+    "tooltip--default": {
+      "name": "Default",
+      "levels": [
+        "Tooltip"
+      ],
+      "locStart": 25,
+      "locEnd": 30,
+      "filePath": "src/components/Tooltip.stories.tsx",
+      "meta": {}
+    },
+    "forms--basic-controlled-form": {
+      "name": "Basic controlled form",
+      "levels": [
+        "Forms"
+      ],
+      "locStart": 6,
+      "locEnd": 20,
+      "filePath": "src/components/forms/Forms.stories.tsx",
+      "meta": {}
+    },
+    "forms--form-repeatable-elements": {
+      "name": "Form repeatable elements",
+      "levels": [
+        "Forms"
+      ],
+      "locStart": 31,
+      "locEnd": 58,
+      "filePath": "src/components/forms/Forms.stories.tsx",
+      "meta": {}
+    },
+    "forms--basic-data-references": {
+      "name": "Basic data references",
+      "levels": [
+        "Forms"
+      ],
+      "locStart": 60,
+      "locEnd": 78,
+      "filePath": "src/components/forms/Forms.stories.tsx",
+      "meta": {}
+    },
+    "forms--data-references-in-namespaces": {
+      "name": "Data references in namespaces",
+      "levels": [
+        "Forms"
+      ],
+      "locStart": 80,
+      "locEnd": 121,
+      "filePath": "src/components/forms/Forms.stories.tsx",
+      "meta": {}
+    },
+    "input-type--default-checkbox": {
+      "name": "Default checkbox",
+      "levels": [
+        "Input type"
+      ],
+      "locStart": 23,
+      "locEnd": 28,
+      "filePath": "src/components/forms/uncontrolled/inputType.stories.tsx",
+      "meta": {}
+    },
+    "input-type--error-checkbox": {
+      "name": "Error checkbox",
+      "levels": [
+        "Input type"
+      ],
+      "locStart": 30,
+      "locEnd": 35,
+      "filePath": "src/components/forms/uncontrolled/inputType.stories.tsx",
+      "meta": {}
+    },
+    "input-type--disabled-checkbox": {
+      "name": "Disabled checkbox",
+      "levels": [
+        "Input type"
+      ],
+      "locStart": 37,
+      "locEnd": 42,
+      "filePath": "src/components/forms/uncontrolled/inputType.stories.tsx",
+      "meta": {}
+    }
+  }
+}
