@@ -8,15 +8,17 @@ export const CloseModalButton = styled(({variant, ...props}) => (
     <Times aria-hidden='true' focusable='false' />
   </button>
 ))`
-  padding: 0.4rem;
+  padding: 0;
   cursor: pointer;
   margin-right: 0;
-  padding-right: 0;
   background: transparent;
   color: ${colors.palette.neutralMedium};
-  height: 2rem;
-  width: 2rem;
+  height: 2.4rem;
+  width: 2.4rem;
   border: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   :hover {
     color: ${colors.palette.neutralDark};

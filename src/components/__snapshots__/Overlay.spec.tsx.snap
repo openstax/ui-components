@@ -11,18 +11,36 @@ exports[`Overlay hides 1`] = `
 exports[`Overlay matches snapshot 1`] = `
 <body>
   <main
+    aria-hidden="true"
     id="root"
   />
+  <span
+    aria-hidden="true"
+    data-focus-scope-start="true"
+    hidden=""
+  />
   <div
-    class="sc-iBkjds sc-iqcoie cXUNFT dHqhuo"
-    data-portal-slot="overlay"
+    class="sc-gKXOVf sc-papXJ fbFzda iQrgxx"
+    data-rac=""
+    style="--visual-viewport-height: 768px;"
   >
     <div
-      class="sc-crXcEl fbCIbU"
+      class="sc-kDDrLX cNjBYx"
+      data-rac=""
     >
+      <div
+        style="border: 0px; clip-path: inset(50%); height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px; white-space: nowrap;"
+      >
+        <button
+          aria-label="Dismiss"
+          id="react-aria-1"
+          style="width: 1px; height: 1px;"
+          tabindex="-1"
+        />
+      </div>
       <button
         aria-label="Close"
-        class="sc-bczRLJ sc-kDDrLX eblJCO fWCYnN"
+        class="sc-bczRLJ sc-jqUVSM jrboUT fvgMNu"
         type="button"
       >
         <svg
@@ -54,11 +72,19 @@ exports[`Overlay matches snapshot 1`] = `
           </g>
         </svg>
       </button>
-      Inner content
+      <section
+        class="sc-iqcoie elTIlC"
+        role="dialog"
+        tabindex="-1"
+      >
+        Inner content
+      </section>
     </div>
-    <div
-      class="sc-gKXOVf sc-jqUVSM etxkPo hjYSJA"
-    />
   </div>
+  <span
+    aria-hidden="true"
+    data-focus-scope-end="true"
+    hidden=""
+  />
 </body>
 `;
