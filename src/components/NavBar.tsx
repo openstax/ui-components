@@ -14,6 +14,7 @@ const BarWrapper = styled(BodyPortal)`
   ${theme.breakpoints.desktop(css`
     padding: 0 ${theme.padding.navbar.mobile}rem;
   `)}
+  min-width: 0;
 `;
 
 const StyledNavBar = styled.div<{
