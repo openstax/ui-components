@@ -65,7 +65,8 @@ export const SidebarNavBase = ({
         isMobile &&
         !navIsCollapsed &&
         sidebarNavRef?.current &&
-        !sidebarNavRef.current.contains(event.target)
+        !sidebarNavRef.current.contains(event.target) &&
+        document.body.contains(event.target)
       ) {
         setNavIsCollapsed(true);
       }
@@ -116,8 +117,9 @@ export const SidebarNavBase = ({
         ref={toggleButtonRef}
         data-testid="sidebarnav-toggle"
         className={classNames({ collapsed: navIsCollapsed })}
-        onClick={() => {
+        onClick={(e) => {
           setNavIsCollapsed(!navIsCollapsed);
+          e.stopPropagation();
         }}
         aria-label={
           navIsCollapsed ? "Expand navigation" : "Collapse navigation"
