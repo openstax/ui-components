@@ -65,7 +65,8 @@ export const SidebarNavBase = ({
         isMobile &&
         !navIsCollapsed &&
         sidebarNavRef?.current &&
-        !sidebarNavRef.current.contains(event.target)
+        !sidebarNavRef.current.contains(event.target) &&
+        document.body.contains(event.target)
       ) {
         setNavIsCollapsed(true);
       }

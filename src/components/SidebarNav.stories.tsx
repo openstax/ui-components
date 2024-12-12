@@ -10,7 +10,8 @@ import { BodyPortal } from "./BodyPortal";
 import { NavBar } from "./NavBar";
 import { NavBarLogo } from "./NavBarLogo";
 import React from "react";
-import { breakpoints } from "../../src/theme";
+import { breakpoints, colors } from "../../src/theme";
+import { NavBarPopoverButton, PopoverContainer } from "./NavBarMenuButtons";
 
 const GlobalStyle = createGlobalStyle`
   html, body, #ladle-root {
@@ -212,6 +213,15 @@ const SidebarNavAndMain = () => {
   );
 };
 
+const InfoMenuButton = styled(NavBarPopoverButton)`
+  &:hover {
+    svg path {
+      fill: ${colors.palette.lightBlue};
+    }
+  }
+`;
+
+
 const BodyPortalSidebarNavAndMain = () => {
   return (
     <BodyPortalSlotsContext.Provider value={["sidebar", "nav", "main"]}>
@@ -229,6 +239,12 @@ const BodyPortalSidebarNavAndMain = () => {
         </StyledBodyPortalSidebarNav>
         <NavBar>
           <h1>Title</h1>
+          <InfoMenuButton label="Menu">
+            <PopoverContainer>
+              <button>Example button</button>
+              <button>Another button</button>
+            </PopoverContainer>
+          </InfoMenuButton>
         </NavBar>
         <StyledBodyPortalMain tagName="main" slot="main">
           <h1>
