@@ -117,8 +117,9 @@ export const SidebarNavBase = ({
         ref={toggleButtonRef}
         data-testid="sidebarnav-toggle"
         className={classNames({ collapsed: navIsCollapsed })}
-        onClick={() => {
+        onClick={(e) => {
           setNavIsCollapsed(!navIsCollapsed);
+          e.stopPropagation();
         }}
         aria-label={
           navIsCollapsed ? "Expand navigation" : "Collapse navigation"
