@@ -5,13 +5,13 @@ exports[`Carousel matches snapshot 1`] = `
   className="sc-bczRLJ UjSde"
 >
   <svg
-    className="sc-eCYdqJ dpQayj"
-    disabled={true}
+    className="sc-eCYdqJ hCWvEb"
+    disabled={false}
     fill="none"
-    height="10"
+    height="15"
     onClick={[Function]}
     viewBox="0 0 8 10"
-    width="8"
+    width="20"
     xmlns="http://www.w3.org/2000/svg"
   >
     <path
@@ -72,13 +72,13 @@ exports[`Carousel matches snapshot 1`] = `
     </div>
   </div>
   <svg
-    className="sc-jSMfEi gdSgqS"
-    disabled={true}
+    className="sc-jSMfEi cBydFW"
+    disabled={false}
     fill="none"
-    height="10"
+    height="15"
     onClick={[Function]}
     viewBox="0 0 8 10"
-    width="8"
+    width="20"
     xmlns="http://www.w3.org/2000/svg"
   >
     <path

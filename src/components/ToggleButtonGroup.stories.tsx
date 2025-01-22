@@ -18,7 +18,7 @@ export const MultipleSelection = () => {
             <ToggleButtonGroup
                 selectionMode='multiple'
                 selectedItems={selectedIetms}
-                handlerSelectedItems={setSelectedItems}
+                onSelectionChange={setSelectedItems}
             >
                 {childrenListWithKeys}
             </ToggleButtonGroup>
@@ -29,16 +29,16 @@ export const MultipleSelection = () => {
 };
 
 export const SingleSelection = () => {
-    const [selectedIetms, setSelectedItems] = React.useState(new Set<Key>([]));
+    const [selectedItems, setSelectedItems] = React.useState(new Set<Key>([]));
     return (
         <>
             <ToggleButtonGroup
-                selectedItems={selectedIetms}
-                handlerSelectedItems={setSelectedItems}
+                selectedItems={selectedItems}
+                onSelectionChange={setSelectedItems}
             >
                 {childrenListWithKeys}
             </ToggleButtonGroup>
-            <p>Current selections: {[...selectedIetms].join(', ')}</p>
+            <p>Current selections: {[...selectedItems].join(', ')}</p>
         </>
 
     );

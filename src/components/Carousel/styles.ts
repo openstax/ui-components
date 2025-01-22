@@ -4,7 +4,7 @@ import { RightArrow } from "../svgs/RightArrow";
 
 export const CarouselContainer = styled.div<{customWidth?: string}>`
   position: relative;
-  width: ${({customWidth}) =>  customWidth ? customWidth : '30rem'};
+  width: ${({customWidth}) =>  customWidth ? customWidth : '100%'};
   margin: 0 4rem;
 `;
 
@@ -27,7 +27,7 @@ export const CarouselItem = styled.div`
 export const StyledLeftArrow = styled(LeftArrow)<{ disabled: boolean }>`
   position: absolute;
   top: 50%;
-  left: -2rem;
+  left: -3rem;
   transform: translateY(-50%);
   cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
   opacity: ${({ disabled }) => (disabled ? 0.5 : 1)};
@@ -36,7 +36,7 @@ export const StyledLeftArrow = styled(LeftArrow)<{ disabled: boolean }>`
 export const StyledRightArrow = styled(RightArrow)<{ disabled: boolean }>`
   position: absolute;
   top: 50%;
-  right: -2rem;
+  right: -3rem;
   transform: translateY(-50%);
   cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
   opacity: ${({ disabled }) => (disabled ? 0.5 : 1)};

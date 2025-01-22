@@ -5,7 +5,7 @@ import { Key } from "react-aria-components";
 export interface ToggleButtonGroupProps {
     children: { key: string, value: string }[];
     selectedItems: Set<Key>;
-    handlerSelectedItems?: React.Dispatch<React.SetStateAction<Set<Key>>>;
+    onSelectionChange?: React.Dispatch<React.SetStateAction<Set<Key>>>;
     selectionMode?: 'single' | 'multiple'
 }
 
@@ -13,7 +13,7 @@ export const ToggleButtonGroup = (
     {
         children,
         selectedItems,
-        handlerSelectedItems,
+        onSelectionChange,
         selectionMode = 'single',
     }: ToggleButtonGroupProps) => {
 
@@ -21,7 +21,7 @@ export const ToggleButtonGroup = (
         <StyledToggleButtonGroup
             selectionMode={selectionMode}
             selectedKeys={selectedItems}
-            onSelectionChange={handlerSelectedItems}
+            onSelectionChange={onSelectionChange}
         >
             {children.map((child) =>
                 <StyledToggleButton 

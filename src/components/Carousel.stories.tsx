@@ -40,7 +40,7 @@ export const WithToggleButtonGroups = () => {
     const FirstToggleGroup =
         <ToggleButtonGroup
             selectedItems={selectedIetms}
-            handlerSelectedItems={setSelectedItems}
+            onSelectionChange={setSelectedItems}
         >
             {firstSection}
         </ToggleButtonGroup>
@@ -48,7 +48,7 @@ export const WithToggleButtonGroups = () => {
     const SecondToggleGroup =
         <ToggleButtonGroup
             selectedItems={selectedIetms}
-            handlerSelectedItems={setSelectedItems}
+            onSelectionChange={setSelectedItems}
         >
             {secondSection}
         </ToggleButtonGroup>

@@ -12,17 +12,28 @@ export const Carousel = ({ children, customWidth }: CarouselProps) => {
     const [dragX, setDragX] = React.useState(0);
     const [dragging, setDragging] = React.useState(false);
     const wrapperRef = React.useRef<HTMLDivElement>(null);
+    const [isLeftArrowDisabled, setIsLeftArrowDisabled] = React.useState(false);
+    const [isRightArrowDisabled, setIsRightArrowDisabled] = React.useState(false);
     const scrollSpeed = 100;
 
-    const handlePrev = () => {
+    React.useEffect(() => {
         if (wrapperRef.current) {
+          const isDisabled = (currentIndex >= ((wrapperRef.current.scrollWidth || 0) - (wrapperRef.current.clientWidth || 0)));
+          setIsRightArrowDisabled(isDisabled);
+          setIsLeftArrowDisabled((currentIndex) === 0);
+
+        }
+      }, [currentIndex, wrapperRef]);
+    
+    const handlePrev = () => {
+        if (wrapperRef.current && !isLeftArrowDisabled) {
             const itemWidth = (wrapperRef.current.clientWidth / children.length);
             setCurrentIndex((prevIndex) => Math.max(prevIndex - itemWidth - scrollSpeed, 0));
         }
     };
 
     const handleNext = () => {
-        if (wrapperRef.current) {
+        if (wrapperRef.current && !isRightArrowDisabled) {
             const itemWidth = (wrapperRef.current.clientWidth / children.length);
             const maxIndex = (wrapperRef.current.scrollWidth - wrapperRef.current.clientWidth);
             setCurrentIndex((prevIndex) => Math.min(prevIndex + itemWidth + scrollSpeed, maxIndex));
@@ -61,7 +72,12 @@ export const Carousel = ({ children, customWidth }: CarouselProps) => {
 
     return (
         <CarouselContainer customWidth={customWidth}>
-            <StyledLeftArrow onClick={handlePrev} disabled={(currentIndex) === 0} />
+            <StyledLeftArrow 
+                onClick={handlePrev} 
+                width="20" 
+                height="15" 
+                disabled={isLeftArrowDisabled} 
+            />
             <CarouselOverflow
                 onPointerDown={handleMouseDown}
                 onPointerMove={handleMouseMove}
@@ -84,7 +100,11 @@ export const Carousel = ({ children, customWidth }: CarouselProps) => {
                     })}
                 </CarouselWrapper>
             </CarouselOverflow>
-            <StyledRightArrow onClick={handleNext} disabled={currentIndex >= ((wrapperRef.current?.scrollWidth) || 0) - (wrapperRef.current?.clientWidth || 0)} />
+            <StyledRightArrow 
+                onClick={handleNext} 
+                width="20" 
+                height="15" 
+                disabled={isRightArrowDisabled} />
         </CarouselContainer>
 
     );
