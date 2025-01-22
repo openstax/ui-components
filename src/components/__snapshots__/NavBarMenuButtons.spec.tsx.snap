@@ -2,9 +2,35 @@
 
 exports[`NavBarMenuButton matches snapshot 1`] = `
 <button
-  aria-controls={null}
   aria-expanded={false}
   aria-haspopup={true}
+  className="sc-bczRLJ dKgZvy"
+  data-rac=""
+  id="react-aria-7"
+  onBlur={[Function]}
+  onClick={[Function]}
+  onDragStart={[Function]}
+  onFocus={[Function]}
+  onKeyDown={[Function]}
+  onMouseDown={[Function]}
+  onMouseEnter={[Function]}
+  onMouseLeave={[Function]}
+  onMouseUp={[Function]}
+  onTouchCancel={[Function]}
+  onTouchEnd={[Function]}
+  onTouchMove={[Function]}
+  onTouchStart={[Function]}
+  type="button"
+>
+  <span>
+    Test menu
+  </span>
+</button>
+`;
+
+exports[`NavBarPopoverButton matches custom aria label snapshot 1`] = `
+<button
+  aria-expanded={false}
   className="sc-bczRLJ dKgZvy"
   data-rac=""
   id="react-aria-5"
@@ -29,37 +55,8 @@ exports[`NavBarMenuButton matches snapshot 1`] = `
 </button>
 `;
 
-exports[`NavBarPopoverButton matches custom aria label snapshot 1`] = `
-<button
-  aria-controls={null}
-  aria-expanded={false}
-  className="sc-bczRLJ dKgZvy"
-  data-rac=""
-  id="react-aria-4"
-  onBlur={[Function]}
-  onClick={[Function]}
-  onDragStart={[Function]}
-  onFocus={[Function]}
-  onKeyDown={[Function]}
-  onMouseDown={[Function]}
-  onMouseEnter={[Function]}
-  onMouseLeave={[Function]}
-  onMouseUp={[Function]}
-  onTouchCancel={[Function]}
-  onTouchEnd={[Function]}
-  onTouchMove={[Function]}
-  onTouchStart={[Function]}
-  type="button"
->
-  <span>
-    Test menu
-  </span>
-</button>
-`;
-
 exports[`NavBarPopoverButton matches snapshot 1`] = `
 <button
-  aria-controls={null}
   aria-expanded={false}
   className="sc-bczRLJ dKgZvy"
   data-rac=""

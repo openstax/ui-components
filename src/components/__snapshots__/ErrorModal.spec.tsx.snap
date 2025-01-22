@@ -36,6 +36,7 @@ exports[`Modal matches snapshot 1`] = `
         <section
           aria-labelledby="react-aria-2"
           class="sc-eCYdqJ iasutB"
+          data-rac=""
           role="dialog"
           tabindex="-1"
         >
@@ -163,6 +164,7 @@ exports[`Modal matches snapshot when heading and children are set 1`] = `
         <section
           aria-labelledby="react-aria-4"
           class="sc-eCYdqJ iasutB"
+          data-rac=""
           role="dialog"
           tabindex="-1"
         >
