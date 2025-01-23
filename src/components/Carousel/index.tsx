@@ -15,21 +15,30 @@ export const Carousel = ({ children }: CarouselProps) => {
     const [isRightArrowDisabled, setIsRightArrowDisabled] = React.useState(false);
     const scrollSpeed = 100;
 
-    const checkIfRightArrowShouldBeDisabled = () => {
+    const checkIfRightArrowShouldBeDisabled = React.useCallback(() => {
         if (wrapperRef.current) {
             const isDisabled = (currentIndex >= ((wrapperRef.current.scrollWidth || 0) - (wrapperRef.current.clientWidth || 0)));
             setIsRightArrowDisabled(isDisabled);
         }
-    };
+    }, [currentIndex, wrapperRef]);
+
+    const checkIfLeftArrowShouldBeDisabled = React.useCallback(() => {
+        setIsLeftArrowDisabled((currentIndex) === 0);
+    }, [currentIndex]);
 
     React.useEffect(() => {
         if (wrapperRef.current) {
-            checkIfRightArrowShouldBeDisabled()
-            window.addEventListener('resize', checkIfRightArrowShouldBeDisabled);
-            setIsLeftArrowDisabled((currentIndex) === 0);
+            checkIfLeftArrowShouldBeDisabled();
+            checkIfRightArrowShouldBeDisabled();
 
+            window.addEventListener('resize', checkIfLeftArrowShouldBeDisabled);
+            window.addEventListener('resize', checkIfRightArrowShouldBeDisabled);
         }
-    }, [currentIndex, wrapperRef]);
+        return () => {
+            window.removeEventListener('resize', checkIfLeftArrowShouldBeDisabled);
+            window.removeEventListener('resize', checkIfRightArrowShouldBeDisabled);
+        };
+    }, [currentIndex, wrapperRef, checkIfLeftArrowShouldBeDisabled, checkIfRightArrowShouldBeDisabled]);
 
     const handlePrev = () => {
         if (wrapperRef.current && !isLeftArrowDisabled) {
