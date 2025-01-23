@@ -17,12 +17,6 @@ const childrenListWithKeys = [
 export const Default = () =>
     <Carousel>{childrenListWithKeys}</Carousel>;
 
-export const SmallCarousel = () =>
-    <Carousel customWidth="10rem">{childrenListWithKeys}</Carousel>;
-
-export const LargeCarousel = () =>
-    <Carousel customWidth="53rem">{childrenListWithKeys}</Carousel>;
-
 export const WithToggleButtonGroups = () => {
     const [selectedIetms, setSelectedItems] = React.useState(new Set<Key>([]));
     const firstSection = [
@@ -55,7 +49,7 @@ export const WithToggleButtonGroups = () => {
 
     return (
         <>
-            <Carousel customWidth="25rem">
+            <Carousel>
                 {[FirstToggleGroup, SecondToggleGroup]}
             </Carousel>
             <p>Current selections: {[...selectedIetms].join(', ')}</p>

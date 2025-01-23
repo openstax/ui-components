@@ -2,9 +2,8 @@ import styled from 'styled-components';
 import { LeftArrow } from "../svgs/LeftArrow";
 import { RightArrow } from "../svgs/RightArrow";
 
-export const CarouselContainer = styled.div<{customWidth?: string}>`
+export const CarouselContainer = styled.div`
   position: relative;
-  width: ${({customWidth}) =>  customWidth ? customWidth : '100%'};
   margin: 0 4rem;
 `;
 

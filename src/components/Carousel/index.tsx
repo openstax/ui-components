@@ -3,10 +3,9 @@ import { CarouselContainer, CarouselOverflow, CarouselWrapper, CarouselItem, Sty
 
 export interface CarouselProps {
     children: React.ReactNode[];
-    customWidth?: string;
 }
 
-export const Carousel = ({ children, customWidth }: CarouselProps) => {
+export const Carousel = ({ children }: CarouselProps) => {
     const [currentIndex, setCurrentIndex] = React.useState(0);
     const [dragStartX, setDragStartX] = React.useState<number | null>(null);
     const [dragX, setDragX] = React.useState(0);
@@ -16,15 +15,22 @@ export const Carousel = ({ children, customWidth }: CarouselProps) => {
     const [isRightArrowDisabled, setIsRightArrowDisabled] = React.useState(false);
     const scrollSpeed = 100;
 
+    const checkIfRightArrowShouldBeDisabled = () => {
+        if (wrapperRef.current) {
+            const isDisabled = (currentIndex >= ((wrapperRef.current.scrollWidth || 0) - (wrapperRef.current.clientWidth || 0)));
+            setIsRightArrowDisabled(isDisabled);
+        }
+    };
+
     React.useEffect(() => {
         if (wrapperRef.current) {
-          const isDisabled = (currentIndex >= ((wrapperRef.current.scrollWidth || 0) - (wrapperRef.current.clientWidth || 0)));
-          setIsRightArrowDisabled(isDisabled);
-          setIsLeftArrowDisabled((currentIndex) === 0);
+            checkIfRightArrowShouldBeDisabled()
+            window.addEventListener('resize', checkIfRightArrowShouldBeDisabled);
+            setIsLeftArrowDisabled((currentIndex) === 0);
 
         }
-      }, [currentIndex, wrapperRef]);
-    
+    }, [currentIndex, wrapperRef]);
+
     const handlePrev = () => {
         if (wrapperRef.current && !isLeftArrowDisabled) {
             const itemWidth = (wrapperRef.current.clientWidth / children.length);
@@ -71,12 +77,12 @@ export const Carousel = ({ children, customWidth }: CarouselProps) => {
     };
 
     return (
-        <CarouselContainer customWidth={customWidth}>
-            <StyledLeftArrow 
-                onClick={handlePrev} 
-                width="20" 
-                height="15" 
-                disabled={isLeftArrowDisabled} 
+        <CarouselContainer>
+            <StyledLeftArrow
+                onClick={handlePrev}
+                width="20"
+                height="15"
+                disabled={isLeftArrowDisabled}
             />
             <CarouselOverflow
                 onPointerDown={handleMouseDown}
@@ -92,18 +98,18 @@ export const Carousel = ({ children, customWidth }: CarouselProps) => {
                     {children.map((child) => {
                         const key = (child as React.ReactElement).key;
                         return (
-                        <CarouselItem 
-                            key={key ?? null}
-                        >
-                            {child}
-                        </CarouselItem>);
+                            <CarouselItem
+                                key={key ?? null}
+                            >
+                                {child}
+                            </CarouselItem>);
                     })}
                 </CarouselWrapper>
             </CarouselOverflow>
-            <StyledRightArrow 
-                onClick={handleNext} 
-                width="20" 
-                height="15" 
+            <StyledRightArrow
+                onClick={handleNext}
+                width="20"
+                height="15"
                 disabled={isRightArrowDisabled} />
         </CarouselContainer>
 

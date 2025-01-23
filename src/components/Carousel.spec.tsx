@@ -13,7 +13,7 @@ describe('Carousel', () => {
 
     it('matches snapshot', () => {
         const tree = renderer.create(
-            <Carousel customWidth='25rem'>{childrenListWithKeys}</Carousel>
+            <Carousel>{childrenListWithKeys}</Carousel>
         ).toJSON();
         expect(tree).toMatchSnapshot();
     });
