@@ -23,25 +23,20 @@ const getInsertBeforeTarget = (bodyPortalSlots: string[], slot?: string) => {
 
 export type BodyPortalProps = React.PropsWithChildren<{
   className?: string;
-  portal?: boolean;
   role?: string;
   slot?: string;
-  // List only elements that can have children
-  tagName?: 'div' | 'span' | 'nav' | 'main' | 'header' | 'footer';
+  tagName?: string;
   id?: string;
   'data-testid'?: string;
 }>;
 
 export const BodyPortal = React.forwardRef<HTMLElement, BodyPortalProps>((
-  { children, className, portal = true, role, slot, tagName, id, ...props }, ref?: React.ForwardedRef<HTMLElement>
+  { children, className, role, slot, tagName, id, ...props }, ref?: React.ForwardedRef<HTMLElement>
 ) => {
-  const TagName = tagName ?? 'div';
-  if (!portal) { return <TagName className={className} id={id} role={role} {...props}>{children}</TagName>; }
-
-  const upperTagName = TagName.toUpperCase();
-  const internalRef = React.useRef<HTMLElement>(document.createElement(upperTagName));
-  if (internalRef.current.tagName !== upperTagName) {
-    internalRef.current = document.createElement(upperTagName);
+  const tag = tagName?.toUpperCase() ?? 'DIV';
+  const internalRef = React.useRef<HTMLElement>(document.createElement(tag));
+  if (internalRef.current.tagName !== tag) {
+    internalRef.current = document.createElement(tag);
   }
   if (ref) {
     if (typeof ref === 'function') {
@@ -84,7 +79,7 @@ export const BodyPortal = React.forwardRef<HTMLElement, BodyPortalProps>((
 
       if (testId) { delete element.dataset.testid; }
     };
-  }, [bodyPortalOrderedRefs, className, id, role, slot, upperTagName, testId]);
+  }, [bodyPortalOrderedRefs, className, id, role, slot, tag, testId]);
 
   return createPortal(children, internalRef.current);
 });

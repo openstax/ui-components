@@ -4,7 +4,7 @@ import { Toast } from './Toast';
 import { zIndex } from '../../src/theme';
 import { ToastData } from '../../src/types';
 
-const StyledToastContainer = styled(BodyPortal)`
+const StyledToastContainer = styled.div`
   ${(props: {inline: boolean}) => !props.inline && css`
     position: fixed;
     right: 2rem;
@@ -16,10 +16,22 @@ const StyledToastContainer = styled(BodyPortal)`
   gap: 1vh;
 `;
 
-export const ToastContainer = ({ toasts, onDismissToast, inline = false, portal = true, className }: {
-  toasts: ToastData[], onDismissToast?: ToastData['onDismiss'], inline?: boolean, portal?: boolean; className?: string
+const StyledBodyPortalToastContainer = styled(BodyPortal)`
+  ${(props: {inline: boolean}) => !props.inline && css`
+    position: fixed;
+    right: 2rem;
+  `}
+  z-index: ${zIndex.toasts};
+  display: grid;
+  justify-items: center;
+  justify-content: center;
+  gap: 1vh;
+`;
+
+export const ToastContainer = ({ toasts, onDismissToast, inline = false, className }: {
+  toasts: ToastData[], onDismissToast?: ToastData['onDismiss'], inline?: boolean, className?: string
 }) => {
-  return <StyledToastContainer inline={inline} aria-live="polite" portal={portal} slot='toast' className={className}>
+  return <StyledToastContainer inline={inline} aria-live="polite" slot='toast' className={className}>
     {toasts.map((toast, index) => <Toast
       key={`toast-${index}`}
       onDismiss={onDismissToast}
@@ -27,4 +39,17 @@ export const ToastContainer = ({ toasts, onDismissToast, inline = false, portal 
       {...toast}
       >{toast.message}</Toast>)}
   </StyledToastContainer>
-}
+};
+
+export const BodyPortalToastContainer = ({ toasts, onDismissToast, inline = false, className }: {
+  toasts: ToastData[], onDismissToast?: ToastData['onDismiss'], inline?: boolean, className?: string
+}) => {
+  return <StyledBodyPortalToastContainer inline={inline} aria-live="polite" slot='toast' className={className}>
+    {toasts.map((toast, index) => <Toast
+      key={`toast-${index}`}
+      onDismiss={onDismissToast}
+      inline={inline}
+      {...toast}
+      >{toast.message}</Toast>)}
+  </StyledBodyPortalToastContainer>
+};
