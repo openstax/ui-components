@@ -140,7 +140,6 @@ exports[`ToastContainer matches snapshot 1`] = `
     <div
       aria-live="polite"
       class="sc-gsnTZi cA-dmZH"
-      slot="toast"
     >
       <div
         class="sc-bczRLJ jAZNhq"
@@ -207,7 +206,6 @@ exports[`ToastContainer uses inline prop 1`] = `
     <div
       aria-live="polite"
       class="sc-gsnTZi ejWjjm"
-      slot="toast"
     >
       <div
         class="sc-bczRLJ jSNerL"
