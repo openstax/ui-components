@@ -100,7 +100,7 @@ export const Carousel = ({ children }: CarouselProps) => {
                 className="left-arrow"
                 disabled={isLeftArrowDisabled}
             >
-                <LeftArrow />
+                <LeftArrow width={14} height={14} />
             </StyledArrow>
             <CarouselOverflow
                 onPointerDown={handleMouseDown}
@@ -128,7 +128,7 @@ export const Carousel = ({ children }: CarouselProps) => {
                 onClick={handleNext}
                 className="right-arrow"
                 disabled={isRightArrowDisabled} >
-                    <RightArrow />
+                    <RightArrow width={14} height={14} />
             </StyledArrow>
         </CarouselContainer>
 

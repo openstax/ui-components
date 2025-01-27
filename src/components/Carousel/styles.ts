@@ -33,9 +33,10 @@ export const StyledArrow = styled.button<{ disabled: boolean }>`
   }
 
   svg {
+    position: relative;
     cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
     opacity: ${({ disabled }) => (disabled ? 0.5 : 1)};
-    margin: 0;
+    margin-top: 0.5rem;
   }
 
   &.left-arrow {

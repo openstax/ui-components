@@ -5,15 +5,15 @@ exports[`Carousel matches snapshot 1`] = `
   className="sc-bczRLJ jbuDzp"
 >
   <button
-    className="sc-eCYdqJ iagBbm left-arrow"
+    className="sc-eCYdqJ epbSFf left-arrow"
     disabled={false}
     onClick={[Function]}
   >
     <svg
       fill="none"
-      height="10"
+      height={14}
       viewBox="0 0 8 10"
-      width="8"
+      width={14}
       xmlns="http://www.w3.org/2000/svg"
     >
       <path
@@ -75,15 +75,15 @@ exports[`Carousel matches snapshot 1`] = `
     </div>
   </div>
   <button
-    className="sc-eCYdqJ iagBbm right-arrow"
+    className="sc-eCYdqJ epbSFf right-arrow"
     disabled={false}
     onClick={[Function]}
   >
     <svg
       fill="none"
-      height="10"
+      height={14}
       viewBox="0 0 8 10"
-      width="8"
+      width={14}
       xmlns="http://www.w3.org/2000/svg"
     >
       <path
