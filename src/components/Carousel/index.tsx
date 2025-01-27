@@ -1,5 +1,13 @@
 import React from "react";
-import { CarouselContainer, CarouselOverflow, CarouselWrapper, CarouselItem, StyledLeftArrow, StyledRightArrow } from './styles';
+import { 
+    CarouselContainer, 
+    CarouselOverflow, 
+    CarouselWrapper, 
+    CarouselItem, 
+    StyledArrow,
+} from './styles';
+import { LeftArrow } from "../svgs/LeftArrow";
+import { RightArrow } from "../svgs/RightArrow";
 
 export interface CarouselProps {
     children: React.ReactNode[];
@@ -87,12 +95,13 @@ export const Carousel = ({ children }: CarouselProps) => {
 
     return (
         <CarouselContainer>
-            <StyledLeftArrow
+            <StyledArrow
                 onClick={handlePrev}
-                width="20"
-                height="15"
+                className="left-arrow"
                 disabled={isLeftArrowDisabled}
-            />
+            >
+                <LeftArrow />
+            </StyledArrow>
             <CarouselOverflow
                 onPointerDown={handleMouseDown}
                 onPointerMove={handleMouseMove}
@@ -115,11 +124,12 @@ export const Carousel = ({ children }: CarouselProps) => {
                     })}
                 </CarouselWrapper>
             </CarouselOverflow>
-            <StyledRightArrow
+            <StyledArrow
                 onClick={handleNext}
-                width="20"
-                height="15"
-                disabled={isRightArrowDisabled} />
+                className="right-arrow"
+                disabled={isRightArrowDisabled} >
+                    <RightArrow />
+            </StyledArrow>
         </CarouselContainer>
 
     );

@@ -1,6 +1,4 @@
 import styled from 'styled-components';
-import { LeftArrow } from "../svgs/LeftArrow";
-import { RightArrow } from "../svgs/RightArrow";
 
 export const CarouselContainer = styled.div`
   position: relative;
@@ -23,20 +21,29 @@ export const CarouselItem = styled.div`
   margin-right: 1rem;
 `;
 
-export const StyledLeftArrow = styled(LeftArrow)<{ disabled: boolean }>`
+export const StyledArrow = styled.button<{ disabled: boolean }>`
   position: absolute;
   top: 50%;
-  left: -3rem;
   transform: translateY(-50%);
-  cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
-  opacity: ${({ disabled }) => (disabled ? 0.5 : 1)};
+  border: none;
+  background: transparent;
+
+  &:hover {
+    box-shadow: 0rem 0.2rem 0.4rem rgba(0, 0, 0, 0.2);
+  }
+
+  svg {
+    cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
+    opacity: ${({ disabled }) => (disabled ? 0.5 : 1)};
+    margin: 0;
+  }
+
+  &.left-arrow {
+    left: -3rem;
+  }
+
+  &.right-arrow {
+    right: -3rem;
+  }
 `;
 
-export const StyledRightArrow = styled(RightArrow)<{ disabled: boolean }>`
-  position: absolute;
-  top: 50%;
-  right: -3rem;
-  transform: translateY(-50%);
-  cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
-  opacity: ${({ disabled }) => (disabled ? 0.5 : 1)};
-`;
