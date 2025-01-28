@@ -1,5 +1,5 @@
-import { render, act } from '@testing-library/react';
-import { ToastContainer } from './ToastContainer';
+import { act, render } from '@testing-library/react';
+import { BodyPortalToastContainer, ToastContainer } from './ToastContainer';
 import { ToastData } from '../../src/types';
 
 jest.useFakeTimers();
@@ -10,7 +10,7 @@ const toasts: ToastData[] = [
   { id: '3', title: 'Success', message: 'message', variant: 'success', dismissAfterMs: 2000 },
 ];
 
-describe('ToastContainer', () => {
+describe('BodyPortalToastContainer', () => {
   let root: HTMLElement;
 
   beforeEach(() => {
@@ -20,18 +20,40 @@ describe('ToastContainer', () => {
   });
 
   it('matches snapshot', () => {
-    render(<ToastContainer toasts={toasts} />, { container: root });
+    render(<BodyPortalToastContainer toasts={toasts} />, { container: root });
     expect(document.body).toMatchSnapshot();
   });
 
   it('uses inline prop', () => {
-    render(<ToastContainer toasts={toasts} inline={true} />, { container: root });
+    render(<BodyPortalToastContainer toasts={toasts} inline={true} />, { container: root });
     expect(document.body).toMatchSnapshot();
   });
 
   it('runs callback', () => {
     const callback = jest.fn();
-    render(<ToastContainer toasts={toasts.splice(0)} onDismissToast={callback} />, { container: root });
+    render(<BodyPortalToastContainer toasts={toasts} onDismissToast={callback} />, { container: root });
+    act(() => {
+      jest.advanceTimersByTime(10000);
+      expect(callback).toHaveBeenCalledWith('3');
+      expect(callback).toHaveBeenCalledWith('2');
+    });
+  });
+});
+
+describe('ToastContainer', () => {
+  it('matches snapshot', () => {
+    render(<ToastContainer toasts={toasts} />);
+    expect(document.body).toMatchSnapshot();
+  });
+
+  it('uses inline prop', () => {
+    render(<ToastContainer toasts={toasts} inline={true} />);
+    expect(document.body).toMatchSnapshot();
+  });
+
+  it('runs callback', () => {
+    const callback = jest.fn();
+    render(<ToastContainer toasts={toasts} onDismissToast={callback} />);
     act(() => {
       jest.advanceTimersByTime(10000);
       expect(callback).toHaveBeenCalledWith('3');
