@@ -74,6 +74,7 @@ exports[`Overlay matches snapshot 1`] = `
       </button>
       <section
         class="sc-iqcoie elTIlC"
+        data-rac=""
         role="dialog"
         tabindex="-1"
       >

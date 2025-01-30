@@ -22,7 +22,7 @@ exports[`DropdownMenu matches snapshots 2`] = `
     aria-haspopup="true"
     class="sc-bczRLJ ilnBtE"
     data-rac=""
-    id="react-aria-3"
+    id="react-aria-4"
     type="button"
   >
     Test Menu

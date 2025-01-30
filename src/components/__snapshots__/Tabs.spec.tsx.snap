@@ -13,17 +13,17 @@ exports[`Tabs component button-bar styling renders 1`] = `
       class="react-aria-TabList"
       data-orientation="horizontal"
       data-rac=""
-      id="react-aria-4"
+      id="react-aria-13"
       role="tablist"
     >
       <div
-        aria-controls="react-aria-4-tabpanel-one"
+        aria-controls="react-aria-13-tabpanel-one"
         aria-selected="true"
         class="react-aria-Tab"
         data-key="one"
         data-rac=""
         data-selected="true"
-        id="react-aria-4-tab-one"
+        id="react-aria-13-tab-one"
         role="tab"
         tabindex="0"
       >
@@ -34,7 +34,7 @@ exports[`Tabs component button-bar styling renders 1`] = `
         class="react-aria-Tab"
         data-key="two"
         data-rac=""
-        id="react-aria-4-tab-two"
+        id="react-aria-13-tab-two"
         role="tab"
         tabindex="-1"
       >
@@ -45,7 +45,7 @@ exports[`Tabs component button-bar styling renders 1`] = `
         class="react-aria-Tab"
         data-key="three"
         data-rac=""
-        id="react-aria-4-tab-three"
+        id="react-aria-13-tab-three"
         role="tab"
         tabindex="-1"
       >
@@ -53,10 +53,10 @@ exports[`Tabs component button-bar styling renders 1`] = `
       </div>
     </div>
     <div
-      aria-labelledby="react-aria-4-tab-one"
+      aria-labelledby="react-aria-13-tab-one"
       class="react-aria-TabPanel"
       data-rac=""
-      id="react-aria-4-tabpanel-one"
+      id="react-aria-13-tabpanel-one"
       role="tabpanel"
       tabindex="0"
     >
@@ -79,17 +79,17 @@ exports[`Tabs component button-bar styling renders large size 1`] = `
       class="react-aria-TabList"
       data-orientation="horizontal"
       data-rac=""
-      id="react-aria-6"
+      id="react-aria-21"
       role="tablist"
     >
       <div
-        aria-controls="react-aria-6-tabpanel-one"
+        aria-controls="react-aria-21-tabpanel-one"
         aria-selected="true"
         class="react-aria-Tab"
         data-key="one"
         data-rac=""
         data-selected="true"
-        id="react-aria-6-tab-one"
+        id="react-aria-21-tab-one"
         role="tab"
         tabindex="0"
       >
@@ -100,7 +100,7 @@ exports[`Tabs component button-bar styling renders large size 1`] = `
         class="react-aria-Tab"
         data-key="two"
         data-rac=""
-        id="react-aria-6-tab-two"
+        id="react-aria-21-tab-two"
         role="tab"
         tabindex="-1"
       >
@@ -111,7 +111,7 @@ exports[`Tabs component button-bar styling renders large size 1`] = `
         class="react-aria-Tab"
         data-key="three"
         data-rac=""
-        id="react-aria-6-tab-three"
+        id="react-aria-21-tab-three"
         role="tab"
         tabindex="-1"
       >
@@ -119,10 +119,10 @@ exports[`Tabs component button-bar styling renders large size 1`] = `
       </div>
     </div>
     <div
-      aria-labelledby="react-aria-6-tab-one"
+      aria-labelledby="react-aria-21-tab-one"
       class="react-aria-TabPanel"
       data-rac=""
-      id="react-aria-6-tabpanel-one"
+      id="react-aria-21-tabpanel-one"
       role="tabpanel"
       tabindex="0"
     >
@@ -145,17 +145,17 @@ exports[`Tabs component button-bar styling renders small size 1`] = `
       class="react-aria-TabList"
       data-orientation="horizontal"
       data-rac=""
-      id="react-aria-5"
+      id="react-aria-17"
       role="tablist"
     >
       <div
-        aria-controls="react-aria-5-tabpanel-one"
+        aria-controls="react-aria-17-tabpanel-one"
         aria-selected="true"
         class="react-aria-Tab"
         data-key="one"
         data-rac=""
         data-selected="true"
-        id="react-aria-5-tab-one"
+        id="react-aria-17-tab-one"
         role="tab"
         tabindex="0"
       >
@@ -166,7 +166,7 @@ exports[`Tabs component button-bar styling renders small size 1`] = `
         class="react-aria-Tab"
         data-key="two"
         data-rac=""
-        id="react-aria-5-tab-two"
+        id="react-aria-17-tab-two"
         role="tab"
         tabindex="-1"
       >
@@ -177,7 +177,7 @@ exports[`Tabs component button-bar styling renders small size 1`] = `
         class="react-aria-Tab"
         data-key="three"
         data-rac=""
-        id="react-aria-5-tab-three"
+        id="react-aria-17-tab-three"
         role="tab"
         tabindex="-1"
       >
@@ -185,10 +185,10 @@ exports[`Tabs component button-bar styling renders small size 1`] = `
       </div>
     </div>
     <div
-      aria-labelledby="react-aria-5-tab-one"
+      aria-labelledby="react-aria-17-tab-one"
       class="react-aria-TabPanel"
       data-rac=""
-      id="react-aria-5-tabpanel-one"
+      id="react-aria-17-tabpanel-one"
       role="tabpanel"
       tabindex="0"
     >
@@ -277,17 +277,17 @@ exports[`Tabs component normal styling renders large size 1`] = `
       class="react-aria-TabList"
       data-orientation="horizontal"
       data-rac=""
-      id="react-aria-3"
+      id="react-aria-9"
       role="tablist"
     >
       <div
-        aria-controls="react-aria-3-tabpanel-one"
+        aria-controls="react-aria-9-tabpanel-one"
         aria-selected="true"
         class="react-aria-Tab"
         data-key="one"
         data-rac=""
         data-selected="true"
-        id="react-aria-3-tab-one"
+        id="react-aria-9-tab-one"
         role="tab"
         tabindex="0"
       >
@@ -298,7 +298,7 @@ exports[`Tabs component normal styling renders large size 1`] = `
         class="react-aria-Tab"
         data-key="two"
         data-rac=""
-        id="react-aria-3-tab-two"
+        id="react-aria-9-tab-two"
         role="tab"
         tabindex="-1"
       >
@@ -309,7 +309,7 @@ exports[`Tabs component normal styling renders large size 1`] = `
         class="react-aria-Tab"
         data-key="three"
         data-rac=""
-        id="react-aria-3-tab-three"
+        id="react-aria-9-tab-three"
         role="tab"
         tabindex="-1"
       >
@@ -317,10 +317,10 @@ exports[`Tabs component normal styling renders large size 1`] = `
       </div>
     </div>
     <div
-      aria-labelledby="react-aria-3-tab-one"
+      aria-labelledby="react-aria-9-tab-one"
       class="react-aria-TabPanel"
       data-rac=""
-      id="react-aria-3-tabpanel-one"
+      id="react-aria-9-tabpanel-one"
       role="tabpanel"
       tabindex="0"
     >
@@ -343,17 +343,17 @@ exports[`Tabs component normal styling renders small size 1`] = `
       class="react-aria-TabList"
       data-orientation="horizontal"
       data-rac=""
-      id="react-aria-2"
+      id="react-aria-5"
       role="tablist"
     >
       <div
-        aria-controls="react-aria-2-tabpanel-one"
+        aria-controls="react-aria-5-tabpanel-one"
         aria-selected="true"
         class="react-aria-Tab"
         data-key="one"
         data-rac=""
         data-selected="true"
-        id="react-aria-2-tab-one"
+        id="react-aria-5-tab-one"
         role="tab"
         tabindex="0"
       >
@@ -364,7 +364,7 @@ exports[`Tabs component normal styling renders small size 1`] = `
         class="react-aria-Tab"
         data-key="two"
         data-rac=""
-        id="react-aria-2-tab-two"
+        id="react-aria-5-tab-two"
         role="tab"
         tabindex="-1"
       >
@@ -375,7 +375,7 @@ exports[`Tabs component normal styling renders small size 1`] = `
         class="react-aria-Tab"
         data-key="three"
         data-rac=""
-        id="react-aria-2-tab-three"
+        id="react-aria-5-tab-three"
         role="tab"
         tabindex="-1"
       >
@@ -383,10 +383,10 @@ exports[`Tabs component normal styling renders small size 1`] = `
       </div>
     </div>
     <div
-      aria-labelledby="react-aria-2-tab-one"
+      aria-labelledby="react-aria-5-tab-one"
       class="react-aria-TabPanel"
       data-rac=""
-      id="react-aria-2-tabpanel-one"
+      id="react-aria-5-tabpanel-one"
       role="tabpanel"
       tabindex="0"
     >

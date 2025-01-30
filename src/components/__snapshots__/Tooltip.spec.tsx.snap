@@ -5,6 +5,7 @@ exports[`Tooltip hides 1`] = `
   aria-label="More information"
   className="sc-dkzDqf dcHEnX"
   data-rac=""
+  id="react-aria-5"
   onBlur={[Function]}
   onClick={[Function]}
   onDragStart={[Function]}
@@ -43,6 +44,7 @@ Array [
     aria-label="More information"
     className="sc-dkzDqf dcHEnX"
     data-rac=""
+    id="react-aria-2"
     onBlur={[Function]}
     onClick={[Function]}
     onDragStart={[Function]}
@@ -74,7 +76,6 @@ Array [
     </svg>
   </button>,
   <div
-    aria-hidden={null}
     data-overlay-container={true}
   >
     <div
@@ -96,13 +97,14 @@ Array [
       <div
         aria-hidden="true"
         className="react-aria-OverlayArrow"
+        data-placement={null}
         data-rac=""
+        placement={null}
         role="presentation"
         style={
           Object {
             "position": "absolute",
             "transform": "translateY(-50%)",
-            "undefined": "100%",
           }
         }
       >
@@ -129,6 +131,7 @@ exports[`Tooltip uses icon 1`] = `
   aria-label="More information"
   className="sc-dkzDqf dcHEnX"
   data-rac=""
+  id="react-aria-8"
   onBlur={[Function]}
   onClick={[Function]}
   onDragStart={[Function]}
