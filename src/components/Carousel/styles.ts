@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { palette } from '../../theme/palette';
 
 export const CarouselContainer = styled.div`
   position: relative;
@@ -27,15 +28,15 @@ export const StyledArrow = styled.button<{ disabled: boolean }>`
   transform: translateY(-50%);
   border: none;
   background: transparent;
+  cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
+  opacity: ${({ disabled }) => (disabled ? 0.5 : 1)};
 
   &:hover {
-    box-shadow: 0rem 0.2rem 0.4rem rgba(0, 0, 0, 0.2);
+    border: 0.1rem solid ${palette.black};
   }
 
   svg {
     position: relative;
-    cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
-    opacity: ${({ disabled }) => (disabled ? 0.5 : 1)};
     margin-top: 0.5rem;
   }
 

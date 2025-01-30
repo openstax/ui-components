@@ -13,7 +13,7 @@ exports[`ToggleButtonGroup matches snapshot with selectionMode #selectionMode 1`
 >
   <button
     aria-pressed={true}
-    className="sc-gsnTZi huWeTP"
+    className="sc-gsnTZi fvHYaX"
     data-rac=""
     data-selected={true}
     disabled={false}
@@ -36,7 +36,7 @@ exports[`ToggleButtonGroup matches snapshot with selectionMode #selectionMode 1`
   </button>
   <button
     aria-pressed={false}
-    className="sc-gsnTZi huWeTP"
+    className="sc-gsnTZi fvHYaX"
     data-rac=""
     disabled={false}
     onBlur={[Function]}
@@ -58,7 +58,7 @@ exports[`ToggleButtonGroup matches snapshot with selectionMode #selectionMode 1`
   </button>
   <button
     aria-pressed={false}
-    className="sc-gsnTZi huWeTP"
+    className="sc-gsnTZi fvHYaX"
     data-rac=""
     disabled={false}
     onBlur={[Function]}
@@ -80,7 +80,7 @@ exports[`ToggleButtonGroup matches snapshot with selectionMode #selectionMode 1`
   </button>
   <button
     aria-pressed={false}
-    className="sc-gsnTZi huWeTP"
+    className="sc-gsnTZi fvHYaX"
     data-rac=""
     disabled={false}
     onBlur={[Function]}
@@ -102,7 +102,7 @@ exports[`ToggleButtonGroup matches snapshot with selectionMode #selectionMode 1`
   </button>
   <button
     aria-pressed={false}
-    className="sc-gsnTZi huWeTP"
+    className="sc-gsnTZi fvHYaX"
     data-rac=""
     disabled={false}
     onBlur={[Function]}
@@ -138,7 +138,7 @@ exports[`ToggleButtonGroup matches snapshot with selectionMode #selectionMode 2`
 >
   <button
     aria-checked={true}
-    className="sc-gsnTZi huWeTP"
+    className="sc-gsnTZi fvHYaX"
     data-rac=""
     data-selected={true}
     disabled={false}
@@ -162,7 +162,7 @@ exports[`ToggleButtonGroup matches snapshot with selectionMode #selectionMode 2`
   </button>
   <button
     aria-checked={false}
-    className="sc-gsnTZi huWeTP"
+    className="sc-gsnTZi fvHYaX"
     data-rac=""
     disabled={false}
     onBlur={[Function]}
@@ -185,7 +185,7 @@ exports[`ToggleButtonGroup matches snapshot with selectionMode #selectionMode 2`
   </button>
   <button
     aria-checked={false}
-    className="sc-gsnTZi huWeTP"
+    className="sc-gsnTZi fvHYaX"
     data-rac=""
     disabled={false}
     onBlur={[Function]}
@@ -208,7 +208,7 @@ exports[`ToggleButtonGroup matches snapshot with selectionMode #selectionMode 2`
   </button>
   <button
     aria-checked={false}
-    className="sc-gsnTZi huWeTP"
+    className="sc-gsnTZi fvHYaX"
     data-rac=""
     disabled={false}
     onBlur={[Function]}
@@ -231,7 +231,7 @@ exports[`ToggleButtonGroup matches snapshot with selectionMode #selectionMode 2`
   </button>
   <button
     aria-checked={false}
-    className="sc-gsnTZi huWeTP"
+    className="sc-gsnTZi fvHYaX"
     data-rac=""
     disabled={false}
     onBlur={[Function]}

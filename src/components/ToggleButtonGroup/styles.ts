@@ -16,6 +16,10 @@ export const StyledToggleButton = styled(ToggleButton)`
     font-size: 1.6rem;
     line-height: 2rem;
 
+    & + & {
+     border-left: none;
+    }
+
     &[data-selected],
     &[data-focus-visible] {
         background-color: ${colors.palette.neutralLighter};
