@@ -26,13 +26,13 @@ export const StyledArrow = styled.button<{ disabled: boolean }>`
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  border: none;
+  border: transparent;
   background: transparent;
   cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
   opacity: ${({ disabled }) => (disabled ? 0.5 : 1)};
 
   &:hover {
-    border: 0.1rem solid ${palette.black};
+    border: 0.1rem solid ${palette.pale};
   }
 
   svg {
