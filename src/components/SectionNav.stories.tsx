@@ -62,9 +62,7 @@ export const WithToggleButtonGroups = () => {
     const [selectedItems, setSelectedItems] = React.useState(new Set<Key>([sections[0].key]));
     
     const scrollToIndex = (key: React.Key) => {
-        console.log(key)
         const child = document.querySelector(`[data-key="${key}"]`) as HTMLElement;
-        console.log(child);
         if (child) {
             child.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
         }
