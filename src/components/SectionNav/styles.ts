@@ -1,23 +1,21 @@
 import styled from 'styled-components';
 import { palette } from '../../theme/palette';
 
-export const CarouselContainer = styled.div`
+export const SectionNavContainer = styled.div`
   position: relative;
   margin: 0 4rem;
+  max-width: fit-content;
 `;
 
-export const CarouselOverflow = styled.div`
-  position: inherit;
-  overflow: hidden;
-`;
-
-export const CarouselWrapper = styled.div`
+export const SectionNavWrapper = styled.div`
   display: flex;
+  position: inherit;
+  overflow-x: auto;
   width: auto;
   transition: transform 0.3s ease-in-out;
 `;
 
-export const CarouselItem = styled.div`
+export const SectionNavItem = styled.div`
   flex: 0 0 auto;
   margin-right: 1rem;
 `;
