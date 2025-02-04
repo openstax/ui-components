@@ -1,30 +1,35 @@
 import styled from 'styled-components';
 import { palette } from '../../theme/palette';
 
-export const CarouselContainer = styled.div`
+export const SectionNavContainer = styled.div`
   position: relative;
-  margin: 0 4rem;
-`;
-
-export const CarouselOverflow = styled.div`
-  position: inherit;
-  overflow: hidden;
-`;
-
-export const CarouselWrapper = styled.div`
   display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 4rem;
+  max-width: fit-content;
+`;
+
+export const SectionNavWrapper = styled.div`
+  display: flex;
+  position: inherit;
+  overflow-x: auto;
   width: auto;
   transition: transform 0.3s ease-in-out;
 `;
 
-export const CarouselItem = styled.div`
+export const SectionNavGroup = styled.div`
   flex: 0 0 auto;
-  margin-right: 1rem;
+  &:not(:last-child) {
+    margin-right: 0.8rem;
+  }
 `;
 
 export const StyledArrow = styled.button<{ disabled: boolean }>`
   position: absolute;
   top: 50%;
+  width: 2.8rem;
+  height: 100%;
   transform: translateY(-50%);
   border: transparent;
   background: transparent;
