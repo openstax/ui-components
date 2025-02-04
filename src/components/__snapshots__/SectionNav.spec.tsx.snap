@@ -27,35 +27,35 @@ exports[`SectionNav matches snapshot 1`] = `
     className="sc-gsnTZi hTCAIx"
   >
     <div
-      className="sc-dkzDqf hSvdjQ"
+      className="sc-dkzDqf Deoej"
     >
       <button>
         Slide 1
       </button>
     </div>
     <div
-      className="sc-dkzDqf hSvdjQ"
+      className="sc-dkzDqf Deoej"
     >
       <button>
         Slide 2
       </button>
     </div>
     <div
-      className="sc-dkzDqf hSvdjQ"
+      className="sc-dkzDqf Deoej"
     >
       <button>
         Slide 3
       </button>
     </div>
     <div
-      className="sc-dkzDqf hSvdjQ"
+      className="sc-dkzDqf Deoej"
     >
       <button>
         Slide 4
       </button>
     </div>
     <div
-      className="sc-dkzDqf hSvdjQ"
+      className="sc-dkzDqf Deoej"
     >
       <button>
         Slide 5
@@ -111,35 +111,35 @@ exports[`SectionNav matches snapshot when arrows are disabled 1`] = `
     className="sc-gsnTZi hTCAIx"
   >
     <div
-      className="sc-dkzDqf hSvdjQ"
+      className="sc-dkzDqf Deoej"
     >
       <button>
         Slide 1
       </button>
     </div>
     <div
-      className="sc-dkzDqf hSvdjQ"
+      className="sc-dkzDqf Deoej"
     >
       <button>
         Slide 2
       </button>
     </div>
     <div
-      className="sc-dkzDqf hSvdjQ"
+      className="sc-dkzDqf Deoej"
     >
       <button>
         Slide 3
       </button>
     </div>
     <div
-      className="sc-dkzDqf hSvdjQ"
+      className="sc-dkzDqf Deoej"
     >
       <button>
         Slide 4
       </button>
     </div>
     <div
-      className="sc-dkzDqf hSvdjQ"
+      className="sc-dkzDqf Deoej"
     >
       <button>
         Slide 5

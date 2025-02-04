@@ -21,7 +21,7 @@ export const SectionNavWrapper = styled.div`
 export const SectionNavGroup = styled.div`
   flex: 0 0 auto;
   &:not(:last-child) {
-    margin-right: 1rem;
+    margin-right: 0.8rem;
   }
 `;
 
