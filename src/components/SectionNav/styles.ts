@@ -3,6 +3,9 @@ import { palette } from '../../theme/palette';
 
 export const SectionNavContainer = styled.div`
   position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin: 0 4rem;
   max-width: fit-content;
 `;
@@ -15,14 +18,18 @@ export const SectionNavWrapper = styled.div`
   transition: transform 0.3s ease-in-out;
 `;
 
-export const SectionNavItem = styled.div`
+export const SectionNavGroup = styled.div`
   flex: 0 0 auto;
-  margin-right: 1rem;
+  &:not(:last-child) {
+    margin-right: 1rem;
+  }
 `;
 
 export const StyledArrow = styled.button<{ disabled: boolean }>`
   position: absolute;
   top: 50%;
+  width: 2.8rem;
+  height: 100%;
   transform: translateY(-50%);
   border: transparent;
   background: transparent;

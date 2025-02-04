@@ -2,10 +2,11 @@
 
 exports[`SectionNav matches snapshot 1`] = `
 <div
-  className="sc-bczRLJ cFwUnu"
+  className="sc-bczRLJ caOXAc"
 >
   <button
-    className="sc-hKMtZM cixdRe left-arrow"
+    aria-label="move to previous item"
+    className="sc-hKMtZM cmnSuZ left-arrow"
     disabled={false}
     onClick={[MockFunction]}
   >
@@ -26,27 +27,44 @@ exports[`SectionNav matches snapshot 1`] = `
     className="sc-gsnTZi hTCAIx"
   >
     <div
-      className="sc-dkzDqf ljNFON"
+      className="sc-dkzDqf hSvdjQ"
     >
       <button>
         Slide 1
       </button>
+    </div>
+    <div
+      className="sc-dkzDqf hSvdjQ"
+    >
       <button>
         Slide 2
       </button>
+    </div>
+    <div
+      className="sc-dkzDqf hSvdjQ"
+    >
       <button>
         Slide 3
       </button>
+    </div>
+    <div
+      className="sc-dkzDqf hSvdjQ"
+    >
       <button>
         Slide 4
       </button>
+    </div>
+    <div
+      className="sc-dkzDqf hSvdjQ"
+    >
       <button>
         Slide 5
       </button>
     </div>
   </div>
   <button
-    className="sc-hKMtZM cixdRe right-arrow"
+    aria-label="move to next item"
+    className="sc-hKMtZM cmnSuZ right-arrow"
     disabled={false}
     onClick={[MockFunction]}
   >
@@ -68,10 +86,11 @@ exports[`SectionNav matches snapshot 1`] = `
 
 exports[`SectionNav matches snapshot when arrows are disabled 1`] = `
 <div
-  className="sc-bczRLJ cFwUnu"
+  className="sc-bczRLJ caOXAc"
 >
   <button
-    className="sc-hKMtZM iLgeFf left-arrow"
+    aria-label="move to previous item"
+    className="sc-hKMtZM iaVZSc left-arrow"
     disabled={true}
     onClick={[MockFunction]}
   >
@@ -92,27 +111,44 @@ exports[`SectionNav matches snapshot when arrows are disabled 1`] = `
     className="sc-gsnTZi hTCAIx"
   >
     <div
-      className="sc-dkzDqf ljNFON"
+      className="sc-dkzDqf hSvdjQ"
     >
       <button>
         Slide 1
       </button>
+    </div>
+    <div
+      className="sc-dkzDqf hSvdjQ"
+    >
       <button>
         Slide 2
       </button>
+    </div>
+    <div
+      className="sc-dkzDqf hSvdjQ"
+    >
       <button>
         Slide 3
       </button>
+    </div>
+    <div
+      className="sc-dkzDqf hSvdjQ"
+    >
       <button>
         Slide 4
       </button>
+    </div>
+    <div
+      className="sc-dkzDqf hSvdjQ"
+    >
       <button>
         Slide 5
       </button>
     </div>
   </div>
   <button
-    className="sc-hKMtZM iLgeFf right-arrow"
+    aria-label="move to next item"
+    className="sc-hKMtZM iaVZSc right-arrow"
     disabled={true}
     onClick={[MockFunction]}
   >
