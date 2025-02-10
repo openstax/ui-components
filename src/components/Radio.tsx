@@ -8,7 +8,7 @@ import {useTooltipTrigger} from 'react-aria';
 import { CustomTooltip } from './Tooltip';
 
 export const StyledLabel = styled.label<{isDisabled?: boolean}>`
-  font-size: 1.4rem;
+  font-size: 1.6rem;
   display: flex;
   align-items: center;
   color: ${(props => props.isDisabled ? colors.palette.pale : 'inherit')};

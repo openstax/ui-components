@@ -39,7 +39,7 @@ export const checkboxVariants = {
 } as const;
 
 const StyledLabel = styled.label<{ bold: boolean; variant: CheckboxVariant; isDisabled?: boolean; }>`
-  font-size: 1.4rem;
+  font-size: 1.6rem;
   display: flex;
   align-items: center;
   font-weight: ${props => props.bold ? 700 : 400};

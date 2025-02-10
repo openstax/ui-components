@@ -18,7 +18,7 @@ const StyledToast = styled.div<{
   ${props => !props.inline && css`
     max-width: 28rem;
   `}
-  font-size: 1.4rem;
+  font-size: 1.6rem;
 
   ${props => props.dismissAfterMs ? css`
     animation-duration: ${ANIMATION_TIME_MS}ms;
