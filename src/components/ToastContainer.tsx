@@ -44,13 +44,13 @@ const makeToasts = (toasts: ToastData[], inline: boolean, onDismissToast?: (id: 
 );
 
 export const ToastContainer: ToastContainerComponent = ({ toasts, onDismissToast, inline = false, className }) => (
-  <StyledToastContainer inline={inline} aria-live='polite' className={className}>
+  <StyledToastContainer inline={inline} role='alert' aria-live='polite' className={className}>
     {makeToasts(toasts, inline, onDismissToast)}
   </StyledToastContainer>
 );
 
 export const BodyPortalToastContainer: ToastContainerComponent = ({ toasts, onDismissToast, inline = false, className }) => (
-  <StyledBodyPortalToastContainer inline={inline} aria-live='polite' slot='toast' className={className}>
+  <StyledBodyPortalToastContainer inline={inline} role='alert' aria-live='polite' slot='toast' className={className}>
     {makeToasts(toasts, inline, onDismissToast)}
   </StyledBodyPortalToastContainer>
 );

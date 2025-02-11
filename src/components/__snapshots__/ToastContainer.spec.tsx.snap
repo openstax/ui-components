@@ -8,6 +8,7 @@ exports[`BodyPortalToastContainer matches snapshot 1`] = `
   <div
     class="sc-dkzDqf cDpjbc"
     data-portal-slot="toast"
+    role="alert"
   >
     <div
       class="sc-bczRLJ jAZNhq"
@@ -75,6 +76,7 @@ exports[`BodyPortalToastContainer uses inline prop 1`] = `
   <div
     class="sc-dkzDqf iRjmjx"
     data-portal-slot="toast"
+    role="alert"
   >
     <div
       class="sc-bczRLJ jSNerL"
@@ -140,6 +142,7 @@ exports[`ToastContainer matches snapshot 1`] = `
     <div
       aria-live="polite"
       class="sc-gsnTZi cA-dmZH"
+      role="alert"
     >
       <div
         class="sc-bczRLJ jAZNhq"
@@ -206,6 +209,7 @@ exports[`ToastContainer uses inline prop 1`] = `
     <div
       aria-live="polite"
       class="sc-gsnTZi ejWjjm"
+      role="alert"
     >
       <div
         class="sc-bczRLJ jSNerL"
