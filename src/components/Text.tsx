@@ -9,7 +9,7 @@ export const H2 = styled.h2`
 
 export const H3 = styled.h3`
   color: ${palette.neutralDarker};
-  font-size: 1.4rem;
+  font-size: 1.6rem;
   font-weight: 700;
   text-transform: uppercase;
 `;

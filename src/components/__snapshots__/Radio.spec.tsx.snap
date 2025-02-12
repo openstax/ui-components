@@ -3,7 +3,7 @@
 exports[`Radio matches disabled snapshot 1`] = `
 <label
   aria-disabled={true}
-  className="sc-hKMtZM fMGZzH"
+  className="sc-hKMtZM esvHSN"
 >
   <input
     aria-disabled={true}
@@ -16,7 +16,7 @@ exports[`Radio matches disabled snapshot 1`] = `
 
 exports[`Radio matches snapshot 1`] = `
 <label
-  className="sc-hKMtZM jREXRM"
+  className="sc-hKMtZM daFlrm"
 >
   <input
     className="sc-eCYdqJ lbbITm"

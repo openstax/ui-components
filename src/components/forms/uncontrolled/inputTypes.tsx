@@ -206,7 +206,7 @@ const CheckboxLine = styled.div`
 `;
 const StyledErrorMessage = styled.p`
   color: #C22032;
-  font-size: 1.4rem;
+  font-size: 1.6rem;
   margin: 0;
   padding: 0;
   line-height: 2.5rem;

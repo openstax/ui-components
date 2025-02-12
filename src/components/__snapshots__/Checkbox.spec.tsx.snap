@@ -3,7 +3,7 @@
 exports[`Checkbox allows setting props on label 1`] = `
 <label
   aria-label="custom label"
-  className="sc-bczRLJ brUlbM"
+  className="sc-bczRLJ gvjopC"
 >
   <input
     className="sc-gsnTZi gDsstp"
@@ -15,7 +15,7 @@ exports[`Checkbox allows setting props on label 1`] = `
 
 exports[`Checkbox handles disabled state 1`] = `
 <label
-  className="sc-bczRLJ hizTBt"
+  className="sc-bczRLJ Kigrj"
 >
   <input
     className="sc-gsnTZi cZFRiM"
@@ -27,7 +27,7 @@ exports[`Checkbox handles disabled state 1`] = `
 
 exports[`Checkbox handles options 1`] = `
 <label
-  className="sc-bczRLJ brUlbM"
+  className="sc-bczRLJ gvjopC"
 >
   <input
     className="sc-gsnTZi gDsstp"
@@ -39,7 +39,7 @@ exports[`Checkbox handles options 1`] = `
 
 exports[`Checkbox matches snapshot 1`] = `
 <label
-  className="sc-bczRLJ gtxOzv"
+  className="sc-bczRLJ duZDSR"
 >
   <input
     className="sc-gsnTZi bBmYov"
