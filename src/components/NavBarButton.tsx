@@ -16,7 +16,7 @@ export const NavBarButton = styled(
     "aria-label": ariaLabel,
     ...props
   }: NavBarButtonProps) => (
-    <Button className={className} {...props}>
+    <Button className={className} aria-label={ariaLabel} {...props}>
       {icon &&
         (typeof icon === "string" ? (
           <img aria-hidden="true" src={icon} alt="" />

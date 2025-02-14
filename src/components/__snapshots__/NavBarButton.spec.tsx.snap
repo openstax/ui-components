@@ -2,6 +2,7 @@
 
 exports[`NavBarButton matches base64 icon snapshot 1`] = `
 <button
+  aria-label="dots menu"
   className="sc-bczRLJ dKgZvy"
   data-rac=""
   id="react-aria-5"
@@ -68,6 +69,7 @@ exports[`NavBarButton matches icon and text snapshot 1`] = `
 
 exports[`NavBarButton matches svg icon snapshot 1`] = `
 <button
+  aria-label="info"
   className="sc-bczRLJ dKgZvy"
   data-rac=""
   id="react-aria-3"
