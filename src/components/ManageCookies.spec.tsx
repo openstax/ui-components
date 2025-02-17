@@ -72,6 +72,8 @@ describe('ManageCookies', () => {
   });
 
   describe('with CookieYes already loaded', () => {
+    let component: renderer.ReactTestRenderer;
+
     beforeAll(() => {
       (window as any).getCkyConsent = jest.fn();
     });
@@ -85,31 +87,39 @@ describe('ManageCookies', () => {
     });
 
     it('renders button', () => {
-      const tree = renderer.create(
-        <ManageCookiesLink />
-      ).toJSON();
-      expect(tree).toMatchSnapshot();
+      act(() => {
+        component = renderer.create(
+          <ManageCookiesLink />
+        );
+      });
+      expect(component.toJSON()).toMatchSnapshot();
     });
 
     it('renders button with content and correct class', () => {
-      const tree = renderer.create(
-        <ManageCookiesLink>some content</ManageCookiesLink>
-      ).toJSON();
-      expect(tree).toMatchSnapshot();
+      act(() => {
+        component = renderer.create(
+          <ManageCookiesLink>some content</ManageCookiesLink>
+        );
+      });
+      expect(component.toJSON()).toMatchSnapshot();
     });
 
     it('renders button in wrapper', () => {
-      const tree = renderer.create(
-        <ManageCookiesLink wrapper={button => <div>{button}</div>} />
-      ).toJSON();
-      expect(tree).toMatchSnapshot();
+      act(() => {
+        component = renderer.create(
+          <ManageCookiesLink wrapper={button => <div>{button}</div>} />
+        );
+      });
+      expect(component.toJSON()).toMatchSnapshot();
     });
 
     it('calls additional callback', () => {
       const onClick = jest.fn();
-      const component = renderer.create(
-        <ManageCookiesLink onClick={onClick} />
-      );
+      act(() => {
+        component = renderer.create(
+          <ManageCookiesLink onClick={onClick} />
+        );
+      });
 
       component.root.findByType('button').props.onClick();
       expect(onClick).toHaveBeenCalled();

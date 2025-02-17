@@ -5,10 +5,16 @@ import { ManageCookiesLink } from "./ManageCookies";
 export const WithoutCookieYes = () => <>
   <div className="cky-btn-revisit">mock CookieYes cookie button</div>
 
+  <h2>Standalone</h2>
   <ManageCookiesLink />
 
+  <h2>Inside a styled container</h2>
+  <SomeContainer>
+    if there is some container like a footer or whatever that sets colors: <ManageCookiesLink />
+  </SomeContainer>
+
+  <h2>As a list item</h2>
   <ul>
-    <li>in a list</li>
     <li>use a function child to provide wrappers that will only be included if the link is shown</li>
     <ManageCookiesLink wrapper={button => <li>{button}</li>} />
   </ul>
@@ -26,22 +32,22 @@ const SomeContainer = styled.div`
 
 export const WithCookieYes = () => {
   React.useEffect(() => {
-    (window as any).getCkyConsent = jest.fn();
-    return () => { delete (window as any).getCkyConsent }
+    document.dispatchEvent(new CustomEvent('cookieyes_banner_load', {}));
   }, []);
 
   return <>
     <div className="cky-btn-revisit">mock CookieYes cookie button</div>
 
+    <h2>Standalone</h2>
     <ManageCookiesLink />
 
+    <h2>Inside a styled container</h2>
     <SomeContainer>
-      if there is some container like a footer or whatever that sets colors, it works
-      <ManageCookiesLink />
+      if there is some container like a footer or whatever that sets colors: <ManageCookiesLink />
     </SomeContainer>
 
+    <h2>As a list item</h2>
     <ul>
-      <li>in a list</li>
       <li>use a function child to provide wrappers that will only be included if the link is shown</li>
       <ManageCookiesLink wrapper={button => <li>{button}</li>} />
     </ul>

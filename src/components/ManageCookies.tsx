@@ -13,13 +13,17 @@ type ManageCookiesLinkProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
 // documentation for this at https://www.cookieyes.com/documentation/change-cookie-consent-using-cookieyes/
 export const ManageCookiesLink = ({children, className, wrapper, ...props}: ManageCookiesLinkProps) => {
   const inBrowser = typeof window === 'object';
-  const [cookieYesLoaded, setCookieYesLoaded] = React.useState(inBrowser && 'getCkyConsent' in window);
+  const [cookieYesLoaded, setCookieYesLoaded] = React.useState(false);
 
   React.useEffect(() => {
     if (inBrowser && !cookieYesLoaded) {
       const handleCkyLoaded = () => setCookieYesLoaded(true);
-      document.addEventListener('cookieyes_banner_load', handleCkyLoaded);
-      return () => document.removeEventListener('cookieyes_banner_load', handleCkyLoaded);
+      if ('getCkyConsent' in window) {
+        handleCkyLoaded();
+      } else {
+        document.addEventListener('cookieyes_banner_load', handleCkyLoaded);
+        return () => document.removeEventListener('cookieyes_banner_load', handleCkyLoaded);
+      }
     }
     return;
   }, [inBrowser]);
