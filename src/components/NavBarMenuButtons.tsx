@@ -25,7 +25,7 @@ const NavBarPopover = styled(Popover)`
   background: #fff;
 
   ${NavBarMenuItem} {
-    font-size: 1.4rem;
+    font-size: 1.6rem;
     min-height: 4rem;
     padding: 0 1.6rem;
     cursor: pointer;

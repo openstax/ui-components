@@ -10,7 +10,7 @@ exports[`BodyPortalToastContainer matches snapshot 1`] = `
     data-portal-slot="toast"
   >
     <div
-      class="sc-bczRLJ jAZNhq"
+      class="sc-bczRLJ fJVrkw"
     >
       <div
         class="neutral"
@@ -28,7 +28,7 @@ exports[`BodyPortalToastContainer matches snapshot 1`] = `
       </div>
     </div>
     <div
-      class="sc-bczRLJ cWrNHg"
+      class="sc-bczRLJ jNmpQW"
     >
       <div
         class="failure"
@@ -46,7 +46,7 @@ exports[`BodyPortalToastContainer matches snapshot 1`] = `
       </div>
     </div>
     <div
-      class="sc-bczRLJ loazPe"
+      class="sc-bczRLJ TZlHg"
     >
       <div
         class="success"
@@ -77,7 +77,7 @@ exports[`BodyPortalToastContainer uses inline prop 1`] = `
     data-portal-slot="toast"
   >
     <div
-      class="sc-bczRLJ jSNerL"
+      class="sc-bczRLJ fbYbHx"
     >
       <div
         class="neutral"
@@ -95,7 +95,7 @@ exports[`BodyPortalToastContainer uses inline prop 1`] = `
       </div>
     </div>
     <div
-      class="sc-bczRLJ fgCwHl"
+      class="sc-bczRLJ fLHZqT"
     >
       <div
         class="failure"
@@ -113,7 +113,7 @@ exports[`BodyPortalToastContainer uses inline prop 1`] = `
       </div>
     </div>
     <div
-      class="sc-bczRLJ dGEkoL"
+      class="sc-bczRLJ eOKLQh"
     >
       <div
         class="success"
@@ -142,7 +142,7 @@ exports[`ToastContainer matches snapshot 1`] = `
       class="sc-gsnTZi cA-dmZH"
     >
       <div
-        class="sc-bczRLJ jAZNhq"
+        class="sc-bczRLJ fJVrkw"
       >
         <div
           class="neutral"
@@ -160,7 +160,7 @@ exports[`ToastContainer matches snapshot 1`] = `
         </div>
       </div>
       <div
-        class="sc-bczRLJ cWrNHg"
+        class="sc-bczRLJ jNmpQW"
       >
         <div
           class="failure"
@@ -178,7 +178,7 @@ exports[`ToastContainer matches snapshot 1`] = `
         </div>
       </div>
       <div
-        class="sc-bczRLJ loazPe"
+        class="sc-bczRLJ TZlHg"
       >
         <div
           class="success"
@@ -208,7 +208,7 @@ exports[`ToastContainer uses inline prop 1`] = `
       class="sc-gsnTZi ejWjjm"
     >
       <div
-        class="sc-bczRLJ jSNerL"
+        class="sc-bczRLJ fbYbHx"
       >
         <div
           class="neutral"
@@ -226,7 +226,7 @@ exports[`ToastContainer uses inline prop 1`] = `
         </div>
       </div>
       <div
-        class="sc-bczRLJ fgCwHl"
+        class="sc-bczRLJ fLHZqT"
       >
         <div
           class="failure"
@@ -244,7 +244,7 @@ exports[`ToastContainer uses inline prop 1`] = `
         </div>
       </div>
       <div
-        class="sc-bczRLJ dGEkoL"
+        class="sc-bczRLJ eOKLQh"
       >
         <div
           class="success"

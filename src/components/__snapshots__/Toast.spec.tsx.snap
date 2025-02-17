@@ -2,7 +2,7 @@
 
 exports[`Toast has variants and inlines 1`] = `
 <div
-  className="sc-bczRLJ jAZNhq"
+  className="sc-bczRLJ fJVrkw"
 >
   <div
     className="success"
@@ -23,7 +23,7 @@ exports[`Toast has variants and inlines 1`] = `
 
 exports[`Toast has variants and inlines 2`] = `
 <div
-  className="sc-bczRLJ jAZNhq"
+  className="sc-bczRLJ fJVrkw"
 >
   <div
     className="failure"
@@ -44,7 +44,7 @@ exports[`Toast has variants and inlines 2`] = `
 
 exports[`Toast has variants and inlines 3`] = `
 <div
-  className="sc-bczRLJ jSNerL"
+  className="sc-bczRLJ fbYbHx"
 >
   <div
     className="neutral"
@@ -65,7 +65,7 @@ exports[`Toast has variants and inlines 3`] = `
 
 exports[`Toast matches snapshot 1`] = `
 <div
-  className="sc-bczRLJ jAZNhq"
+  className="sc-bczRLJ fJVrkw"
 >
   <div
     className="neutral"
