@@ -3,6 +3,7 @@
 import renderer from 'react-test-renderer';
 import { ManageCookiesLink } from "./ManageCookies";
 
+// For prerendering
 describe('ManageCookies outside a browser', () => {
   it('renders nothing', () => {
     const tree = renderer.create(

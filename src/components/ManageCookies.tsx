@@ -3,35 +3,41 @@ import { ButtonLink } from "./Button";
 import { createGlobalStyle } from "styled-components";
 
 const GlobalStyle = createGlobalStyle`
-  .osano-cm-widget { display: none; }
-`
+  .cky-btn-revisit { display: none; }
+`;
 
 type ManageCookiesLinkProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
-  wrapper?: (button: React.ReactElement) => React.ReactElement
-}
+  wrapper?: (button: React.ReactElement) => React.ReactElement;
+};
 
-// documentation for this at https://docs.osano.com/hiding-the-cookie-widget
-export const ManageCookiesLink = (props: ManageCookiesLinkProps) => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any 
-  const osano = typeof window === 'undefined' ? undefined : (window as any).Osano
+// documentation for this at https://www.cookieyes.com/documentation/change-cookie-consent-using-cookieyes/
+export const ManageCookiesLink = ({children, className, wrapper, ...props}: ManageCookiesLinkProps) => {
+  const inBrowser = typeof window === 'object';
+  const [cookieYesLoaded, setCookieYesLoaded] = React.useState(inBrowser && 'getCkyConsent' in window);
 
-  if (osano === undefined || osano.cm.mode === 'debug') {
-    return null;
-  }
+  React.useEffect(() => {
+    if (inBrowser && !cookieYesLoaded) {
+      const handleCkyLoaded = () => setCookieYesLoaded(true);
+      document.addEventListener('cookieyes_banner_load', handleCkyLoaded);
+      return () => document.removeEventListener('cookieyes_banner_load', handleCkyLoaded);
+    }
+    return;
+  }, [inBrowser]);
+
+  if (!inBrowser) { return <><GlobalStyle /></>; }
 
   const button = <ButtonLink
+    className={`cky-banner-element${className ? ` ${className}` : ''}`}
     {...props}
-    onClick={e => {
-      osano.cm.showDrawer('osano-cm-dom-info-dialog-open')
-      props.onClick?.(e)
-    }}
-  >{props.children || 'Manage Cookies'}</ButtonLink>;
+  >{children || 'Manage Cookies'}</ButtonLink>;
 
   return <>
     <GlobalStyle />
-    {typeof props.wrapper === 'function'
-      ? props.wrapper(button)
-      : button
+    {cookieYesLoaded
+       ? typeof wrapper === 'function'
+         ? wrapper(button)
+         : button
+       : null
     }
-  </>
+  </>;
 };
