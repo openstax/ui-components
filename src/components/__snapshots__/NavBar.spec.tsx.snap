@@ -18,6 +18,25 @@ exports[`NavBar matches snapshot 1`] = `
 </body>
 `;
 
+exports[`NavBar sets the ariaLabel 1`] = `
+<body>
+  <main
+    id="root"
+  />
+  <nav
+    aria-label="test"
+    class="sc-gsnTZi cnSXvF"
+    data-portal-slot="nav"
+  >
+    <div
+      class="sc-dkzDqf gQjsvL"
+    >
+      NavBar content
+    </div>
+  </nav>
+</body>
+`;
+
 exports[`NavBar sets the maxWidth 1`] = `
 <body>
   <main

@@ -31,6 +31,7 @@ interface SidebarNavSharedProps {
   mobileBreakpoint?: string;
   isMobile?: boolean;
   className?: string;
+  ariaLabel?: string;
 }
 
 export const SidebarNavBase = ({
@@ -157,7 +158,7 @@ export const SidebarNavBase = ({
 };
 
 export const SidebarNav = styled(
-  ({ className, id, ...props }: SidebarNavSharedProps) => {
+  ({ className, id, ariaLabel, ...props }: SidebarNavSharedProps) => {
     const { isMobile, navIsCollapsed, setNavIsCollapsed } =
       useSidebarNavProps(props);
     const sidebarNavRef = React.useRef<HTMLElement>(null);
@@ -176,6 +177,7 @@ export const SidebarNav = styled(
         id={id}
         ref={sidebarNavRef}
         data-testid="sidebarnav"
+        aria-label={ariaLabel}
         className={classNames(className, {
           collapsed: navIsCollapsed,
           mobile: isMobile,
@@ -200,7 +202,7 @@ export const SidebarNav = styled(
 `;
 
 export const BodyPortalSidebarNav = styled(
-  ({ className, id, ...props }: SidebarNavSharedProps) => {
+  ({ className, id, ariaLabel, ...props }: SidebarNavSharedProps) => {
     const { isMobile, navIsCollapsed, setNavIsCollapsed } =
       useSidebarNavProps(props);
 
@@ -222,6 +224,7 @@ export const BodyPortalSidebarNav = styled(
         tagName="nav"
         slot="sidebar"
         data-testid="sidebarnav"
+        aria-label={ariaLabel}
         className={classNames(className, {
           collapsed: navIsCollapsed,
           mobile: isMobile,

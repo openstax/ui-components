@@ -44,15 +44,16 @@ type NavBarProps = React.PropsWithChildren<{
   navMobileHeight?: number;
   logo?: boolean | Logo;
   justifyContent?: string;
+  ariaLabel?: string;
 }>
 
-export const NavBar = ({ logo = false, maxWidth, navDesktopHeight, navMobileHeight, justifyContent, ...props }: NavBarProps) => {
+export const NavBar = ({ logo = false, maxWidth, navDesktopHeight, navMobileHeight, justifyContent, ariaLabel, ...props }: NavBarProps) => {
   const logoIsObject = typeof logo === 'object';
   const renderAnchor = logoIsObject && 'href' in logo;
   const {alt = 'OpenStax Logo', ...anchorProps} = logoIsObject ? logo : {};
   const logoComponent = logo ? <OpenstaxLogo alt={alt} /> : null;
 
-  return <BarWrapper tagName='nav' slot='nav' {...props}>
+  return <BarWrapper tagName='nav' ariaLabel={ariaLabel} slot='nav' {...props}>
     <StyledNavBar
       maxWidth={maxWidth}
       navDesktopHeight={navDesktopHeight || Constants.navDesktopHeight}
