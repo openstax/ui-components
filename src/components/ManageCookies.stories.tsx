@@ -2,23 +2,23 @@ import React from 'react';
 import styled from "styled-components";
 import { ManageCookiesLink } from "./ManageCookies";
 
-export const WithoutOsano = () => {
-  const [show, setShow] = React.useState<boolean>(false);
+export const WithoutCookieYes = () => <>
+  <div className="cky-btn-revisit">mock CookieYes cookie button</div>
 
-  // small delay so that going back and forth from WithOsano works
-  React.useEffect(() => setShow(true),[]);
+  <h2>Standalone</h2>
+  <ManageCookiesLink />
 
-  return <>
-    <div className="osano-cm-widget">mock osano cookie button</div>
-    {show ? <ManageCookiesLink /> : null}
+  <h2>Inside a styled container</h2>
+  <SomeContainer>
+    if there is some container like a footer or whatever that sets colors: <ManageCookiesLink />
+  </SomeContainer>
 
-    <ul>
-      <li>in a list</li>
-      <li>use a function child to provide wrappers that will only be included if the link is shown</li>
-      <ManageCookiesLink wrapper={button => <li>{button}</li>} />
-    </ul>
-  </>;
-};
+  <h2>As a list item</h2>
+  <ul>
+    <li>use a function child to provide wrappers that will only be included if the link is shown</li>
+    <ManageCookiesLink wrapper={button => <li>{button}</li>} />
+  </ul>
+</>;
 
 const SomeContainer = styled.div`
   a, button {
@@ -30,25 +30,24 @@ const SomeContainer = styled.div`
   }
 `;
 
-export const WithOsano = () => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  (window as any).Osano = {cm: {mode: 'production', showDrawer: (...args: any[]) => alert('showDrawer called ' + JSON.stringify(args))}};
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  React.useEffect(() => () => { delete (window as any).Osano }, []);
+export const WithCookieYes = () => {
+  React.useEffect(() => {
+    document.dispatchEvent(new CustomEvent('cookieyes_banner_load', {}));
+  }, []);
 
   return <>
-    <div className="osano-cm-widget">mock osano cookie button</div>
+    <div className="cky-btn-revisit">mock CookieYes cookie button</div>
 
+    <h2>Standalone</h2>
     <ManageCookiesLink />
 
+    <h2>Inside a styled container</h2>
     <SomeContainer>
-      if there is some container like a footer or whatever that sets colors, it works
-      <ManageCookiesLink />
+      if there is some container like a footer or whatever that sets colors: <ManageCookiesLink />
     </SomeContainer>
 
+    <h2>As a list item</h2>
     <ul>
-      <li>in a list</li>
       <li>use a function child to provide wrappers that will only be included if the link is shown</li>
       <ManageCookiesLink wrapper={button => <li>{button}</li>} />
     </ul>
