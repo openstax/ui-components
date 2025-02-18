@@ -185,7 +185,7 @@ const SidebarNavAndMain = () => {
     <>
       <GlobalStyle />
       <Wrapper>
-        <StyledSidebarNav>
+        <StyledSidebarNav ariaLabel="Main navigation">
           {({ setNavIsCollapsed, navIsCollapsed, isMobile }) => (
             <NavItemsList
               items={items}
@@ -227,7 +227,7 @@ const BodyPortalSidebarNavAndMain = () => {
     <BodyPortalSlotsContext.Provider value={["sidebar", "nav", "main"]}>
       <BodyPortalGlobalStyle />
       <Wrapper>
-        <StyledBodyPortalSidebarNav navHeader={<NavBarLogo alt="logo" />}>
+        <StyledBodyPortalSidebarNav ariaLabel="Header navigation" navHeader={<NavBarLogo alt="logo" />}>
           {({ setNavIsCollapsed, navIsCollapsed, isMobile }) => (
             <NavItemsList
               items={items}
@@ -237,7 +237,7 @@ const BodyPortalSidebarNavAndMain = () => {
             />
           )}
         </StyledBodyPortalSidebarNav>
-        <NavBar>
+        <NavBar ariaLabel="Main navigation">
           <h1>Title</h1>
           <InfoMenuButton label="Menu">
             <PopoverContainer>
