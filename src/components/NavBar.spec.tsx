@@ -20,6 +20,11 @@ describe('NavBar', () => {
     expect(document.body).toMatchSnapshot();
   });
 
+  it('sets the ariaLabel', () => {
+    render(<NavBar ariaLabel='test' maxWidth={128}>NavBar content</NavBar>, { container: root });
+    expect(document.body).toMatchSnapshot();
+  });
+
   describe('with a logo', () => {
     it('matches snapshot', () => {
       render(<NavBar logo={true}>NavBar content</NavBar>, { container: root });

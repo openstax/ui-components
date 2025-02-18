@@ -28,10 +28,11 @@ export type BodyPortalProps = React.PropsWithChildren<{
   tagName?: string;
   id?: string;
   'data-testid'?: string;
+  ariaLabel?: string;
 }>;
 
 export const BodyPortal = React.forwardRef<HTMLElement, BodyPortalProps>((
-  { children, className, role, slot, tagName, id, ...props }, ref?: React.ForwardedRef<HTMLElement>
+  { children, className, role, slot, tagName, id, ariaLabel, ...props }, ref?: React.ForwardedRef<HTMLElement>
 ) => {
   const tag = tagName?.toUpperCase() ?? 'DIV';
   const internalRef = React.useRef<HTMLElement>(document.createElement(tag));
@@ -62,6 +63,8 @@ export const BodyPortal = React.forwardRef<HTMLElement, BodyPortalProps>((
 
     if (slot) { element.dataset.portalSlot = slot; }
 
+    if (ariaLabel) element.setAttribute('aria-label', ariaLabel);
+
     document.body.insertBefore(element, getInsertBeforeTarget(bodyPortalOrderedRefs, slot));
 
     return () => {
@@ -73,13 +76,15 @@ export const BodyPortal = React.forwardRef<HTMLElement, BodyPortalProps>((
 
       if (role) { element.removeAttribute('role'); }
 
+      if (ariaLabel) { element.removeAttribute('aria-label'); }
+
       if (className) { element.classList.remove(...className.split(' ')); }
 
       if (id) { element.id = ''; }
 
       if (testId) { delete element.dataset.testid; }
     };
-  }, [bodyPortalOrderedRefs, className, id, role, slot, tag, testId]);
+  }, [bodyPortalOrderedRefs, className, id, role, slot, ariaLabel, tag, testId]);
 
   return createPortal(children, internalRef.current);
 });
