@@ -224,7 +224,7 @@ export const BodyPortalSidebarNav = styled(
         tagName="nav"
         slot="sidebar"
         data-testid="sidebarnav"
-        aria-label={ariaLabel}
+        ariaLabel={ariaLabel}
         className={classNames(className, {
           collapsed: navIsCollapsed,
           mobile: isMobile,
