@@ -235,10 +235,10 @@ describe('BodyPortal', () => {
 `);
   });
 
-  it('takes an id and testid', () => {
+  it('takes an id, testid and ariaLabel', () => {
     render(
       <BodyPortalSlotsContext.Provider value={['header', 'root']}>
-        <BodyPortal slot='header' tagName='header' id='orange' data-testid='blue'>
+        <BodyPortal slot='header' tagName='header' id='orange' data-testid='blue' ariaLabel='orange'>
           Now you're thinking with portals
         </BodyPortal>
       </BodyPortalSlotsContext.Provider>,
@@ -248,6 +248,7 @@ describe('BodyPortal', () => {
     expect(document.body).toMatchInlineSnapshot(`
 <body>
   <header
+    aria-label="orange"
     data-portal-slot="header"
     data-testid="blue"
     id="orange"
