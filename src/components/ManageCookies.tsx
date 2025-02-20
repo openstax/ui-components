@@ -26,7 +26,7 @@ export const ManageCookiesLink = ({children, className, wrapper, ...props}: Mana
       }
     }
     return;
-  }, [inBrowser]);
+  }, [cookieYesLoaded, inBrowser]);
 
   if (!inBrowser) { return <><GlobalStyle /></>; }
 
