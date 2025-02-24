@@ -18,6 +18,14 @@ exports[`ManageCookies when CookieYes loads renders button in wrapper 1`] = `
 </div>
 `;
 
+exports[`ManageCookies when CookieYes loads renders button with className 1`] = `
+<button
+  className="sc-gsnTZi sc-dkzDqf czjxlp jmylct cky-banner-element test"
+>
+  Manage Cookies
+</button>
+`;
+
 exports[`ManageCookies when CookieYes loads renders button with content and correct class 1`] = `
 <button
   className="sc-gsnTZi sc-dkzDqf czjxlp jmylct cky-banner-element"

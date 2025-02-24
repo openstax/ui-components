@@ -18,7 +18,6 @@ export const ToggleButtonGroup = (
     selectedItems,
     onSelectionChange,
     selectionMode = 'single',
-    className='',
     ...props
   }: ToggleButtonGroupProps) => {
 
@@ -27,7 +26,6 @@ export const ToggleButtonGroup = (
       selectionMode={selectionMode}
       selectedKeys={selectedItems}
       onSelectionChange={onSelectionChange}
-      className={className}
       {...props}
     >
       {children.map((child) =>

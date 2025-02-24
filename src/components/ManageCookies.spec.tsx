@@ -38,6 +38,16 @@ describe('ManageCookies', () => {
       expect(component.toJSON()).toMatchSnapshot();
     });
 
+    it('renders button with className', () => {
+      act(() => {
+        component = renderer.create(
+          <ManageCookiesLink className='test' />
+        );
+      });
+      act(() => { document.dispatchEvent(bannerLoadEvent); });
+      expect(component.toJSON()).toMatchSnapshot();
+    });
+
     it('renders button with content and correct class', () => {
       act(() => {
         component = renderer.create(
