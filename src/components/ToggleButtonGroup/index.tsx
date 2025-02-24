@@ -10,13 +10,16 @@ export interface ToggleButtonGroupProps {
   className?: string;
 }
 
+export const ToggleButton = StyledToggleButton;
+
 export const ToggleButtonGroup = (
   {
     children,
     selectedItems,
     onSelectionChange,
     selectionMode = 'single',
-    className=''
+    className='',
+    ...props
   }: ToggleButtonGroupProps) => {
 
   return (
@@ -25,6 +28,7 @@ export const ToggleButtonGroup = (
       selectedKeys={selectedItems}
       onSelectionChange={onSelectionChange}
       className={className}
+      {...props}
     >
       {children.map((child) =>
         <StyledToggleButton

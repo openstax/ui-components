@@ -1,10 +1,10 @@
 import styled from "styled-components";
 import { ToggleButtonGroup, ToggleButton } from "react-aria-components";
 import { colors } from "../../theme";
+import { tabListBaseCss } from "../Tabs";
 
 export const StyledToggleButtonGroup = styled(ToggleButtonGroup)`
-  display: flex;
-  overflow-x: auto;
+  ${tabListBaseCss}
 `;
 
 export const StyledToggleButton = styled(ToggleButton)`
