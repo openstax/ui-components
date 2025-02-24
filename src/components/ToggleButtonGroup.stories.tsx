@@ -1,7 +1,6 @@
 import React from "react";
 import { ToggleButtonGroup } from "./ToggleButtonGroup/index";
 import type { Key } from "react-aria-components";
-import styled from "styled-components";
 
 const childrenListWithKeys = [
   { key: "red", value: "Red" },

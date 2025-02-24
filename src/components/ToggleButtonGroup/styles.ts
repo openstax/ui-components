@@ -4,12 +4,13 @@ import { colors } from "../../theme";
 
 export const StyledToggleButtonGroup = styled(ToggleButtonGroup)`
   display: flex;
+  overflow-x: auto;
 `;
 
 export const StyledToggleButton = styled(ToggleButton)`
-  min-width: 4.4rem;
+  all: unset;
   height: 3.6rem;
-  padding: 0.8rem;
+  padding: 0 0.8rem;
   background-color: ${colors.palette.white};
   border: solid 0.1rem ${colors.palette.pale};
   font-weight: 400;
@@ -20,8 +21,12 @@ export const StyledToggleButton = styled(ToggleButton)`
     border-left: none;
   }
 
-  &[data-selected],
-  &[data-focus-visible] {
+  &[data-selected] {
     background-color: ${colors.palette.neutralLighter};
+  }
+
+  &[data-focus-visible] {
+    outline: none;
+    box-shadow: inset 0 0 0 0.1rem ${colors.palette.black};
   }
 `;
