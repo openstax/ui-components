@@ -3,25 +3,25 @@ import { ToggleButtonGroup } from "./ToggleButtonGroup/index";
 import type { Key } from "react-aria-components";
 
 const childrenListWithKeys = [
-  { key: "red", value: "Red" },
-  { key: "green", value: "Green" },
-  { key: "blue", value: "Blue" },
-  { key: "yellow", value: "Yellow" },
-  { key: "orange", value: "Orange" },
+  { key: 'red', value: 'Red' },
+  { key: 'green', value: 'Green' },
+  { key: 'blue', value: 'Blue' },
+  { key: 'yellow', value: 'Yellow' },
+  { key: 'orange', value: 'Orange' },
 ];
 
 export const MultipleSelection = () => {
-  const [selectedIetms, setSelectedItems] = React.useState(new Set<Key>([]));
+  const [selectedItems, setSelectedItems] = React.useState(new Set<Key>([]));
   return (
     <>
       <ToggleButtonGroup
-        selectionMode="multiple"
-        selectedItems={selectedIetms}
+        selectionMode='multiple'
+        selectedItems={selectedItems}
         onSelectionChange={setSelectedItems}
       >
         {childrenListWithKeys}
       </ToggleButtonGroup>
-      <p>Current selections: {[...selectedIetms].join(", ")}</p>
+      <p>Current selections: {[...selectedItems].join(', ')}</p>
     </>
   );
 };
@@ -36,7 +36,7 @@ export const SingleSelection = () => {
       >
         {childrenListWithKeys}
       </ToggleButtonGroup>
-      <p>Current selections: {[...selectedItems].join(", ")}</p>
+      <p>Current selections: {[...selectedItems].join(', ')}</p>
     </>
   );
 };
