@@ -31,3 +31,4 @@ export * from './contexts';
 export * from './hooks';
 export * from './theme';
 export * from './types';
+export type { Key } from 'react-aria-components';

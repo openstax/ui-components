@@ -6,8 +6,11 @@ export interface ToggleButtonGroupProps {
   children: { key: string, value: string }[];
   selectedItems: Set<Key>;
   onSelectionChange?: React.Dispatch<React.SetStateAction<Set<Key>>>;
-  selectionMode?: 'single' | 'multiple'
+  selectionMode?: 'single' | 'multiple';
+  className?: string;
 }
+
+export const ToggleButton = StyledToggleButton;
 
 export const ToggleButtonGroup = (
   {
@@ -15,6 +18,7 @@ export const ToggleButtonGroup = (
     selectedItems,
     onSelectionChange,
     selectionMode = 'single',
+    ...props
   }: ToggleButtonGroupProps) => {
 
   return (
@@ -22,6 +26,7 @@ export const ToggleButtonGroup = (
       selectionMode={selectionMode}
       selectedKeys={selectedItems}
       onSelectionChange={onSelectionChange}
+      {...props}
     >
       {children.map((child) =>
         <StyledToggleButton
@@ -35,6 +40,5 @@ export const ToggleButtonGroup = (
         </StyledToggleButton>
       )}
     </StyledToggleButtonGroup>
-
   );
 }
