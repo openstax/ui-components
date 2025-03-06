@@ -49,7 +49,8 @@ export const ErrorBoundary = ({
       dsn: sentryDsn,
       environment: window.location.hostname,
       integrations: [
-        new Sentry.BrowserTracing(),
+        Sentry.browserTracingIntegration(),
+        Sentry.extraErrorDataIntegration()
       ],
     });
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
