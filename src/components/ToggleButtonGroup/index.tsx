@@ -3,7 +3,7 @@ import { StyledToggleButtonGroup, StyledToggleButton } from "./styles";
 import { Key } from "react-aria-components";
 
 export interface ToggleButtonGroupProps {
-  children: { key: string, value: string }[];
+  children: { id: string, value: string }[];
   selectedItems: Set<Key>;
   onSelectionChange?: React.Dispatch<React.SetStateAction<Set<Key>>>;
   selectionMode?: 'single' | 'multiple'
@@ -25,9 +25,9 @@ export const ToggleButtonGroup = (
     >
       {children.map((child) =>
         <StyledToggleButton
-          key={child.key}
-          data-key={child.key}
-          id={child.key}
+          key={child.id}
+          data-testid={child.id + '-testid'}
+          id={child.id}
           // Allow parents to trigger handlers, works with onPointer events but not with onMouse events
           onPressStart={e => e.continuePropagation()}
         >

@@ -46,32 +46,32 @@ export const Default = () => {
 export const WithToggleButtonGroups = () => {
   const sections = [
     [
-      { key: 'Section1.1', value: '1.1' },
-      { key: 'Section1.2', value: '1.2' },
+      { id: 'Section1.1', value: '1.1' },
+      { id: 'Section1.2', value: '1.2' },
     ],
     [
-      { key: 'Section2.0', value: '2.0' },
-      { key: 'Section2.1', value: '2.1' },
-      { key: 'Section2.2', value: '2.2' },
-      { key: 'Section2.3', value: '2.3' },
-      { key: 'Section2.4', value: '2.4' },
-      { key: 'Section2.5', value: '2.5' },
+      { id: 'Section2.0', value: '2.0' },
+      { id: 'Section2.1', value: '2.1' },
+      { id: 'Section2.2', value: '2.2' },
+      { id: 'Section2.3', value: '2.3' },
+      { id: 'Section2.4', value: '2.4' },
+      { id: 'Section2.5', value: '2.5' },
     ],
     [
-      { key: 'Section3.0', value: '3.0' },
-      { key: 'Section3.1', value: '3.1' },
-      { key: 'Section3.2', value: '3.2' },
-      { key: 'Section3.3', value: '3.3' },
-      { key: 'Section3.4', value: '3.4' },
+      { id: 'Section3.0', value: '3.0' },
+      { id: 'Section3.1', value: '3.1' },
+      { id: 'Section3.2', value: '3.2' },
+      { id: 'Section3.3', value: '3.3' },
+      { id: 'Section3.4', value: '3.4' },
     ],
   ];
 
   const flattenedSections = sections.flat();
 
-  const [selectedItems, setSelectedItems] = React.useState(new Set<Key>([flattenedSections[0].key]));
+  const [selectedItems, setSelectedItems] = React.useState(new Set<Key>([flattenedSections[0].id]));
 
-  const scrollToIndex = (key: React.Key) => {
-    const child = document.querySelector(`[data-key="${key}"]`) as HTMLElement;
+  const scrollToIndex = (id: Key) => {
+    const child = document.querySelector(`[data-testid="${id}-testid"]`) as HTMLElement;
     if (child) {
       child.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
     }
@@ -79,11 +79,10 @@ export const WithToggleButtonGroups = () => {
 
   const handlePrevArrow = () => {
     setSelectedItems((prev) => {
-      const newSet = new Set(prev);
-      const firstSectionKeys = flattenedSections.map(section => section.key);
+      const newSet = new Set<Key>();
+      const firstSectionKeys = flattenedSections.map(section => section.id);
       const currentIndex = firstSectionKeys.indexOf([...prev][0] as string);
       if (currentIndex > 0) {
-        newSet.clear();
         newSet.add(firstSectionKeys[currentIndex - 1]);
         scrollToIndex(firstSectionKeys[currentIndex - 1]);
       }
@@ -93,11 +92,10 @@ export const WithToggleButtonGroups = () => {
 
   const handleNextArrow = () => {
     setSelectedItems((prev) => {
-      const newSet = new Set(prev);
-      const firstSectionKeys = flattenedSections.map(section => section.key);
+      const newSet = new Set<Key>();
+      const firstSectionKeys = flattenedSections.map(section => section.id);
       const currentIndex = firstSectionKeys.indexOf([...prev][0] as string);
       if (currentIndex < firstSectionKeys.length - 1) {
-        newSet.clear();
         newSet.add(firstSectionKeys[currentIndex + 1]);
         scrollToIndex(firstSectionKeys[currentIndex + 1]);
       }
@@ -121,8 +119,8 @@ export const WithToggleButtonGroups = () => {
       <SectionNav
         handlePrevArrow={handlePrevArrow}
         handleNextArrow={handleNextArrow}
-        isPrevArrowDisabled={selectedItems.has(flattenedSections[0].key) || selectedItems.size === 0}
-        isNextArrowDisabled={selectedItems.has(flattenedSections[flattenedSections.length - 1].key) || selectedItems.size === 0}
+        isPrevArrowDisabled={selectedItems.has(flattenedSections[0].id) || selectedItems.size === 0}
+        isNextArrowDisabled={selectedItems.has(flattenedSections[flattenedSections.length - 1].id) || selectedItems.size === 0}
       >
         {ToggleGroup}
       </SectionNav>
