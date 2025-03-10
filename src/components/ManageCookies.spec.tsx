@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import renderer from 'react-test-renderer';
+import renderer, { act } from 'react-test-renderer';
 import { ManageCookiesLink } from "./ManageCookies";
 
 describe('ManageCookies', () => {
-  describe('without osano', () => {
+  describe('without cookieYes', () => {
 
     it('renders nothing', () => {
       const tree = renderer.create(
@@ -20,18 +20,76 @@ describe('ManageCookies', () => {
     });
   });
 
-  describe('with osano', () => {
-    let showDrawerSpy: jest.SpyInstance;
+  describe('when CookieYes loads', () => {
+    const bannerLoadEvent = new CustomEvent('cookieyes_banner_load', {});
+    let component: renderer.ReactTestRenderer;
+
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('renders button', () => {
+      act(() => {
+        component = renderer.create(
+          <ManageCookiesLink />
+        );
+      });
+      act(() => { document.dispatchEvent(bannerLoadEvent); });
+      expect(component.toJSON()).toMatchSnapshot();
+    });
+
+    it('renders button with className', () => {
+      act(() => {
+        component = renderer.create(
+          <ManageCookiesLink className='test' />
+        );
+      });
+      act(() => { document.dispatchEvent(bannerLoadEvent); });
+      expect(component.toJSON()).toMatchSnapshot();
+    });
+
+    it('renders button with content and correct class', () => {
+      act(() => {
+        component = renderer.create(
+          <ManageCookiesLink>some content</ManageCookiesLink>
+        );
+      });
+      act(() => { document.dispatchEvent(bannerLoadEvent); });
+      expect(component.toJSON()).toMatchSnapshot();
+    });
+
+    it('renders button in wrapper', () => {
+      act(() => {
+        component = renderer.create(
+          <ManageCookiesLink wrapper={button => <div>{button}</div>} />
+        );
+      });
+      act(() => { document.dispatchEvent(bannerLoadEvent); });
+      expect(component.toJSON()).toMatchSnapshot();
+    });
+
+    it('calls additional callback', () => {
+      const onClick = jest.fn();
+      act(() => {
+        component = renderer.create(
+          <ManageCookiesLink onClick={onClick} />
+        );
+      });
+      act(() => { document.dispatchEvent(bannerLoadEvent); });
+      component.root.findByType('button').props.onClick();
+      expect(onClick).toHaveBeenCalled();
+    });
+  });
+
+  describe('with CookieYes already loaded', () => {
+    let component: renderer.ReactTestRenderer;
 
     beforeAll(() => {
-      showDrawerSpy = jest.fn();
-      (window as any).Osano = {cm: {mode: 'production',
-        showDrawer: showDrawerSpy}
-      };
+      (window as any).getCkyConsent = jest.fn();
     });
 
     afterAll(() => {
-      delete (window as any).Osano;
+      delete (window as any).getCkyConsent;
     });
 
     beforeEach(() => {
@@ -39,45 +97,41 @@ describe('ManageCookies', () => {
     });
 
     it('renders button', () => {
-      const tree = renderer.create(
-        <ManageCookiesLink />
-      ).toJSON();
-      expect(tree).toMatchSnapshot();
+      act(() => {
+        component = renderer.create(
+          <ManageCookiesLink />
+        );
+      });
+      expect(component.toJSON()).toMatchSnapshot();
     });
 
-    it('renders button with content', () => {
-      const tree = renderer.create(
-        <ManageCookiesLink>some content</ManageCookiesLink>
-      ).toJSON();
-      expect(tree).toMatchSnapshot();
+    it('renders button with content and correct class', () => {
+      act(() => {
+        component = renderer.create(
+          <ManageCookiesLink>some content</ManageCookiesLink>
+        );
+      });
+      expect(component.toJSON()).toMatchSnapshot();
     });
 
     it('renders button in wrapper', () => {
-      const tree = renderer.create(
-        <ManageCookiesLink wrapper={button => <div>{button}</div>} />
-      ).toJSON();
-      expect(tree).toMatchSnapshot();
-    });
-
-    it('calls osano showDrawer', () => {
-      const component = renderer.create(
-        <ManageCookiesLink />
-      );
-
-      expect(showDrawerSpy).not.toHaveBeenCalled();
-      component.root.findByType('button').props.onClick();
-      expect(showDrawerSpy).toHaveBeenCalled();
+      act(() => {
+        component = renderer.create(
+          <ManageCookiesLink wrapper={button => <div>{button}</div>} />
+        );
+      });
+      expect(component.toJSON()).toMatchSnapshot();
     });
 
     it('calls additional callback', () => {
       const onClick = jest.fn();
-      const component = renderer.create(
-        <ManageCookiesLink onClick={onClick} />
-      );
+      act(() => {
+        component = renderer.create(
+          <ManageCookiesLink onClick={onClick} />
+        );
+      });
 
-      expect(showDrawerSpy).not.toHaveBeenCalled();
       component.root.findByType('button').props.onClick();
-      expect(showDrawerSpy).toHaveBeenCalled();
       expect(onClick).toHaveBeenCalled();
     });
   });

@@ -1,34 +1,65 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`ManageCookies with osano renders button 1`] = `
+exports[`ManageCookies when CookieYes loads renders button 1`] = `
 <button
-  className="sc-gsnTZi sc-dkzDqf czjxlp jmylct"
-  onClick={[Function]}
+  className="sc-gsnTZi sc-dkzDqf czjxlp jmylct cky-banner-element"
 >
   Manage Cookies
 </button>
 `;
 
-exports[`ManageCookies with osano renders button in wrapper 1`] = `
+exports[`ManageCookies when CookieYes loads renders button in wrapper 1`] = `
 <div>
   <button
-    className="sc-gsnTZi sc-dkzDqf czjxlp jmylct"
-    onClick={[Function]}
+    className="sc-gsnTZi sc-dkzDqf czjxlp jmylct cky-banner-element"
   >
     Manage Cookies
   </button>
 </div>
 `;
 
-exports[`ManageCookies with osano renders button with content 1`] = `
+exports[`ManageCookies when CookieYes loads renders button with className 1`] = `
 <button
-  className="sc-gsnTZi sc-dkzDqf czjxlp jmylct"
-  onClick={[Function]}
+  className="sc-gsnTZi sc-dkzDqf czjxlp jmylct cky-banner-element test"
+>
+  Manage Cookies
+</button>
+`;
+
+exports[`ManageCookies when CookieYes loads renders button with content and correct class 1`] = `
+<button
+  className="sc-gsnTZi sc-dkzDqf czjxlp jmylct cky-banner-element"
 >
   some content
 </button>
 `;
 
-exports[`ManageCookies without osano renders nothing 1`] = `null`;
+exports[`ManageCookies with CookieYes already loaded renders button 1`] = `
+<button
+  className="sc-gsnTZi sc-dkzDqf czjxlp jmylct cky-banner-element"
+>
+  Manage Cookies
+</button>
+`;
 
-exports[`ManageCookies without osano renders nothing, even a wrapper 1`] = `null`;
+exports[`ManageCookies with CookieYes already loaded renders button in wrapper 1`] = `
+<div>
+  <button
+    className="sc-gsnTZi sc-dkzDqf czjxlp jmylct cky-banner-element"
+  >
+    Manage Cookies
+  </button>
+</div>
+`;
+
+exports[`ManageCookies with CookieYes already loaded renders button with content and correct class 1`] = `
+<button
+  className="sc-gsnTZi sc-dkzDqf czjxlp jmylct cky-banner-element"
+>
+  some content
+</button>
+`;
+
+exports[`ManageCookies without cookieYes renders nothing 1`] = `null`;
+
+exports[`ManageCookies without cookieYes renders nothing, even a wrapper 1`] = `null`;
