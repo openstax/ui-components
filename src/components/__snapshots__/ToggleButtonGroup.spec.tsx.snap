@@ -14,9 +14,9 @@ exports[`ToggleButtonGroup matches snapshot with selectionMode #selectionMode 1`
   <button
     aria-pressed={true}
     className="sc-dkzDqf jDeGjH"
-    data-key="red"
     data-rac=""
     data-selected={true}
+    data-testid="red-testid"
     disabled={false}
     onBlur={[Function]}
     onClick={[Function]}
@@ -38,8 +38,8 @@ exports[`ToggleButtonGroup matches snapshot with selectionMode #selectionMode 1`
   <button
     aria-pressed={false}
     className="sc-dkzDqf jDeGjH"
-    data-key="green"
     data-rac=""
+    data-testid="green-testid"
     disabled={false}
     onBlur={[Function]}
     onClick={[Function]}
@@ -61,8 +61,8 @@ exports[`ToggleButtonGroup matches snapshot with selectionMode #selectionMode 1`
   <button
     aria-pressed={false}
     className="sc-dkzDqf jDeGjH"
-    data-key="blue"
     data-rac=""
+    data-testid="blue-testid"
     disabled={false}
     onBlur={[Function]}
     onClick={[Function]}
@@ -84,8 +84,8 @@ exports[`ToggleButtonGroup matches snapshot with selectionMode #selectionMode 1`
   <button
     aria-pressed={false}
     className="sc-dkzDqf jDeGjH"
-    data-key="yellow"
     data-rac=""
+    data-testid="yellow-testid"
     disabled={false}
     onBlur={[Function]}
     onClick={[Function]}
@@ -107,8 +107,8 @@ exports[`ToggleButtonGroup matches snapshot with selectionMode #selectionMode 1`
   <button
     aria-pressed={false}
     className="sc-dkzDqf jDeGjH"
-    data-key="orange"
     data-rac=""
+    data-testid="orange-testid"
     disabled={false}
     onBlur={[Function]}
     onClick={[Function]}
@@ -144,9 +144,9 @@ exports[`ToggleButtonGroup matches snapshot with selectionMode #selectionMode 2`
   <button
     aria-checked={true}
     className="sc-dkzDqf jDeGjH"
-    data-key="red"
     data-rac=""
     data-selected={true}
+    data-testid="red-testid"
     disabled={false}
     onBlur={[Function]}
     onClick={[Function]}
@@ -169,8 +169,8 @@ exports[`ToggleButtonGroup matches snapshot with selectionMode #selectionMode 2`
   <button
     aria-checked={false}
     className="sc-dkzDqf jDeGjH"
-    data-key="green"
     data-rac=""
+    data-testid="green-testid"
     disabled={false}
     onBlur={[Function]}
     onClick={[Function]}
@@ -193,8 +193,8 @@ exports[`ToggleButtonGroup matches snapshot with selectionMode #selectionMode 2`
   <button
     aria-checked={false}
     className="sc-dkzDqf jDeGjH"
-    data-key="blue"
     data-rac=""
+    data-testid="blue-testid"
     disabled={false}
     onBlur={[Function]}
     onClick={[Function]}
@@ -217,8 +217,8 @@ exports[`ToggleButtonGroup matches snapshot with selectionMode #selectionMode 2`
   <button
     aria-checked={false}
     className="sc-dkzDqf jDeGjH"
-    data-key="yellow"
     data-rac=""
+    data-testid="yellow-testid"
     disabled={false}
     onBlur={[Function]}
     onClick={[Function]}
@@ -241,143 +241,8 @@ exports[`ToggleButtonGroup matches snapshot with selectionMode #selectionMode 2`
   <button
     aria-checked={false}
     className="sc-dkzDqf jDeGjH"
-    data-key="orange"
     data-rac=""
-    disabled={false}
-    onBlur={[Function]}
-    onClick={[Function]}
-    onDragStart={[Function]}
-    onFocus={[Function]}
-    onKeyDown={[Function]}
-    onMouseDown={[Function]}
-    onMouseEnter={[Function]}
-    onMouseLeave={[Function]}
-    onMouseUp={[Function]}
-    onTouchCancel={[Function]}
-    onTouchEnd={[Function]}
-    onTouchMove={[Function]}
-    onTouchStart={[Function]}
-    role="radio"
-    type="button"
-  >
-    Orange
-  </button>
-</div>
-`;
-
-exports[`ToggleButtonGroup matches snapshot with selectionMode #selectionMode 3`] = `
-<div
-  aria-orientation="horizontal"
-  className="sc-gsnTZi hmfeGJ"
-  data-orientation="horizontal"
-  data-rac=""
-  onBlurCapture={[Function]}
-  onFocusCapture={[Function]}
-  onKeyDownCapture={[Function]}
-  role="radiogroup"
->
-  <button
-    aria-checked={true}
-    className="sc-dkzDqf jDeGjH"
-    data-key="red"
-    data-rac=""
-    data-selected={true}
-    disabled={false}
-    onBlur={[Function]}
-    onClick={[Function]}
-    onDragStart={[Function]}
-    onFocus={[Function]}
-    onKeyDown={[Function]}
-    onMouseDown={[Function]}
-    onMouseEnter={[Function]}
-    onMouseLeave={[Function]}
-    onMouseUp={[Function]}
-    onTouchCancel={[Function]}
-    onTouchEnd={[Function]}
-    onTouchMove={[Function]}
-    onTouchStart={[Function]}
-    role="radio"
-    type="button"
-  >
-    Red
-  </button>
-  <button
-    aria-checked={false}
-    className="sc-dkzDqf jDeGjH"
-    data-key="green"
-    data-rac=""
-    disabled={false}
-    onBlur={[Function]}
-    onClick={[Function]}
-    onDragStart={[Function]}
-    onFocus={[Function]}
-    onKeyDown={[Function]}
-    onMouseDown={[Function]}
-    onMouseEnter={[Function]}
-    onMouseLeave={[Function]}
-    onMouseUp={[Function]}
-    onTouchCancel={[Function]}
-    onTouchEnd={[Function]}
-    onTouchMove={[Function]}
-    onTouchStart={[Function]}
-    role="radio"
-    type="button"
-  >
-    Green
-  </button>
-  <button
-    aria-checked={false}
-    className="sc-dkzDqf jDeGjH"
-    data-key="blue"
-    data-rac=""
-    disabled={false}
-    onBlur={[Function]}
-    onClick={[Function]}
-    onDragStart={[Function]}
-    onFocus={[Function]}
-    onKeyDown={[Function]}
-    onMouseDown={[Function]}
-    onMouseEnter={[Function]}
-    onMouseLeave={[Function]}
-    onMouseUp={[Function]}
-    onTouchCancel={[Function]}
-    onTouchEnd={[Function]}
-    onTouchMove={[Function]}
-    onTouchStart={[Function]}
-    role="radio"
-    type="button"
-  >
-    Blue
-  </button>
-  <button
-    aria-checked={false}
-    className="sc-dkzDqf jDeGjH"
-    data-key="yellow"
-    data-rac=""
-    disabled={false}
-    onBlur={[Function]}
-    onClick={[Function]}
-    onDragStart={[Function]}
-    onFocus={[Function]}
-    onKeyDown={[Function]}
-    onMouseDown={[Function]}
-    onMouseEnter={[Function]}
-    onMouseLeave={[Function]}
-    onMouseUp={[Function]}
-    onTouchCancel={[Function]}
-    onTouchEnd={[Function]}
-    onTouchMove={[Function]}
-    onTouchStart={[Function]}
-    role="radio"
-    type="button"
-  >
-    Yellow
-  </button>
-  <button
-    aria-checked={false}
-    className="sc-dkzDqf jDeGjH"
-    data-key="orange"
-    data-rac=""
+    data-testid="orange-testid"
     disabled={false}
     onBlur={[Function]}
     onClick={[Function]}

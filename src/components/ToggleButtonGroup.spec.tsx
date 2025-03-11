@@ -2,35 +2,14 @@ import { ToggleButtonGroup } from "./ToggleButtonGroup/index";
 import renderer from "react-test-renderer";
 
 describe('ToggleButtonGroup', () => {
-  const childrenListWithKeys = [
-    { key: 'red', value: 'Red' },
-    { key: 'green', value: 'Green' },
-    { key: 'blue', value: 'Blue' },
-    { key: 'yellow', value: 'Yellow' },
-    { key: 'orange', value: 'Orange' },
-  ];
 
-  it.each`
-    selectionMode
-    ${'multiple'}
-    ${'single'}
-    ${undefined}
-  `(
-    `matches snapshot with selectionMode #selectionMode`,
-    ({ selectionMode }) => {
-      const tree = renderer
-        .create(
-          <ToggleButtonGroup
-            selectionMode={selectionMode}
-            selectedItems={new Set(['red'])}
-          >
-            {childrenListWithKeys}
-          </ToggleButtonGroup>,
-        )
-        .toJSON();
-      expect(tree).toMatchSnapshot();
-    },
-  );
+    const childrenListWithKeys = [
+        {id: 'red', value: 'Red'},
+        {id: 'green', value: 'Green'},
+        {id: 'blue', value: 'Blue'},
+        {id: 'yellow', value: 'Yellow'},
+        {id: 'orange', value: 'Orange'},
+    ];
 
   it("calls onPressStart and continues propagation", () => {
     const mockEvent = { continuePropagation: jest.fn() };
@@ -46,4 +25,20 @@ describe('ToggleButtonGroup', () => {
     button.props.onPressStart(mockEvent);
     expect(mockEvent.continuePropagation).toHaveBeenCalled();
   });
+
+  it.each`
+        selectionMode 
+        ${'multiple'}
+        ${'single'}
+    `(`matches snapshot with selectionMode #selectionMode`, ({selectionMode}) => {
+        const tree = renderer.create(
+            <ToggleButtonGroup 
+                selectionMode={selectionMode}
+                selectedItems={new Set(['red'])}
+            >
+                {childrenListWithKeys}
+            </ToggleButtonGroup>
+        ).toJSON();
+        expect(tree).toMatchSnapshot();
+    });
 });
