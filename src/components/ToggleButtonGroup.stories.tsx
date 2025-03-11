@@ -3,11 +3,11 @@ import { ToggleButtonGroup } from "./ToggleButtonGroup/index";
 import type { Key } from "react-aria-components";
 
 const childrenListWithKeys = [
-  { key: 'red', value: 'Red' },
-  { key: 'green', value: 'Green' },
-  { key: 'blue', value: 'Blue' },
-  { key: 'yellow', value: 'Yellow' },
-  { key: 'orange', value: 'Orange' },
+  { id: 'red', value: 'Red' },
+  { id: 'green', value: 'Green' },
+  { id: 'blue', value: 'Blue' },
+  { id: 'yellow', value: 'Yellow' },
+  { id: 'orange', value: 'Orange' },
 ];
 
 export const MultipleSelection = () => {
