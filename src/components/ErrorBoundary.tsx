@@ -36,6 +36,7 @@ export const ErrorBoundary = ({
   const [error, setError] = React.useState<SentryError | null>(null);
   const errorFallbacks: { [_: string]: JSX.Element } = { ...defaultErrorFallbacks, ...props.errorFallbacks };
   const typedFallback = error?.type ? errorFallbacks[error.type] : undefined;
+  const initCalled = React.useRef(false);
 
   // Optionally re-render with the children so they can display inline errors with <ErrorMessage />
   const renderElement = error && renderFallback ? (typedFallback || fallback) : <>{children}</>;
@@ -44,15 +45,21 @@ export const ErrorBoundary = ({
     if (!sentryDsn && !sentryInit) {
       return;
     }
+    if (initCalled.current) {
+      throw 'Sentry.init was already called';
+    }
 
+    initCalled.current = true;
     Sentry.init(sentryInit || {
       dsn: sentryDsn,
       environment: window.location.hostname,
       integrations: [
-        new Sentry.BrowserTracing(),
+        Sentry.browserTracingIntegration(),
+        Sentry.extraErrorDataIntegration()
       ],
+      tracesSampleRate: 0.1,
     });
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [sentryDsn, sentryInit]);
 
   // There are two references to the render element here because the Sentry fallback (and
   // onError) are not used for unhandledrejection events. To support those events, we provide

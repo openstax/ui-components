@@ -97,7 +97,6 @@ describe('ErrorBoundary', () => {
   });
 
   it('inits Sentry', () => {
-    jest.resetAllMocks();
     const initSpy = jest.spyOn(Sentry, 'init');
 
     act(() => {
@@ -110,7 +109,6 @@ describe('ErrorBoundary', () => {
   });
 
   it('can override Sentry init', () => {
-    jest.resetAllMocks();
     const initSpy = jest.spyOn(Sentry, 'init');
     const config = {
       dsn: 'https://examplePublicKey@o0.ingest.sentry.io/0',
@@ -127,5 +125,30 @@ describe('ErrorBoundary', () => {
     });
 
     expect(initSpy).toHaveBeenCalledWith(config);
+  });
+  it('throws if Sentry init is called twice', () => {
+    const config = {
+      dsn: 'https://examplePublicKey@o0.ingest.sentry.io/0',
+      enabled: false,
+      transport: sentryTransport
+    };
+
+    const instance = renderer.create(
+      <ErrorBoundary
+        sentryInit={config}
+      />
+    );
+
+    let caught;
+    const saveError = console.error;
+    console.error = jest.fn();
+    try {
+      act(() => instance.update(<ErrorBoundary sentryInit={{dsn: 'foo'}} />))
+    } catch (e) {
+      caught = e;
+    }
+
+    expect(caught).toBe('Sentry.init was already called');
+    console.error = saveError;
   });
 });
