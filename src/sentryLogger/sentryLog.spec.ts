@@ -25,9 +25,11 @@ describe('createConsoleLogger', () => {
         "event_id": "any-id",
         "category": "any-category",
         "message": "This is a test",
-        "data": {
-          "from": "/login",
-          "to": "/dashboard"
+        "from": "/login",
+        "to": "/dashboard",
+        "profile": {},
+        "address": {
+          "city": "New York"
         }
       }
     );
@@ -38,18 +40,19 @@ describe('createConsoleLogger', () => {
         "type": "navigation",
         "level": "info",
         "message": "This is a test",
-        "event_id": "any-id",
         "category": "any-category",
         "data": {
           "from": "/login",
-          "to": "/dashboard"
+          "to": "/dashboard",
+          "event_id": "any-id",
+          "extra": "context",
+          "city": "New York",
         }
       }
     );
   });
 
   it('logs with missing fields', () => {
-    logger.setContext({ extra: 'context' });
     logger.logEvent(
       Level.Warn,
       {},
@@ -59,7 +62,6 @@ describe('createConsoleLogger', () => {
       {
         "timestamp": undefined,
         "category": "",
-        "event_id": "",
         "type": "",
         "message": "",
         "level": "warning",
