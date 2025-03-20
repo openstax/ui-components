@@ -53,8 +53,9 @@ const BodyPortalGlobalStyle = createGlobalStyle`
     }
   }
 
-  .ladle-background, #ladle-root {
-    display: none;
+  #ladle-root {
+    position: absolute;
+    right: 0;
   }
 `;
 
