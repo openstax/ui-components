@@ -21,9 +21,7 @@ describe('createConsoleLogger', () => {
       Level.Info,
       {
         "timestamp": 1461165894000,
-        "type": "navigation",
         "event_id": "any-id",
-        "category": "any-category",
         "message": "This is a test",
         "from": "/login",
         "to": "/dashboard",
@@ -37,10 +35,9 @@ describe('createConsoleLogger', () => {
     expect(logFn).toHaveBeenCalledWith(
       {
         "timestamp": 1461165894000,
-        "type": "navigation",
         "level": "info",
         "message": "This is a test",
-        "category": "any-category",
+        "category": "log",
         "data": {
           "from": "/login",
           "to": "/dashboard",
@@ -61,8 +58,7 @@ describe('createConsoleLogger', () => {
     expect(logFn).toHaveBeenCalledWith(
       {
         "timestamp": undefined,
-        "category": "",
-        "type": "",
+        "category": "log",
         "message": "",
         "level": "warning",
         "data": {}
