@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`ToggleButtonGroup matches snapshot with selectionMode #selectionMode 1`] = `
+exports[`ToggleButtonGroup matches snapshot with selectionMode multiple 1`] = `
 <div
   aria-orientation="horizontal"
   className="sc-gsnTZi hmfeGJ"
@@ -130,7 +130,142 @@ exports[`ToggleButtonGroup matches snapshot with selectionMode #selectionMode 1`
 </div>
 `;
 
-exports[`ToggleButtonGroup matches snapshot with selectionMode #selectionMode 2`] = `
+exports[`ToggleButtonGroup matches snapshot with selectionMode single 1`] = `
+<div
+  aria-orientation="horizontal"
+  className="sc-gsnTZi hmfeGJ"
+  data-orientation="horizontal"
+  data-rac=""
+  onBlurCapture={[Function]}
+  onFocusCapture={[Function]}
+  onKeyDownCapture={[Function]}
+  role="radiogroup"
+>
+  <button
+    aria-checked={true}
+    className="sc-dkzDqf jDeGjH"
+    data-rac=""
+    data-selected={true}
+    data-testid="red-testid"
+    disabled={false}
+    onBlur={[Function]}
+    onClick={[Function]}
+    onDragStart={[Function]}
+    onFocus={[Function]}
+    onKeyDown={[Function]}
+    onMouseDown={[Function]}
+    onMouseEnter={[Function]}
+    onMouseLeave={[Function]}
+    onMouseUp={[Function]}
+    onTouchCancel={[Function]}
+    onTouchEnd={[Function]}
+    onTouchMove={[Function]}
+    onTouchStart={[Function]}
+    role="radio"
+    type="button"
+  >
+    Red
+  </button>
+  <button
+    aria-checked={false}
+    className="sc-dkzDqf jDeGjH"
+    data-rac=""
+    data-testid="green-testid"
+    disabled={false}
+    onBlur={[Function]}
+    onClick={[Function]}
+    onDragStart={[Function]}
+    onFocus={[Function]}
+    onKeyDown={[Function]}
+    onMouseDown={[Function]}
+    onMouseEnter={[Function]}
+    onMouseLeave={[Function]}
+    onMouseUp={[Function]}
+    onTouchCancel={[Function]}
+    onTouchEnd={[Function]}
+    onTouchMove={[Function]}
+    onTouchStart={[Function]}
+    role="radio"
+    type="button"
+  >
+    Green
+  </button>
+  <button
+    aria-checked={false}
+    className="sc-dkzDqf jDeGjH"
+    data-rac=""
+    data-testid="blue-testid"
+    disabled={false}
+    onBlur={[Function]}
+    onClick={[Function]}
+    onDragStart={[Function]}
+    onFocus={[Function]}
+    onKeyDown={[Function]}
+    onMouseDown={[Function]}
+    onMouseEnter={[Function]}
+    onMouseLeave={[Function]}
+    onMouseUp={[Function]}
+    onTouchCancel={[Function]}
+    onTouchEnd={[Function]}
+    onTouchMove={[Function]}
+    onTouchStart={[Function]}
+    role="radio"
+    type="button"
+  >
+    Blue
+  </button>
+  <button
+    aria-checked={false}
+    className="sc-dkzDqf jDeGjH"
+    data-rac=""
+    data-testid="yellow-testid"
+    disabled={false}
+    onBlur={[Function]}
+    onClick={[Function]}
+    onDragStart={[Function]}
+    onFocus={[Function]}
+    onKeyDown={[Function]}
+    onMouseDown={[Function]}
+    onMouseEnter={[Function]}
+    onMouseLeave={[Function]}
+    onMouseUp={[Function]}
+    onTouchCancel={[Function]}
+    onTouchEnd={[Function]}
+    onTouchMove={[Function]}
+    onTouchStart={[Function]}
+    role="radio"
+    type="button"
+  >
+    Yellow
+  </button>
+  <button
+    aria-checked={false}
+    className="sc-dkzDqf jDeGjH"
+    data-rac=""
+    data-testid="orange-testid"
+    disabled={false}
+    onBlur={[Function]}
+    onClick={[Function]}
+    onDragStart={[Function]}
+    onFocus={[Function]}
+    onKeyDown={[Function]}
+    onMouseDown={[Function]}
+    onMouseEnter={[Function]}
+    onMouseLeave={[Function]}
+    onMouseUp={[Function]}
+    onTouchCancel={[Function]}
+    onTouchEnd={[Function]}
+    onTouchMove={[Function]}
+    onTouchStart={[Function]}
+    role="radio"
+    type="button"
+  >
+    Orange
+  </button>
+</div>
+`;
+
+exports[`ToggleButtonGroup matches snapshot with selectionMode undefined 1`] = `
 <div
   aria-orientation="horizontal"
   className="sc-gsnTZi hmfeGJ"

@@ -30,7 +30,8 @@ describe('ToggleButtonGroup', () => {
         selectionMode 
         ${'multiple'}
         ${'single'}
-    `(`matches snapshot with selectionMode #selectionMode`, ({selectionMode}) => {
+        ${undefined}
+    `(`matches snapshot with selectionMode $selectionMode`, ({selectionMode}) => {
         const tree = renderer.create(
             <ToggleButtonGroup 
                 selectionMode={selectionMode}
