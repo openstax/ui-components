@@ -20,7 +20,7 @@ describe('createConsoleLogger', () => {
     logger.logEvent(
       Level.Info,
       {
-        "timestamp": "2016-04-20T20:55:53.847Z",
+        "timestamp": 1461165894000,
         "type": "navigation",
         "event_id": "any-id",
         "category": "any-category",
@@ -36,7 +36,7 @@ describe('createConsoleLogger', () => {
 
     expect(logFn).toHaveBeenCalledWith(
       {
-        "timestamp": "2016-04-20T20:55:53.847Z",
+        "timestamp": 1461165894000,
         "type": "navigation",
         "level": "info",
         "message": "This is a test",

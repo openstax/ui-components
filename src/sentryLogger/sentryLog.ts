@@ -44,7 +44,7 @@ const serializeBreadcrumb = (level: Level, breadcrumb: JsonCompatibleStruct): {
     level: serializeLevel(level),
     category: checkTypeOf(category, 'string', ''),
     message: checkTypeOf(message, 'string', ''),
-    timestamp: checkTypeOf(timestamp, 'string', undefined),
+    timestamp: checkTypeOf(timestamp, 'number', undefined),
     data: flattenObj(rest),
   }
 };
