@@ -24,7 +24,7 @@ export const styledMenu = {
 };
 
 const IframeWrapper = styled.div`
-  background-color: #F5F5F5;
+  background-color: ${colors.palette.neutralBright};
   position: absolute;
   width: 100%;
   top: 4rem;
@@ -50,12 +50,12 @@ function PutAway({onClick, className}: {onClick: () => void; className?: string}
 }
 
 const StyledPutAway = styled(PutAway)`
-  border-top: 0.1rem solid #D5D5D5;
+  border-top: 0.1rem solid ${colors.palette.pale};
   width: 100%;
   height: 5.6rem;
   display: flex;
   align-items: center;
-  background-color: #F5F5F5;
+  background-color: ${colors.palette.neutralBright};
   padding-left: 1.5rem;
   position: fixed;
   bottom: 0;
@@ -68,9 +68,9 @@ const StyledPutAway = styled(PutAway)`
 
   button {
     height: 3rem;
-    background-color: white;
-    border: 1px solid #D5D5D5;
-    box-shadow: 0px 2px 4px 0px #00000033;
+    background-color: ${colors.palette.white};
+    border: 1px solid ${colors.palette.pale};
+    box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.2);
     width: 9rem;
     border-radius: 0.5rem;
   }
