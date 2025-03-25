@@ -8,6 +8,7 @@ export * from './components/Error';
 export * from './components/ErrorBoundary';
 export * from './components/ErrorMessage';
 export * from './components/ErrorModal';
+export * from './components/HelpMenu';
 export * from './components/Loader';
 export * from './components/ManageCookies';
 export * from './components/Modal';
