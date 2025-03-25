@@ -4,9 +4,10 @@ import { useHelpMenu } from './HelpMenu';
 import { NavBar } from './NavBar';
 
 const BodyPortalGlobalStyle = createGlobalStyle`
-  #ladle-root {
-    position: absolute;
-    right: 0;
+  [data-portal-slot="nav"] {
+    position: fixed;
+    top: 0;
+    width: 100%;
   }
 `;
 
