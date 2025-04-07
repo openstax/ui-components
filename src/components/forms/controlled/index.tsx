@@ -65,6 +65,14 @@ export const GetFormData = (props: GetFormDataProps) => {
   return props.children(data);
 };
 
+type GetFormDataRootProps = {
+  children: (value: AbstractFormData) => JSX.Element | null;
+};
+export const GetFormDataRoot = (props: GetFormDataRootProps) => {
+  const {dataRoot} = useFormHelpers();
+  return props.children(dataRoot);
+};
+
 export const NameSpace = (props: React.PropsWithChildren<{name: string}>) => {
   const formHelpers = useFormNameSpace(props.name);
 
