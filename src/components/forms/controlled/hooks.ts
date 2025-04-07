@@ -8,7 +8,7 @@ export type AbstractFormData = Record<string, any>;
 
 type FormStateHelpers<T extends AbstractFormData> = {
   data: Partial<T>;
-  dataRoot: Partial<T>;
+  rootHelpers: FormStateHelpers<T>;
   submit: () => void;
   namespace: string;
   state: FetchState<T, string>;
@@ -48,14 +48,17 @@ export const useFormState = <T extends AbstractFormData>(
   const submitHandler = React.useCallback(() => {
     onSubmit?.(inputFieldsRef.current);
   }, [onSubmit]);
-  return {
+
+  const helpers: Partial<FormStateHelpers<T>> = {
     namespace: 'form',
     submit: submitHandler,
     data: inputFields,
-    dataRoot: inputFields,
     state,
     setInput: makeSetInput(setInputFields)
   };
+
+  helpers.rootHelpers = helpers as FormStateHelpers<T>;
+  return helpers as FormStateHelpers<T>;
 };
 
 export const useFormNameSpace = (field: string): FormStateHelpers<AbstractFormData> => {
@@ -72,7 +75,7 @@ export const useFormNameSpace = (field: string): FormStateHelpers<AbstractFormDa
     namespace: parentState.namespace + '.' + field,
     submit: parentState.submit,
     data: parentState.data[field] || {},
-    dataRoot: parentState.dataRoot,
+    rootHelpers: parentState.rootHelpers,
     state: parentState.state,
     setInput: makeSetInput(setInputFields)
   };
@@ -88,7 +91,7 @@ type ListStateHelpers = {
   addRecord: (record?: AbstractFormData) => void;
   removeRecord: (id: string) => void;
   data: Array<AbstractFormData & {id: string}>;
-  dataRoot: AbstractFormData;
+  rootHelpers: FormStateHelpers<AbstractFormData>;
   setData: React.Dispatch<React.SetStateAction<AbstractFormData[]>>;
   makeRecordHelpers: (record: AbstractFormData & {id: string}) => FormStateHelpers<AbstractFormData>;
 };
@@ -108,7 +111,7 @@ export const useFormList = ({name}: FormListConfig): ListStateHelpers => {
 
   const makeRecordHelpers = (data: ListStateHelpers['data'][number]) => ({
     data,
-    dataRoot: parentState.dataRoot,
+    rootHelpers: parentState.rootHelpers,
     state: parentState.state,
     submit: parentState.submit,
     namespace: parentState.namespace + '.' + data.id,
@@ -143,7 +146,7 @@ export const useFormList = ({name}: FormListConfig): ListStateHelpers => {
       [name]: (previous[name] || []).filter((record: AbstractFormData) => record.id !== id)
     })),
     data: hasIds ? value : [],
-    dataRoot: parentState.dataRoot,
+    rootHelpers: parentState.rootHelpers,
     setData,
     makeRecordHelpers,
   };
