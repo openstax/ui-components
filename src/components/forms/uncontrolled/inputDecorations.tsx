@@ -16,7 +16,7 @@ export const FormLabelText = styled.span`
 
 export type InputProps = {
   label: string;
-  help?: string;
+  help?: string | React.ReactNode;
 };
 
 /*
@@ -28,7 +28,7 @@ const HelpTextElement = styled.p`
   padding: 0;
 `;
 type HelpTextProps = React.ComponentPropsWithoutRef<'p'> & {
-  value: string | undefined;
+  value: string | undefined | React.ReactNode;
 };
 export const HelpText = ({value, ...props}: HelpTextProps) => value
   ? <HelpTextElement {...props}>{value}</HelpTextElement>

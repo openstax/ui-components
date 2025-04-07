@@ -24,12 +24,14 @@ type TextInputProps = React.ComponentPropsWithoutRef<'input'> & InputProps & {
   addon?: React.ReactElement;
   pattern?: string;
 };
-export const TextInput = ({label, addon, help, wrapperProps, onChangeValue, ...props}: TextInputProps) =>
+export const TextInput = ({
+  label, addon, help, transformValue, wrapperProps, onChangeValue, ...props
+}: TextInputProps) =>
   <FormInputWrapper {...wrapperProps}>
     <FormLabelText><RequiredIndicator show={props.required} />{label}:</FormLabelText>
     <FlexRow>
       <InputElement type="text" {...props} onChange={e => {
-        onChangeValue?.(props.transformValue ? props.transformValue(e.target.value) : e.target.value);
+        onChangeValue?.(transformValue ? transformValue(e.target.value) : e.target.value);
         props.onChange?.(e);
       }} />
       {addon}
@@ -45,11 +47,11 @@ type TextAreaProps = React.ComponentPropsWithoutRef<'textarea'> & InputProps & {
   onChangeValue?: (value: any) => void;
   transformValue?: (value: string | undefined) => any;
 };
-export const TextArea = ({label, help, wrapperProps, onChangeValue, ...props}: TextAreaProps) =>
+export const TextArea = ({label, help, transformValue, wrapperProps, onChangeValue, ...props}: TextAreaProps) =>
   <FormInputWrapper {...wrapperProps}>
     <FormLabelText><RequiredIndicator show={props.required} />{label}:</FormLabelText>
     <textarea rows={8} {...props} onChange={e => {
-      onChangeValue?.(props.transformValue ? props.transformValue(e.target.value) : e.target.value);
+      onChangeValue?.(transformValue ? transformValue(e.target.value) : e.target.value);
       props.onChange?.(e);
     }} />
     <HelpText value={help} />
@@ -75,6 +77,7 @@ export const Select = ({
   onOptionReappear,
   label,
   help,
+  transformValue,
   options,
   wrapperProps,
   ...props
@@ -138,7 +141,7 @@ export const Select = ({
     <FormLabelText><RequiredIndicator show={props.required} />{label}:</FormLabelText>
     <select {...props} onChange={e => {
       changedSinceLastOptionUpdate.current = true;
-      onChangeValue?.(props.transformValue ? props.transformValue(e.target.value) : e.target.value);
+      onChangeValue?.(transformValue ? transformValue(e.target.value) : e.target.value);
       props.onChange?.(e);
     }}>
       {groupedOptions.map(([group, options], i) => group === undefined
@@ -193,7 +196,7 @@ export const Radio = ({
 /*
  * checkbox element
  */
-type CheckboxProps = React.ComponentPropsWithoutRef<'input'> & InputProps & 
+type CheckboxProps = React.ComponentPropsWithoutRef<'input'> & InputProps &
 Parameters<typeof StyledCheckbox>[0] & {
   onChangeValue?: (value: boolean | undefined) => void;
   wrapperProps?: React.ComponentPropsWithoutRef<'label'>;
