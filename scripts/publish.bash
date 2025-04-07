@@ -31,7 +31,7 @@ else
   git add -f dist/
   git commit -m "adding dist files"
 
-  git tag "$package_tag_name";
+  git tag "$tag_name";
   git push origin tag "$tag_name"
 fi
 
