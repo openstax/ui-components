@@ -21,7 +21,7 @@ git checkout -b "$release_branch_name"
 
 package=$(node -e "process.stdout.write(JSON.parse(require('fs').readFileSync('/dev/stdin').toString()).name)" < package.json)
 version=$(node -e "process.stdout.write(JSON.parse(require('fs').readFileSync('/dev/stdin').toString()).version)" < package.json)
-tag_name="$package-$version"
+tag_name="$version"
 
 if [ $(git tag -l "$tag_name") ]; then
   echo "package version $package@$version already exists, skipping."
