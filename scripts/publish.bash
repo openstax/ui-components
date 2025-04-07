@@ -27,7 +27,7 @@ if [ $(git tag -l "$tag_name") ]; then
   echo "package version $package@$version already exists, skipping."
 else
   echo "building $package@$version ..."
-  yarn build:clean
+  yarn dist
   git add -f dist/
   git commit -m "adding dist files"
 
