@@ -95,7 +95,6 @@ export const useHelpMenu = (actions: {label: string; callback: () => void}[] = [
   const [showIframe, setShowIframe] = React.useState<string | undefined>();
 
   const HelpMenu = React.useCallback(({contactFormParams}: {contactFormParams: { key: string; value: string }[]}) => {
-   j
     const contactFormUrl = React.useMemo(() => {
       const formUrl = 'https://openstax.org/embedded/contact';
       const params = contactFormParams
