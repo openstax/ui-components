@@ -31,7 +31,7 @@ export const ToggleButtonGroup = (
       {children.map((child) =>
         <StyledToggleButton
           key={child.id}
-          data-testid={child.id + '-testid'}
+          data-section-id={child.id}
           id={child.id}
           // Allow parents to trigger handlers, works with onPointer events but not with onMouse events
           onPressStart={e => e.continuePropagation()}
