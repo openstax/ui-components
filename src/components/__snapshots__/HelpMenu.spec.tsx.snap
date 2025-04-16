@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`useHelpMenu matches snapshot 1`] = `
+exports[`HelpMenu matches snapshot 1`] = `
 <body>
   <nav
     class="sc-jqUVSM cCVOTe"
@@ -53,7 +53,7 @@ exports[`useHelpMenu matches snapshot 1`] = `
         aria-expanded="false"
         aria-haspopup="true"
         aria-label="Help menu"
-        class="sc-bczRLJ dKgZvy sc-eCYdqJ jbRqSg"
+        class="sc-bczRLJ dKgZvy sc-eCYdqJ henMfs"
         data-rac=""
         id="react-aria-1"
         type="button"
