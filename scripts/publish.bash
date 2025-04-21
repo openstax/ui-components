@@ -13,15 +13,37 @@ if [ -n "$(git status --porcelain=v1 2>/dev/null)" ]; then
   exit 1
 fi
 
+package=$(node -e "require('./package.json').name)")
+version=$(node -e "require('./package.json').version)")
+tag_name="$version"
+
+all_tags=$(git ls-remote --tags origin | awk -F'/' '{print $3}' | sort -V)
+
+if echo "$all_tags" | grep -q "^$tag_name$"; then
+  echo "package version $package@$version already exists, aborting."
+  echo "To update the package, please bump the version in package.json and try again."
+  exit 0
+fi
+
+cat <<EOF
+Publishing $package@$version
+
+Current tags:
+$(echo "$all_tags" | tail -n 10)
+Do you want to continue? (y/n)
+EOF
+
+read -r confirm
+if [[ ! "$confirm" =~ ^[Yy]$ ]]; then
+  echo "Aborting publish."
+  exit 0
+fi
+
 current_branch=$(git rev-parse --abbrev-ref HEAD)
 date_key=$(date +%Y-%m-%d_%H-%M-%S)
 release_branch_name="release-$date_key"
 
 git checkout -b "$release_branch_name"
-
-package=$(node -e "require('./package.json').name)")
-version=$(node -e "require('./package.json').version)")
-tag_name="$version"
 
 if [ $(git tag -l "$tag_name") ]; then
   echo "package version $package@$version already exists, skipping."
