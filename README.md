@@ -21,15 +21,19 @@ We use Git tags instead of npm publishing:
 - Feature-specific: `sentry-logger-03212025`
 
 ### Creating a Release
-There are three ways to create a release, choose the one that best fits your needs:
-- **Publish Script (Recommended)**: The fastest and safest way to create standard releases. Use this for most releases.
-- **Manual Release Process**: Step-by-step process that mirrors what the publish script does. Useful when you need more control over the release process.
-- **Experimental/Pre-release**: Quick process for creating test versions or pre-releases. Ideal for feature testing or alpha/beta releases.
+
+#### Before Starting
+1. Fetch the latest tags to see current versions:
+   ```bash
+   git fetch --all --tags
+   git tag -l | sort -V | tail -n 5  # Shows last 5 versions
+   ```
+2. Ensure package.json version matches the next version you plan to release
 
 #### Using the Publish Script (Recommended)
 The simplest way to create a release:
 
-1. Update the version in `package.json`
+1. Update the version in `package.json` to match the next version number
 2. Ensure your working directory is clean (commit or stash any changes)
 3. Run `./scripts/publish.bash`
 
@@ -38,7 +42,7 @@ This script automates the release process, handling the build and tag creation s
 #### Manual Release Process
 Alternatively, you can create a release manually following these steps:
 
-1. Update the version in `package.json`
+1. Update the version in `package.json` to match the next version number
 2. Ensure your working directory is clean (commit or stash any changes)
 3. Run `yarn --check-files` to verify dependencies
 4. Create a release branch:
@@ -54,7 +58,7 @@ Alternatively, you can create a release manually following these steps:
    ```
 6. Create and push the tag:
    ```bash
-   version=$(node -p "require('./package.json').version")
+   version=$(node -e "process.stdout.write(JSON.parse(require('package.json').toString()).version)")
    git tag "$version"
    git push origin tag "$version"
    ```
