@@ -19,8 +19,8 @@ release_branch_name="release-$date_key"
 
 git checkout -b "$release_branch_name"
 
-package=$(node -e "process.stdout.write(JSON.parse(require('fs').readFileSync('/dev/stdin').toString()).name)" < package.json)
-version=$(node -e "process.stdout.write(JSON.parse(require('fs').readFileSync('/dev/stdin').toString()).version)" < package.json)
+package=$(node -e "require('./package.json').name)")
+version=$(node -e "require('./package.json').version)")
 tag_name="$version"
 
 if [ $(git tag -l "$tag_name") ]; then
