@@ -13,8 +13,8 @@ if [ -n "$(git status --porcelain=v1 2>/dev/null)" ]; then
   exit 1
 fi
 
-package=$(node -e "require('./package.json').name)")
-version=$(node -e "require('./package.json').version)")
+package=$(node -e "require('./package.json').name")
+version=$(node -e "require('./package.json').version")
 tag_name="$version"
 
 all_tags=$(git ls-remote --tags origin | awk -F'/' '{print $3}' | sort -V)
