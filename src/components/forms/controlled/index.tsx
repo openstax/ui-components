@@ -65,6 +65,14 @@ export const GetFormData = (props: GetFormDataProps) => {
   return props.children(data);
 };
 
+type GetFormDataRootProps = {
+  children: (value: AbstractFormData) => JSX.Element | null;
+};
+export const GetFormDataRoot = (props: GetFormDataRootProps) => {
+  const {rootHelpers} = useFormHelpers();
+  return props.children(rootHelpers.data);
+};
+
 export const NameSpace = (props: React.PropsWithChildren<{name: string}>) => {
   const formHelpers = useFormNameSpace(props.name);
 
@@ -81,13 +89,13 @@ export const List = ({children, ...props}: React.PropsWithChildren<FormListConfi
   </FormListContext.Provider>;
 };
 
-const SortableContext = React.createContext<() => React.MutableRefObject<boolean | undefined>>(
+const SortableContext = React.createContext<(enabled: boolean) => void>(
   () => {throw new Error('context not provided');}
 );
 
 export const ListItems = (props: {children: React.ReactNode}) => {
   const listState = useFormListHelpers();
-  const sortableEnabledRef = React.useRef<boolean>();
+  const [sortableEnabled, setSortableEnabled] = React.useState<boolean>(false);
   const draggingElementRef = React.useRef<string>();
 
   const dragOver = (record: {id: string}) => (e: React.DragEvent<HTMLElement>) => {
@@ -101,17 +109,17 @@ export const ListItems = (props: {children: React.ReactNode}) => {
     if (current !== target) {
       const copy = [...listState.data];
       copy.splice(target, 0, copy.splice(current, 1)[0]);
-      listState.setData(copy); 
+      listState.setData(copy);
     }
   };
 
   const dragEnd = (e: React.DragEvent<HTMLElement>) => {
     e.preventDefault();
-    sortableEnabledRef.current = false;
+    setSortableEnabled(false);
   };
 
   const dragStart = (record: {id: string}) => (e: React.DragEvent<HTMLElement>) => {
-    if (!sortableEnabledRef.current) {
+    if (!sortableEnabled) {
       e.preventDefault();
       return;
     }
@@ -121,10 +129,10 @@ export const ListItems = (props: {children: React.ReactNode}) => {
 
   return <Uncontrolled.FormSection>
     {listState.data.map(record =>
-      <SortableContext.Provider key={record.id} value={() => sortableEnabledRef}>
-        <FormStateContext.Provider value={() => listState.makeRecordHelpers(record)}> 
+      <SortableContext.Provider key={record.id} value={setSortableEnabled}>
+        <FormStateContext.Provider value={() => listState.makeRecordHelpers(record)}>
           <Uncontrolled.FormSection
-            draggable 
+            draggable={sortableEnabled}
             onDrop={dragEnd}
             onDragOver={dragOver(record)}
             onDragStart={dragStart(record)}
@@ -140,12 +148,12 @@ export const ListItems = (props: {children: React.ReactNode}) => {
 
 type ListRecordSortableHandleProps = React.ComponentPropsWithoutRef<'div'>;
 export const ListRecordSortableHandle = (props: ListRecordSortableHandleProps) => {
-  const sortableEnabledRef = React.useContext(SortableContext)();
+  const setSortableEnabled = React.useContext(SortableContext);
 
   return <div
     tabIndex={-1}
     {...props}
-    onMouseDown={() => sortableEnabledRef.current = true}
+    onMouseDown={() => setSortableEnabled(true)}
     style={{
       cursor: 'move',
       backgroundImage: 'radial-gradient(circle at 1px 1px, #aaa 1px, transparent 0), ' +
@@ -155,7 +163,7 @@ export const ListRecordSortableHandle = (props: ListRecordSortableHandleProps) =
       width: '11px',
       ...props.style
     }}
-  />; 
+  />;
 };
 
 type ListRecordRemoveButtonProps = React.ComponentPropsWithoutRef<'button'>;
