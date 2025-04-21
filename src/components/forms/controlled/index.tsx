@@ -96,10 +96,7 @@ const SortableContext = React.createContext<(enabled: boolean) => void>(
 export const ListItems = (props: {children: React.ReactNode}) => {
   const listState = useFormListHelpers();
   const [sortableEnabled, setSortableEnabled] = React.useState<boolean>(false);
-  const sortableEnabledRef = React.useRef<boolean>();
   const draggingElementRef = React.useRef<string>();
-
-  sortableEnabledRef.current = sortableEnabled;
 
   const dragOver = (record: {id: string}) => (e: React.DragEvent<HTMLElement>) => {
     if (!draggingElementRef.current) {
@@ -122,7 +119,7 @@ export const ListItems = (props: {children: React.ReactNode}) => {
   };
 
   const dragStart = (record: {id: string}) => (e: React.DragEvent<HTMLElement>) => {
-    if (!sortableEnabledRef.current) {
+    if (!sortableEnabled) {
       e.preventDefault();
       return;
     }
