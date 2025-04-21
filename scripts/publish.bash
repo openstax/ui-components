@@ -19,6 +19,8 @@ tag_name="$version"
 
 all_tags=$(git ls-remote --tags origin | awk -F'/' '{print $3}' | sort -V)
 
+
+
 if echo "$all_tags" | grep -q "^$tag_name$"; then
   echo "package version $package@$version already exists, aborting."
   echo "To update the package, please bump the version in package.json and try again."
@@ -26,18 +28,21 @@ if echo "$all_tags" | grep -q "^$tag_name$"; then
 fi
 
 cat <<EOF
-Publishing $package@$version
-
 Current tags:
-$(echo "$all_tags" | tail -n 10)
-Do you want to continue? (y/n)
+$(grep '^[0-9]\+\.' <<< "$all_tags" | tail -n 10)
+
+Publishing new version: $package@$version
+
 EOF
 
-read -r confirm
-if [[ ! "$confirm" =~ ^[Yy]$ ]]; then
-  echo "Aborting publish."
-  exit 0
-fi
+while true; do
+  echo "Do you want to continue? (y/n)"
+  read -r choice
+  case "$choice" in
+    [Yy]* ) break ;;
+    [Nn]* ) echo "Aborting." && exit 0 ;;
+  esac
+done
 
 current_branch=$(git rev-parse --abbrev-ref HEAD)
 date_key=$(date +%Y-%m-%d_%H-%M-%S)
