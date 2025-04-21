@@ -23,10 +23,11 @@ We use Git tags instead of npm publishing:
 ### Creating a Release
 
 #### Before Starting
-1. Fetch the latest tags to see current versions:
+1. Fetch the latest tags and check current versions:
    ```bash
    git fetch --all --tags
-   git tag -l | sort -V | tail -n 5  # Shows last 5 versions
+   # Show last 10 version tags (including pre-releases)
+   git tag -l | grep '^[0-9]' | sort -V | tail -n 10
    ```
 2. Ensure package.json version matches the next version you plan to release
 
