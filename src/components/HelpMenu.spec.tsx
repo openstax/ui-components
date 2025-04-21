@@ -1,9 +1,9 @@
 import { render } from '@testing-library/react';
 import { BodyPortalSlotsContext } from './BodyPortalSlotsContext';
-import { useHelpMenu } from './HelpMenu';
+import { HelpMenu, HelpMenuItem } from './HelpMenu';
 import { NavBar } from './NavBar';
 
-describe('useHelpMenu', () => {
+describe('HelpMenu', () => {
   let root: HTMLElement;
 
   beforeEach(() => {
@@ -13,18 +13,17 @@ describe('useHelpMenu', () => {
   });
 
   it('matches snapshot', () => {
-    const NavBarWithHelpMenu = () => {
-      const [HelpMenu, ContactFormIframe] = useHelpMenu(
-        [{ label: 'Test Callback', callback: () => window.alert('Ran HelpMenu callback function') }]
-      );
-
-      return <BodyPortalSlotsContext.Provider value={['nav', 'root']}>
-        <NavBar logo><HelpMenu contactFormParams={[{key: 'userId', value: 'test'}]} /></NavBar>
-        <ContactFormIframe />
-      </BodyPortalSlotsContext.Provider>;
-    };
-
-    render(<NavBarWithHelpMenu />);
+    render(
+      <BodyPortalSlotsContext.Provider value={['nav', 'root']}>
+        <NavBar logo>
+          <HelpMenu contactFormParams={[{key: 'userId', value: 'test'}]}>
+            <HelpMenuItem onAction={() => window.alert('Ran HelpMenu callback function')}>
+              Test Callback
+            </HelpMenuItem>
+          </HelpMenu>
+        </NavBar>
+      </BodyPortalSlotsContext.Provider>
+    );
 
     expect(document.body).toMatchSnapshot();
   });
