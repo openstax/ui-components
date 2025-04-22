@@ -2,7 +2,7 @@
 
 exports[`ManageCookies when CookieYes loads renders button 1`] = `
 <button
-  className="sc-gsnTZi sc-dkzDqf czjxlp jmylct cky-banner-element"
+  className="sc-dkzDqf sc-hKMtZM bLbJrC bAtAjm cky-banner-element"
 >
   Manage Cookies
 </button>
@@ -11,7 +11,7 @@ exports[`ManageCookies when CookieYes loads renders button 1`] = `
 exports[`ManageCookies when CookieYes loads renders button in wrapper 1`] = `
 <div>
   <button
-    className="sc-gsnTZi sc-dkzDqf czjxlp jmylct cky-banner-element"
+    className="sc-dkzDqf sc-hKMtZM bLbJrC bAtAjm cky-banner-element"
   >
     Manage Cookies
   </button>
@@ -20,7 +20,7 @@ exports[`ManageCookies when CookieYes loads renders button in wrapper 1`] = `
 
 exports[`ManageCookies when CookieYes loads renders button with className 1`] = `
 <button
-  className="sc-gsnTZi sc-dkzDqf czjxlp jmylct cky-banner-element test"
+  className="sc-dkzDqf sc-hKMtZM bLbJrC bAtAjm cky-banner-element test"
 >
   Manage Cookies
 </button>
@@ -28,7 +28,7 @@ exports[`ManageCookies when CookieYes loads renders button with className 1`] = 
 
 exports[`ManageCookies when CookieYes loads renders button with content and correct class 1`] = `
 <button
-  className="sc-gsnTZi sc-dkzDqf czjxlp jmylct cky-banner-element"
+  className="sc-dkzDqf sc-hKMtZM bLbJrC bAtAjm cky-banner-element"
 >
   some content
 </button>
@@ -36,7 +36,7 @@ exports[`ManageCookies when CookieYes loads renders button with content and corr
 
 exports[`ManageCookies with CookieYes already loaded renders button 1`] = `
 <button
-  className="sc-gsnTZi sc-dkzDqf czjxlp jmylct cky-banner-element"
+  className="sc-dkzDqf sc-hKMtZM bLbJrC bAtAjm cky-banner-element"
 >
   Manage Cookies
 </button>
@@ -45,7 +45,7 @@ exports[`ManageCookies with CookieYes already loaded renders button 1`] = `
 exports[`ManageCookies with CookieYes already loaded renders button in wrapper 1`] = `
 <div>
   <button
-    className="sc-gsnTZi sc-dkzDqf czjxlp jmylct cky-banner-element"
+    className="sc-dkzDqf sc-hKMtZM bLbJrC bAtAjm cky-banner-element"
   >
     Manage Cookies
   </button>
@@ -54,7 +54,7 @@ exports[`ManageCookies with CookieYes already loaded renders button in wrapper 1
 
 exports[`ManageCookies with CookieYes already loaded renders button with content and correct class 1`] = `
 <button
-  className="sc-gsnTZi sc-dkzDqf czjxlp jmylct cky-banner-element"
+  className="sc-dkzDqf sc-hKMtZM bLbJrC bAtAjm cky-banner-element"
 >
   some content
 </button>
