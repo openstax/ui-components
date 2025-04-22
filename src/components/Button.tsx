@@ -2,7 +2,8 @@ import styled, {css} from "styled-components";
 import theme from '../../src/theme';
 import { applyButtonVariantStyles, ButtonVariant } from "../theme/buttons";
 
-const buttonCss = css<{variant?: ButtonVariant}>`
+export { applyButtonVariantStyles };
+export const buttonCss = css<{variant?: ButtonVariant}>`
   ${props => applyButtonVariantStyles(props.variant || 'primary')}
 
   font-size: 1.6rem;
