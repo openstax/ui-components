@@ -2,8 +2,8 @@ import styled, {css} from "styled-components";
 import theme from '../../src/theme';
 import { applyButtonVariantStyles, ButtonVariant } from "../theme/buttons";
 
-const StyledButton = styled.button<{ variant: ButtonVariant }>`
-  ${props => applyButtonVariantStyles(props.variant)}
+const buttonCss = css<{variant?: ButtonVariant}>`
+  ${props => applyButtonVariantStyles(props.variant || 'primary')}
 
   font-size: 1.6rem;
   line-height: 2rem;
@@ -22,13 +22,6 @@ const StyledButton = styled.button<{ variant: ButtonVariant }>`
   text-decoration: none;
   user-select: none;
   white-space: nowrap;
-
-  ${props => props.variant === 'primary' ? `
-    &:focus {
-      outline: solid ${theme.colors.palette.white};
-      box-shadow: inset 0 0 0 3px ${theme.colors.palette.black};
-    }
-  `: ''}
 
   &:not([disabled]) {
     cursor: pointer;
@@ -59,27 +52,31 @@ interface WaitingButtonProps extends ButtonBase {
   waitingText: string;
 }
 
-export const Button = (props: ButtonProps | WaitingButtonProps) => {
+export const Button = styled((props: ButtonProps | WaitingButtonProps) => {
   const {
     disabled,
     isWaiting,
     waitingText,
     children,
-    variant = 'primary',
+    variant,
     ...otherProps
   } = props;
 
-  return <StyledButton
+  return <button
     {...otherProps}
     disabled={isWaiting || disabled}
-    variant={variant}
   >
     {(isWaiting && waitingText) || children}
-  </StyledButton>;
-}
+  </button>;
+})`
+  ${buttonCss}
+`
 
-export const LinkButton = ({ variant = 'primary', ...props}: LinkButtonBase) =>
-  <StyledButton {...props} as='a' variant={variant}>{props.children}</StyledButton>
+export const LinkButton = styled(({ variant, ...props}: LinkButtonBase) =>
+  <a {...props}>{props.children}</a>
+)`
+  ${buttonCss}
+`;
 
 export const linkStyle = css`
   color: ${theme.colors.link.color};
