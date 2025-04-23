@@ -18,9 +18,8 @@ export const MultipleSelection = () => {
         selectionMode='multiple'
         selectedItems={selectedItems}
         onSelectionChange={setSelectedItems}
-      >
-        {childrenListWithKeys}
-      </ToggleButtonGroup>
+        items={childrenListWithKeys}
+      />
       <p>Current selections: {[...selectedItems].join(', ')}</p>
     </>
   );
@@ -33,9 +32,8 @@ export const SingleSelection = () => {
       <ToggleButtonGroup
         selectedItems={selectedItems}
         onSelectionChange={setSelectedItems}
-      >
-        {childrenListWithKeys}
-      </ToggleButtonGroup>
+        items={childrenListWithKeys}
+      />
       <p>Current selections: {[...selectedItems].join(', ')}</p>
     </>
   );

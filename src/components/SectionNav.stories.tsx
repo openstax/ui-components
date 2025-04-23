@@ -71,7 +71,7 @@ export const WithToggleButtonGroups = () => {
   const [selectedItems, setSelectedItems] = React.useState(new Set<Key>([flattenedSections[0].id]));
 
   const scrollToIndex = (id: Key) => {
-    const child = document.querySelector(`[data-section-id="${id}"]`) as HTMLElement;
+    const child = document.querySelector(`[data-button-id="${id}"]`) as HTMLElement;
     if (child) {
       child.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
     }
@@ -104,14 +104,13 @@ export const WithToggleButtonGroups = () => {
   };
 
   const ToggleGroup = sections.map(
-    (section, index) => 
+    (sectionSet, index) => 
       <ToggleButtonGroup
         key={`section-${index + 1}`}
         selectedItems={selectedItems}
         onSelectionChange={setSelectedItems}
-      >
-        {section}
-      </ToggleButtonGroup>
+        items={sectionSet}
+      />
   );
 
   return (

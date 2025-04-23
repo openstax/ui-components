@@ -17,9 +17,8 @@ describe('ToggleButtonGroup', () => {
       <ToggleButtonGroup
         selectionMode='single'
         selectedItems={new Set(['red'])}
-      >
-        {childrenListWithKeys}
-      </ToggleButtonGroup>
+        items={childrenListWithKeys}
+      />
     );
     const button = component.root.findByProps({ id: 'red' });
     button.props.onPressStart(mockEvent);
@@ -36,9 +35,8 @@ describe('ToggleButtonGroup', () => {
             <ToggleButtonGroup 
                 selectionMode={selectionMode}
                 selectedItems={new Set(['red'])}
-            >
-                {childrenListWithKeys}
-            </ToggleButtonGroup>
+                items={childrenListWithKeys}
+            />
         ).toJSON();
         expect(tree).toMatchSnapshot();
     });

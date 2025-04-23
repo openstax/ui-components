@@ -14,8 +14,8 @@ exports[`ToggleButtonGroup matches snapshot with selectionMode multiple 1`] = `
   <button
     aria-pressed={true}
     className="sc-dkzDqf jDeGjH"
+    data-button-id="red"
     data-rac=""
-    data-section-id="red"
     data-selected={true}
     disabled={false}
     onBlur={[Function]}
@@ -38,8 +38,8 @@ exports[`ToggleButtonGroup matches snapshot with selectionMode multiple 1`] = `
   <button
     aria-pressed={false}
     className="sc-dkzDqf jDeGjH"
+    data-button-id="green"
     data-rac=""
-    data-section-id="green"
     disabled={false}
     onBlur={[Function]}
     onClick={[Function]}
@@ -61,8 +61,8 @@ exports[`ToggleButtonGroup matches snapshot with selectionMode multiple 1`] = `
   <button
     aria-pressed={false}
     className="sc-dkzDqf jDeGjH"
+    data-button-id="blue"
     data-rac=""
-    data-section-id="blue"
     disabled={false}
     onBlur={[Function]}
     onClick={[Function]}
@@ -84,8 +84,8 @@ exports[`ToggleButtonGroup matches snapshot with selectionMode multiple 1`] = `
   <button
     aria-pressed={false}
     className="sc-dkzDqf jDeGjH"
+    data-button-id="yellow"
     data-rac=""
-    data-section-id="yellow"
     disabled={false}
     onBlur={[Function]}
     onClick={[Function]}
@@ -107,8 +107,8 @@ exports[`ToggleButtonGroup matches snapshot with selectionMode multiple 1`] = `
   <button
     aria-pressed={false}
     className="sc-dkzDqf jDeGjH"
+    data-button-id="orange"
     data-rac=""
-    data-section-id="orange"
     disabled={false}
     onBlur={[Function]}
     onClick={[Function]}
@@ -144,8 +144,8 @@ exports[`ToggleButtonGroup matches snapshot with selectionMode single 1`] = `
   <button
     aria-checked={true}
     className="sc-dkzDqf jDeGjH"
+    data-button-id="red"
     data-rac=""
-    data-section-id="red"
     data-selected={true}
     disabled={false}
     onBlur={[Function]}
@@ -169,8 +169,8 @@ exports[`ToggleButtonGroup matches snapshot with selectionMode single 1`] = `
   <button
     aria-checked={false}
     className="sc-dkzDqf jDeGjH"
+    data-button-id="green"
     data-rac=""
-    data-section-id="green"
     disabled={false}
     onBlur={[Function]}
     onClick={[Function]}
@@ -193,8 +193,8 @@ exports[`ToggleButtonGroup matches snapshot with selectionMode single 1`] = `
   <button
     aria-checked={false}
     className="sc-dkzDqf jDeGjH"
+    data-button-id="blue"
     data-rac=""
-    data-section-id="blue"
     disabled={false}
     onBlur={[Function]}
     onClick={[Function]}
@@ -217,8 +217,8 @@ exports[`ToggleButtonGroup matches snapshot with selectionMode single 1`] = `
   <button
     aria-checked={false}
     className="sc-dkzDqf jDeGjH"
+    data-button-id="yellow"
     data-rac=""
-    data-section-id="yellow"
     disabled={false}
     onBlur={[Function]}
     onClick={[Function]}
@@ -241,8 +241,8 @@ exports[`ToggleButtonGroup matches snapshot with selectionMode single 1`] = `
   <button
     aria-checked={false}
     className="sc-dkzDqf jDeGjH"
+    data-button-id="orange"
     data-rac=""
-    data-section-id="orange"
     disabled={false}
     onBlur={[Function]}
     onClick={[Function]}
@@ -279,8 +279,8 @@ exports[`ToggleButtonGroup matches snapshot with selectionMode undefined 1`] = `
   <button
     aria-checked={true}
     className="sc-dkzDqf jDeGjH"
+    data-button-id="red"
     data-rac=""
-    data-section-id="red"
     data-selected={true}
     disabled={false}
     onBlur={[Function]}
@@ -304,8 +304,8 @@ exports[`ToggleButtonGroup matches snapshot with selectionMode undefined 1`] = `
   <button
     aria-checked={false}
     className="sc-dkzDqf jDeGjH"
+    data-button-id="green"
     data-rac=""
-    data-section-id="green"
     disabled={false}
     onBlur={[Function]}
     onClick={[Function]}
@@ -328,8 +328,8 @@ exports[`ToggleButtonGroup matches snapshot with selectionMode undefined 1`] = `
   <button
     aria-checked={false}
     className="sc-dkzDqf jDeGjH"
+    data-button-id="blue"
     data-rac=""
-    data-section-id="blue"
     disabled={false}
     onBlur={[Function]}
     onClick={[Function]}
@@ -352,8 +352,8 @@ exports[`ToggleButtonGroup matches snapshot with selectionMode undefined 1`] = `
   <button
     aria-checked={false}
     className="sc-dkzDqf jDeGjH"
+    data-button-id="yellow"
     data-rac=""
-    data-section-id="yellow"
     disabled={false}
     onBlur={[Function]}
     onClick={[Function]}
@@ -376,8 +376,8 @@ exports[`ToggleButtonGroup matches snapshot with selectionMode undefined 1`] = `
   <button
     aria-checked={false}
     className="sc-dkzDqf jDeGjH"
+    data-button-id="orange"
     data-rac=""
-    data-section-id="orange"
     disabled={false}
     onBlur={[Function]}
     onClick={[Function]}
