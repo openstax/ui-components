@@ -71,7 +71,7 @@ export const Button = styled((props: ButtonProps | WaitingButtonProps) => {
   </button>;
 })`
   ${buttonCss}
-`
+`;
 
 export const LinkButton = styled(({ variant, ...props}: LinkButtonBase) =>
   <a {...props}>{props.children}</a>
