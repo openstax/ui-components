@@ -62,7 +62,7 @@ export const applyButtonVariantStyles = (variant: ButtonVariant) => {
 
     &:focus {
       outline: solid ${set.outline};
-      box-shadow: inset 0 0 0 3px ${set.shadow};
+      box-shadow: inset 0 0 0 0.3rem ${set.shadow};
     }
   `;
 };
