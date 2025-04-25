@@ -2,7 +2,7 @@
 
 exports[`Button isWaiting state matches snapshot 1`] = `
 <button
-  className="sc-bczRLJ jBPkZO"
+  className="sc-bczRLJ dOOknK"
   disabled={true}
 >
   Submitting...
@@ -11,7 +11,7 @@ exports[`Button isWaiting state matches snapshot 1`] = `
 
 exports[`Button matches light color snapshot 1`] = `
 <button
-  className="sc-bczRLJ fUWpMe"
+  className="sc-bczRLJ esoxNv"
 >
   Click Me
 </button>
@@ -19,7 +19,7 @@ exports[`Button matches light color snapshot 1`] = `
 
 exports[`Button matches snapshot 1`] = `
 <button
-  className="sc-bczRLJ jBPkZO"
+  className="sc-bczRLJ dOOknK"
 >
   Click Me
 </button>
@@ -27,7 +27,7 @@ exports[`Button matches snapshot 1`] = `
 
 exports[`Button renders as a tag 1`] = `
 <a
-  className="sc-bczRLJ jBPkZO"
+  className="sc-gsnTZi bOGeQ"
 >
   Click Me
 </a>
@@ -35,7 +35,7 @@ exports[`Button renders as a tag 1`] = `
 
 exports[`Button renders as a tag variant 1`] = `
 <a
-  className="sc-bczRLJ fUWpMe"
+  className="sc-gsnTZi gaKcuZ"
 >
   Click Me
 </a>
@@ -43,7 +43,7 @@ exports[`Button renders as a tag variant 1`] = `
 
 exports[`Button renders button that looks like a link 1`] = `
 <button
-  className="sc-gsnTZi sc-dkzDqf czjxlp jmylct"
+  className="sc-dkzDqf sc-hKMtZM bLbJrC bAtAjm"
 >
   Click Me
 </button>
@@ -51,7 +51,7 @@ exports[`Button renders button that looks like a link 1`] = `
 
 exports[`Button renders plain button 1`] = `
 <button
-  className="sc-gsnTZi czjxlp"
+  className="sc-dkzDqf bLbJrC"
 >
   Click Me
 </button>

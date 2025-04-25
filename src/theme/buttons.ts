@@ -8,6 +8,8 @@ interface ButtonStyleSet {
   backgroundActive: string;
   backgroundHover: string;
   color: string;
+  outline: string;
+  shadow: string;
   fontWeight?: number;
 }
 
@@ -20,6 +22,8 @@ const buttonStyleSets = asButtonStyleSetTypes({
     backgroundActive: "#b03808",
     backgroundHover: "#be3c08",
     color: palette.white,
+    outline: palette.white,
+    shadow: palette.black,
   },
   light: {
     background: palette.white,
@@ -27,12 +31,16 @@ const buttonStyleSets = asButtonStyleSetTypes({
     backgroundHover: palette.white,
     color: palette.neutralDarker,
     fontWeight: 400,
+    outline: palette.white,
+    shadow: palette.black,
   },
   secondary: {
     background: palette.darkGray,
     backgroundActive: "#4c4c4c",
     backgroundHover: "#646464",
     color: palette.white,
+    outline: palette.white,
+    shadow: palette.black,
   },
 } as const);
 
@@ -50,6 +58,11 @@ export const applyButtonVariantStyles = (variant: ButtonVariant) => {
       &:active {
         background: ${set.backgroundActive};
       }
+    }
+
+    &:focus {
+      outline: solid ${set.outline};
+      box-shadow: inset 0 0 0 0.3rem ${set.shadow};
     }
   `;
 };
