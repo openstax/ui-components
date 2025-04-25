@@ -1,7 +1,7 @@
-import { SectionNav } from './SectionNav/index';
+import { ButtonNav } from './ButtonNav/index';
 import renderer from 'react-test-renderer';
 
-describe('SectionNav', () => {
+describe('ButtonNav', () => {
 
   const childrenListWithKeys = [
     <button key='1'>Slide 1</button>,
@@ -16,26 +16,26 @@ describe('SectionNav', () => {
 
   it('matches snapshot', () => {
     const tree = renderer.create(
-      <SectionNav
+      <ButtonNav
         handlePrevArrow={handlePrev}
         handleNextArrow={handleNext}
       >
         {childrenListWithKeys}
-      </SectionNav>
+      </ButtonNav>
     ).toJSON();
     expect(tree).toMatchSnapshot();
   });
 
   it('matches snapshot when arrows are disabled', () => {
     const tree = renderer.create(
-      <SectionNav
+      <ButtonNav
         handlePrevArrow={handlePrev}
         handleNextArrow={handleNext}
         isPrevArrowDisabled
         isNextArrowDisabled
       >
         {childrenListWithKeys}
-      </SectionNav>
+      </ButtonNav>
     ).toJSON();
     expect(tree).toMatchSnapshot();
   });

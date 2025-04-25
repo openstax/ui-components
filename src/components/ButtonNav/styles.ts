@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { palette } from '../../theme/palette';
 
-export const SectionNavContainer = styled.div`
+export const ButtonNavContainer = styled.div`
   position: relative;
   display: flex;
   justify-content: space-between;
@@ -10,7 +10,7 @@ export const SectionNavContainer = styled.div`
   max-width: fit-content;
 `;
 
-export const SectionNavWrapper = styled.div`
+export const ButtonNavWrapper = styled.div`
   display: flex;
   position: inherit;
   overflow-x: auto;
@@ -18,7 +18,7 @@ export const SectionNavWrapper = styled.div`
   transition: transform 0.3s ease-in-out;
 `;
 
-export const SectionNavGroup = styled.div`
+export const ButtonNavGroup = styled.div`
   flex: 0 0 auto;
   &:not(:last-child) {
     margin-right: 0.8rem;

@@ -1,14 +1,14 @@
 import React from "react";
 import {
-  SectionNavContainer,
-  SectionNavWrapper,
-  SectionNavGroup,
+  ButtonNavContainer,
+  ButtonNavWrapper,
+  ButtonNavGroup,
   StyledArrow,
 } from './styles';
 import { LeftArrow } from "../svgs/LeftArrow";
 import { RightArrow } from "../svgs/RightArrow";
 
-export interface SectionNavProps {
+export interface ButtonNavProps {
   children: React.ReactNode[];
   handlePrevArrow: () => void;
   handleNextArrow: () => void;
@@ -16,18 +16,18 @@ export interface SectionNavProps {
   isNextArrowDisabled?: boolean;
 }
 
-export const SectionNav = (
+export const ButtonNav = (
   {
     children,
     handlePrevArrow,
     handleNextArrow,
     isPrevArrowDisabled = false,
     isNextArrowDisabled = false
-  }: SectionNavProps) => {
+  }: ButtonNavProps) => {
   const wrapperRef = React.useRef<HTMLDivElement>(null);
 
   return (
-    <SectionNavContainer>
+    <ButtonNavContainer>
       <StyledArrow
         onClick={handlePrevArrow}
         className="left-arrow"
@@ -36,13 +36,13 @@ export const SectionNav = (
       >
         <LeftArrow width={14} height={14} />
       </StyledArrow>
-      <SectionNavWrapper ref={wrapperRef} >
+      <ButtonNavWrapper ref={wrapperRef} >
         {children.map((child, index) =>
-          <SectionNavGroup key={`section-group-${index + 1}`} >
+          <ButtonNavGroup key={`section-group-${index + 1}`} >
             {child}
-          </SectionNavGroup>
+          </ButtonNavGroup>
         )}
-      </SectionNavWrapper>
+      </ButtonNavWrapper>
       <StyledArrow
         onClick={handleNextArrow}
         className="right-arrow"
@@ -50,6 +50,6 @@ export const SectionNav = (
         disabled={isNextArrowDisabled} >
         <RightArrow width={14} height={14} />
       </StyledArrow>
-    </SectionNavContainer>
+    </ButtonNavContainer>
   );
 };
