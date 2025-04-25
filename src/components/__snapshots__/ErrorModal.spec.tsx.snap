@@ -111,7 +111,7 @@ exports[`Modal matches snapshot 1`] = `
             class="sc-iqcoie cqUGeK"
           >
             <button
-              class="sc-bczRLJ iNktJy"
+              class="sc-bczRLJ dOOknK"
             >
               OK
             </button>
@@ -240,7 +240,7 @@ exports[`Modal matches snapshot when heading and children are set 1`] = `
             class="sc-iqcoie cqUGeK"
           >
             <button
-              class="sc-bczRLJ iNktJy"
+              class="sc-bczRLJ dOOknK"
             >
               OK
             </button>
