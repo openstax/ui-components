@@ -1,5 +1,5 @@
 import React from "react";
-import { SectionNav } from "./SectionNav/index";
+import { ButtonNav } from "./ButtonNav/index";
 import { ToggleButtonGroup } from "./ToggleButtonGroup/index";
 import { Key } from "react-aria-components";
 
@@ -28,14 +28,14 @@ export const Default = () => {
 
   return (
     <>
-      <SectionNav
+      <ButtonNav
         handlePrevArrow={handlePrevArrow}
         handleNextArrow={handleNextArrow}
         isPrevArrowDisabled={selectedIndex === 0}
         isNextArrowDisabled={selectedIndex === childrenListWithKeys.length - 1}
       >
         {[childrenListWithKeys]}
-      </SectionNav>
+      </ButtonNav>
       <span>Selected section: {selectedIndex + 1}</span>
     </>
 
@@ -68,38 +68,36 @@ export const WithToggleButtonGroups = () => {
 
   const flattenedSections = sections.flat();
 
-  const [selectedItems, setSelectedItems] = React.useState(new Set<Key>([flattenedSections[0].id]));
+  const [selectedItem, setSelectedItem] = React.useState<string>(flattenedSections ? flattenedSections[0].id : '');
 
-  const scrollToIndex = (id: Key) => {
-    const child = document.querySelector(`[data-button-id="${id}"]`) as HTMLElement;
+  const scrollNavToSection = (sectionDataId: string) => {
+    const child = document.querySelector<HTMLElement>(`[data-button-id="${sectionDataId}"]`);
     if (child) {
       child.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
     }
   };
 
   const handlePrevArrow = () => {
-    setSelectedItems((prev) => {
-      const newSet = new Set<Key>();
-      const firstSectionKeys = flattenedSections.map(section => section.id);
-      const currentIndex = firstSectionKeys.indexOf([...prev][0] as string);
+    setSelectedItem((prev) => {
+      const currentIndex =  flattenedSections.findIndex((element) => element.id === prev);
+      let newSelectedItem = prev;
       if (currentIndex > 0) {
-        newSet.add(firstSectionKeys[currentIndex - 1]);
-        scrollToIndex(firstSectionKeys[currentIndex - 1]);
+        newSelectedItem = flattenedSections[currentIndex - 1].id;
+        scrollNavToSection(newSelectedItem);
       }
-      return newSet;
+      return newSelectedItem;
     });
   };
 
   const handleNextArrow = () => {
-    setSelectedItems((prev) => {
-      const newSet = new Set<Key>();
-      const firstSectionKeys = flattenedSections.map(section => section.id);
-      const currentIndex = firstSectionKeys.indexOf([...prev][0] as string);
-      if (currentIndex < firstSectionKeys.length - 1) {
-        newSet.add(firstSectionKeys[currentIndex + 1]);
-        scrollToIndex(firstSectionKeys[currentIndex + 1]);
+    setSelectedItem((prev) => {
+      const currentIndex =  flattenedSections.findIndex((element) => element.id === prev);
+      let newSelectedItem = prev;
+      if (currentIndex < flattenedSections.length - 1) {
+        newSelectedItem = flattenedSections[currentIndex + 1].id;
+        scrollNavToSection(newSelectedItem);
       }
-      return newSet;
+      return newSelectedItem;
     });
   };
 
@@ -107,23 +105,26 @@ export const WithToggleButtonGroups = () => {
     (sectionSet, index) => 
       <ToggleButtonGroup
         key={`section-${index + 1}`}
-        selectedItems={selectedItems}
-        onSelectionChange={setSelectedItems}
+        selectedItems={new Set<Key>([selectedItem])}
+        onSelectionChange={(newSet) => setSelectedItem(newSet.size ? [...newSet][0] as string : '')}
         items={sectionSet}
       />
   );
 
   return (
     <>
-      <SectionNav
+      <ButtonNav
         handlePrevArrow={handlePrevArrow}
         handleNextArrow={handleNextArrow}
-        isPrevArrowDisabled={selectedItems.has(flattenedSections[0].id) || selectedItems.size === 0}
-        isNextArrowDisabled={selectedItems.has(flattenedSections[flattenedSections.length - 1].id) || selectedItems.size === 0}
+        isPrevArrowDisabled={selectedItem === flattenedSections[0].id || selectedItem.length === 0}
+        isNextArrowDisabled={
+          selectedItem === flattenedSections[flattenedSections.length - 1].id || 
+          selectedItem.length === 0
+        }
       >
         {ToggleGroup}
-      </SectionNav>
-      <p>Current selections: {[...selectedItems].join(', ')}</p>
+      </ButtonNav>
+      <p>Current selected: {selectedItem}</p>
     </>
   );
 

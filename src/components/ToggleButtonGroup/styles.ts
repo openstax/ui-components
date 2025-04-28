@@ -17,6 +17,7 @@ export const StyledToggleButton = styled(ToggleButton)`
   font-size: 1.6rem;
   line-height: 2rem;
   white-space: nowrap;
+  user-select: none;
 
   & + & {
     border-left: none;

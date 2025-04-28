@@ -1,11 +1,10 @@
-import React from "react";
 import { StyledToggleButtonGroup, StyledToggleButton } from "./styles";
 import { Key } from "react-aria-components";
 
 export interface ToggleButtonGroupProps {
   items: { id: string, value: string }[];
-  selectedItems: Set<Key>;
-  onSelectionChange?: React.Dispatch<React.SetStateAction<Set<Key>>>;
+  selectedItems?: Iterable<Key>;
+  onSelectionChange?: ((keys: Set<Key>) => void);
   selectionMode?: 'single' | 'multiple';
   className?: string;
 }

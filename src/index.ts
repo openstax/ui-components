@@ -25,7 +25,7 @@ export * from './components/Text';
 export * from './components/ToastContainer';
 export * from './components/Tooltip';
 export * as Forms from './components/forms';
-export * from './components/SectionNav';
+export * from './components/ButtonNav';
 export * from './components/ToggleButtonGroup';
 export * from './constants';
 export * from './contexts';

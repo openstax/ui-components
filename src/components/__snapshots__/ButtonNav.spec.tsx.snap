@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`SectionNav matches snapshot 1`] = `
+exports[`ButtonNav matches snapshot 1`] = `
 <div
   className="sc-bczRLJ caOXAc"
 >
@@ -84,7 +84,7 @@ exports[`SectionNav matches snapshot 1`] = `
 </div>
 `;
 
-exports[`SectionNav matches snapshot when arrows are disabled 1`] = `
+exports[`ButtonNav matches snapshot when arrows are disabled 1`] = `
 <div
   className="sc-bczRLJ caOXAc"
 >
