@@ -31,7 +31,7 @@ export const SingleSelection = () => {
     <>
       <ToggleButtonGroup
         selectedItems={new Set<Key>([selectedItem])}
-        onSelectionChange={(newSet) => setSelectedItem([...newSet][0] as string)}
+        onSelectionChange={(newSet) => setSelectedItem(newSet.size ? [...newSet][0] as string : '')}
         items={childrenListWithKeys}
       />
       <p>Current selections: {selectedItem}</p>

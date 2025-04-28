@@ -83,7 +83,7 @@ export const WithToggleButtonGroups = () => {
       let newSelectedItem = prev;
       if (currentIndex > 0) {
         newSelectedItem = flattenedSections[currentIndex - 1].id;
-        scrollNavToSection(flattenedSections[currentIndex - 1].id);
+        scrollNavToSection(newSelectedItem);
       }
       return newSelectedItem;
     });
@@ -95,7 +95,7 @@ export const WithToggleButtonGroups = () => {
       let newSelectedItem = prev;
       if (currentIndex < flattenedSections.length - 1) {
         newSelectedItem = flattenedSections[currentIndex + 1].id;
-        scrollNavToSection(flattenedSections[currentIndex + 1].id);
+        scrollNavToSection(newSelectedItem);
       }
       return newSelectedItem;
     });
@@ -106,7 +106,7 @@ export const WithToggleButtonGroups = () => {
       <ToggleButtonGroup
         key={`section-${index + 1}`}
         selectedItems={new Set<Key>([selectedItem])}
-        onSelectionChange={(newSet) => setSelectedItem([...newSet][0] as string)}
+        onSelectionChange={(newSet) => setSelectedItem(newSet.size ? [...newSet][0] as string : '')}
         items={sectionSet}
       />
   );

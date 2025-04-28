@@ -3,8 +3,8 @@ import { Key } from "react-aria-components";
 
 export interface ToggleButtonGroupProps {
   items: { id: string, value: string }[];
-  selectedItems: Iterable<Key> | undefined;
-  onSelectionChange?: ((keys: Set<Key>) => void) | undefined;
+  selectedItems?: Iterable<Key>;
+  onSelectionChange?: ((keys: Set<Key>) => void);
   selectionMode?: 'single' | 'multiple';
   className?: string;
 }
