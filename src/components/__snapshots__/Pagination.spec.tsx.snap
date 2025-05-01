@@ -6,7 +6,7 @@ exports[`Pagination grows to min size 1`] = `
     id="root"
   >
     <div
-      class="sc-bczRLJ cvTmMf"
+      class="sc-gsnTZi Nkuun"
     >
       <nav
         aria-label="pagination links"
@@ -17,6 +17,7 @@ exports[`Pagination grows to min size 1`] = `
           >
             <a
               aria-current="page"
+              class="sc-bczRLJ kkAHbA"
               href="#"
             >
               1
@@ -24,6 +25,7 @@ exports[`Pagination grows to min size 1`] = `
           </li>
           <li>
             <a
+              class="sc-bczRLJ kkAHbA"
               href="#"
             >
               2
@@ -31,6 +33,7 @@ exports[`Pagination grows to min size 1`] = `
           </li>
           <li>
             <a
+              class="sc-bczRLJ kkAHbA"
               href="#"
             >
               3
@@ -38,6 +41,7 @@ exports[`Pagination grows to min size 1`] = `
           </li>
           <li>
             <a
+              class="sc-bczRLJ kkAHbA"
               href="#"
             >
               4
@@ -45,6 +49,7 @@ exports[`Pagination grows to min size 1`] = `
           </li>
           <li>
             <a
+              class="sc-bczRLJ kkAHbA"
               href="#"
             >
               5
@@ -59,6 +64,7 @@ exports[`Pagination grows to min size 1`] = `
           </li>
           <li>
             <a
+              class="sc-bczRLJ kkAHbA"
               href="#"
             >
               10
@@ -77,7 +83,7 @@ exports[`Pagination grows to min size from back 1`] = `
     id="root"
   >
     <div
-      class="sc-bczRLJ cvTmMf"
+      class="sc-gsnTZi Nkuun"
     >
       <nav
         aria-label="pagination links"
@@ -85,6 +91,7 @@ exports[`Pagination grows to min size from back 1`] = `
         <ul>
           <li>
             <a
+              class="sc-bczRLJ kkAHbA"
               href="#"
             >
               1
@@ -99,6 +106,7 @@ exports[`Pagination grows to min size from back 1`] = `
           </li>
           <li>
             <a
+              class="sc-bczRLJ kkAHbA"
               href="#"
             >
               6
@@ -106,6 +114,7 @@ exports[`Pagination grows to min size from back 1`] = `
           </li>
           <li>
             <a
+              class="sc-bczRLJ kkAHbA"
               href="#"
             >
               7
@@ -113,6 +122,7 @@ exports[`Pagination grows to min size from back 1`] = `
           </li>
           <li>
             <a
+              class="sc-bczRLJ kkAHbA"
               href="#"
             >
               8
@@ -120,6 +130,7 @@ exports[`Pagination grows to min size from back 1`] = `
           </li>
           <li>
             <a
+              class="sc-bczRLJ kkAHbA"
               href="#"
             >
               9
@@ -130,6 +141,7 @@ exports[`Pagination grows to min size from back 1`] = `
           >
             <a
               aria-current="page"
+              class="sc-bczRLJ kkAHbA"
               href="#"
             >
               10
@@ -148,7 +160,7 @@ exports[`Pagination matches snapshot 1`] = `
     id="root"
   >
     <div
-      class="sc-bczRLJ cvTmMf"
+      class="sc-gsnTZi Nkuun"
     >
       <nav
         aria-label="pagination links"
@@ -159,6 +171,7 @@ exports[`Pagination matches snapshot 1`] = `
           >
             <a
               aria-current="page"
+              class="sc-bczRLJ kkAHbA"
               href="#"
             >
               1
@@ -166,6 +179,7 @@ exports[`Pagination matches snapshot 1`] = `
           </li>
           <li>
             <a
+              class="sc-bczRLJ kkAHbA"
               href="#"
             >
               2
@@ -173,6 +187,7 @@ exports[`Pagination matches snapshot 1`] = `
           </li>
           <li>
             <a
+              class="sc-bczRLJ kkAHbA"
               href="#"
             >
               3
@@ -180,6 +195,7 @@ exports[`Pagination matches snapshot 1`] = `
           </li>
           <li>
             <a
+              class="sc-bczRLJ kkAHbA"
               href="#"
             >
               4
@@ -187,6 +203,7 @@ exports[`Pagination matches snapshot 1`] = `
           </li>
           <li>
             <a
+              class="sc-bczRLJ kkAHbA"
               href="#"
             >
               5
@@ -194,6 +211,7 @@ exports[`Pagination matches snapshot 1`] = `
           </li>
           <li>
             <a
+              class="sc-bczRLJ kkAHbA"
               href="#"
             >
               6
@@ -201,6 +219,7 @@ exports[`Pagination matches snapshot 1`] = `
           </li>
           <li>
             <a
+              class="sc-bczRLJ kkAHbA"
               href="#"
             >
               7
@@ -208,6 +227,7 @@ exports[`Pagination matches snapshot 1`] = `
           </li>
           <li>
             <a
+              class="sc-bczRLJ kkAHbA"
               href="#"
             >
               8
@@ -215,6 +235,7 @@ exports[`Pagination matches snapshot 1`] = `
           </li>
           <li>
             <a
+              class="sc-bczRLJ kkAHbA"
               href="#"
             >
               9
@@ -222,6 +243,7 @@ exports[`Pagination matches snapshot 1`] = `
           </li>
           <li>
             <a
+              class="sc-bczRLJ kkAHbA"
               href="#"
             >
               10
@@ -240,7 +262,7 @@ exports[`Pagination matches snapshot with dividers 1`] = `
     id="root"
   >
     <div
-      class="sc-bczRLJ cvTmMf"
+      class="sc-gsnTZi Nkuun"
     >
       <nav
         aria-label="pagination links"
@@ -248,6 +270,7 @@ exports[`Pagination matches snapshot with dividers 1`] = `
         <ul>
           <li>
             <a
+              class="sc-bczRLJ kkAHbA"
               href="#"
             >
               1
@@ -262,6 +285,7 @@ exports[`Pagination matches snapshot with dividers 1`] = `
           </li>
           <li>
             <a
+              class="sc-bczRLJ kkAHbA"
               href="#"
             >
               4
@@ -272,6 +296,7 @@ exports[`Pagination matches snapshot with dividers 1`] = `
           >
             <a
               aria-current="page"
+              class="sc-bczRLJ kkAHbA"
               href="#"
             >
               5
@@ -279,6 +304,7 @@ exports[`Pagination matches snapshot with dividers 1`] = `
           </li>
           <li>
             <a
+              class="sc-bczRLJ kkAHbA"
               href="#"
             >
               6
@@ -293,6 +319,7 @@ exports[`Pagination matches snapshot with dividers 1`] = `
           </li>
           <li>
             <a
+              class="sc-bczRLJ kkAHbA"
               href="#"
             >
               10

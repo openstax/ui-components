@@ -2,6 +2,28 @@ import React from 'react';
 import styled from 'styled-components';
 import { palette } from "../theme/palette";
 
+export const LinkForPage = styled(({ page, current, href, onClick, className }: {
+  page: number;
+  current?: boolean;
+  href?: string;
+  className?: string;
+  onClick?: (event: React.MouseEvent<HTMLAnchorElement>) => void;
+}) => {
+  const currentValue = current ? "page" : undefined;
+
+  return (
+    <a
+      className={className}
+      aria-current={currentValue}
+      href={href || '#'}
+      onClick={onClick}
+    >
+      {page}
+    </a>
+  );
+})`
+`;
+
 export const Pagination = styled((props: {
   className?: string;
   Page: (props: {page: number; current: boolean}) => React.ReactElement;
@@ -146,7 +168,7 @@ export const Pagination = styled((props: {
         background-color: ${palette.neutralLighter};
       }
 
-      > a,span {
+      > ${LinkForPage},span {
         padding: 1rem;
         display: block;
         text-decoration: none;
@@ -167,23 +189,4 @@ export const Pagination = styled((props: {
 function range(lower: number, upper: number) {
   if (upper < lower) return [];
   return Array.from({length: upper-lower}).map((_, i) => i + lower);
-}
-
-export function LinkForPage({ page, current, href, onClick }: {
-  page: number;
-  current?: boolean;
-  href?: string;
-  onClick?: (event: React.MouseEvent<HTMLAnchorElement>) => void;
-}) {
-  const currentValue = current ? "page" : undefined;
-
-  return (
-    <a
-      aria-current={currentValue}
-      href={href || '#'}
-      onClick={onClick}
-    >
-      {page}
-    </a>
-  );
 }
