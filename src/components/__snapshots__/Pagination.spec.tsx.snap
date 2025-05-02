@@ -1,0 +1,368 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Pagination grows to min size 1`] = `
+<body>
+  <main
+    id="root"
+  >
+    <div
+      class="sc-gsnTZi Nkuun"
+    >
+      <nav
+        aria-label="pagination links"
+      >
+        <ul>
+          <li
+            class="active"
+          >
+            <a
+              aria-current="page"
+              aria-label="Page 1"
+              class="sc-bczRLJ kkAHbA"
+              href="#"
+            >
+              1
+            </a>
+          </li>
+          <li>
+            <a
+              aria-label="Page 2"
+              class="sc-bczRLJ kkAHbA"
+              href="#"
+            >
+              2
+            </a>
+          </li>
+          <li>
+            <a
+              aria-label="Page 3"
+              class="sc-bczRLJ kkAHbA"
+              href="#"
+            >
+              3
+            </a>
+          </li>
+          <li>
+            <a
+              aria-label="Page 4"
+              class="sc-bczRLJ kkAHbA"
+              href="#"
+            >
+              4
+            </a>
+          </li>
+          <li>
+            <a
+              aria-label="Page 5"
+              class="sc-bczRLJ kkAHbA"
+              href="#"
+            >
+              5
+            </a>
+          </li>
+          <li
+            class="disabled"
+          >
+            <span>
+              ...
+            </span>
+          </li>
+          <li>
+            <a
+              aria-label="Page 10"
+              class="sc-bczRLJ kkAHbA"
+              href="#"
+            >
+              10
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </main>
+</body>
+`;
+
+exports[`Pagination grows to min size from back 1`] = `
+<body>
+  <main
+    id="root"
+  >
+    <div
+      class="sc-gsnTZi Nkuun"
+    >
+      <nav
+        aria-label="pagination links"
+      >
+        <ul>
+          <li>
+            <a
+              aria-label="Page 1"
+              class="sc-bczRLJ kkAHbA"
+              href="#"
+            >
+              1
+            </a>
+          </li>
+          <li
+            class="disabled"
+          >
+            <span>
+              ...
+            </span>
+          </li>
+          <li>
+            <a
+              aria-label="Page 6"
+              class="sc-bczRLJ kkAHbA"
+              href="#"
+            >
+              6
+            </a>
+          </li>
+          <li>
+            <a
+              aria-label="Page 7"
+              class="sc-bczRLJ kkAHbA"
+              href="#"
+            >
+              7
+            </a>
+          </li>
+          <li>
+            <a
+              aria-label="Page 8"
+              class="sc-bczRLJ kkAHbA"
+              href="#"
+            >
+              8
+            </a>
+          </li>
+          <li>
+            <a
+              aria-label="Page 9"
+              class="sc-bczRLJ kkAHbA"
+              href="#"
+            >
+              9
+            </a>
+          </li>
+          <li
+            class="active"
+          >
+            <a
+              aria-current="page"
+              aria-label="Page 10"
+              class="sc-bczRLJ kkAHbA"
+              href="#"
+            >
+              10
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </main>
+</body>
+`;
+
+exports[`Pagination matches snapshot 1`] = `
+<body>
+  <main
+    id="root"
+  >
+    <div
+      class="sc-gsnTZi Nkuun"
+    >
+      <nav
+        aria-label="pagination links"
+      >
+        <ul>
+          <li
+            class="active"
+          >
+            <a
+              aria-current="page"
+              aria-label="Page 1"
+              class="sc-bczRLJ kkAHbA"
+              href="#"
+            >
+              1
+            </a>
+          </li>
+          <li>
+            <a
+              aria-label="Page 2"
+              class="sc-bczRLJ kkAHbA"
+              href="#"
+            >
+              2
+            </a>
+          </li>
+          <li>
+            <a
+              aria-label="Page 3"
+              class="sc-bczRLJ kkAHbA"
+              href="#"
+            >
+              3
+            </a>
+          </li>
+          <li>
+            <a
+              aria-label="Page 4"
+              class="sc-bczRLJ kkAHbA"
+              href="#"
+            >
+              4
+            </a>
+          </li>
+          <li>
+            <a
+              aria-label="Page 5"
+              class="sc-bczRLJ kkAHbA"
+              href="#"
+            >
+              5
+            </a>
+          </li>
+          <li>
+            <a
+              aria-label="Page 6"
+              class="sc-bczRLJ kkAHbA"
+              href="#"
+            >
+              6
+            </a>
+          </li>
+          <li>
+            <a
+              aria-label="Page 7"
+              class="sc-bczRLJ kkAHbA"
+              href="#"
+            >
+              7
+            </a>
+          </li>
+          <li>
+            <a
+              aria-label="Page 8"
+              class="sc-bczRLJ kkAHbA"
+              href="#"
+            >
+              8
+            </a>
+          </li>
+          <li>
+            <a
+              aria-label="Page 9"
+              class="sc-bczRLJ kkAHbA"
+              href="#"
+            >
+              9
+            </a>
+          </li>
+          <li>
+            <a
+              aria-label="Page 10"
+              class="sc-bczRLJ kkAHbA"
+              href="#"
+            >
+              10
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </main>
+</body>
+`;
+
+exports[`Pagination matches snapshot with dividers 1`] = `
+<body>
+  <main
+    id="root"
+  >
+    <div
+      class="sc-gsnTZi Nkuun"
+    >
+      <nav
+        aria-label="pagination links"
+      >
+        <ul>
+          <li>
+            <a
+              aria-label="Page 1"
+              class="sc-bczRLJ kkAHbA"
+              href="#"
+            >
+              1
+            </a>
+          </li>
+          <li
+            class="disabled"
+          >
+            <span>
+              ...
+            </span>
+          </li>
+          <li>
+            <a
+              aria-label="Page 4"
+              class="sc-bczRLJ kkAHbA"
+              href="#"
+            >
+              4
+            </a>
+          </li>
+          <li
+            class="active"
+          >
+            <a
+              aria-current="page"
+              aria-label="Page 5"
+              class="sc-bczRLJ kkAHbA"
+              href="#"
+            >
+              5
+            </a>
+          </li>
+          <li>
+            <a
+              aria-label="Page 6"
+              class="sc-bczRLJ kkAHbA"
+              href="#"
+            >
+              6
+            </a>
+          </li>
+          <li
+            class="disabled"
+          >
+            <span>
+              ...
+            </span>
+          </li>
+          <li>
+            <a
+              aria-label="Page 10"
+              class="sc-bczRLJ kkAHbA"
+              href="#"
+            >
+              10
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </main>
+</body>
+`;
+
+exports[`Pagination noops 1`] = `
+<body>
+  <main
+    id="root"
+  />
+</body>
+`;
