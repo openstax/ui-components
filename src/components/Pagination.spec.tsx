@@ -14,7 +14,7 @@ describe('Pagination', () => {
     render(<Pagination
       currentPage={1} totalPages={10}
       Page={({ page, current }) =>
-        <LinkForPage page={page} current={current} />
+        <LinkForPage page={page} current={current} href="#" />
       }
     />, {container: root});
     expect(document.body).toMatchSnapshot();
@@ -24,7 +24,7 @@ describe('Pagination', () => {
     render(<Pagination
       currentPage={5} totalPages={10} showFromEnd={1} showFromCurrent={1}
       Page={({ page, current }) =>
-        <LinkForPage page={page} current={current} />
+        <LinkForPage page={page} current={current} href="#" />
       }
     />, {container: root});
     expect(document.body).toMatchSnapshot();
@@ -34,17 +34,17 @@ describe('Pagination', () => {
     render(<Pagination
       currentPage={1} totalPages={10} showFromEnd={1} showFromCurrent={1}
       Page={({ page, current }) =>
-        <LinkForPage page={page} current={current} />
+        <LinkForPage page={page} current={current} href="#" />
       }
     />, {container: root});
     expect(document.body).toMatchSnapshot();
   });
-  
+
   it('grows to min size from back', () => {
     render(<Pagination
       currentPage={10} totalPages={10} showFromEnd={1} showFromCurrent={1}
       Page={({ page, current }) =>
-        <LinkForPage page={page} current={current} />
+        <LinkForPage page={page} current={current} href="#" />
       }
     />, {container: root});
     expect(document.body).toMatchSnapshot();
@@ -54,7 +54,7 @@ describe('Pagination', () => {
     render(<Pagination
       currentPage={1} totalPages={1}
       Page={({ page, current }) =>
-        <LinkForPage page={page} current={current} />
+        <LinkForPage page={page} current={current} href="#" />
       }
     />, {container: root});
     expect(document.body).toMatchSnapshot();

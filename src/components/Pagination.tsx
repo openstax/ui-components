@@ -5,7 +5,7 @@ import { palette } from "../theme/palette";
 export const LinkForPage = styled(({ page, current, href, onClick, className }: {
   page: number;
   current?: boolean;
-  href?: string;
+  href: string;
   className?: string;
   onClick?: (event: React.MouseEvent<HTMLAnchorElement>) => void;
 }) => {
@@ -14,6 +14,7 @@ export const LinkForPage = styled(({ page, current, href, onClick, className }: 
   return (
     <a
       className={className}
+      aria-label={`Page ${page}`}
       aria-current={currentValue}
       href={href || '#'}
       onClick={onClick}

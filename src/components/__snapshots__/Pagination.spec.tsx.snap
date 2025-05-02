@@ -17,6 +17,7 @@ exports[`Pagination grows to min size 1`] = `
           >
             <a
               aria-current="page"
+              aria-label="Page 1"
               class="sc-bczRLJ kkAHbA"
               href="#"
             >
@@ -25,6 +26,7 @@ exports[`Pagination grows to min size 1`] = `
           </li>
           <li>
             <a
+              aria-label="Page 2"
               class="sc-bczRLJ kkAHbA"
               href="#"
             >
@@ -33,6 +35,7 @@ exports[`Pagination grows to min size 1`] = `
           </li>
           <li>
             <a
+              aria-label="Page 3"
               class="sc-bczRLJ kkAHbA"
               href="#"
             >
@@ -41,6 +44,7 @@ exports[`Pagination grows to min size 1`] = `
           </li>
           <li>
             <a
+              aria-label="Page 4"
               class="sc-bczRLJ kkAHbA"
               href="#"
             >
@@ -49,6 +53,7 @@ exports[`Pagination grows to min size 1`] = `
           </li>
           <li>
             <a
+              aria-label="Page 5"
               class="sc-bczRLJ kkAHbA"
               href="#"
             >
@@ -64,6 +69,7 @@ exports[`Pagination grows to min size 1`] = `
           </li>
           <li>
             <a
+              aria-label="Page 10"
               class="sc-bczRLJ kkAHbA"
               href="#"
             >
@@ -91,6 +97,7 @@ exports[`Pagination grows to min size from back 1`] = `
         <ul>
           <li>
             <a
+              aria-label="Page 1"
               class="sc-bczRLJ kkAHbA"
               href="#"
             >
@@ -106,6 +113,7 @@ exports[`Pagination grows to min size from back 1`] = `
           </li>
           <li>
             <a
+              aria-label="Page 6"
               class="sc-bczRLJ kkAHbA"
               href="#"
             >
@@ -114,6 +122,7 @@ exports[`Pagination grows to min size from back 1`] = `
           </li>
           <li>
             <a
+              aria-label="Page 7"
               class="sc-bczRLJ kkAHbA"
               href="#"
             >
@@ -122,6 +131,7 @@ exports[`Pagination grows to min size from back 1`] = `
           </li>
           <li>
             <a
+              aria-label="Page 8"
               class="sc-bczRLJ kkAHbA"
               href="#"
             >
@@ -130,6 +140,7 @@ exports[`Pagination grows to min size from back 1`] = `
           </li>
           <li>
             <a
+              aria-label="Page 9"
               class="sc-bczRLJ kkAHbA"
               href="#"
             >
@@ -141,6 +152,7 @@ exports[`Pagination grows to min size from back 1`] = `
           >
             <a
               aria-current="page"
+              aria-label="Page 10"
               class="sc-bczRLJ kkAHbA"
               href="#"
             >
@@ -171,6 +183,7 @@ exports[`Pagination matches snapshot 1`] = `
           >
             <a
               aria-current="page"
+              aria-label="Page 1"
               class="sc-bczRLJ kkAHbA"
               href="#"
             >
@@ -179,6 +192,7 @@ exports[`Pagination matches snapshot 1`] = `
           </li>
           <li>
             <a
+              aria-label="Page 2"
               class="sc-bczRLJ kkAHbA"
               href="#"
             >
@@ -187,6 +201,7 @@ exports[`Pagination matches snapshot 1`] = `
           </li>
           <li>
             <a
+              aria-label="Page 3"
               class="sc-bczRLJ kkAHbA"
               href="#"
             >
@@ -195,6 +210,7 @@ exports[`Pagination matches snapshot 1`] = `
           </li>
           <li>
             <a
+              aria-label="Page 4"
               class="sc-bczRLJ kkAHbA"
               href="#"
             >
@@ -203,6 +219,7 @@ exports[`Pagination matches snapshot 1`] = `
           </li>
           <li>
             <a
+              aria-label="Page 5"
               class="sc-bczRLJ kkAHbA"
               href="#"
             >
@@ -211,6 +228,7 @@ exports[`Pagination matches snapshot 1`] = `
           </li>
           <li>
             <a
+              aria-label="Page 6"
               class="sc-bczRLJ kkAHbA"
               href="#"
             >
@@ -219,6 +237,7 @@ exports[`Pagination matches snapshot 1`] = `
           </li>
           <li>
             <a
+              aria-label="Page 7"
               class="sc-bczRLJ kkAHbA"
               href="#"
             >
@@ -227,6 +246,7 @@ exports[`Pagination matches snapshot 1`] = `
           </li>
           <li>
             <a
+              aria-label="Page 8"
               class="sc-bczRLJ kkAHbA"
               href="#"
             >
@@ -235,6 +255,7 @@ exports[`Pagination matches snapshot 1`] = `
           </li>
           <li>
             <a
+              aria-label="Page 9"
               class="sc-bczRLJ kkAHbA"
               href="#"
             >
@@ -243,6 +264,7 @@ exports[`Pagination matches snapshot 1`] = `
           </li>
           <li>
             <a
+              aria-label="Page 10"
               class="sc-bczRLJ kkAHbA"
               href="#"
             >
@@ -270,6 +292,7 @@ exports[`Pagination matches snapshot with dividers 1`] = `
         <ul>
           <li>
             <a
+              aria-label="Page 1"
               class="sc-bczRLJ kkAHbA"
               href="#"
             >
@@ -285,6 +308,7 @@ exports[`Pagination matches snapshot with dividers 1`] = `
           </li>
           <li>
             <a
+              aria-label="Page 4"
               class="sc-bczRLJ kkAHbA"
               href="#"
             >
@@ -296,6 +320,7 @@ exports[`Pagination matches snapshot with dividers 1`] = `
           >
             <a
               aria-current="page"
+              aria-label="Page 5"
               class="sc-bczRLJ kkAHbA"
               href="#"
             >
@@ -304,6 +329,7 @@ exports[`Pagination matches snapshot with dividers 1`] = `
           </li>
           <li>
             <a
+              aria-label="Page 6"
               class="sc-bczRLJ kkAHbA"
               href="#"
             >
@@ -319,6 +345,7 @@ exports[`Pagination matches snapshot with dividers 1`] = `
           </li>
           <li>
             <a
+              aria-label="Page 10"
               class="sc-bczRLJ kkAHbA"
               href="#"
             >

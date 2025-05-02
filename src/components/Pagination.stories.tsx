@@ -8,7 +8,7 @@ export const Examples = () => {
     <Pagination
       currentPage={currentPage} totalPages={10}
       Page={({ page, current }) =>
-        <LinkForPage page={page} current={current} onClick={() => setCurrentPage(page)} />
+        <LinkForPage page={page} current={current} onClick={() => setCurrentPage(page)} href="#" />
       }
     />
 
@@ -16,7 +16,7 @@ export const Examples = () => {
     <Pagination
       currentPage={currentPage} totalPages={10} showFromEnd={1}
       Page={({ page, current }) =>
-        <LinkForPage page={page} current={current} onClick={() => setCurrentPage(page)} />
+        <LinkForPage page={page} current={current} onClick={() => setCurrentPage(page)} href="#" />
       }
     />
 
@@ -24,7 +24,7 @@ export const Examples = () => {
     <Pagination
       currentPage={currentPage} totalPages={10} showFromEnd={0}
       Page={({ page, current }) =>
-        <LinkForPage page={page} current={current} onClick={() => setCurrentPage(page)} />
+        <LinkForPage page={page} current={current} onClick={() => setCurrentPage(page)} href="#" />
       }
     />
 
@@ -32,39 +32,39 @@ export const Examples = () => {
     <Pagination
       currentPage={currentPage} totalPages={10} showFromEnd={1} showFromCurrent={1}
       Page={({ page, current }) =>
-        <LinkForPage page={page} current={current} onClick={() => setCurrentPage(page)} />
+        <LinkForPage page={page} current={current} onClick={() => setCurrentPage(page)} href="#" />
       }
     />
-    
+
     <h2>less links</h2>
     <Pagination
       currentPage={currentPage} totalPages={2}
       Page={({ page, current }) =>
-        <LinkForPage page={page} current={current} onClick={() => setCurrentPage(page)} />
+        <LinkForPage page={page} current={current} onClick={() => setCurrentPage(page)} href="#" />
       }
     />
-    
+
     <h2>more links and summary</h2>
     <Pagination
       currentPage={currentPage} totalPages={40} totalItems={395} pageSize={10}
       Page={({ page, current }) =>
-        <LinkForPage page={page} current={current} onClick={() => setCurrentPage(page)} />
+        <LinkForPage page={page} current={current} onClick={() => setCurrentPage(page)} href="#" />
       }
     />
-    
+
     <h2>zero links</h2>
     <Pagination
       currentPage={currentPage} totalPages={0}
       Page={({ page, current }) =>
-        <LinkForPage page={page} current={current} onClick={() => setCurrentPage(page)} />
+        <LinkForPage page={page} current={current} onClick={() => setCurrentPage(page)} href="#" />
       }
     />
-    
+
     <h2>one link</h2>
     <Pagination
       currentPage={currentPage} totalPages={1}
       Page={({ page, current }) =>
-        <LinkForPage page={page} current={current} onClick={() => setCurrentPage(page)} />
+        <LinkForPage page={page} current={current} onClick={() => setCurrentPage(page)} href="#" />
       }
     />
   </div>
