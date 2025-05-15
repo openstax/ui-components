@@ -27,6 +27,7 @@ export * from './components/Text';
 export * from './components/ToastContainer';
 export * from './components/ToggleButtonGroup';
 export * from './components/Tooltip';
+export * from './components/Tree';
 export * as Forms from './components/forms';
 export * from './constants';
 export * from './contexts';
