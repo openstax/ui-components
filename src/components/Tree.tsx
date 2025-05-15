@@ -47,7 +47,6 @@ const ChevronWrapper = styled.div`
       stroke-width: 0.3rem;
     }
   }
-
 `;
 
 export const TreeChevron = styled((props: React.PropsWithChildren<{ className?: string }>) => (

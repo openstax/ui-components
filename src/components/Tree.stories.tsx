@@ -1,6 +1,5 @@
 import { Checkbox } from "./Checkbox";
 import { Tree, TreeChevron, TreeItem, TreeItemContent } from "./Tree";
-import React from 'react';
 
 export const Default = () => {
   return <Tree>
