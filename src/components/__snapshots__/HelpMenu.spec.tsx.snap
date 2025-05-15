@@ -55,7 +55,9 @@ exports[`HelpMenu matches snapshot 1`] = `
         aria-label="Help menu"
         class="sc-bczRLJ dKgZvy sc-eCYdqJ henMfs"
         data-rac=""
+        data-react-aria-pressable="true"
         id="react-aria-1"
+        tabindex="0"
         type="button"
       >
         <span>

@@ -5,6 +5,7 @@ exports[`Tooltip hides 1`] = `
   aria-label="More information"
   className="sc-dkzDqf dcHEnX"
   data-rac=""
+  data-react-aria-pressable={true}
   id="react-aria-5"
   onBlur={[Function]}
   onClick={[Function]}
@@ -20,6 +21,7 @@ exports[`Tooltip hides 1`] = `
   onTouchEnd={[Function]}
   onTouchMove={[Function]}
   onTouchStart={[Function]}
+  tabIndex={0}
   type="button"
 >
   <svg
@@ -44,6 +46,7 @@ Array [
     aria-label="More information"
     className="sc-dkzDqf dcHEnX"
     data-rac=""
+    data-react-aria-pressable={true}
     id="react-aria-2"
     onBlur={[Function]}
     onClick={[Function]}
@@ -59,6 +62,7 @@ Array [
     onTouchEnd={[Function]}
     onTouchMove={[Function]}
     onTouchStart={[Function]}
+    tabIndex={0}
     type="button"
   >
     <svg
@@ -95,12 +99,9 @@ Array [
       }
     >
       <div
-        aria-hidden="true"
         className="react-aria-OverlayArrow"
         data-placement={null}
         data-rac=""
-        placement={null}
-        role="presentation"
         style={
           Object {
             "position": "absolute",
@@ -131,6 +132,7 @@ exports[`Tooltip uses icon 1`] = `
   aria-label="More information"
   className="sc-dkzDqf dcHEnX"
   data-rac=""
+  data-react-aria-pressable={true}
   id="react-aria-8"
   onBlur={[Function]}
   onClick={[Function]}
@@ -146,6 +148,7 @@ exports[`Tooltip uses icon 1`] = `
   onTouchEnd={[Function]}
   onTouchMove={[Function]}
   onTouchStart={[Function]}
+  tabIndex={0}
   type="button"
 >
   <img
