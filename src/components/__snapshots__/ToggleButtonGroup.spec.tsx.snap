@@ -16,6 +16,7 @@ exports[`ToggleButtonGroup matches snapshot with selectionMode multiple 1`] = `
     className="sc-dkzDqf cQxaky"
     data-button-id="red"
     data-rac=""
+    data-react-aria-pressable={true}
     data-selected={true}
     disabled={false}
     onBlur={[Function]}
@@ -31,6 +32,7 @@ exports[`ToggleButtonGroup matches snapshot with selectionMode multiple 1`] = `
     onTouchEnd={[Function]}
     onTouchMove={[Function]}
     onTouchStart={[Function]}
+    tabIndex={0}
     type="button"
   >
     Red
@@ -40,6 +42,7 @@ exports[`ToggleButtonGroup matches snapshot with selectionMode multiple 1`] = `
     className="sc-dkzDqf cQxaky"
     data-button-id="green"
     data-rac=""
+    data-react-aria-pressable={true}
     disabled={false}
     onBlur={[Function]}
     onClick={[Function]}
@@ -54,6 +57,7 @@ exports[`ToggleButtonGroup matches snapshot with selectionMode multiple 1`] = `
     onTouchEnd={[Function]}
     onTouchMove={[Function]}
     onTouchStart={[Function]}
+    tabIndex={0}
     type="button"
   >
     Green
@@ -63,6 +67,7 @@ exports[`ToggleButtonGroup matches snapshot with selectionMode multiple 1`] = `
     className="sc-dkzDqf cQxaky"
     data-button-id="blue"
     data-rac=""
+    data-react-aria-pressable={true}
     disabled={false}
     onBlur={[Function]}
     onClick={[Function]}
@@ -77,6 +82,7 @@ exports[`ToggleButtonGroup matches snapshot with selectionMode multiple 1`] = `
     onTouchEnd={[Function]}
     onTouchMove={[Function]}
     onTouchStart={[Function]}
+    tabIndex={0}
     type="button"
   >
     Blue
@@ -86,6 +92,7 @@ exports[`ToggleButtonGroup matches snapshot with selectionMode multiple 1`] = `
     className="sc-dkzDqf cQxaky"
     data-button-id="yellow"
     data-rac=""
+    data-react-aria-pressable={true}
     disabled={false}
     onBlur={[Function]}
     onClick={[Function]}
@@ -100,6 +107,7 @@ exports[`ToggleButtonGroup matches snapshot with selectionMode multiple 1`] = `
     onTouchEnd={[Function]}
     onTouchMove={[Function]}
     onTouchStart={[Function]}
+    tabIndex={0}
     type="button"
   >
     Yellow
@@ -109,6 +117,7 @@ exports[`ToggleButtonGroup matches snapshot with selectionMode multiple 1`] = `
     className="sc-dkzDqf cQxaky"
     data-button-id="orange"
     data-rac=""
+    data-react-aria-pressable={true}
     disabled={false}
     onBlur={[Function]}
     onClick={[Function]}
@@ -123,6 +132,7 @@ exports[`ToggleButtonGroup matches snapshot with selectionMode multiple 1`] = `
     onTouchEnd={[Function]}
     onTouchMove={[Function]}
     onTouchStart={[Function]}
+    tabIndex={0}
     type="button"
   >
     Orange
@@ -146,6 +156,7 @@ exports[`ToggleButtonGroup matches snapshot with selectionMode single 1`] = `
     className="sc-dkzDqf cQxaky"
     data-button-id="red"
     data-rac=""
+    data-react-aria-pressable={true}
     data-selected={true}
     disabled={false}
     onBlur={[Function]}
@@ -162,6 +173,7 @@ exports[`ToggleButtonGroup matches snapshot with selectionMode single 1`] = `
     onTouchMove={[Function]}
     onTouchStart={[Function]}
     role="radio"
+    tabIndex={0}
     type="button"
   >
     Red
@@ -171,6 +183,7 @@ exports[`ToggleButtonGroup matches snapshot with selectionMode single 1`] = `
     className="sc-dkzDqf cQxaky"
     data-button-id="green"
     data-rac=""
+    data-react-aria-pressable={true}
     disabled={false}
     onBlur={[Function]}
     onClick={[Function]}
@@ -186,6 +199,7 @@ exports[`ToggleButtonGroup matches snapshot with selectionMode single 1`] = `
     onTouchMove={[Function]}
     onTouchStart={[Function]}
     role="radio"
+    tabIndex={0}
     type="button"
   >
     Green
@@ -195,6 +209,7 @@ exports[`ToggleButtonGroup matches snapshot with selectionMode single 1`] = `
     className="sc-dkzDqf cQxaky"
     data-button-id="blue"
     data-rac=""
+    data-react-aria-pressable={true}
     disabled={false}
     onBlur={[Function]}
     onClick={[Function]}
@@ -210,6 +225,7 @@ exports[`ToggleButtonGroup matches snapshot with selectionMode single 1`] = `
     onTouchMove={[Function]}
     onTouchStart={[Function]}
     role="radio"
+    tabIndex={0}
     type="button"
   >
     Blue
@@ -219,6 +235,7 @@ exports[`ToggleButtonGroup matches snapshot with selectionMode single 1`] = `
     className="sc-dkzDqf cQxaky"
     data-button-id="yellow"
     data-rac=""
+    data-react-aria-pressable={true}
     disabled={false}
     onBlur={[Function]}
     onClick={[Function]}
@@ -234,6 +251,7 @@ exports[`ToggleButtonGroup matches snapshot with selectionMode single 1`] = `
     onTouchMove={[Function]}
     onTouchStart={[Function]}
     role="radio"
+    tabIndex={0}
     type="button"
   >
     Yellow
@@ -243,6 +261,7 @@ exports[`ToggleButtonGroup matches snapshot with selectionMode single 1`] = `
     className="sc-dkzDqf cQxaky"
     data-button-id="orange"
     data-rac=""
+    data-react-aria-pressable={true}
     disabled={false}
     onBlur={[Function]}
     onClick={[Function]}
@@ -258,6 +277,7 @@ exports[`ToggleButtonGroup matches snapshot with selectionMode single 1`] = `
     onTouchMove={[Function]}
     onTouchStart={[Function]}
     role="radio"
+    tabIndex={0}
     type="button"
   >
     Orange
@@ -281,6 +301,7 @@ exports[`ToggleButtonGroup matches snapshot with selectionMode undefined 1`] = `
     className="sc-dkzDqf cQxaky"
     data-button-id="red"
     data-rac=""
+    data-react-aria-pressable={true}
     data-selected={true}
     disabled={false}
     onBlur={[Function]}
@@ -297,6 +318,7 @@ exports[`ToggleButtonGroup matches snapshot with selectionMode undefined 1`] = `
     onTouchMove={[Function]}
     onTouchStart={[Function]}
     role="radio"
+    tabIndex={0}
     type="button"
   >
     Red
@@ -306,6 +328,7 @@ exports[`ToggleButtonGroup matches snapshot with selectionMode undefined 1`] = `
     className="sc-dkzDqf cQxaky"
     data-button-id="green"
     data-rac=""
+    data-react-aria-pressable={true}
     disabled={false}
     onBlur={[Function]}
     onClick={[Function]}
@@ -321,6 +344,7 @@ exports[`ToggleButtonGroup matches snapshot with selectionMode undefined 1`] = `
     onTouchMove={[Function]}
     onTouchStart={[Function]}
     role="radio"
+    tabIndex={0}
     type="button"
   >
     Green
@@ -330,6 +354,7 @@ exports[`ToggleButtonGroup matches snapshot with selectionMode undefined 1`] = `
     className="sc-dkzDqf cQxaky"
     data-button-id="blue"
     data-rac=""
+    data-react-aria-pressable={true}
     disabled={false}
     onBlur={[Function]}
     onClick={[Function]}
@@ -345,6 +370,7 @@ exports[`ToggleButtonGroup matches snapshot with selectionMode undefined 1`] = `
     onTouchMove={[Function]}
     onTouchStart={[Function]}
     role="radio"
+    tabIndex={0}
     type="button"
   >
     Blue
@@ -354,6 +380,7 @@ exports[`ToggleButtonGroup matches snapshot with selectionMode undefined 1`] = `
     className="sc-dkzDqf cQxaky"
     data-button-id="yellow"
     data-rac=""
+    data-react-aria-pressable={true}
     disabled={false}
     onBlur={[Function]}
     onClick={[Function]}
@@ -369,6 +396,7 @@ exports[`ToggleButtonGroup matches snapshot with selectionMode undefined 1`] = `
     onTouchMove={[Function]}
     onTouchStart={[Function]}
     role="radio"
+    tabIndex={0}
     type="button"
   >
     Yellow
@@ -378,6 +406,7 @@ exports[`ToggleButtonGroup matches snapshot with selectionMode undefined 1`] = `
     className="sc-dkzDqf cQxaky"
     data-button-id="orange"
     data-rac=""
+    data-react-aria-pressable={true}
     disabled={false}
     onBlur={[Function]}
     onClick={[Function]}
@@ -393,6 +422,7 @@ exports[`ToggleButtonGroup matches snapshot with selectionMode undefined 1`] = `
     onTouchMove={[Function]}
     onTouchStart={[Function]}
     role="radio"
+    tabIndex={0}
     type="button"
   >
     Orange

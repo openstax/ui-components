@@ -1,0 +1,80 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Tree matches snapshot 1`] = `
+<DocumentFragment>
+  <template
+    data-react-aria-hidden="true"
+  />
+  <span
+    data-focus-scope-start="true"
+    hidden=""
+  />
+  <div
+    class="sc-bczRLJ hWiIYF"
+    data-collection="react-aria-1"
+    data-rac=""
+    id="react-aria-2"
+    role="treegrid"
+    tabindex="0"
+  >
+    <div
+      aria-expanded="false"
+      aria-label="1"
+      aria-level="1"
+      aria-posinset="1"
+      aria-setsize="1"
+      class="sc-gsnTZi gVKDeu"
+      data-collection="react-aria-1"
+      data-has-child-items="true"
+      data-key="1"
+      data-level="1"
+      data-rac=""
+      data-react-aria-pressable="true"
+      id="react-aria-2-1"
+      role="row"
+      style="--tree-item-level: 1;"
+      tabindex="-1"
+    >
+      <div
+        aria-colindex="1"
+        role="gridcell"
+        style="display: contents;"
+      >
+        <label
+          class="sc-jSMfEi ejSDHw"
+        >
+          <input
+            class="sc-gKXOVf ehzJwZ"
+            slot="check"
+            type="checkbox"
+            value="one"
+          />
+          First
+        </label>
+        <div
+          class="sc-hKMtZM gDMhJR"
+        >
+          <button
+            aria-label="expand/collapse"
+            class="sc-eCYdqJ fIxumb"
+            type="button"
+          >
+            <svg
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="m8.25 4.5 7.5 7.5-7.5 7.5"
+              />
+            </svg>
+          </button>
+          Show/Hide
+        </div>
+      </div>
+    </div>
+  </div>
+  <span
+    data-focus-scope-end="true"
+    hidden=""
+  />
+</DocumentFragment>
+`;

@@ -7,7 +7,9 @@ exports[`DropdownMenu matches snapshots 1`] = `
     aria-haspopup="true"
     class="sc-bczRLJ hTVCmA"
     data-rac=""
+    data-react-aria-pressable="true"
     id="react-aria-1"
+    tabindex="0"
     type="button"
   >
     Test Menu
@@ -22,7 +24,9 @@ exports[`DropdownMenu matches snapshots 2`] = `
     aria-haspopup="true"
     class="sc-bczRLJ ga-doNl"
     data-rac=""
+    data-react-aria-pressable="true"
     id="react-aria-4"
+    tabindex="0"
     type="button"
   >
     Test Menu

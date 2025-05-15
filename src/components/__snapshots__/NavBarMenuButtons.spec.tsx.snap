@@ -6,6 +6,7 @@ exports[`NavBarMenuButton matches snapshot 1`] = `
   aria-haspopup={true}
   className="sc-bczRLJ dKgZvy"
   data-rac=""
+  data-react-aria-pressable={true}
   id="react-aria-7"
   onBlur={[Function]}
   onClick={[Function]}
@@ -20,6 +21,7 @@ exports[`NavBarMenuButton matches snapshot 1`] = `
   onTouchEnd={[Function]}
   onTouchMove={[Function]}
   onTouchStart={[Function]}
+  tabIndex={0}
   type="button"
 >
   <span>
@@ -34,6 +36,7 @@ exports[`NavBarPopoverButton matches custom aria label snapshot 1`] = `
   aria-label="Custom label"
   className="sc-bczRLJ dKgZvy"
   data-rac=""
+  data-react-aria-pressable={true}
   id="react-aria-5"
   onBlur={[Function]}
   onClick={[Function]}
@@ -48,6 +51,7 @@ exports[`NavBarPopoverButton matches custom aria label snapshot 1`] = `
   onTouchEnd={[Function]}
   onTouchMove={[Function]}
   onTouchStart={[Function]}
+  tabIndex={0}
   type="button"
 >
   <span>
@@ -61,6 +65,7 @@ exports[`NavBarPopoverButton matches snapshot 1`] = `
   aria-expanded={false}
   className="sc-bczRLJ dKgZvy"
   data-rac=""
+  data-react-aria-pressable={true}
   id="react-aria-2"
   onBlur={[Function]}
   onClick={[Function]}
@@ -75,6 +80,7 @@ exports[`NavBarPopoverButton matches snapshot 1`] = `
   onTouchEnd={[Function]}
   onTouchMove={[Function]}
   onTouchStart={[Function]}
+  tabIndex={0}
   type="button"
 >
   <span>
