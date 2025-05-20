@@ -49,14 +49,18 @@ const ChevronWrapper = styled.div`
   }
 `;
 
+const onClickHandler = (e: React.MouseEvent) => {
+  e.stopPropagation();
+};
+
 export const TreeChevron = styled((props: React.PropsWithChildren<{ className?: string }>) => (
   <ChevronWrapper>
-  <button className={props.className} type="button" aria-label="expand/collapse">
-    <svg viewBox="0 0 24 24">
-      <path d="m8.25 4.5 7.5 7.5-7.5 7.5" />
-    </svg>
-  </button>
-  {props.children}
+    <button className={props.className} type="button" onClick={onClickHandler}>
+      <svg viewBox="0 0 24 24">
+        <path d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+      </svg>
+    </button>
+    {props.children}
   </ChevronWrapper>
 ))`
 `;
