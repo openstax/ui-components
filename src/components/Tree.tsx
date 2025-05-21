@@ -56,7 +56,13 @@ export const TreeChevron = styled(
     onClickHandler?: MouseEventHandler<HTMLButtonElement> | undefined,
   }>) => (
   <ChevronWrapper>
-  <button className={props.className} type="button" aria-label="expand/collapse" onClick={props.onClickHandler}>
+  <button 
+    className={props.className} 
+    type="button" 
+    aria-label="expand/collapse" 
+    onClick={props.onClickHandler}
+    slot="chevron"
+  >
     <svg viewBox="0 0 24 24">
       <path d="m8.25 4.5 7.5 7.5-7.5 7.5" />
     </svg>
