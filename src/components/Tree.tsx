@@ -1,7 +1,6 @@
 import * as RAC from "react-aria-components";
 import { colors } from "../theme";
 import styled from "styled-components";
-import { MouseEventHandler } from "react";
 
 export const Tree = styled(RAC.Tree)`
   padding: 0.8rem;
@@ -51,23 +50,21 @@ const ChevronWrapper = styled.div`
 `;
 
 export const TreeChevron = styled(
-  (props: React.PropsWithChildren<{ 
+  (props: React.PropsWithChildren<{
     className?: string,
-    onClickHandler?: MouseEventHandler<HTMLButtonElement> | undefined,
   }>) => (
-  <ChevronWrapper>
-  <button 
-    className={props.className} 
-    type="button" 
-    aria-label="expand/collapse" 
-    onClick={props.onClickHandler}
-    slot="chevron"
-  >
-    <svg viewBox="0 0 24 24">
-      <path d="m8.25 4.5 7.5 7.5-7.5 7.5" />
-    </svg>
-  </button>
-  {props.children}
-  </ChevronWrapper>
-))`
+    <ChevronWrapper>
+      <RAC.Button
+        className={props.className}
+        type="button"
+        aria-label="expand/collapse"
+        slot="chevron"
+      >
+        <svg viewBox="0 0 24 24">
+          <path d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+        </svg>
+      </RAC.Button>
+      {props.children}
+    </ChevronWrapper>
+  ))`
 `;
