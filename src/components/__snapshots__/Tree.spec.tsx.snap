@@ -56,7 +56,14 @@ exports[`Tree matches snapshot 1`] = `
         >
           <button
             aria-label="expand/collapse"
+            aria-labelledby="react-aria-5 react-aria-2-1"
             class="sc-eCYdqJ fIxumb"
+            data-rac=""
+            data-react-aria-pressable="true"
+            data-react-aria-prevent-focus="true"
+            id="react-aria-5"
+            slot="chevron"
+            tabindex="0"
             type="button"
           >
             <svg
