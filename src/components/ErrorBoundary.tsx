@@ -20,6 +20,11 @@ const defaultErrorFallbacks = {
   </Error>
 };
 
+const errorLevelByType: Record<string, Sentry.SeverityLevel> = {
+  'ScoresSyncError': 'warning',
+  'SessionExpiredError': 'warning'
+}
+
 export const ErrorBoundary = ({
   children,
   renderFallback,
@@ -78,6 +83,14 @@ export const ErrorBoundary = ({
       }}
       {...props}
       onReset={() => setError(null)}
+      beforeCapture={(scope, error) => {
+        if (error) {
+          const type = getTypeFromError(error);
+          if (type in errorLevelByType) {
+            scope.setLevel(errorLevelByType[type]);
+          }
+        }
+      }}
     >
       {renderElement}
     </Sentry.ErrorBoundary>
