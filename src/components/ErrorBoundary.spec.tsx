@@ -105,6 +105,69 @@ describe('ErrorBoundary', () => {
     spy.mockRestore();
   });
 
+  it('can override level in error fallbacks', () => {
+    const spy = jest.spyOn(console, 'error');
+    spy.mockImplementation(() => undefined);
+
+    // Clear previous reports
+    testkit.reset();
+
+    const SessionExpiredComponent = () => {
+      throw new SessionExpiredError();
+    };
+
+    // Round 1: Override default 'warning' level with 'debug'
+    // Should create debug (reports[0])
+    const tree = renderer.create(
+      <ErrorBoundary
+        renderFallback
+        errorFallbacks={{
+          SessionExpiredError: {
+            element: <>session expired</>,
+            level: 'debug'
+          }
+        }}
+      >
+        <SessionExpiredComponent />
+      </ErrorBoundary>
+    );
+    
+    expect(tree).toMatchInlineSnapshot(`"session expired"`);
+
+    // Should create error (reports[1])
+    renderer.create(
+      <ErrorBoundary renderFallback>
+        <ErrorComponent />
+      </ErrorBoundary>
+    );
+    
+    const reports = testkit.reports();
+    expect(reports).toHaveLength(2);
+    expect(reports[0].level).toBe('debug');
+    expect(reports[1].level).toBe('error');
+
+    // Round 2: Ensure 'error' level is default
+    testkit.reset();
+
+    expect(renderer.create(
+      <ErrorBoundary
+        renderFallback
+        errorFallbacks={{
+          SessionExpiredError: {
+            element: <>I'm an error</>
+          }
+        }}
+      >
+        <SessionExpiredComponent />
+      </ErrorBoundary>
+    )).toMatchInlineSnapshot(`"I'm an error"`);
+
+    expect(testkit.reports()).toHaveLength(1);
+    expect(testkit.reports()[0].level).toBe('error');
+
+    spy.mockRestore();
+  });
+
   it('can override fallback components for specific errors', () => {
     const spy = jest.spyOn(console, 'error')
     spy.mockImplementation(() => undefined);
