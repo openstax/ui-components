@@ -11,19 +11,40 @@ const Error = ({ children, ...props }: React.PropsWithChildren<ErrorPropTypes>) 
 
 const defaultErrorFallbacks = {
   'generic': <Error data-testid='error-fallback' />,
-  'SessionExpiredError': <Error heading='Your session has expired'>
-    Please refresh your browser and try again. If this doesn't solve the problem, visit our <a href="https://openstax.secure.force.com/help" target="_blank">Support Center</a>.
-  </Error>,
+  'SessionExpiredError': {
+    element: (
+      <Error heading='Your session has expired'>
+        Please refresh your browser and try again. If this doesn't solve the problem, visit our <a href="https://openstax.secure.force.com/help" target="_blank">Support Center</a>.
+      </Error>
+    ),
+    level: 'warning'
+  } as const,
   'UnauthorizedError': <Error heading="Uh-oh, it seems you can't access this page.">
     You may not have the required permissions or may have been logged out. Try refreshing the page or restarting your browser.
     If the issue persists, visit our <a href="https://openstax.secure.force.com/help" target="_blank">Support Center</a>.
   </Error>
 };
 
-const errorLevelByType: Record<string, Sentry.SeverityLevel> = {
-  'ScoresSyncError': 'warning',
-  'SessionExpiredError': 'warning'
+interface FallbackWithOptions {
+  element: JSX.Element
+  level?: Sentry.SeverityLevel
 }
+
+export interface ErrorFallback {
+  [_: string]: JSX.Element | FallbackWithOptions
+}
+
+const isFallbackWithOptions = (thing: unknown): thing is FallbackWithOptions => (
+  typeof thing == 'object' && thing !== null && 'element' in thing
+);
+
+const getFallbackElement = (entry: JSX.Element | FallbackWithOptions | undefined) => (
+  isFallbackWithOptions(entry) ? entry.element : entry
+);
+
+const getFallbackLevel = (entry: JSX.Element | FallbackWithOptions | undefined) => (
+  isFallbackWithOptions(entry) ? entry.level : undefined
+);
 
 export const ErrorBoundary = ({
   children,
@@ -36,11 +57,12 @@ export const ErrorBoundary = ({
   renderFallback?: boolean;
   sentryDsn?: string;
   sentryInit?: Sentry.BrowserOptions;
-  errorFallbacks?: { [_: string]: JSX.Element }
+  errorFallbacks?: ErrorFallback,
 }) => {
   const [error, setError] = React.useState<SentryError | null>(null);
-  const errorFallbacks: { [_: string]: JSX.Element } = { ...defaultErrorFallbacks, ...props.errorFallbacks };
-  const typedFallback = error?.type ? errorFallbacks[error.type] : undefined;
+  const errorFallbacks: ErrorFallback = { ...defaultErrorFallbacks, ...props.errorFallbacks };
+  const fallbackEntry = error?.type ? errorFallbacks[error.type] : undefined
+  const typedFallback = getFallbackElement(fallbackEntry);
   const initCalled = React.useRef(false);
 
   // Optionally re-render with the children so they can display inline errors with <ErrorMessage />
@@ -81,16 +103,19 @@ export const ErrorBoundary = ({
           eventId
         });
       }}
-      {...props}
-      onReset={() => setError(null)}
       beforeCapture={(scope, error) => {
+        // We need to set the level here, before `setError` is called in `onError`
+        // throw -> beforeCapture -> error captured -> onError -> setError -> etc.
         if (error) {
           const type = getTypeFromError(error);
-          if (type in errorLevelByType) {
-            scope.setLevel(errorLevelByType[type]);
+          const errorLevel = getFallbackLevel(errorFallbacks[type]);
+          if (errorLevel) {
+            scope.setLevel(errorLevel);
           }
         }
       }}
+      {...props}
+      onReset={() => setError(null)}
     >
       {renderElement}
     </Sentry.ErrorBoundary>
