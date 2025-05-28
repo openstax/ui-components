@@ -21,6 +21,7 @@ const defaultErrorFallbacks = {
 };
 
 const defaultErrorLevels: { [_: string]: Sentry.SeverityLevel } = {
+  'ScoresSyncError': 'warning',
   'SessionExpiredError': 'warning'
 };
 
