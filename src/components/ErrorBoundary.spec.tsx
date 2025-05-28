@@ -118,21 +118,14 @@ describe('ErrorBoundary', () => {
 
     // Round 1: Override default 'warning' level with 'debug'
     // Should create debug (reports[0])
-    const tree = renderer.create(
+    renderer.create(
       <ErrorBoundary
         renderFallback
-        errorFallbacks={{
-          SessionExpiredError: {
-            element: <>session expired</>,
-            level: 'debug'
-          }
-        }}
+        errorLevels={{ SessionExpiredError: 'debug' }}
       >
         <SessionExpiredComponent />
       </ErrorBoundary>
     );
-    
-    expect(tree).toMatchInlineSnapshot(`"session expired"`);
 
     // Should create error (reports[1])
     renderer.create(
@@ -149,18 +142,16 @@ describe('ErrorBoundary', () => {
     // Round 2: Ensure 'error' level is default
     testkit.reset();
 
-    expect(renderer.create(
+    const unsetLevel = (undefined as unknown) as Sentry.SeverityLevel
+
+    renderer.create(
       <ErrorBoundary
         renderFallback
-        errorFallbacks={{
-          SessionExpiredError: {
-            element: <>I'm an error</>
-          }
-        }}
+        errorLevels={{ SessionExpiredError: unsetLevel }}
       >
         <SessionExpiredComponent />
       </ErrorBoundary>
-    )).toMatchInlineSnapshot(`"I'm an error"`);
+    );
 
     expect(testkit.reports()).toHaveLength(1);
     expect(testkit.reports()[0].level).toBe('error');
