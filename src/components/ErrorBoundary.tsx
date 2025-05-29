@@ -89,6 +89,7 @@ export const ErrorBoundary = ({
         if (error) {
           const type = getTypeFromError(error);
           const errorLevel = errorLevels[type];
+          console.log({ error, type, errorLevel });
           if (errorLevel) {
             scope.setLevel(errorLevel);
           }
