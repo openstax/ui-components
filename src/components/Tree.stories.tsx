@@ -1,9 +1,9 @@
 import { Checkbox } from "./Checkbox";
-import { Tree, TreeChevron, TreeItem, TreeItemContent, AriaTreeItem } from "./Tree";
+import { Tree, TreeChevron, TreeItem, TreeItemContent } from "./Tree";
 
 export const Default = () => {
   return <Tree>
-  <TreeItem as={AriaTreeItem} id="1" textValue="1">
+  <TreeItem id="1" textValue="1">
     <TreeItemContent>
       <Checkbox
         value={"one"}
@@ -14,7 +14,7 @@ export const Default = () => {
       </Checkbox>
       <TreeChevron>Show/Hide</TreeChevron>
     </TreeItemContent>
-    <TreeItem as={AriaTreeItem} id="2" textValue="2">
+    <TreeItem id="2" textValue="2">
       <TreeItemContent>
         <Checkbox
           value={"two"}
@@ -25,7 +25,7 @@ export const Default = () => {
         </Checkbox>
         <TreeChevron>Show/Hide</TreeChevron>
       </TreeItemContent>
-      <TreeItem as={AriaTreeItem} id="3" textValue="3">
+      <TreeItem id="3" textValue="3">
         <TreeItemContent>
           <Checkbox
             value={"third"}

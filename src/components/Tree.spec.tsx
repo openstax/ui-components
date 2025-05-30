@@ -1,12 +1,12 @@
 import { render } from "@testing-library/react";
-import { Tree, TreeChevron, TreeItem, TreeItemContent, AriaTreeItem } from './Tree';
+import { Tree, TreeChevron, TreeItem, TreeItemContent } from './Tree';
 import { Checkbox } from './Checkbox';
 
 describe('Tree', () => {
   it('matches snapshot', () => {
     const { asFragment } = render(
       <Tree>
-        <TreeItem as={AriaTreeItem} id="1" textValue="1">
+        <TreeItem id="1" textValue="1">
           <TreeItemContent>
             <Checkbox
               value={"one"}
@@ -17,7 +17,7 @@ describe('Tree', () => {
             </Checkbox>
             <TreeChevron>Show/Hide</TreeChevron>
           </TreeItemContent>
-          <TreeItem as={AriaTreeItem} id="2" textValue="2">
+          <TreeItem id="2" textValue="2">
             <TreeItemContent>
               <Checkbox
                 value={"two"}
@@ -28,7 +28,7 @@ describe('Tree', () => {
               </Checkbox>
               <TreeChevron>Show/Hide</TreeChevron>
             </TreeItemContent>
-            <TreeItem as={AriaTreeItem} id="3" textValue="3">
+            <TreeItem id="3" textValue="3">
               <TreeItemContent>
                 <Checkbox
                   value={"third"}
