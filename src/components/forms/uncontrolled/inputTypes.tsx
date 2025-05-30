@@ -4,7 +4,7 @@ import { FormInputWrapper, FormLabelText, HelpText, InputProps, RequiredIndicato
 import { AbstractFormData } from "../controlled/hooks";
 import { partitionSequence } from "@openstax/ts-utils/misc/partitionSequence";
 import { Radio as StyledRadio } from "../../Radio";
-import { Checkbox as StyledCheckbox } from "../../Checkbox"
+import { Checkbox as StyledCheckbox } from "../../Checkbox/Checkbox"
 
 /*
  * input element
