@@ -1,0 +1,1 @@
+import{f as i}from"./useFocusRing.module.9be1e3d5.js";function o(e={}){let{isReadOnly:t}=e,[c,d]=i(e.isSelected,e.defaultSelected||!1,e.onChange);function f(a){t||d(a)}function l(){t||d(!c)}return{isSelected:c,setSelected:f,toggle:l}}export{o as $};
