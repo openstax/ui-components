@@ -4,6 +4,7 @@ export * from './components/Button';
 export * from './components/ButtonBar';
 export * from './components/ButtonNav';
 export * from './components/Checkbox';
+export * from './components/CheckboxRAC';
 export * from './components/DropdownMenu';
 export * from './components/Error';
 export * from './components/ErrorBoundary';
