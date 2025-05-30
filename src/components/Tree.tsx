@@ -2,6 +2,9 @@ import * as RAC from "react-aria-components";
 import { colors } from "../theme";
 import styled from "styled-components";
 
+// Re-exporting the AriaTreeItem for compatibility with react-aria-components
+export { TreeItem as AriaTreeItem } from "react-aria-components";
+
 export const Tree = styled(RAC.Tree)`
   padding: 0.8rem;
 
@@ -10,7 +13,8 @@ export const Tree = styled(RAC.Tree)`
   }
 `;
 
-export const TreeItem = styled(RAC.TreeItem)`
+// The use of styled-components destroy the link between the `TreeItem` and the rest of the tree
+export const TreeItem = styled.div`
   padding-left: calc((var(--tree-item-level) - 1) * 5.5rem);
   padding-bottom: 1rem;
 
