@@ -12,7 +12,7 @@ import {
   CheckboxVariant 
 } from "../Checkbox/sharedCheckboxStyles";
 
-export interface CheckboxRACProps
+export interface TreeCheckboxProps
   extends PropsWithChildren<Omit<RACCheckboxProps, "children">> {
   size?: CheckboxSize;
   variant?: CheckboxVariant;
@@ -42,7 +42,7 @@ export const TreeCheckbox = ({
   bold = false,
   children,
   ...props
-}: CheckboxRACProps) => {
+}: TreeCheckboxProps) => {
   return (
     <StyledCheckbox
       {...props}
