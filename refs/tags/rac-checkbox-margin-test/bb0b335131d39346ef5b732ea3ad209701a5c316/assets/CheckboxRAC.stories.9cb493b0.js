@@ -1,0 +1,58 @@
+import{r as s,R as q,s as H,j as S,a as P,F as B}from"./index.a256598c.js";import{c as X}from"./theme.62555c7c.js";import{a as Z}from"./RSPContexts.module.f74e6624.js";import{p as O,$ as ee,_ as ie,s as j,c as ae,d as C,a as N,m as te,g as re,h as le,S as ne,a0 as z,j as de,k as oe,i as se}from"./useFocusRing.module.362d06ad.js";import{$ as Q}from"./useToggleState.module.641a77fd.js";import{$ as ce}from"./VisuallyHidden.module.fd05c706.js";import{c as A}from"./sharedCheckboxStyles.bc6baab9.js";import"./palette.15e4d008.js";function ue(i,e,a){let t=s.exports.useRef(e),n=O(()=>{a&&a(t.current)});s.exports.useEffect(()=>{var r;let o=i==null||(r=i.current)===null||r===void 0?void 0:r.form;return o==null||o.addEventListener("reset",n),()=>{o==null||o.removeEventListener("reset",n)}},[i,n])}const G={badInput:!1,customError:!1,patternMismatch:!1,rangeOverflow:!1,rangeUnderflow:!1,stepMismatch:!1,tooLong:!1,tooShort:!1,typeMismatch:!1,valueMissing:!1,valid:!0},W={...G,customError:!0,valid:!1},R={isInvalid:!1,validationDetails:G,validationErrors:[]},ve=s.exports.createContext({}),w="__formValidationState"+Date.now();function Y(i){if(i[w]){let{realtimeValidation:e,displayValidation:a,updateValidation:t,resetValidation:n,commitValidation:r}=i[w];return{realtimeValidation:e,displayValidation:a,updateValidation:t,resetValidation:n,commitValidation:r}}return fe(i)}function fe(i){let{isInvalid:e,validationState:a,name:t,value:n,builtinValidation:r,validate:o,validationBehavior:c="aria"}=i;a&&(e||(e=a==="invalid"));let d=e!==void 0?{isInvalid:e,validationErrors:[],validationDetails:W}:null,l=s.exports.useMemo(()=>{if(!o||n==null)return null;let $=be(o,n);return U($)},[o,n]);r!=null&&r.validationDetails.valid&&(r=void 0);let u=s.exports.useContext(ve),v=s.exports.useMemo(()=>t?Array.isArray(t)?t.flatMap($=>T(u[$])):T(u[t]):[],[u,t]),[x,y]=s.exports.useState(u),[f,b]=s.exports.useState(!1);u!==x&&(y(u),b(!1));let m=s.exports.useMemo(()=>U(f?[]:v),[f,v]),V=s.exports.useRef(R),[g,E]=s.exports.useState(R),I=s.exports.useRef(R),k=()=>{if(!p)return;D(!1);let $=l||r||V.current;F($,I.current)||(I.current=$,E($))},[p,D]=s.exports.useState(!1);return s.exports.useEffect(k),{realtimeValidation:d||m||l||r||R,displayValidation:c==="native"?d||m||g:d||m||l||r||g,updateValidation($){c==="aria"&&!F(g,$)?E($):V.current=$},resetValidation(){let $=R;F($,I.current)||(I.current=$,E($)),c==="native"&&D(!1),b(!0)},commitValidation(){c==="native"&&D(!0),b(!0)}}}function T(i){return i?Array.isArray(i)?i:[i]:[]}function be(i,e){if(typeof i=="function"){let a=i(e);if(a&&typeof a!="boolean")return T(a)}return[]}function U(i){return i.length?{isInvalid:!0,validationErrors:i,validationDetails:W}:null}function F(i,e){return i===e?!0:!!i&&!!e&&i.isInvalid===e.isInvalid&&i.validationErrors.length===e.validationErrors.length&&i.validationErrors.every((a,t)=>a===e.validationErrors[t])&&Object.entries(i.validationDetails).every(([a,t])=>e.validationDetails[a]===t)}function me(i,e,a){let{validationBehavior:t,focus:n}=i;ee(()=>{if(t==="native"&&(a==null?void 0:a.current)&&!a.current.disabled){let d=e.realtimeValidation.isInvalid?e.realtimeValidation.validationErrors.join(" ")||"Invalid value.":"";a.current.setCustomValidity(d),a.current.hasAttribute("title")||(a.current.title=""),e.realtimeValidation.isInvalid||e.updateValidation(pe(a.current))}});let r=O(()=>{e.resetValidation()}),o=O(d=>{var l;e.displayValidation.isInvalid||e.commitValidation();let u=a==null||(l=a.current)===null||l===void 0?void 0:l.form;if(!d.defaultPrevented&&a&&u&&he(u)===a.current){var v;n?n():(v=a.current)===null||v===void 0||v.focus(),ie("keyboard")}d.preventDefault()}),c=O(()=>{e.commitValidation()});s.exports.useEffect(()=>{let d=a==null?void 0:a.current;if(!d)return;let l=d.form;return d.addEventListener("invalid",o),d.addEventListener("change",c),l==null||l.addEventListener("reset",r),()=>{d.removeEventListener("invalid",o),d.removeEventListener("change",c),l==null||l.removeEventListener("reset",r)}},[a,o,c,r,t])}function $e(i){let e=i.validity;return{badInput:e.badInput,customError:e.customError,patternMismatch:e.patternMismatch,rangeOverflow:e.rangeOverflow,rangeUnderflow:e.rangeUnderflow,stepMismatch:e.stepMismatch,tooLong:e.tooLong,tooShort:e.tooShort,typeMismatch:e.typeMismatch,valueMissing:e.valueMissing,valid:e.valid}}function pe(i){return{isInvalid:!i.validity.valid,validationDetails:$e(i),validationErrors:i.validationMessage?[i.validationMessage]:[]}}function he(i){for(let e=0;e<i.elements.length;e++){let a=i.elements[e];if(!a.validity.valid)return a}return null}function xe(i,e,a){let{isDisabled:t=!1,isReadOnly:n=!1,value:r,name:o,children:c,"aria-label":d,"aria-labelledby":l,validationState:u="valid",isInvalid:v}=i,x=p=>{p.stopPropagation(),e.setSelected(p.target.checked)},y=c!=null,f=d!=null||l!=null,{pressProps:b,isPressed:m}=j({isDisabled:t}),{pressProps:V,isPressed:g}=j({onPress(){var p;e.toggle(),(p=a.current)===null||p===void 0||p.focus()},isDisabled:t||n}),{focusableProps:E}=ae(i,a),I=C(b,E),k=N(i,{labelable:!0});return ue(a,e.isSelected,e.setSelected),{labelProps:C(V,{onClick:p=>p.preventDefault()}),inputProps:C(k,{"aria-invalid":v||u==="invalid"||void 0,"aria-errormessage":i["aria-errormessage"],"aria-controls":i["aria-controls"],"aria-readonly":n||void 0,onChange:x,disabled:t,...r==null?{}:{value:r},name:o,type:"checkbox",...I}),isSelected:e.isSelected,isPressed:m||g,isDisabled:t,isReadOnly:n,isInvalid:v||u==="invalid"}}function J(i,e,a){let t=Y({...i,value:e.isSelected}),{isInvalid:n,validationErrors:r,validationDetails:o}=t.displayValidation,{labelProps:c,inputProps:d,isSelected:l,isPressed:u,isDisabled:v,isReadOnly:x}=xe({...i,isInvalid:n},e,a);me(i,t,a);let{isIndeterminate:y,isRequired:f,validationBehavior:b="aria"}=i;s.exports.useEffect(()=>{a.current&&(a.current.indeterminate=!!y)});let{pressProps:m}=j({isDisabled:v||x,onPress(){let{[w]:V}=i,{commitValidation:g}=V||t;g()}});return{labelProps:C(c,m),inputProps:{...d,checked:l,"aria-required":f&&b==="aria"||void 0,required:f&&b==="native"},isSelected:l,isPressed:u,isDisabled:v,isReadOnly:x,isInvalid:n,validationErrors:r,validationDetails:o}}const ye=new WeakMap;function Ve(i,e,a){const t=Q({isReadOnly:i.isReadOnly||e.isReadOnly,isSelected:e.isSelected(i.value),onChange(m){m?e.addValue(i.value):e.removeValue(i.value),i.onChange&&i.onChange(m)}});let{name:n,descriptionId:r,errorMessageId:o,validationBehavior:c}=ye.get(e);var d;c=(d=i.validationBehavior)!==null&&d!==void 0?d:c;let{realtimeValidation:l}=Y({...i,value:t.isSelected,name:void 0,validationBehavior:"aria"}),u=s.exports.useRef(R),v=()=>{e.setInvalid(i.value,l.isInvalid?l:u.current)};s.exports.useEffect(v);let x=e.realtimeValidation.isInvalid?e.realtimeValidation:l,y=c==="native"?e.displayValidation:x;var f;let b=J({...i,isReadOnly:i.isReadOnly||e.isReadOnly,isDisabled:i.isDisabled||e.isDisabled,name:i.name||n,isRequired:(f=i.isRequired)!==null&&f!==void 0?f:e.isRequired,validationBehavior:c,[w]:{realtimeValidation:x,displayValidation:y,resetValidation:e.resetValidation,commitValidation:e.commitValidation,updateValidation(m){u.current=m,v()}}},t,a);return{...b,inputProps:{...b.inputProps,"aria-describedby":[i["aria-describedby"],e.isInvalid?o:null,r].filter(Boolean).join(" ")||void 0}}}const ge=s.exports.createContext(null),Ee=s.exports.createContext(null),Ie=s.exports.forwardRef(function(e,a){let{inputRef:t=null,...n}=e;[e,a]=te(n,a,Z);let{validationBehavior:r}=re(ge)||{};var o,c;let d=(c=(o=e.validationBehavior)!==null&&o!==void 0?o:r)!==null&&c!==void 0?c:"native",l=s.exports.useContext(Ee),u=le(ne(t,e.inputRef!==void 0?e.inputRef:null)),{labelProps:v,inputProps:x,isSelected:y,isDisabled:f,isReadOnly:b,isPressed:m,isInvalid:V}=l?Ve({...z(e),value:e.value,children:typeof e.children=="function"?!0:e.children},l,u):J({...z(e),children:typeof e.children=="function"?!0:e.children,validationBehavior:d},Q(e),u),{isFocused:g,isFocusVisible:E,focusProps:I}=de(),k=f||b,{hoverProps:p,isHovered:D}=oe({...e,isDisabled:k}),L=se({...e,defaultClassName:"react-aria-Checkbox",values:{isSelected:y,isIndeterminate:e.isIndeterminate||!1,isPressed:m,isHovered:D,isFocused:g,isFocusVisible:E,isDisabled:f,isReadOnly:b,isInvalid:V,isRequired:e.isRequired||!1}}),_=N(e);return delete _.id,q.createElement("label",{...C(_,v,p,L),ref:a,slot:e.slot||void 0,"data-selected":y||void 0,"data-indeterminate":e.isIndeterminate||void 0,"data-pressed":m||void 0,"data-hovered":D||void 0,"data-focused":g||void 0,"data-focus-visible":E||void 0,"data-disabled":f||void 0,"data-readonly":b||void 0,"data-invalid":V||void 0,"data-required":e.isRequired||void 0},q.createElement(ce,{elementType:"span"},q.createElement("input",{...C(x,I),ref:u})),L.children)}),Pe=H(Ie)`
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  font-size: 1.6rem;
+  font-weight: ${({$bold:i})=>i?700:400};
+  color: inherit;
+
+  &[data-disabled] {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  [data-slot="selection"] {
+    appearance: none;
+    width: ${({$size:i})=>i}rem;
+    height: ${({$size:i})=>i}rem;
+    margin: 0;
+    padding: 0;
+    border-radius: 0.2rem;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    vertical-align: middle;
+    place-content: center;
+    border: ${({$variant:i})=>A[i].unCheckedBorder};
+    background-color: ${X.palette.white};
+    position: relative;
+
+    &::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 0.2rem;
+      background-color: ${({$variant:i})=>A[i].backgroundColor};
+      background-image: url('${({$variant:i})=>A[i].backgroundImage}');
+      background-size: 80%;
+      background-position: center;
+      background-repeat: no-repeat;
+      transform: scale(0);
+    }
+  }
+
+  &[data-selected] [data-slot="selection"]::before {
+    transform: scale(1);
+    opacity: ${i=>i.isDisabled?0:1};
+  }
+`,M=({size:i=1.6,variant:e="primary",bold:a=!1,children:t,...n})=>S(Pe,{...n,$variant:e,$size:i,$bold:a,children:[P("span",{slot:"selection","data-slot":"selection"}),t]}),K=H.div`
+  text-transform: capitalize;
+
+  & + & {
+    margin-top: 3.2rem;
+  }
+
+  > * + * {
+    margin-top: 0.5rem;
+  }
+`,h=(i,e)=>S(K,{children:[S("h2",{children:["Size ",e]}),P(M,{size:e,variant:i,children:"Checkbox label"}),P(M,{size:e,variant:i,defaultSelected:!0,children:"Checkbox label"}),P(M,{size:e,variant:i,defaultSelected:!0,bold:!0,children:"Checkbox label"})]}),Be=()=>S(B,{children:[h("primary",1.4),h("primary",1.6),h("primary",1.8),h("primary",2)]}),Le=()=>S(B,{children:[h("light",1.4),h("light",1.6),h("light",1.8),h("light",2)]}),_e=()=>S(B,{children:[h("error",1.4),h("error",1.6),h("error",1.8),h("error",2)]}),qe=()=>P(B,{children:S(K,{children:[P("h2",{children:"Disabled"}),P(M,{variant:"primary",size:1.6,isDisabled:!0,children:"Checkbox label"}),P(M,{variant:"primary",size:1.6,isDisabled:!0,defaultSelected:!0,children:"Checkbox label"})]})});typeof window<"u"&&window.document&&window.document.createElement&&document.documentElement.setAttribute("data-storyloaded","");export{qe as Disabled,_e as Error,Le as Light,Be as Primary};
