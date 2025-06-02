@@ -1,4 +1,4 @@
-import { Checkbox } from "./Checkbox/Checkbox";
+import { CheckboxRAC as Checkbox } from "./Checkbox/CheckboxRAC";
 import { Tree, TreeChevron, TreeItem, TreeItemContent } from "./Tree";
 
 export const Default = () => {
@@ -6,8 +6,8 @@ export const Default = () => {
   <TreeItem id="1" textValue="1">
     <TreeItemContent>
       <Checkbox
-        value={"one"}
-        slot="check"
+        value={"1"}
+        slot="selection"
         size={1.4}
       >
         First
@@ -17,8 +17,8 @@ export const Default = () => {
     <TreeItem id="2" textValue="2">
       <TreeItemContent>
         <Checkbox
-          value={"two"}
-          slot="check"
+          value={"2"}
+          slot="selection"
           size={1.4}
         >
            Second
@@ -28,8 +28,8 @@ export const Default = () => {
       <TreeItem id="3" textValue="3">
         <TreeItemContent>
           <Checkbox
-            value={"third"}
-            slot="check"
+            value={"3"}
+            slot="selection"
             size={1.4}
           >
              Third

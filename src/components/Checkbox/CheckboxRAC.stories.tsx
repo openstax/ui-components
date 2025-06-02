@@ -21,11 +21,11 @@ const renderCheckboxes = (
 ) => (
   <CheckboxGroup>
     <h2>Size {size}</h2>
-    <CheckboxRAC {...{ size, variant }}>Checkbox label</CheckboxRAC>
-    <CheckboxRAC {...{ size, variant }} defaultSelected>
+    <CheckboxRAC slot='selection' {...{ size, variant }}>Checkbox label</CheckboxRAC>
+    <CheckboxRAC slot='selection' {...{ size, variant }} defaultSelected>
       Checkbox label
     </CheckboxRAC>
-    <CheckboxRAC {...{ size, variant }} defaultSelected bold>
+    <CheckboxRAC slot='selection' {...{ size, variant }} defaultSelected bold>
       Checkbox label
     </CheckboxRAC>
   </CheckboxGroup>
@@ -62,10 +62,10 @@ export const Disabled = () => (
   <>
     <CheckboxGroup>
       <h2>Disabled</h2>
-      <CheckboxRAC variant="primary" size={1.6} isDisabled>
+      <CheckboxRAC slot='selection' variant="primary" size={1.6} isDisabled>
         Checkbox label
       </CheckboxRAC>
-      <CheckboxRAC variant="primary" size={1.6} isDisabled defaultSelected>
+      <CheckboxRAC slot='selection' variant="primary" size={1.6} isDisabled defaultSelected>
         Checkbox label
       </CheckboxRAC>
     </CheckboxGroup>
