@@ -2,8 +2,7 @@ import styled from "styled-components";
 import { colors } from "../../theme";
 import {
   Checkbox as RACCheckbox,
-  CheckboxProps as RACCheckboxProps,
-  Text
+  CheckboxProps as RACCheckboxProps
 } from "react-aria-components";
 import { PropsWithChildren } from "react";
 import { checkboxVariants, CheckboxSize, CheckboxVariant } from "./sharedCheckboxStyles";
@@ -15,16 +14,16 @@ export interface CheckboxRACProps
   bold?: boolean;
 }
 
-const StyledCheckbox = styled(RACCheckbox)<{
+const StyledCheckbox = styled(RACCheckbox) <{
   $variant: CheckboxVariant;
   $size: CheckboxSize;
   $bold: boolean;
 }>`
   display: flex;
   align-items: center;
+  gap: 1.2rem;
   font-size: 1.6rem;
   font-weight: ${({ $bold }) => ($bold ? 700 : 400)};
-  gap: 1.2rem;
   color: inherit;
 
   &[data-disabled] {
@@ -37,8 +36,12 @@ const StyledCheckbox = styled(RACCheckbox)<{
     width: ${({ $size }) => $size}rem;
     height: ${({ $size }) => $size}rem;
     margin: 0;
+    padding: 0;
     border-radius: 0.2rem;
-    display: grid;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    vertical-align: middle;
     place-content: center;
     border: ${({ $variant }) => checkboxVariants[$variant].unCheckedBorder};
     background-color: ${colors.palette.white};
@@ -78,8 +81,8 @@ export const CheckboxRAC = ({
       $size={size}
       $bold={bold}
     >
-      <div slot="selection" data-slot="selection" />
-      <Text>{children}</Text>
+      <span slot="selection" data-slot="selection" />
+      {children}
     </StyledCheckbox>
   );
 };
