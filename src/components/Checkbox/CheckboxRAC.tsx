@@ -41,7 +41,6 @@ const StyledCheckbox = styled(RACCheckbox) <{
     place-content: center;
     border: ${({ $variant }) => checkboxVariants[$variant].unCheckedBorder};
     background-color: ${colors.palette.white};
-    position: relative;
 
     &::before {
       content: "";
