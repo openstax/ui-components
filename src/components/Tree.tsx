@@ -10,7 +10,6 @@ export const Tree = styled(RAC.Tree)`
   }
 `;
 
-// The use of styled-components destroy the link between the `TreeItem` and the rest of the tree
 export const TreeItem = styled(RAC.TreeItem)`
   padding-left: calc((var(--tree-item-level) - 1) * 5.5rem);
   padding-bottom: 1rem;
