@@ -21,10 +21,9 @@ const StyledCheckbox = styled(RACCheckbox) <{
 }>`
   display: flex;
   align-items: center;
-  gap: 1.2rem;
   font-size: 1.6rem;
   font-weight: ${({ $bold }) => ($bold ? 700 : 400)};
-  color: inherit;
+  color: ${(props => props.isDisabled ? colors.palette.neutralLight : checkboxVariants[props.$variant].color)};
 
   &[data-disabled] {
     opacity: 0.4;
@@ -35,13 +34,10 @@ const StyledCheckbox = styled(RACCheckbox) <{
     appearance: none;
     width: ${({ $size }) => $size}rem;
     height: ${({ $size }) => $size}rem;
-    margin: 0;
-    padding: 0;
+    margin: 0 1.6rem 0 0;
     border-radius: 0.2rem;
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    vertical-align: middle;
+    transform: translateY(-0.075em);
+    display: grid;
     place-content: center;
     border: ${({ $variant }) => checkboxVariants[$variant].unCheckedBorder};
     background-color: ${colors.palette.white};
@@ -49,9 +45,10 @@ const StyledCheckbox = styled(RACCheckbox) <{
 
     &::before {
       content: "";
-      position: absolute;
-      inset: 0;
       border-radius: 0.2rem;
+      width: ${({ $size }) => $size}rem;
+      height: ${({ $size }) => $size}rem;
+      border: ${({ $variant }) => checkboxVariants[$variant].checkedBorder};
       background-color: ${({ $variant }) => checkboxVariants[$variant].backgroundColor};
       background-image: url('${({ $variant }) => checkboxVariants[$variant].backgroundImage}');
       background-size: 80%;
