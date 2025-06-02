@@ -1,4 +1,4 @@
-import { CheckboxRAC as Checkbox } from "./Checkbox/CheckboxRAC";
+import { TreeCheckbox as Checkbox } from "./TreeCheckbox";
 import { Tree, TreeChevron, TreeItem, TreeItemContent } from "./Tree";
 
 export const Default = () => {

@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { CheckboxRAC } from "./CheckboxRAC";
+import { TreeCheckbox } from "./TreeCheckbox";
 
 const CheckboxGroup = styled.div`
   text-transform: capitalize;
@@ -13,7 +13,7 @@ const CheckboxGroup = styled.div`
   }
 `;
 
-type CheckboxProps = React.ComponentProps<typeof CheckboxRAC>;
+type CheckboxProps = React.ComponentProps<typeof TreeCheckbox>;
 
 const renderCheckboxes = (
   variant: CheckboxProps['variant'],
@@ -21,13 +21,13 @@ const renderCheckboxes = (
 ) => (
   <CheckboxGroup>
     <h2>Size {size}</h2>
-    <CheckboxRAC slot='selection' {...{ size, variant }}>Checkbox label</CheckboxRAC>
-    <CheckboxRAC slot='selection' {...{ size, variant }} defaultSelected>
+    <TreeCheckbox slot='selection' {...{ size, variant }}>Checkbox label</TreeCheckbox>
+    <TreeCheckbox slot='selection' {...{ size, variant }} defaultSelected>
       Checkbox label
-    </CheckboxRAC>
-    <CheckboxRAC slot='selection' {...{ size, variant }} defaultSelected bold>
+    </TreeCheckbox>
+    <TreeCheckbox slot='selection' {...{ size, variant }} defaultSelected bold>
       Checkbox label
-    </CheckboxRAC>
+    </TreeCheckbox>
   </CheckboxGroup>
 );
 
@@ -62,12 +62,12 @@ export const Disabled = () => (
   <>
     <CheckboxGroup>
       <h2>Disabled</h2>
-      <CheckboxRAC slot='selection' variant="primary" size={1.6} isDisabled>
+      <TreeCheckbox slot='selection' variant="primary" size={1.6} isDisabled>
         Checkbox label
-      </CheckboxRAC>
-      <CheckboxRAC slot='selection' variant="primary" size={1.6} isDisabled defaultSelected>
+      </TreeCheckbox>
+      <TreeCheckbox slot='selection' variant="primary" size={1.6} isDisabled defaultSelected>
         Checkbox label
-      </CheckboxRAC>
+      </TreeCheckbox>
     </CheckboxGroup>
   </>
 );

@@ -1,6 +1,6 @@
 import { render } from "@testing-library/react";
 import { Tree, TreeChevron, TreeItem, TreeItemContent } from './Tree';
-import { Checkbox } from './Checkbox/Checkbox';
+import { Checkbox } from '../Checkbox/Checkbox';
 
 describe('Tree', () => {
   it('matches snapshot', () => {

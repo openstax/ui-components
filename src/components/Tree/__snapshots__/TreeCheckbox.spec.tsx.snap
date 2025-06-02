@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`CheckboxRAC handles disabled state 1`] = `
+exports[`TreeCheckbox handles disabled state 1`] = `
 <label
-  className="sc-bczRLJ eoZhDB"
+  className="sc-bczRLJ gRqfxl"
   data-disabled={true}
   data-rac=""
   data-react-aria-pressable={true}
@@ -62,9 +62,9 @@ exports[`CheckboxRAC handles disabled state 1`] = `
 </label>
 `;
 
-exports[`CheckboxRAC handles options 1`] = `
+exports[`TreeCheckbox handles options 1`] = `
 <label
-  className="sc-bczRLJ eNqrIf"
+  className="sc-bczRLJ jaaPJI"
   data-rac=""
   data-react-aria-pressable={true}
   onClick={[Function]}
@@ -124,9 +124,9 @@ exports[`CheckboxRAC handles options 1`] = `
 </label>
 `;
 
-exports[`CheckboxRAC matches snapshot 1`] = `
+exports[`TreeCheckbox matches snapshot 1`] = `
 <label
-  className="sc-bczRLJ jbAaze"
+  className="sc-bczRLJ brkWAJ"
   data-rac=""
   data-react-aria-pressable={true}
   onClick={[Function]}
@@ -186,9 +186,9 @@ exports[`CheckboxRAC matches snapshot 1`] = `
 </label>
 `;
 
-exports[`CheckboxRAC supports slot="selection" 1`] = `
+exports[`TreeCheckbox supports slot="selection" 1`] = `
 <label
-  className="sc-bczRLJ jbAaze"
+  className="sc-bczRLJ brkWAJ"
   data-rac=""
   data-react-aria-pressable={true}
   onClick={[Function]}

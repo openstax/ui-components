@@ -1,31 +1,31 @@
-import { CheckboxRAC } from './CheckboxRAC';
+import { TreeCheckbox } from './TreeCheckbox';
 import renderer from 'react-test-renderer';
 
-describe('CheckboxRAC', () => {
+describe('TreeCheckbox', () => {
   it('matches snapshot', () => {
     const tree = renderer.create(
-      <CheckboxRAC>Click Me</CheckboxRAC>
+      <TreeCheckbox>Click Me</TreeCheckbox>
     ).toJSON();
     expect(tree).toMatchSnapshot();
   });
 
   it('handles options', () => {
     const tree = renderer.create(
-      <CheckboxRAC bold size={2} variant='light'>Click Me</CheckboxRAC>
+      <TreeCheckbox bold size={2} variant='light'>Click Me</TreeCheckbox>
     ).toJSON();
     expect(tree).toMatchSnapshot();
   });
 
   it('handles disabled state', () => {
     const tree = renderer.create(
-      <CheckboxRAC isDisabled>Click Me</CheckboxRAC>
+      <TreeCheckbox isDisabled>Click Me</TreeCheckbox>
     ).toJSON();
     expect(tree).toMatchSnapshot();
   });
 
   it('supports slot="selection"', () => {
     const tree = renderer.create(
-      <CheckboxRAC slot="selection">Click Me</CheckboxRAC>
+      <TreeCheckbox slot="selection">Click Me</TreeCheckbox>
     ).toJSON();
     expect(tree).toMatchSnapshot();
   });
