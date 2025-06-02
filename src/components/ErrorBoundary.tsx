@@ -47,6 +47,8 @@ export const ErrorBoundary = ({
   // Optionally re-render with the children so they can display inline errors with <ErrorMessage />
   const renderElement = error && renderFallback ? (typedFallback || fallback) : <>{children}</>;
 
+  type WindowWithUserData = Window & { _OX_USER_DATA?: string }
+
   React.useEffect(() => {
     if (!sentryDsn && !sentryInit) {
       return;
@@ -59,6 +61,9 @@ export const ErrorBoundary = ({
     Sentry.init(sentryInit || {
       dsn: sentryDsn,
       environment: window.location.hostname,
+      initialScope: {
+        tags: { userData: (window as WindowWithUserData)._OX_USER_DATA }
+      },
       integrations: [
         Sentry.browserTracingIntegration(),
         Sentry.extraErrorDataIntegration()
