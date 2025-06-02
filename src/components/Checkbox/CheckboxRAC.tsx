@@ -30,10 +30,6 @@ const StyledCheckbox = styled(RACCheckbox) <{
     cursor: not-allowed;
   }
 
-  span:first-of-type {
-    display: none !important;
-  }
-
   [data-slot="selection"] {
     appearance: none;
     width: ${({ $size }) => $size}rem;

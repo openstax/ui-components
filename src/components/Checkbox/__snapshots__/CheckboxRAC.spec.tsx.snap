@@ -2,7 +2,7 @@
 
 exports[`CheckboxRAC handles disabled state 1`] = `
 <label
-  className="sc-bczRLJ fKtnWs"
+  className="sc-bczRLJ eoZhDB"
   data-disabled={true}
   data-rac=""
   data-react-aria-pressable={true}
@@ -64,7 +64,7 @@ exports[`CheckboxRAC handles disabled state 1`] = `
 
 exports[`CheckboxRAC handles options 1`] = `
 <label
-  className="sc-bczRLJ jlDMIi"
+  className="sc-bczRLJ eNqrIf"
   data-rac=""
   data-react-aria-pressable={true}
   onClick={[Function]}
@@ -126,7 +126,7 @@ exports[`CheckboxRAC handles options 1`] = `
 
 exports[`CheckboxRAC matches snapshot 1`] = `
 <label
-  className="sc-bczRLJ ldekOv"
+  className="sc-bczRLJ jbAaze"
   data-rac=""
   data-react-aria-pressable={true}
   onClick={[Function]}
@@ -188,7 +188,7 @@ exports[`CheckboxRAC matches snapshot 1`] = `
 
 exports[`CheckboxRAC supports slot="selection" 1`] = `
 <label
-  className="sc-bczRLJ ldekOv"
+  className="sc-bczRLJ jbAaze"
   data-rac=""
   data-react-aria-pressable={true}
   onClick={[Function]}
