@@ -21,7 +21,6 @@ const defaultErrorFallbacks = {
 };
 
 const defaultErrorLevels: { [_: string]: Sentry.SeverityLevel } = {
-  'ScoresSyncError': 'warning',
   'SessionExpiredError': 'warning'
 };
 
@@ -85,7 +84,7 @@ export const ErrorBoundary = ({
       }}
       beforeCapture={(scope, error) => {
         // We need to set the level here, before `setError` is called in `onError`
-        // throw -> beforeCapture -> error captured -> onError -> setError -> etc.
+        // throw -> beforeCapture -> onError -> error captured -> setError -> etc.
         if (error) {
           const type = getTypeFromError(error);
           const errorLevel = errorLevels[type];
