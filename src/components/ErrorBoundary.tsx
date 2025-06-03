@@ -5,6 +5,7 @@ import type { ErrorBoundaryProps } from '@sentry/react/types/errorboundary';
 import { ErrorContext } from '../contexts';
 import { SentryError } from '../types';
 import { getTypeFromError } from '../utils';
+import type { User } from '@openstax/ts-utils/services/authProvider';
 
 const Error = ({ children, ...props }: React.PropsWithChildren<ErrorPropTypes>) =>
   <ErrorComponent data-testid='error-fallback' {...props}>{children}</ErrorComponent>;
@@ -47,7 +48,7 @@ export const ErrorBoundary = ({
   // Optionally re-render with the children so they can display inline errors with <ErrorMessage />
   const renderElement = error && renderFallback ? (typedFallback || fallback) : <>{children}</>;
 
-  type WindowWithUserData = Window & { _OX_USER_DATA?: string }
+  type WindowWithUserData = Window & { _OX_USER_DATA?: User }
 
   React.useEffect(() => {
     if (!sentryDsn && !sentryInit) {
@@ -62,7 +63,7 @@ export const ErrorBoundary = ({
       dsn: sentryDsn,
       environment: window.location.hostname,
       initialScope: {
-        tags: { userData: (window as WindowWithUserData)._OX_USER_DATA }
+        tags: { userData: (window as WindowWithUserData)._OX_USER_DATA?.uuid }
       },
       integrations: [
         Sentry.browserTracingIntegration(),
