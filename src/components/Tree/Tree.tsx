@@ -35,7 +35,6 @@ const ChevronWrapper = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 1.4rem;
     height: 100%;
 
     svg {
@@ -45,6 +44,7 @@ const ChevronWrapper = styled.div`
       height: 1.4rem;
       stroke: ${colors.palette.neutralDarker};
       stroke-width: 0.3rem;
+      margin-right: 0.6rem;
     }
   }
 `;
@@ -63,8 +63,8 @@ export const TreeChevron = styled(
         <svg viewBox="0 0 24 24">
           <path d="m8.25 4.5 7.5 7.5-7.5 7.5" />
         </svg>
+        {props.children}
       </RAC.Button>
-      {props.children}
     </ChevronWrapper>
   ))`
 `;
