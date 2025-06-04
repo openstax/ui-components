@@ -1,5 +1,5 @@
 import * as RAC from "react-aria-components";
-import { colors } from "../theme";
+import { colors } from "../../theme";
 import styled from "styled-components";
 
 export const Tree = styled(RAC.Tree)`
