@@ -52,7 +52,7 @@ exports[`Tree matches snapshot 1`] = `
           First
         </label>
         <div
-          class="sc-hKMtZM gDMhJR"
+          class="sc-hKMtZM gDQLFf"
         >
           <button
             aria-label="expand/collapse"
@@ -73,8 +73,8 @@ exports[`Tree matches snapshot 1`] = `
                 d="m8.25 4.5 7.5 7.5-7.5 7.5"
               />
             </svg>
+            Show/Hide
           </button>
-          Show/Hide
         </div>
       </div>
     </div>
