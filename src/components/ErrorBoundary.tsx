@@ -20,6 +20,10 @@ const defaultErrorFallbacks = {
   </Error>
 };
 
+const defaultErrorLevels: { [_: string]: Sentry.SeverityLevel } = {
+  'SessionExpiredError': 'warning'
+};
+
 export const ErrorBoundary = ({
   children,
   renderFallback,
@@ -32,9 +36,11 @@ export const ErrorBoundary = ({
   sentryDsn?: string;
   sentryInit?: Sentry.BrowserOptions;
   errorFallbacks?: { [_: string]: JSX.Element }
+  errorLevels?: { [_: string]: Sentry.SeverityLevel }
 }) => {
   const [error, setError] = React.useState<SentryError | null>(null);
   const errorFallbacks: { [_: string]: JSX.Element } = { ...defaultErrorFallbacks, ...props.errorFallbacks };
+  const errorLevels = { ...defaultErrorLevels, ...props.errorLevels };
   const typedFallback = error?.type ? errorFallbacks[error.type] : undefined;
   const initCalled = React.useRef(false);
 
@@ -75,6 +81,17 @@ export const ErrorBoundary = ({
           componentStack,
           eventId
         });
+      }}
+      beforeCapture={(scope, error) => {
+        // We need to set the level here, before `setError` is called in `onError`
+        // throw -> beforeCapture -> onError -> error captured -> setError -> etc.
+        if (error) {
+          const type = getTypeFromError(error);
+          const errorLevel = errorLevels[type];
+          if (errorLevel) {
+            scope.setLevel(errorLevel);
+          }
+        }
       }}
       {...props}
       onReset={() => setError(null)}

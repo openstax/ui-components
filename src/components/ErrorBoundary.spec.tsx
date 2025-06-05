@@ -10,7 +10,7 @@ const { testkit, sentryTransport } = sentryTestkit();
 const ErrorComponent = () => { throw new Error('Test Error') };
 
 describe('ErrorBoundary', () => {
-  beforeEach(() => {
+  beforeAll(() => {
     Sentry.init({
       dsn: 'https://examplePublicKey@o0.ingest.sentry.io/0',
       transport: sentryTransport,
@@ -68,6 +68,93 @@ describe('ErrorBoundary', () => {
 
     expect(() => findByTestId(render.root, 'error-fallback')).toThrow();
     expect(testkit.reports()).toHaveLength(1);
+
+    spy.mockRestore();
+  });
+
+  it('sets level appropriately', () => {
+    const spy = jest.spyOn(console, 'error');
+    spy.mockImplementation(() => undefined);
+
+    // Clear previous reports
+    testkit.reset();
+
+    const SessionExpiredComponent = () => {
+      throw new SessionExpiredError();
+    };
+
+    // Should create warning (reports[0])
+    renderer.create(
+      <ErrorBoundary renderFallback>
+        <SessionExpiredComponent />
+      </ErrorBoundary>
+    );
+
+    // Should create error (reports[1])
+    renderer.create(
+      <ErrorBoundary renderFallback>
+        <ErrorComponent />
+      </ErrorBoundary>
+    );
+
+    const reports = testkit.reports();
+    expect(reports).toHaveLength(2);
+    expect(reports[0].level).toBe('warning');
+    expect(reports[1].level).toBe('error');
+
+    spy.mockRestore();
+  });
+
+  it('can override level in error fallbacks', () => {
+    const spy = jest.spyOn(console, 'error');
+    spy.mockImplementation(() => undefined);
+
+    // Clear previous reports
+    testkit.reset();
+
+    const SessionExpiredComponent = () => {
+      throw new SessionExpiredError();
+    };
+
+    // Round 1: Override default 'warning' level with 'debug'
+    // Should create debug (reports[0])
+    renderer.create(
+      <ErrorBoundary
+        renderFallback
+        errorLevels={{ SessionExpiredError: 'debug' }}
+      >
+        <SessionExpiredComponent />
+      </ErrorBoundary>
+    );
+
+    // Should create error (reports[1])
+    renderer.create(
+      <ErrorBoundary renderFallback>
+        <ErrorComponent />
+      </ErrorBoundary>
+    );
+    
+    const reports = testkit.reports();
+    expect(reports).toHaveLength(2);
+    expect(reports[0].level).toBe('debug');
+    expect(reports[1].level).toBe('error');
+
+    // Round 2: Ensure 'error' level is default
+    testkit.reset();
+
+    const unsetLevel = (undefined as unknown) as Sentry.SeverityLevel
+
+    renderer.create(
+      <ErrorBoundary
+        renderFallback
+        errorLevels={{ SessionExpiredError: unsetLevel }}
+      >
+        <SessionExpiredComponent />
+      </ErrorBoundary>
+    );
+
+    expect(testkit.reports()).toHaveLength(1);
+    expect(testkit.reports()[0].level).toBe('error');
 
     spy.mockRestore();
   });
