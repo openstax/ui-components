@@ -63,7 +63,7 @@ export const ErrorBoundary = ({
       dsn: sentryDsn,
       environment: window.location.hostname,
       initialScope: {
-        tags: { userData: (window as WindowWithUserData)._OX_USER_DATA?.uuid }
+        user: { uuid: (window as WindowWithUserData)._OX_USER_DATA?.uuid },
       },
       integrations: [
         Sentry.browserTracingIntegration(),
