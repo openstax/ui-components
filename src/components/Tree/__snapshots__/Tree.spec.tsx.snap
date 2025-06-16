@@ -63,7 +63,7 @@ exports[`Tree matches snapshot 1`] = `
             data-react-aria-prevent-focus="true"
             id="react-aria-5"
             slot="chevron"
-            tabindex="0"
+            tabindex="-1"
             type="button"
           >
             <svg
