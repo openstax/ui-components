@@ -1,5 +1,5 @@
 import React from "react";
-import { ToggleButtonGroup } from "./ToggleButtonGroup/index";
+import { ToggleButton, ToggleButtonGroup } from "./ToggleButtonGroup/index";
 import type { Key } from "react-aria-components";
 
 const childrenListWithKeys = [
@@ -35,6 +35,20 @@ export const SingleSelection = () => {
         items={childrenListWithKeys}
       />
       <p>Current selections: {selectedItem}</p>
+    </>
+  );
+};
+
+export const Disabled = () => {
+  const [selectedItem, setSelectedItem] = React.useState('');
+  return (
+    <>
+      <ToggleButtonGroup
+        selectedItems={new Set<Key>([selectedItem])}
+        onSelectionChange={(newSet) => setSelectedItem(newSet.size ? [...newSet][0] as string : '')}
+        disallowEmptySelection={true}
+        items={[...childrenListWithKeys, { id: 'purple', value: 'Purple', isDisabled: true }]}
+      />
     </>
   );
 };
