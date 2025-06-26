@@ -1,5 +1,5 @@
 import React from "react";
-import { ToggleButton, ToggleButtonGroup } from "./ToggleButtonGroup/index";
+import { ToggleButtonGroup } from "./ToggleButtonGroup/index";
 import type { Key } from "react-aria-components";
 
 const childrenListWithKeys = [
