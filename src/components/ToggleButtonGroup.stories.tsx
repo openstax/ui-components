@@ -38,3 +38,17 @@ export const SingleSelection = () => {
     </>
   );
 };
+
+export const Disabled = () => {
+  const [selectedItem, setSelectedItem] = React.useState('');
+  return (
+    <>
+      <ToggleButtonGroup
+        selectedItems={new Set<Key>([selectedItem])}
+        onSelectionChange={(newSet) => setSelectedItem(newSet.size ? [...newSet][0] as string : '')}
+        disallowEmptySelection={true}
+        items={[...childrenListWithKeys, { id: 'purple', value: 'Purple', isDisabled: true }]}
+      />
+    </>
+  );
+};

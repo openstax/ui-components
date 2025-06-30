@@ -27,6 +27,10 @@ export const StyledToggleButton = styled(ToggleButton)`
     background-color: ${colors.palette.neutralLighter};
   }
 
+  &[data-disabled] {
+    color: ${colors.palette.neutralLight};
+  }
+
   &[data-focus-visible] {
     outline: none;
     box-shadow: inset 0 0 0 0.1rem ${colors.palette.black};
