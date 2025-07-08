@@ -38,6 +38,7 @@ export const ErrorBoundary = ({
   sentryInit?: Sentry.BrowserOptions;
   errorFallbacks?: { [_: string]: JSX.Element }
   errorLevels?: { [_: string]: Sentry.SeverityLevel }
+  userUuid?: string; // Optional user UUID to set in Sentry
 }) => {
   const [error, setError] = React.useState<SentryError | null>(null);
   const errorFallbacks: { [_: string]: JSX.Element } = { ...defaultErrorFallbacks, ...props.errorFallbacks };
@@ -80,10 +81,10 @@ export const ErrorBoundary = ({
   }, [sentryDsn, sentryInit]);
 
   React.useEffect(() => {
-    if (initCalled.current) {
+    if (initCalled.current && (window as WindowWithUserData)._OX_USER_DATA?.uuid !== props.userUuid) {
       Sentry.setUser({ uuid: (window as WindowWithUserData)._OX_USER_DATA?.uuid });
     }
-  }, [(window as WindowWithUserData)._OX_USER_DATA?.uuid, initCalled.current]);
+  }, [(window as WindowWithUserData)._OX_USER_DATA?.uuid, props.userUuid, initCalled.current]);
 
   // There are two references to the render element here because the Sentry fallback (and
   // onError) are not used for unhandledrejection events. To support those events, we provide
