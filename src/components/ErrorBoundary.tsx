@@ -84,7 +84,7 @@ export const ErrorBoundary = ({
     if (initCalled.current && (window as WindowWithUserData)._OX_USER_DATA?.uuid !== props.userUuid) {
       Sentry.setUser({ uuid: (window as WindowWithUserData)._OX_USER_DATA?.uuid });
     }
-  }, [(window as WindowWithUserData)._OX_USER_DATA?.uuid, props.userUuid, initCalled.current]);
+  }, [props.userUuid]);
 
   // There are two references to the render element here because the Sentry fallback (and
   // onError) are not used for unhandledrejection events. To support those events, we provide
