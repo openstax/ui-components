@@ -82,7 +82,7 @@ export const ErrorBoundary = ({
 
   React.useEffect(() => {
     if (initCalled.current && (window as WindowWithUserData)._OX_USER_DATA?.uuid !== props.userUuid) {
-      Sentry.setUser({ uuid: (window as WindowWithUserData)._OX_USER_DATA?.uuid });
+      Sentry.setUser({ uuid: props.userUuid });
     }
   }, [props.userUuid]);
 
