@@ -38,6 +38,7 @@ export const ErrorBoundary = ({
   sentryInit?: Sentry.BrowserOptions;
   errorFallbacks?: { [_: string]: JSX.Element }
   errorLevels?: { [_: string]: Sentry.SeverityLevel }
+  userUuid?: string; // Optional user UUID to set in Sentry
 }) => {
   const [error, setError] = React.useState<SentryError | null>(null);
   const errorFallbacks: { [_: string]: JSX.Element } = { ...defaultErrorFallbacks, ...props.errorFallbacks };
@@ -48,7 +49,12 @@ export const ErrorBoundary = ({
   // Optionally re-render with the children so they can display inline errors with <ErrorMessage />
   const renderElement = error && renderFallback ? (typedFallback || fallback) : <>{children}</>;
 
-  type WindowWithUserData = Window & { _OX_USER_DATA?: User }
+  type FrontendConfigType = {
+    releaseId: string;
+    [key: string]: unknown; // any other properties, can vary depending on the frontend config repository
+  };
+
+  type WindowWithUserData = Window & { _OX_USER_DATA?: User, _OX_FRONTEND_CONFIG?: FrontendConfigType }
 
   React.useEffect(() => {
     if (!sentryDsn && !sentryInit) {
@@ -61,6 +67,7 @@ export const ErrorBoundary = ({
     initCalled.current = true;
     Sentry.init(sentryInit || {
       dsn: sentryDsn,
+      release: (window as WindowWithUserData)._OX_FRONTEND_CONFIG?.releaseId,
       environment: window.location.hostname,
       initialScope: {
         user: { uuid: (window as WindowWithUserData)._OX_USER_DATA?.uuid },
@@ -72,6 +79,12 @@ export const ErrorBoundary = ({
       tracesSampleRate: 0.1,
     });
   }, [sentryDsn, sentryInit]);
+
+  React.useEffect(() => {
+    if (initCalled.current && (window as WindowWithUserData)._OX_USER_DATA?.uuid !== props.userUuid) {
+      Sentry.setUser({ uuid: props.userUuid });
+    }
+  }, [props.userUuid]);
 
   // There are two references to the render element here because the Sentry fallback (and
   // onError) are not used for unhandledrejection events. To support those events, we provide
