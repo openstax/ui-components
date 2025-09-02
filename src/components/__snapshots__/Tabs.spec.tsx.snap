@@ -6,7 +6,7 @@ exports[`Tabs component button-bar styling renders 1`] = `
     data-react-aria-hidden="true"
   />
   <div
-    class="sc-bczRLJ kWkDUg"
+    class="sc-bczRLJ iBDygX"
     data-orientation="horizontal"
     data-rac=""
   >
@@ -82,7 +82,7 @@ exports[`Tabs component button-bar styling renders large size 1`] = `
     data-react-aria-hidden="true"
   />
   <div
-    class="sc-bczRLJ kTnZrf"
+    class="sc-bczRLJ feXGds"
     data-orientation="horizontal"
     data-rac=""
   >
@@ -158,7 +158,7 @@ exports[`Tabs component button-bar styling renders small size 1`] = `
     data-react-aria-hidden="true"
   />
   <div
-    class="sc-bczRLJ kFnuyo"
+    class="sc-bczRLJ kAIoyP"
     data-orientation="horizontal"
     data-rac=""
   >

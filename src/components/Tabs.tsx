@@ -58,6 +58,7 @@ export const buttonBarItemCss = css`
 
   &[data-selected=true] {
     background: ${colors.palette.neutralLight};
+    box-shadow: inset 0 0 0 0.1rem ${colors.palette.pale};
   }
   &:hover:not([data-selected=true]) {
     background: ${colors.palette.neutralLighter};

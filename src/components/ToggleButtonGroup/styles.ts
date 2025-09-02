@@ -25,6 +25,8 @@ export const StyledToggleButton = styled(ToggleButton)`
 
   &[data-selected] {
     background-color: ${colors.palette.neutralLighter};
+    // achieve a 2px border effect without disrupting layout
+    box-shadow: inset 0 0 0 0.1rem ${colors.palette.pale};
   }
 
   &[data-disabled] {
