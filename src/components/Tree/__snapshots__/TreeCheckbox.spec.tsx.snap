@@ -62,7 +62,7 @@ exports[`TreeCheckbox handles disabled state 1`] = `
 </label>
 `;
 
-exports[`TreeCheckbox handles indeterimnate state 1`] = `
+exports[`TreeCheckbox handles indeterminate state 1`] = `
 <label
   className="sc-bczRLJ estYWl"
   data-indeterminate={true}
