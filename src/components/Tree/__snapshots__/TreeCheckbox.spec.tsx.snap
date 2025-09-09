@@ -2,7 +2,7 @@
 
 exports[`TreeCheckbox handles disabled state 1`] = `
 <label
-  className="sc-bczRLJ gRqfxl"
+  className="sc-bczRLJ hkykfJ"
   data-disabled={true}
   data-rac=""
   data-react-aria-pressable={true}
@@ -62,9 +62,72 @@ exports[`TreeCheckbox handles disabled state 1`] = `
 </label>
 `;
 
+exports[`TreeCheckbox handles indeterimnate state 1`] = `
+<label
+  className="sc-bczRLJ estYWl"
+  data-indeterminate={true}
+  data-rac=""
+  data-react-aria-pressable={true}
+  onClick={[Function]}
+  onDragStart={[Function]}
+  onKeyDown={[Function]}
+  onMouseDown={[Function]}
+  onMouseEnter={[Function]}
+  onMouseLeave={[Function]}
+  onMouseUp={[Function]}
+  onTouchCancel={[Function]}
+  onTouchEnd={[Function]}
+  onTouchMove={[Function]}
+  onTouchStart={[Function]}
+>
+  <span
+    style={
+      Object {
+        "border": 0,
+        "clip": "rect(0 0 0 0)",
+        "clipPath": "inset(50%)",
+        "height": "1px",
+        "margin": "-1px",
+        "overflow": "hidden",
+        "padding": 0,
+        "position": "absolute",
+        "whiteSpace": "nowrap",
+        "width": "1px",
+      }
+    }
+  >
+    <input
+      checked={false}
+      data-react-aria-pressable={true}
+      disabled={false}
+      onBlur={[Function]}
+      onChange={[Function]}
+      onClick={[Function]}
+      onDragStart={[Function]}
+      onFocus={[Function]}
+      onKeyDown={[Function]}
+      onMouseDown={[Function]}
+      onMouseEnter={[Function]}
+      onMouseLeave={[Function]}
+      onMouseUp={[Function]}
+      onTouchCancel={[Function]}
+      onTouchEnd={[Function]}
+      onTouchMove={[Function]}
+      onTouchStart={[Function]}
+      tabIndex={0}
+      type="checkbox"
+    />
+  </span>
+  <div
+    data-slot="selection"
+  />
+  Click Me
+</label>
+`;
+
 exports[`TreeCheckbox handles options 1`] = `
 <label
-  className="sc-bczRLJ jaaPJI"
+  className="sc-bczRLJ iwkggw"
   data-rac=""
   data-react-aria-pressable={true}
   onClick={[Function]}
@@ -126,7 +189,7 @@ exports[`TreeCheckbox handles options 1`] = `
 
 exports[`TreeCheckbox matches snapshot 1`] = `
 <label
-  className="sc-bczRLJ brkWAJ"
+  className="sc-bczRLJ estYWl"
   data-rac=""
   data-react-aria-pressable={true}
   onClick={[Function]}
@@ -188,7 +251,7 @@ exports[`TreeCheckbox matches snapshot 1`] = `
 
 exports[`TreeCheckbox supports slot="selection" 1`] = `
 <label
-  className="sc-bczRLJ brkWAJ"
+  className="sc-bczRLJ estYWl"
   data-rac=""
   data-react-aria-pressable={true}
   onClick={[Function]}
