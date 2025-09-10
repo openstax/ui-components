@@ -23,6 +23,13 @@ describe('TreeCheckbox', () => {
     expect(tree).toMatchSnapshot();
   });
 
+  it('handles indeterminate state', () => {
+    const tree = renderer.create(
+      <TreeCheckbox isIndeterminate>Click Me</TreeCheckbox>
+    ).toJSON();
+    expect(tree).toMatchSnapshot();
+  });
+
   it('supports slot="selection"', () => {
     const tree = renderer.create(
       <TreeCheckbox slot="selection">Click Me</TreeCheckbox>

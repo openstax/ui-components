@@ -17,15 +17,16 @@ type CheckboxProps = React.ComponentProps<typeof TreeCheckbox>;
 
 const renderCheckboxes = (
   variant: CheckboxProps['variant'],
-  size: CheckboxProps['size']
+  size: CheckboxProps['size'],
+  isIndeterminate = false,
 ) => (
   <CheckboxGroup>
     <h2>Size {size}</h2>
-    <TreeCheckbox slot='selection' {...{ size, variant }}>Checkbox label</TreeCheckbox>
-    <TreeCheckbox slot='selection' {...{ size, variant }} defaultSelected>
+    <TreeCheckbox slot='selection' {...{ size, variant, isIndeterminate }}>Checkbox label</TreeCheckbox>
+    <TreeCheckbox slot='selection' {...{ size, variant, isIndeterminate }} defaultSelected>
       Checkbox label
     </TreeCheckbox>
-    <TreeCheckbox slot='selection' {...{ size, variant }} defaultSelected bold>
+    <TreeCheckbox slot='selection' {...{ size, variant, isIndeterminate }} defaultSelected bold>
       Checkbox label
     </TreeCheckbox>
   </CheckboxGroup>
@@ -46,6 +47,15 @@ export const Light = () => (
     {renderCheckboxes("light", 1.6)}
     {renderCheckboxes("light", 1.8)}
     {renderCheckboxes("light", 2)}
+  </>
+);
+
+export const IsIndeterminate = () => (
+  <>
+    {renderCheckboxes("primary", 1.4, true)}
+    {renderCheckboxes("primary", 1.6, true)}
+    {renderCheckboxes("primary", 1.8, true)}
+    {renderCheckboxes("primary", 2, true)}
   </>
 );
 
