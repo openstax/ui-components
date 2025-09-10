@@ -11,6 +11,8 @@ import {
   CheckboxSize, 
   CheckboxVariant 
 } from "../Checkbox/sharedCheckboxStyles";
+import { checkedMixIcon } from "../svgs/checkmarksvgs";
+import theme from '../../../src/theme';
 
 export interface TreeCheckboxProps
   extends PropsWithChildren<Omit<RACCheckboxProps, "children">> {
@@ -33,6 +35,17 @@ const StyledCheckbox = styled(RACCheckbox) <{
 
   &[data-selected] [data-slot="selection"]::before {
     ${checkboxSelectionSlotCheckedStyles}
+  }
+
+  &[data-indeterminate="true"] {
+    [data-slot="selection"]::before { 
+      content: "";
+      position: relative;
+      transform: scale(1);
+      background-color: ${theme.colors.palette.mediumBlue};
+      border: none;
+      background-image: url('${checkedMixIcon}');
+    }
   }
 `;
 
