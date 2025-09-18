@@ -1,8 +1,10 @@
 import React from 'react';
-import { NavBarMenuButton, NavBarMenuItem } from './NavBarMenuButtons';
-import { colors } from '../theme';
+import { NavBarMenuButton, NavBarMenuItem } from '../NavBarMenuButtons';
+import { colors } from '../../theme';
 import styled from 'styled-components';
-import { BodyPortal } from './BodyPortal';
+import { BodyPortal } from '../BodyPortal';
+import { ChatEmbedServiceConfiguration, useEmbeddedChatService } from './hooks';
+import { chatEmbedDefaults } from './constants'
 
 export const HelpMenuButton = styled(NavBarMenuButton)`
   color: ${colors.palette.gray};
@@ -102,136 +104,11 @@ export const NewTabIcon = () => (
 
 export interface HelpMenuProps {
   contactFormParams: { key: string; value: string }[];
+  chatEmbedParams?: Partial<ChatEmbedServiceConfiguration>;
   children?: React.ReactNode;
 }
 
-declare global {
-  interface Window {
-    embeddedservice_bootstrap?: any;
-  }
-}
-export interface BusinessHours {
-  startTime: number;
-  endTime: number;
-}
-
-export interface ChatContext extends BusinessHours {
-  openChat: () => void;
-}
-
-function useScript(src: string): boolean {
-  const [ready, setReady] = React.useState(false);
-  const scriptRef = React.useRef<HTMLScriptElement | null>(null);
-
-  React.useEffect(() => {
-    // Already in the DOM? No need to add it again.
-    if (document.querySelector(`script[src="${src}"]`)) {
-      setReady(true);
-      return;
-    }
-
-    const script = document.createElement('script');
-    script.src = src;
-    script.async = true;
-    script.onload = () => setReady(true);
-    script.onerror = () => console.warn(`Failed to load ${src}`);
-    document.head.appendChild(script);
-    scriptRef.current = script;
-
-    return () => {
-      scriptRef.current?.remove();
-    };
-  }, [src]);
-
-  return ready;
-}
-
-export function useWebMessagingDeployment() {
-  const [chatContext, setChatContext] = React.useState<ChatContext | null>(null);
-  const orgId = '00DU0000000Kwch';
-  const app = 'Web_Messaging_Deployment';
-  const deployment = 'ESWWebMessagingDeployme1716235390398';
-  const scrt2URL = 'https://openstax.my.salesforce-scrt.com';
-  const scriptUrl =
-    `https://openstax.my.site.com/${deployment}/assets/js/bootstrap.min.js`;
-
-  const scriptLoaded = useScript(scriptUrl);
-
-  React.useEffect(() => {
-    if (!scriptLoaded || typeof window === 'undefined') return;
-
-    let cancelled = false;
-
-    const openChat = () => {
-      const svc = window.embeddedservice_bootstrap
-      svc.utilAPI.launchChat()
-        .catch((err: Error) => {
-          console.error(err)
-        })
-    }
-
-    // Get the business hours from salesforce
-    const fetchHours = async () => {
-      try {
-        const res = await fetch(
-          `${scrt2URL}/embeddedservice/v1/businesshours?orgId=${orgId}&esConfigName=${app}`
-        );
-        const { businessHoursInfo }: {
-          businessHoursInfo: {
-            isActive: boolean
-            businessHours: BusinessHours[]
-          }
-        } = await res.json();
-
-        if (cancelled) return;
-
-        const today = (new Date()).toISOString().slice(0, 10);
-        const todaysHours = businessHoursInfo.businessHours.find(
-          (h: BusinessHours) => today === (new Date(h.startTime)).toISOString().slice(0, 10)
-        );
-        const newChatContext = !businessHoursInfo.isActive || todaysHours === undefined
-          ? null
-          : { ...todaysHours, openChat }
-        setChatContext(newChatContext);
-      } catch (e) {
-        if (!cancelled) {
-          console.error('Error fetching business hours', e);
-          setChatContext(null);
-        }
-      }
-    };
-
-    const handleBusinessHours = () => {
-      void fetchHours();
-    };
-
-    // Don't try to set business hours until we know the chat is ready
-    window.addEventListener('onEmbeddedMessagingReady', handleBusinessHours);
-    window.addEventListener('onEmbeddedMessagingBusinessHoursStarted', handleBusinessHours);
-    window.addEventListener('onEmbeddedMessagingBusinessHoursEnded', handleBusinessHours);
-
-    try {
-      // `embeddedservice_bootstrap` is injected by the script we just added
-      const svc = window.embeddedservice_bootstrap;
-      svc.settings.language = 'en_US';
-      svc.settings.hideChatButtonOnLoad = true;
-      svc.init(orgId, app, `https://openstax.my.site.com/${deployment}`, { scrt2URL });
-    } catch (e) {
-      console.error('Error initializing Embedded Messaging', e);
-    }
-
-    return () => {
-      cancelled = true;
-      window.removeEventListener('onEmbeddedMessagingReady', handleBusinessHours);
-      window.removeEventListener('onEmbeddedMessagingBusinessHoursStarted', handleBusinessHours);
-      window.removeEventListener('onEmbeddedMessagingBusinessHoursEnded', handleBusinessHours);
-    };
-  }, [scriptLoaded, orgId, app, scrt2URL]);
-
-  return { chatContext };
-}
-
-const formatBusinessHoursRange = (startTime: number, endTime: number) => {
+export const formatBusinessHoursRange = (startTime: number, endTime: number) => {
   // Ensure we are working with a real Date instance
   const startDate = new Date(startTime);
   const endDate = new Date(endTime);
@@ -253,13 +130,17 @@ const formatBusinessHoursRange = (startTime: number, endTime: number) => {
     console.warn(
       'Intl.DateTimeFormat not available, falling back to simple hours.', e
     );
+    // Ex: 9 - 17
     return `${startDate.getHours()} - ${endDate.getHours()}`;
   }
-}
+};
 
-export const HelpMenu: React.FC<HelpMenuProps> = ({ contactFormParams, children }) => {
+export const HelpMenu: React.FC<HelpMenuProps> = ({ contactFormParams, chatEmbedParams, children }) => {
   const [showIframe, setShowIframe] = React.useState<string | undefined>();
-  const { chatContext } = useWebMessagingDeployment();
+  const chatConfig = React.useMemo(() => ({
+    ...chatEmbedDefaults, ...chatEmbedParams
+  }), [chatEmbedParams]);
+  const { chatEmbed, error: chatEmbedError } = useEmbeddedChatService(chatConfig);
 
   const contactFormUrl = React.useMemo(() => {
     const formUrl = 'https://openstax.org/embedded/contact';
@@ -272,9 +153,12 @@ export const HelpMenu: React.FC<HelpMenuProps> = ({ contactFormParams, children 
   }, [contactFormParams]);
 
   const hoursRange = React.useMemo(
-    () => chatContext == null ? '' : formatBusinessHoursRange(
-      chatContext.startTime, chatContext.endTime
-    ), [chatContext]
+    () => (
+      chatEmbed?.startTime && chatEmbed?.endTime
+        ? formatBusinessHoursRange(chatEmbed.startTime, chatEmbed.endTime)
+        : null
+    ),
+    [chatEmbed?.startTime, chatEmbed?.endTime]
   );
 
   React.useEffect(() => {
@@ -288,12 +172,14 @@ export const HelpMenu: React.FC<HelpMenuProps> = ({ contactFormParams, children 
     return () => window.removeEventListener('message', closeIt, false);
   }, []);
 
+  if (chatEmbedError) console.error(chatEmbedError);
+
   return (
     <>
       <HelpMenuButton label='Help' aria-label='Help menu'>
-        {chatContext !== null
+        {chatEmbed !== null && chatEmbedError === null
           ? (
-            <HelpMenuItem onAction={() => chatContext.openChat()}>
+            <HelpMenuItem onAction={() => chatEmbed.openChat()}>
               Chat With Us ({hoursRange})
             </HelpMenuItem>
           ) : (
