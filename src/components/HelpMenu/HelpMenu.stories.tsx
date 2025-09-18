@@ -1,7 +1,7 @@
 import { createGlobalStyle } from 'styled-components';
-import { BodyPortalSlotsContext } from './BodyPortalSlotsContext';
-import { HelpMenu, HelpMenuItem } from './HelpMenu';
-import { NavBar } from './NavBar';
+import { BodyPortalSlotsContext } from '../BodyPortalSlotsContext';
+import { HelpMenu, HelpMenuItem } from '.';
+import { NavBar } from '../NavBar';
 
 const BodyPortalGlobalStyle = createGlobalStyle`
   [data-portal-slot="nav"] {
