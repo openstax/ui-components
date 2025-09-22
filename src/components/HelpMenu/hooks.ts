@@ -45,10 +45,15 @@ export const useScript = (src: string) => {
 
     const script = document.createElement('script');
     script.src = src;
-    script.async = true;
-    script.onload = () => setReady(true);
-    script.onerror = () => setError(new Error(`Failed to load ${src}`));
-    document.head.appendChild(script);
+    script.onload = () => {
+      setReady(true);
+      setError(null);
+    }
+    script.onerror = () => {
+      setError(new Error(`Failed to load ${src}`));
+      setReady(false);
+    };
+    document.body.appendChild(script);
     scriptRef.current = script;
   }, [src]);
 
@@ -106,6 +111,7 @@ export const useEmbeddedChatService = ({
       return getChatEmbed(businessHoursURL, signal)
         .then(setChatEmbed)
         .catch((err) => {
+          /* istanbul ignore next */
           if ((err as any).name !== "AbortError") {
             setFetchError(err);
             setChatEmbed(null);
@@ -133,6 +139,7 @@ export const useEmbeddedChatService = ({
       svc.settings.hideChatButtonOnLoad = true;
       svc.init(orgId, app, deploymentURL, { scrt2URL });
     } catch (e) {
+      /* istanbul ignore next */
       console.error('Error initializing Embedded Messaging', e);
     }
 

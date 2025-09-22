@@ -3,6 +3,7 @@
 exports[`HelpMenu matches snapshot 1`] = `
 <body>
   <nav
+    aria-hidden="true"
     class="sc-jqUVSM cCVOTe"
     data-portal-slot="nav"
   >
@@ -50,10 +51,14 @@ exports[`HelpMenu matches snapshot 1`] = `
         />
       </svg>
       <button
-        aria-expanded="false"
+        aria-controls="react-aria-2"
+        aria-expanded="true"
         aria-haspopup="true"
         aria-label="Help menu"
         class="sc-bczRLJ dKgZvy sc-eCYdqJ henMfs"
+        data-focus-visible="true"
+        data-focused="true"
+        data-pressed="true"
         data-rac=""
         data-react-aria-pressable="true"
         id="react-aria-1"
@@ -67,8 +72,113 @@ exports[`HelpMenu matches snapshot 1`] = `
     </div>
   </nav>
   <main
+    aria-hidden="true"
     id="root"
   />
-  <div />
+  <div
+    aria-hidden="true"
+  />
+  <script
+    aria-hidden="true"
+    src="https://openstax.my.site.com/ESWAssignableChat1754950731751/assets/js/bootstrap.min.js"
+  />
+  <span
+    aria-hidden="true"
+    data-focus-scope-start="true"
+    hidden=""
+  />
+  <div
+    aria-hidden="true"
+    data-testid="underlay"
+    style="position: fixed; inset: 0;"
+  />
+  <div
+    style="display: contents;"
+  >
+    <div
+      aria-labelledby="react-aria-1"
+      class="sc-hKMtZM gqPqDX"
+      data-placement="bottom"
+      data-rac=""
+      data-trigger="MenuTrigger"
+      dir="ltr"
+      role="dialog"
+      style="position: absolute; z-index: 100000; max-height: -24px; left: 12px; top: 8px;"
+      tabindex="-1"
+    >
+      <div
+        style="border: 0px; clip-path: inset(50%); height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px; white-space: nowrap;"
+      >
+        <button
+          aria-label="Dismiss"
+          id="react-aria-4"
+          style="width: 1px; height: 1px;"
+          tabindex="-1"
+        />
+      </div>
+      <template
+        data-react-aria-hidden="true"
+      />
+      <span
+        data-focus-scope-start="true"
+        hidden=""
+      />
+      <div
+        aria-labelledby="react-aria-1"
+        class="react-aria-Menu"
+        data-collection="react-aria-5"
+        data-rac=""
+        id="react-aria-2"
+        role="menu"
+        tabindex="-1"
+      >
+        <div
+          class="sc-gsnTZi sc-jSMfEi  bPmhIj"
+          data-collection="react-aria-5"
+          data-focus-visible="true"
+          data-focused="true"
+          data-key="react-aria-1"
+          data-rac=""
+          data-react-aria-pressable="true"
+          id="react-aria-10"
+          role="menuitem"
+          tabindex="0"
+        >
+          Report an issue
+        </div>
+        <div
+          class="sc-gsnTZi sc-jSMfEi  bPmhIj"
+          data-collection="react-aria-5"
+          data-key="react-aria-2"
+          data-rac=""
+          data-react-aria-pressable="true"
+          id="react-aria-14"
+          role="menuitem"
+          tabindex="-1"
+        >
+          Test Callback
+        </div>
+      </div>
+      <span
+        data-focus-scope-end="true"
+        hidden=""
+      />
+      <div
+        style="border: 0px; clip-path: inset(50%); height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px; white-space: nowrap;"
+      >
+        <button
+          aria-label="Dismiss"
+          id="react-aria-6"
+          style="width: 1px; height: 1px;"
+          tabindex="-1"
+        />
+      </div>
+    </div>
+  </div>
+  <span
+    aria-hidden="true"
+    data-focus-scope-end="true"
+    hidden=""
+  />
 </body>
 `;
