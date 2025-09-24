@@ -55,8 +55,6 @@ export const useScript = (src: string) => {
   const [ready, setReady] = React.useState(false);
   const [error, setError] = React.useState<Error | null>(null);
 
-  const scriptRef = React.useRef<HTMLScriptElement | null>(null);
-
   React.useEffect(() => {
     // Already in the DOM? No need to add it again.
     if (document.querySelector(`script[src="${src}"]`)) {
@@ -75,7 +73,6 @@ export const useScript = (src: string) => {
       setReady(false);
     };
     document.body.appendChild(script);
-    scriptRef.current = script;
   }, [src]);
 
   return { ready, error };
@@ -199,7 +196,7 @@ export const useEmbeddedChatService = ({
       console.error('Error initializing Embedded Messaging', e);
     }
 
-  }, [scriptLoaded, businessHoursURL, orgId, app, deploymentURL, scrt2URL]);
+  }, [scriptLoaded, orgId, app, deploymentURL, scrt2URL]);
 
   return { chatEmbed, error: scriptError ?? fetchError };
 }
