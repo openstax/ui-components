@@ -21,7 +21,6 @@ describe('HelpMenu', () => {
       if (input.indexOf('businesshours') !== -1) {
         const hours: BusinessHoursResponse = {
           businessHoursInfo: {
-            isActive: true,
             businessHours: [
               {
                 startTime: 0,
@@ -77,6 +76,10 @@ describe('HelpMenu', () => {
         }
       }),
       utilAPI: { launchChat: jest.fn() },
+      prechatAPI: {
+        setHiddenPrechatFields: jest.fn(),
+        setVisiblePrechatFields: jest.fn(),
+      },
       settings: {},
     };
     (window as any).embeddedservice_bootstrap = mockSvc;
@@ -89,7 +92,7 @@ describe('HelpMenu', () => {
     render(
       <BodyPortalSlotsContext.Provider value={['nav', 'root']}>
         <NavBar logo>
-          <HelpMenu contactFormParams={[{key: 'userId', value: 'test'}]}>
+          <HelpMenu contactFormParams={[{key: 'userId', value: 'test'}, {key: 'other', value: 'param'}]}>
             <HelpMenuItem onAction={() => window.alert('Ran HelpMenu callback function')}>
               Test Callback
             </HelpMenuItem>
@@ -125,6 +128,8 @@ Array [
   ],
 ]
 `);
+    expect(mockSvc.prechatAPI.setHiddenPrechatFields.mock.calls).toMatchInlineSnapshot(`Array []`);
+    expect(mockSvc.prechatAPI.setVisiblePrechatFields.mock.calls).toMatchInlineSnapshot(`Array []`);
     expect(mockSvc.init).toHaveBeenCalled();
     expect(mockSvc.utilAPI.launchChat).toHaveBeenCalled();
   });
