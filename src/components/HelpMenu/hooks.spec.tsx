@@ -1,6 +1,7 @@
 // __tests__/useScript.test.tsx
 import { act, renderHook } from '@testing-library/react-hooks';
-import { BusinessHours, BusinessHoursResponse, getBusinessHours, getChatEmbed, useScript } from './hooks';   // ← your hook
+import { getChatEmbed, useBusinessHours, useScript } from './hooks';   // ← your hook
+import { embeddedChatEvents } from './constants';
 
 
 describe('useScript', () => {
@@ -110,221 +111,444 @@ describe('useScript', () => {
   });
 });
 
-class Response {
-  constructor(
-    private readonly bodyInit: any,
-    private readonly options: { status: number }
-  ) {}
+describe('useBusinessHours', () => {
+  const makeResponse = (body: any, ok = true, status = 200) => ({
+    ok,
+    status,
+    json: async () => body,
+  });
 
-  async json() {
-    return Promise.resolve(JSON.parse(this.bodyInit));
-  }
+  const createMockFetch = (handler: (input: RequestInfo, init?: RequestInit) => Promise<any>) => {
+    return jest.fn(handler) as jest.Mock;
+  };
 
-  get status() {
-    return this.options.status;
-  }
-
-  get ok() {
-    return this.options.status === 200;
-  }
-}
-
-describe('getBusinessHours', () => {
-  const testUrl = 'https://example.com/api/businessHours';
-  const fetchMock = jest.fn();
-  const originalFetch = global.fetch;
+  // Reset fetch before each test
+  beforeEach(() => {
+    global.fetch = undefined as any;
+    jest.clearAllMocks();
+  });
 
   beforeAll(() => {
     jest.useFakeTimers();
-    jest.setSystemTime(0);
+    jest.setSystemTime(123456);
   });
 
   afterAll(() => {
-    global.fetch = originalFetch;
-  });
+    jest.useRealTimers();
+  })
 
-  beforeEach(() => {
-    // Reset the fetch spy before every test
-    global.fetch = fetchMock;
-  });
-
-  it('resolves with the JSON body when the HTTP status is OK', async () => {
-    const mockJson = { foo: 'bar' };
-    const fetchSpy = fetchMock
-      .mockResolvedValueOnce(
-        new Response(JSON.stringify(mockJson), { status: 200 })
-      );
-
-    const result = await getBusinessHours(testUrl);
-    expect(fetchSpy).toHaveBeenCalledWith(testUrl, { signal: undefined });
-    expect(result).toEqual(mockJson);
-  });
-
-  it('throws an error when the response status is not OK', async () => {
-    const fetchSpy = fetchMock
-      .mockResolvedValueOnce(new Response(null, { status: 404 }));
-
-    await expect(getBusinessHours(testUrl)).rejects.toThrow('HTTP 404');
-    expect(fetchSpy).toHaveBeenCalledWith(testUrl, { signal: undefined });
-  });
-
-  it('propagates fetch rejections (network errors)', async () => {
-    const fetchSpy = fetchMock.mockRejectedValueOnce(
-      new Error('network failure')
-    );
-
-    await expect(getBusinessHours(testUrl)).rejects.toThrow('network failure');
-    expect(fetchSpy).toHaveBeenCalledWith(testUrl, { signal: undefined });
-  });
-
-  it('passes through the AbortSignal when provided', async () => {
-    const abort = new AbortController();
-    fetchMock.mockResolvedValueOnce(new Response(JSON.stringify({}), { status: 200 }));
-
-    await getBusinessHours(testUrl, abort.signal);
-    expect(global.fetch).toHaveBeenCalledWith(testUrl, { signal: abort.signal });
-  });
-});
-
-
-// Helper – a minimal BusinessHoursResponse that matches the shape your real code expects
-const makeMockResponse = (
-  isActive: boolean,
-  hours: BusinessHours[] = []
-): BusinessHoursResponse => ({
-  businessHoursInfo: {
-    isActive,
-    businessHours: hours,
-  },
-});
-describe('getChatEmbed', () => {
-  const testUrl = 'https://example.com/api/businessHours';
-  const fetchMock = jest.fn();
-  const originalFetch = global.fetch;
-
-  beforeAll(() => {
-    jest.useFakeTimers();
-    jest.setSystemTime(Date.UTC(2025, 9, 0, 1, 0, 0));
-  });
-
-  afterAll(() => {
-    global.fetch = originalFetch;
-  });
-  
-  beforeEach(() => {
-    global.fetch = fetchMock;
-    jest.spyOn(global, 'fetch').mockReset();
-    delete (window as any).embeddedservice_bootstrap;
-  });
-
-  const mockHours: BusinessHours[] = [
-    {
-      startTime: Date.UTC(2025, 9, 0, 0, 0, 0),
-      endTime: Date.UTC(2025, 9, 0, 235, 0, 0)
-    },
-  ];
-
-  it('returns null if the business hours block is inactive', async () => {
-    fetchMock
-      .mockResolvedValueOnce(
-        new Response(JSON.stringify(makeMockResponse(false, mockHours)), {
-          status: 200,
-        })
-      );
-
-    const res = await getChatEmbed(testUrl);
-    expect(res).toBeNull();
-  });
-
-  it('returns null when today\'s hours are missing', async () => {
-
-    const fakeHours: BusinessHours[] = [
-      {
-        startTime: Date.UTC(2025, 8, 0, 0, 0, 0),
-        endTime: Date.UTC(2025, 8, 0, 5, 0, 0)
+  it('fetches business hours and sets hours on success', async () => {
+    const validResp = {
+      businessHoursInfo: {
+        businessHours: [{ startTime: 1000, endTime: 2000 }],
       },
-    ];
-
-    fetchMock
-      .mockResolvedValueOnce(
-        new Response(JSON.stringify(makeMockResponse(true, fakeHours)), {
-          status: 200,
-        })
-      );
-
-    const res = await getChatEmbed(testUrl);
-    expect(res).toBeNull();
-  });
-
-  it('returns the today\'s hours record + an openChat thunk when active', async () => {
-    const fetchSpy = fetchMock
-      .mockResolvedValueOnce(
-        new Response(JSON.stringify(makeMockResponse(true, mockHours)), {
-          status: 200,
-        })
-      );
-
-    // Mock the global service that the real implementation calls
-    const launchChatMock = jest.fn().mockResolvedValueOnce('chat launched');
-    const svcMock = {
-      utilAPI: { launchChat: launchChatMock },
     };
 
-    // We need to expose it on window
-    const win = window as any;
-    win.embeddedservice_bootstrap = svcMock;
+    global.fetch = createMockFetch(() => Promise.resolve(makeResponse(validResp)));
 
-    const result = await getChatEmbed(testUrl);
+    const { result, waitForNextUpdate } = renderHook(() =>
+      useBusinessHours('https://example.com/api', 5000)
+    );
 
-    // The result should contain all properties of todaysHours *and* the openChat thunk
-    expect(result).not.toBeNull();
+    act(() => { window.dispatchEvent(new Event(embeddedChatEvents.READY)) });
 
-    // openChat should still be a function
-    expect(typeof result?.openChat).toBe('function');
+    // Wait for the first async fetch to resolve
+    await waitForNextUpdate();
 
-    // Calling the thunk should use the mocked launchChat
-    const chatRes = await result?.openChat();
-    expect(launchChatMock).toHaveBeenCalledTimes(1);
-    expect(chatRes).toBe('chat launched');
-
-    // fetch should have been called with the original URL + signal
-    expect(fetchSpy).toHaveBeenCalledWith(testUrl, { signal: undefined });
+    expect(result.current.hours).toEqual(validResp);
+    expect(result.current.error).toBeNull();
   });
 
-  it('openChat resolves to undefined if the bootstrap service is missing', async () => {
-    // Normal active response
-    fetchMock
-      .mockResolvedValueOnce(
-        new Response(JSON.stringify(makeMockResponse(true, mockHours)), {
-          status: 200,
-        })
-      );
+  it('sets error when response shape is invalid', async () => {
+    const badResp = { bogus: 'data' };
 
-    // Do *not* attach embeddedservice_bootstrap to window
-    const res = await getChatEmbed(testUrl);
-    // The thunk still exists but returns undefined when invoked
-    const chatRes = await res?.openChat();
-    expect(chatRes).toBeUndefined();
+    global.fetch = createMockFetch(() => Promise.resolve(makeResponse(badResp)));
+
+    const { result, waitForNextUpdate } = renderHook(() =>
+      useBusinessHours('https://example.com/api', 5000)
+    );
+
+    act(() => { window.dispatchEvent(new Event(embeddedChatEvents.READY)) });
+
+    await waitForNextUpdate();
+
+    expect(result.current.hours).toBeNull();
+    expect(result.current.error).toEqual(new Error('Invalid business hours response'));
   });
 
-  it('openChat does not get called when getChatEmbed returns null', async () => {
-    // Inactive – nothing should be returned, so openChat thunk is never created
-    fetchMock
-      .mockResolvedValueOnce(
-        new Response(JSON.stringify(makeMockResponse(false)), {
-          status: 200,
-        })
-      );
+  it('sets error on HTTP error', async () => {
+    global.fetch = createMockFetch(() =>
+      Promise.resolve(makeResponse({}, false, 500))
+    );
 
-    const res = await getChatEmbed(testUrl);
-    expect(res).toBeNull();
+    const { result, waitForNextUpdate } = renderHook(() =>
+      useBusinessHours('https://example.com/api', 5000)
+    );
+
+    act(() => { window.dispatchEvent(new Event(embeddedChatEvents.READY)) });
+
+    await waitForNextUpdate();
+
+    expect(result.current.hours).toBeNull();
+    expect(result.current.error).toEqual(new Error('HTTP 500'));
   });
 
-  it('throws if fetch inside getBusinessHours throws', async () => {
-    // Let getBusinessHours throw – that exception should bubble out of getChatEmbed
-    fetchMock
-      .mockRejectedValueOnce(new Error('network failure'));
+  it('cancels previous request on new fetch and ignores AbortError', async () => {
+    const controllerStub = Object.assign(new AbortController(), {
+      abort: jest.fn()
+    });
+    jest.spyOn(global, 'AbortController').mockReturnValue(controllerStub);
 
-    await expect(getChatEmbed(testUrl)).rejects.toThrow('network failure');
+    const fetchStub = createMockFetch(() => Promise.reject({ name: 'AbortError' }));
+
+    global.fetch = fetchStub as any;
+
+    const { result, unmount } = renderHook(() =>
+      useBusinessHours('https://example.com/api', 5000)
+    );
+
+    // Act: Trigger READY (the hook will start the fetch)
+    act(() => { window.dispatchEvent(new Event(embeddedChatEvents.READY)) });
+
+    // Immediately unmount before the promise resolves
+    unmount();
+ 
+    // abort() should have been called
+    expect(controllerStub.abort).toHaveBeenCalled();
+    // No error should be set because the promise was aborted
+    expect(result.current.error).toBeNull();
+  });
+
+  it('aborts the previous request when a new fetch starts', async () => {
+    const controllerStub = Object.assign(new AbortController(), {
+      abort: jest.fn()
+    });
+    jest.spyOn(global, 'AbortController').mockReturnValue(controllerStub);
+
+    // First fetch never resolves, second fetch resolves immediately
+    global.fetch = createMockFetch(() => {
+      new Promise((resolve) => { setTimeout(resolve, Infinity) }); // First – stuck
+      throw new Error('unreachable');
+    });
+
+    const { result, waitForNextUpdate } = renderHook(() =>
+      useBusinessHours('https://example.com/api', 5000)
+    );
+
+    act(() => { window.dispatchEvent(new Event(embeddedChatEvents.READY))} );
+    
+    // Now we do a real response, the first should be aborted
+    global.fetch = createMockFetch(() => Promise.resolve(makeResponse({
+      businessHoursInfo: {
+        businessHours: [{ startTime: 1000, endTime: 2000 }],
+      },
+    })));
+
+    // Trigger a BUSINESS_HOURS_STARTED event – this should start a *new* fetch
+    act(() => { window.dispatchEvent(new Event(embeddedChatEvents.BUSINESS_HOURS_STARTED))} );
+
+    // `abort()` of the previous controller must have run
+    expect(controllerStub.abort).toHaveBeenCalledTimes(1);
+
+    await waitForNextUpdate();  // second update from the hook
+
+    expect(result.current.hours).not.toBeNull();
+  });
+
+  it('does not refetch when last fetch is within timeout', async () => {
+    const resp = {
+      businessHoursInfo: {
+        businessHours: [{ startTime: 1000, endTime: 2000 }],
+      },
+    };
+
+    global.fetch = createMockFetch(() => Promise.resolve(makeResponse(resp)));
+
+    const { waitForNextUpdate } = renderHook(() =>
+      useBusinessHours('https://example.com/api', 5000)
+    );
+
+    act(() => { window.dispatchEvent(new Event(embeddedChatEvents.READY)); })
+
+    await waitForNextUpdate(); // first fetch
+
+    // 3 seconds later – still within 5s timeout
+    act(() => {
+      jest.advanceTimersByTime(3000);
+      window.dispatchEvent(new Event(embeddedChatEvents.BUSINESS_HOURS_STARTED));
+    });
+
+    // The fetch should *not* have been called a second time
+    expect(global.fetch).toHaveBeenCalledTimes(1);
+  });
+
+  it('clears hours on business hours end', async () => {
+    const resp = {
+      businessHoursInfo: { businessHours: [{ startTime: 0, endTime: 10_000 }] },
+    };
+
+    global.fetch = createMockFetch(() => Promise.resolve(makeResponse(resp)));
+
+    const { result, waitForNextUpdate } = renderHook(() =>
+      useBusinessHours('https://example.com/api', 5000)
+    );
+
+    act(() => { window.dispatchEvent(new Event(embeddedChatEvents.READY)) });
+
+    await waitForNextUpdate();
+
+    expect(result.current.hours).toEqual(resp);
+
+    // Simulate the end event
+    act(() => { window.dispatchEvent(new Event(embeddedChatEvents.BUSINESS_HOURS_ENDED)) });
+
+    expect(result.current.hours).toBeNull();
+  });
+
+  it('aborts fetch and removes listeners on unmount', async () => {
+    const controller = new AbortController();
+    const controllerStub = Object.assign(controller, {
+      abort: jest.spyOn(controller, 'abort'),
+    });
+    jest.spyOn(global, 'AbortController').mockReturnValue(controllerStub);
+
+    global.fetch = createMockFetch(async () => {
+      await new Promise((reject) => {
+        const doAbort = () => {
+          controller.signal.removeEventListener('abort', doAbort);
+          reject({ name: 'AbortError' });
+        };
+        controller.signal.addEventListener('abort', doAbort);
+      });
+    });
+
+    const { unmount } = renderHook(() =>
+      useBusinessHours('https://example.com/api', 5000)
+    );
+
+    act(() => { window.dispatchEvent(new Event(embeddedChatEvents.READY)); });
+
+    unmount();
+
+    expect(controllerStub.abort).toHaveBeenCalled(); // abort called in cleanup
+  });
+
+  it('only fetches once per READY event', async () => {
+    const resp = {
+      businessHoursInfo: { businessHours: [{ startTime: 0, endTime: 1000 }] },
+    };
+
+    global.fetch = createMockFetch(() => Promise.resolve(makeResponse(resp)));
+
+    const { waitForNextUpdate } = renderHook(() =>
+      useBusinessHours('https://example.com/api', 5000)
+    );
+
+    // Trigger two READY events
+    act(() => { window.dispatchEvent(new Event(embeddedChatEvents.READY))} );
+    act(() => { window.dispatchEvent(new Event(embeddedChatEvents.READY))} );
+
+    await waitForNextUpdate();
+
+    expect(global.fetch).toHaveBeenCalledTimes(1); // only one fetch
+  });
+
+  it('refetches after timeout expires', async () => {
+    const now = 12345678;
+
+    const first = { businessHoursInfo: { businessHours: [{ startTime: now - 1000, endTime: now + 1000 }] } };
+    const second = { businessHoursInfo: { businessHours: [{ startTime: now - 2000, endTime: now + 2000 }] } };
+
+    let callCount = 0;
+    global.fetch = createMockFetch(() => {
+      callCount += 1;
+      return Promise.resolve(makeResponse(callCount === 1 ? first : second));
+    });
+
+    const { result, waitForNextUpdate } = renderHook(() =>
+      useBusinessHours('https://example.com/api', 5000)
+    );
+
+    act(() => { window.dispatchEvent(new Event(embeddedChatEvents.READY)) });
+
+    await waitForNextUpdate();  // first fetch
+    expect(result.current.hours).toEqual(first);
+
+    // Wait 4 seconds – still within the 5s timeout
+    act(() => { jest.advanceTimersByTime(4000) });
+    act(() => { window.dispatchEvent(new Event(embeddedChatEvents.BUSINESS_HOURS_STARTED)) });
+
+    expect(global.fetch).toHaveBeenCalledTimes(1); // no refetch
+
+    // Wait 2 more seconds – now outside the timeout
+    act(() => { jest.advanceTimersByTime(2000) });
+    act(() => { window.dispatchEvent(new Event(embeddedChatEvents.BUSINESS_HOURS_STARTED)) });
+
+    await waitForNextUpdate(); // new fetch
+    expect(result.current.hours).toEqual(second);
+  });
+
+  it('responds correctly to all event types', async () => {
+    const resp = { businessHoursInfo: { businessHours: [{ startTime: 0, endTime: 10_000 }] } };
+    global.fetch = createMockFetch(() => Promise.resolve(makeResponse(resp)));
+
+    const { result, waitForNextUpdate } = renderHook(() =>
+      useBusinessHours('https://example.com/api', 5000)
+    );
+
+    // Simulate each event sequentially
+    act(() => { window.dispatchEvent(new Event(embeddedChatEvents.READY)) });
+    act(() => { window.dispatchEvent(new Event(embeddedChatEvents.BUSINESS_HOURS_STARTED)) });
+    await waitForNextUpdate();
+    act(() => { window.dispatchEvent(new Event(embeddedChatEvents.BUSINESS_HOURS_ENDED)) });
+
+    expect(result.current.hours).toBeNull();
+  });
+})
+
+describe('getChatEmbed', () => {
+  const buildResponse = (intervals: { start: number; end: number }[]) => ({
+    businessHoursInfo: {
+      businessHours: intervals.map((i) => ({
+        startTime: i.start,
+        endTime: i.end,
+      })),
+    },
+  });
+
+  const setWindowBootstrap = (launchChatMock: jest.Mock<any>) => {
+    (window as any).embeddedservice_bootstrap = {
+      utilAPI: {
+        launchChat: launchChatMock,
+      },
+    };
+  };
+
+  beforeAll(() => {
+    jest.useFakeTimers();
+  });
+
+  afterAll(() => {
+    jest.useRealTimers();
+  });
+
+  it('returns null when the current time is outside all business hours', () => {
+    const now = Date.UTC(2025, 9);
+    // Set the fake clock *outside* the only interval.
+    jest.setSystemTime(now);
+
+    const response = buildResponse([
+      { start: now + 1_000, end: now + 2_000 }, // starts in the future
+    ]);
+
+    const result = getChatEmbed(response);
+    expect(result).toBeNull();
+  });
+
+  it('returns the matching hour with an openChat function when the current time is inside a single interval', async () => {
+    const now = Date.UTC(2025, 9);
+    jest.setSystemTime(now);
+
+    const interval = { start: now - 10_000, end: now + 10_000 }; // open now
+    const response = buildResponse([interval]);
+
+    const launchMock = jest.fn().mockResolvedValue('chat-launched');
+    setWindowBootstrap(launchMock);
+
+    const embed = getChatEmbed(response);
+    expect(embed).not.toBeNull();
+    if (!embed) throw new Error('embed null');
+    expect(embed.startTime).toBe(interval.start);
+    expect(embed.endTime).toBe(interval.end);
+
+    // The returned openChat is a *function* that calls launchChat
+    const result = await embed.openChat();
+    expect(launchMock).toHaveBeenCalledTimes(1);
+    expect(result).toBe('chat-launched');
+  });
+
+  it('returns the first matching interval when multiple overlap', () => {
+    const now = Date.UTC(2025, 9);
+    jest.setSystemTime(now);
+
+    // Two overlapping intervals – only the first should be chosen.
+    const intervals = [
+      { start: now - 20_000, end: now + 20_000 }, // should match
+      { start: now - 5_000, end: now + 5_000 },   // also matches
+    ];
+    const response = buildResponse(intervals);
+
+    const embed = getChatEmbed(response);
+    expect(embed).not.toBeNull();
+    if (!embed) throw new Error('embed null');
+    expect(embed.startTime).toBe(intervals[0].start);
+    expect(embed.endTime).toBe(intervals[0].end);
+  });
+
+  it('returns undefined from openChat when embeddedservice_bootstrap is not present', async () => {
+    const now = Date.UTC(2025, 9);
+    jest.setSystemTime(now);
+
+    (window as any).embeddedservice_bootstrap = undefined;
+
+    const response = buildResponse([
+      { start: now - 10_000, end: now + 10_000 },
+    ]);
+
+    // Do NOT set the window.bootstrap mock.
+    const embed = getChatEmbed(response);
+    expect(embed).not.toBeNull();
+    if (!embed) throw new Error('embed null');
+
+    const result = await embed.openChat(); // should not throw
+    expect(result).toBeUndefined();
+  });
+
+  it('does not call launchChat until openChat is invoked', async () => {
+    const now = Date.UTC(2025, 9);
+    jest.setSystemTime(now);
+
+    const response = buildResponse([{ start: now - 10_000, end: now + 10_000 }]);
+
+    const launchMock = jest.fn().mockResolvedValue('chat-launched');
+    setWindowBootstrap(launchMock);
+
+    const embed = getChatEmbed(response);
+    expect(launchMock).not.toHaveBeenCalled();
+    if (!embed) throw new Error('embed null');
+
+    // Call it now
+    await embed.openChat();
+    expect(launchMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('treats the endTime as exclusive', async () => {
+    const now = Date.UTC(2025, 9);
+    jest.setSystemTime(now);
+
+    const interval = { start: now - 10_000, end: now }; // ends exactly at now
+    const response = buildResponse([interval]);
+
+    const embed = getChatEmbed(response);
+    // `now` is equal to endTime → should be *outside* the interval
+    expect(embed).toBeNull();
+  });
+
+  it('does not reuse the same reference across calls', () => {
+    const now = Date.UTC(2025, 9);
+    jest.setSystemTime(now);
+
+    const interval = { start: now - 10_000, end: now + 10_000 };
+    const response = buildResponse([interval]);
+
+    const firstCall = getChatEmbed(response);
+    const secondCall = getChatEmbed(response);
+
+    expect(firstCall).not.toBe(secondCall);
+    if (!firstCall) throw new Error('firstCall null');
+    if (!secondCall) throw new Error('secondCall null');
+    // but both should contain the same hour data
+    expect(firstCall.startTime).toBe(secondCall.startTime);
+    expect(firstCall.endTime).toBe(secondCall.endTime);
   });
 });
