@@ -606,6 +606,37 @@ Array [
 `);
   });
 
+  it('immediately sets fields if ready', async () => {
+    const { rerender } = renderHook(
+      ({ fields }) => useHiddenPreChatFields(fields),
+      { initialProps: { fields: {} } }
+    );
+
+    rerender({ fields: { should: 'not set this since we are not ready' } });
+    rerender({ fields: { c: '1', d: '2' } });
+    
+    act(() => { window.dispatchEvent(new Event(embeddedChatEvents.READY)); });
+
+    rerender({ fields: { should: 'setHiddenPrechatFields on rerender' } });
+    
+    expect(setVisiblePrechatFields).not.toHaveBeenCalled();
+    expect(setHiddenPrechatFields.mock.calls).toMatchInlineSnapshot(`
+Array [
+  Array [
+    Object {
+      "c": "1",
+      "d": "2",
+    },
+  ],
+  Array [
+    Object {
+      "should": "setHiddenPrechatFields on rerender",
+    },
+  ],
+]
+`);
+  });
+
   it('doesn\'t explode when the service is missing', () => {
     const fields = {
       c: '1',

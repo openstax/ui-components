@@ -64,6 +64,25 @@ describe('HelpMenu', () => {
     expect(document.body).toMatchSnapshot();
   });
 
+  it('errors if the service is unavailable', async () => {
+    const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {
+      // SILENCE
+    });
+    render(
+      <BodyPortalSlotsContext.Provider value={['nav', 'root']}>
+        <NavBar logo>
+          <HelpMenu contactFormParams={[{key: 'userId', value: 'test'}, {key: 'other', value: 'param'}]}>
+            <HelpMenuItem onAction={() => window.alert('Ran HelpMenu callback function')}>
+              Test Callback
+            </HelpMenuItem>
+          </HelpMenu>
+        </NavBar>
+      </BodyPortalSlotsContext.Provider>
+    );
+    fireEvent.click(await screen.findByText('Help'));
+    expect(consoleSpy).toHaveBeenCalledTimes(1);
+  });
+
   it('replaces button when SDK is ready', async () => {
     // mock the global embeddedservice_bootstrap object
     const eventListeners: Parameters<typeof window.addEventListener>[] = [];
@@ -138,7 +157,6 @@ Array [
     expect(mockSvc.utilAPI.launchChat).toHaveBeenCalled();
   });
 });
-
 
 describe('formatBusinessHoursRange', () => {
   beforeEach(() => {
