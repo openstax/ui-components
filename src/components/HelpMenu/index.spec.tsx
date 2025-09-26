@@ -110,9 +110,9 @@ Object {
 }
 `);
     expect(
-      eventListeners.filter(
-        ([name]) => Object.values(embeddedChatEvents).includes(name as any))
-      ).toMatchInlineSnapshot(`
+eventListeners.filter(
+([name]) => Object.values(embeddedChatEvents).includes((name as any)))).
+toMatchInlineSnapshot(`
 Array [
   Array [
     "onEmbeddedMessagingReady",
@@ -124,6 +124,10 @@ Array [
   ],
   Array [
     "onEmbeddedMessagingBusinessHoursEnded",
+    [Function],
+  ],
+  Array [
+    "onEmbeddedMessagingReady",
     [Function],
   ],
 ]
