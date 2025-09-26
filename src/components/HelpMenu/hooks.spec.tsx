@@ -1,11 +1,11 @@
 // __tests__/useScript.test.tsx
 import { act, renderHook } from '@testing-library/react-hooks';
-import { getChatEmbed, useBusinessHours, useScript } from './hooks';   // ← your hook
+import { EmbedInterface, getChatEmbed, useBusinessHours, useHiddenPreChatFields, useScript, WindowWithEmbed } from './hooks';   // ← your hook
 import { embeddedChatEvents } from './constants';
 
 
 describe('useScript', () => {
-  const src = 'https://example.com/foo.js';
+  const src = 'http://localhost/foo.js';
   
   afterEach(() => {
     document.querySelectorAll('script').forEach((s) => s.remove());
@@ -68,7 +68,7 @@ describe('useScript', () => {
   });
 
   it('re-runs effect when src changes', () => {
-    const newSrc = 'https://example.com/bar.js';
+    const newSrc = 'http://localhost/bar.js';
     const { result, rerender } = renderHook(
       ({ url }) => useScript(url),
       { initialProps: { url: src } }
@@ -147,7 +147,7 @@ describe('useBusinessHours', () => {
     global.fetch = createMockFetch(() => Promise.resolve(makeResponse(validResp)));
 
     const { result, waitForNextUpdate } = renderHook(() =>
-      useBusinessHours('https://example.com/api', 5000)
+      useBusinessHours('http://localhost/api', 5000)
     );
 
     act(() => { window.dispatchEvent(new Event(embeddedChatEvents.READY)) });
@@ -165,7 +165,7 @@ describe('useBusinessHours', () => {
     global.fetch = createMockFetch(() => Promise.resolve(makeResponse(badResp)));
 
     const { result, waitForNextUpdate } = renderHook(() =>
-      useBusinessHours('https://example.com/api', 5000)
+      useBusinessHours('http://localhost/api', 5000)
     );
 
     act(() => { window.dispatchEvent(new Event(embeddedChatEvents.READY)) });
@@ -182,7 +182,7 @@ describe('useBusinessHours', () => {
     );
 
     const { result, waitForNextUpdate } = renderHook(() =>
-      useBusinessHours('https://example.com/api', 5000)
+      useBusinessHours('http://localhost/api', 5000)
     );
 
     act(() => { window.dispatchEvent(new Event(embeddedChatEvents.READY)) });
@@ -204,7 +204,7 @@ describe('useBusinessHours', () => {
     global.fetch = fetchStub as any;
 
     const { result, unmount } = renderHook(() =>
-      useBusinessHours('https://example.com/api', 5000)
+      useBusinessHours('http://localhost/api', 5000)
     );
 
     // Act: Trigger READY (the hook will start the fetch)
@@ -232,7 +232,7 @@ describe('useBusinessHours', () => {
     });
 
     const { result, waitForNextUpdate } = renderHook(() =>
-      useBusinessHours('https://example.com/api', 5000)
+      useBusinessHours('http://localhost/api', 5000)
     );
 
     act(() => { window.dispatchEvent(new Event(embeddedChatEvents.READY))} );
@@ -265,7 +265,7 @@ describe('useBusinessHours', () => {
     global.fetch = createMockFetch(() => Promise.resolve(makeResponse(resp)));
 
     const { waitForNextUpdate } = renderHook(() =>
-      useBusinessHours('https://example.com/api', 5000)
+      useBusinessHours('http://localhost/api', 5000)
     );
 
     act(() => { window.dispatchEvent(new Event(embeddedChatEvents.READY)); })
@@ -290,7 +290,7 @@ describe('useBusinessHours', () => {
     global.fetch = createMockFetch(() => Promise.resolve(makeResponse(resp)));
 
     const { result, waitForNextUpdate } = renderHook(() =>
-      useBusinessHours('https://example.com/api', 5000)
+      useBusinessHours('http://localhost/api', 5000)
     );
 
     act(() => { window.dispatchEvent(new Event(embeddedChatEvents.READY)) });
@@ -323,7 +323,7 @@ describe('useBusinessHours', () => {
     });
 
     const { unmount } = renderHook(() =>
-      useBusinessHours('https://example.com/api', 5000)
+      useBusinessHours('http://localhost/api', 5000)
     );
 
     act(() => { window.dispatchEvent(new Event(embeddedChatEvents.READY)); });
@@ -341,7 +341,7 @@ describe('useBusinessHours', () => {
     global.fetch = createMockFetch(() => Promise.resolve(makeResponse(resp)));
 
     const { waitForNextUpdate } = renderHook(() =>
-      useBusinessHours('https://example.com/api', 5000)
+      useBusinessHours('http://localhost/api', 5000)
     );
 
     // Trigger two READY events
@@ -366,7 +366,7 @@ describe('useBusinessHours', () => {
     });
 
     const { result, waitForNextUpdate } = renderHook(() =>
-      useBusinessHours('https://example.com/api', 5000)
+      useBusinessHours('http://localhost/api', 5000)
     );
 
     act(() => { window.dispatchEvent(new Event(embeddedChatEvents.READY)) });
@@ -393,7 +393,7 @@ describe('useBusinessHours', () => {
     global.fetch = createMockFetch(() => Promise.resolve(makeResponse(resp)));
 
     const { result, waitForNextUpdate } = renderHook(() =>
-      useBusinessHours('https://example.com/api', 5000)
+      useBusinessHours('http://localhost/api', 5000)
     );
 
     // Simulate each event sequentially
@@ -550,5 +550,74 @@ describe('getChatEmbed', () => {
     // but both should contain the same hour data
     expect(firstCall.startTime).toBe(secondCall.startTime);
     expect(firstCall.endTime).toBe(secondCall.endTime);
+  });
+});
+
+describe('useHiddenPreChatFields', () => {
+  let setVisiblePrechatFields: jest.Mock;
+  let setHiddenPrechatFields: jest.Mock;
+  let mockService: Pick<EmbedInterface, 'prechatAPI'>;
+    
+
+  beforeEach(() => {
+    setVisiblePrechatFields = jest.fn();
+    setHiddenPrechatFields = jest.fn();
+    mockService = {
+      prechatAPI: {
+        setVisiblePrechatFields,
+        setHiddenPrechatFields,
+      },
+    };
+    (window as WindowWithEmbed).embeddedservice_bootstrap = mockService as any;
+  })
+
+  it('sets hidden pre-chat fields', () => {
+    const fields = {
+      a: '1',
+      b: '2',
+    };
+    const { unmount } = renderHook(() => useHiddenPreChatFields(fields));
+
+    // Should run twice
+    act(() => { window.dispatchEvent(new Event(embeddedChatEvents.READY)); });
+    act(() => { window.dispatchEvent(new Event(embeddedChatEvents.READY)); });
+
+    // Should remove event listener
+    unmount();
+
+    act(() => { window.dispatchEvent(new Event(embeddedChatEvents.READY)); });
+
+    expect(setVisiblePrechatFields).not.toHaveBeenCalled();
+    expect(setHiddenPrechatFields.mock.calls).toMatchInlineSnapshot(`
+Array [
+  Array [
+    Object {
+      "a": "1",
+      "b": "2",
+    },
+  ],
+  Array [
+    Object {
+      "a": "1",
+      "b": "2",
+    },
+  ],
+]
+`);
+  });
+
+  it('doesn\'t explode when the service is missing', () => {
+    const fields = {
+      c: '1',
+      d: '2',
+    };
+    renderHook(() => useHiddenPreChatFields(fields));
+
+    delete (window as WindowWithEmbed).embeddedservice_bootstrap;
+
+    act(() => { window.dispatchEvent(new Event(embeddedChatEvents.READY)); });
+
+    expect(setVisiblePrechatFields).not.toHaveBeenCalled();
+    expect(setHiddenPrechatFields).not.toHaveBeenCalled();
   });
 });
