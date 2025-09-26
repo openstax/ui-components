@@ -122,13 +122,18 @@ export const getChatEmbed = ({ businessHoursInfo }: BusinessHoursResponse) => {
 };
 
 export const useHiddenPreChatFields = (fields: { [key: string]: string }) => {
+  const ready = React.useRef(false);
+
   const onReady = React.useCallback(() => {
     const svc = getEmbedService();
+    ready.current = true;
     if (!svc) return;
     svc.prechatAPI.setHiddenPrechatFields(fields);
   }, [fields]);
 
   React.useEffect(() => {
+    // Ready -> set fields -> fields changed -> set fields again
+    if (ready.current) onReady();
     window.addEventListener(embeddedChatEvents.READY, onReady);
     return () => {
       window.removeEventListener(embeddedChatEvents.READY, onReady);
