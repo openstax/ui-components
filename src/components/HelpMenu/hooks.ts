@@ -1,8 +1,35 @@
 import React from "react";
 import { embeddedChatEvents } from "./constants";
 
+export interface EmbedInterface {
+  prechatAPI: {
+    setVisiblePrechatFields: (
+      fields: {
+        [key: string]: {
+          value: string,
+          isEditableByEndUser: boolean,
+        };
+      },
+    ) => void;
+    setHiddenPrechatFields: (fields: { [key: string]: string }) => void;
+  };
+  utilAPI: {
+    launchChat: () => Promise<void>;
+  };
+  settings: {
+    language: string;
+    hideChatButtonOnLoad: boolean;
+  };
+  init: (
+    orgId: string,
+    app: string,
+    deploymentURL: string,
+    { scrt2URL }: { scrt2URL: string },
+  ) => void;
+}
+
 export interface WindowWithEmbed extends Window {
-  embeddedservice_bootstrap?: any;
+  embeddedservice_bootstrap?: EmbedInterface;
 }
 
 export interface ChatEmbedServiceConfiguration {
@@ -51,6 +78,8 @@ export const isBusinessHoursResponse = (x: unknown): x is BusinessHoursResponse 
   isBusinessHoursArray((x as any).businessHoursInfo.businessHours)
 );
 
+const getEmbedService = () => (window as WindowWithEmbed).embeddedservice_bootstrap;
+
 export const useScript = (src: string) => {
   const [ready, setReady] = React.useState(false);
   const [error, setError] = React.useState<Error | null>(null);
@@ -84,12 +113,27 @@ export const getChatEmbed = ({ businessHoursInfo }: BusinessHoursResponse) => {
     .find(({ startTime, endTime }) => startTime <= now && now < endTime)
 
   const openChat = async () => {
-    const svc = (window as WindowWithEmbed).embeddedservice_bootstrap;
+    const svc = getEmbedService();
     if (!svc) return undefined;
     return await svc.utilAPI.launchChat();
   }
 
   return todaysHours ? { ...todaysHours, openChat } : null;
+};
+
+export const useHiddenPreChatFields = (fields: { [key: string]: string }) => {
+  const onReady = React.useCallback(() => {
+    const svc = getEmbedService();
+    if (!svc) return;
+    svc.prechatAPI.setHiddenPrechatFields(fields);
+  }, [fields]);
+
+  React.useEffect(() => {
+    window.addEventListener(embeddedChatEvents.READY, onReady);
+    return () => {
+      window.removeEventListener(embeddedChatEvents.READY, onReady);
+    }
+  }, [onReady]);
 };
 
 export const useBusinessHours = (businessHoursURL: string, timeout: number) => {
@@ -184,10 +228,9 @@ export const useEmbeddedChatService = ({
   React.useEffect(() => {
     if (!scriptLoaded || typeof window === 'undefined') return;
 
-    // `embeddedservice_bootstrap` is injected by the script we just added
-    const svc = (window as WindowWithEmbed).embeddedservice_bootstrap;
-
     try {
+      const svc = getEmbedService();
+      if (!svc) throw new Error('Embed service unavailable');
       svc.settings.language = 'en_US';
       svc.settings.hideChatButtonOnLoad = true;
       svc.init(orgId, app, deploymentURL, { scrt2URL });

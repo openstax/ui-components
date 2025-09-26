@@ -3,7 +3,7 @@ import { NavBarMenuButton, NavBarMenuItem } from '../NavBarMenuButtons';
 import { colors } from '../../theme';
 import styled from 'styled-components';
 import { BodyPortal } from '../BodyPortal';
-import { ChatEmbedServiceConfiguration, useEmbeddedChatService } from './hooks';
+import { ChatEmbedServiceConfiguration, useEmbeddedChatService, useHiddenPreChatFields } from './hooks';
 import { chatEmbedDefaults } from './constants'
 
 export const HelpMenuButton = styled(NavBarMenuButton)`
@@ -141,6 +141,11 @@ export const HelpMenu: React.FC<HelpMenuProps> = ({ contactFormParams, chatEmbed
     ...chatEmbedDefaults, ...chatEmbedParams
   }), [chatEmbedParams]);
   const { chatEmbed, error: chatEmbedError } = useEmbeddedChatService(chatConfig);
+  const preChatHiddenFields = React.useMemo(() => (
+    Object.fromEntries(contactFormParams.map(({ key, value }) => [key, value]))
+  ), [contactFormParams]);
+
+  useHiddenPreChatFields(preChatHiddenFields);
 
   const contactFormUrl = React.useMemo(() => {
     const formUrl = 'https://openstax.org/embedded/contact';
@@ -172,6 +177,9 @@ export const HelpMenu: React.FC<HelpMenuProps> = ({ contactFormParams, chatEmbed
     return () => window.removeEventListener('message', closeIt, false);
   }, []);
 
+  // TODO: Better way to handle this error?
+  // We don't want to hide the contact us button on error, but we might want to
+  // know if this is exploding. Maybe set error with error context?
   if (chatEmbedError) console.error(chatEmbedError);
 
   return (
