@@ -1,6 +1,6 @@
 // __tests__/useScript.test.tsx
 import { act, renderHook } from '@testing-library/react-hooks';
-import { EmbedInterface, getChatEmbed, useBusinessHours, useHiddenPreChatFields, useScript, WindowWithEmbed } from './hooks';   // ← your hook
+import { EmbedInterface, getChatEmbed, useBusinessHours, usePreChatFields, useScript, WindowWithEmbed } from './hooks';   // ← your hook
 import { embeddedChatEvents } from './constants';
 
 
@@ -553,7 +553,7 @@ describe('getChatEmbed', () => {
   });
 });
 
-describe('useHiddenPreChatFields', () => {
+describe('usePreChatFields', () => {
   let setVisiblePrechatFields: jest.Mock;
   let setHiddenPrechatFields: jest.Mock;
   let mockService: Pick<EmbedInterface, 'prechatAPI'>;
@@ -572,11 +572,12 @@ describe('useHiddenPreChatFields', () => {
   })
 
   it('sets hidden pre-chat fields', () => {
-    const fields = {
-      a: '1',
-      b: '2',
-    };
-    const { unmount } = renderHook(() => useHiddenPreChatFields(fields));
+    const fields = [
+      {key: 'contextId', value: '1'},
+      {key: 'userEmail', value: 't@t'},
+      {key: 'b', value: '2'},
+    ];
+    const { unmount } = renderHook(() => usePreChatFields(fields));
 
     // Should run twice
     act(() => { window.dispatchEvent(new Event(embeddedChatEvents.READY)); });
@@ -587,19 +588,54 @@ describe('useHiddenPreChatFields', () => {
 
     act(() => { window.dispatchEvent(new Event(embeddedChatEvents.READY)); });
 
-    expect(setVisiblePrechatFields).not.toHaveBeenCalled();
-    expect(setHiddenPrechatFields.mock.calls).toMatchInlineSnapshot(`
+    expect(setVisiblePrechatFields.mock.calls).toMatchInlineSnapshot(`
 Array [
   Array [
     Object {
-      "a": "1",
-      "b": "2",
+      "_email": Object {
+        "isEditableByEndUser": false,
+        "value": "t@t",
+      },
+      "_firstName": Object {
+        "isEditableByEndUser": true,
+        "value": "",
+      },
+      "_lastName": Object {
+        "isEditableByEndUser": true,
+        "value": "",
+      },
     },
   ],
   Array [
     Object {
-      "a": "1",
-      "b": "2",
+      "_email": Object {
+        "isEditableByEndUser": false,
+        "value": "t@t",
+      },
+      "_firstName": Object {
+        "isEditableByEndUser": true,
+        "value": "",
+      },
+      "_lastName": Object {
+        "isEditableByEndUser": true,
+        "value": "",
+      },
+    },
+  ],
+]
+`);
+    expect(setHiddenPrechatFields.mock.calls).toMatchInlineSnapshot(`
+Array [
+  Array [
+    Object {
+      "Context_Id": "1",
+      "Email": "t@t",
+    },
+  ],
+  Array [
+    Object {
+      "Context_Id": "1",
+      "Email": "t@t",
     },
   ],
 ]
@@ -608,29 +644,65 @@ Array [
 
   it('immediately sets fields if ready', async () => {
     const { rerender } = renderHook(
-      ({ fields }) => useHiddenPreChatFields(fields),
-      { initialProps: { fields: {} } }
+      (contactFormParams: {key: string; value: string}[]) => usePreChatFields(contactFormParams),
+      { initialProps: [] as {key: string; value: string}[] }
     );
 
-    rerender({ fields: { should: 'not set this since we are not ready' } });
-    rerender({ fields: { c: '1', d: '2' } });
+    rerender([{ key: 'userName', value: 'should not set this since we are not ready' } ]);
+    rerender([{ key: 'userName', value: 'Echo Zulu November Alpha Mike Echo' }, { key: 'd', value: '2' } ]);
     
     act(() => { window.dispatchEvent(new Event(embeddedChatEvents.READY)); });
 
-    rerender({ fields: { should: 'setHiddenPrechatFields on rerender' } });
+    rerender([
+      { key: 'userFirstName', value: 'Som' },
+      { key: 'userLastName', value: 'Buddy' }
+    ]);
     
-    expect(setVisiblePrechatFields).not.toHaveBeenCalled();
-    expect(setHiddenPrechatFields.mock.calls).toMatchInlineSnapshot(`
+    expect(setVisiblePrechatFields.mock.calls).toMatchInlineSnapshot(`
 Array [
   Array [
     Object {
-      "c": "1",
-      "d": "2",
+      "_email": Object {
+        "isEditableByEndUser": true,
+        "value": "",
+      },
+      "_firstName": Object {
+        "isEditableByEndUser": true,
+        "value": "Echo Zulu November Alpha Mike",
+      },
+      "_lastName": Object {
+        "isEditableByEndUser": true,
+        "value": "Echo",
+      },
     },
   ],
   Array [
     Object {
-      "should": "setHiddenPrechatFields on rerender",
+      "_email": Object {
+        "isEditableByEndUser": true,
+        "value": "",
+      },
+      "_firstName": Object {
+        "isEditableByEndUser": false,
+        "value": "Som",
+      },
+      "_lastName": Object {
+        "isEditableByEndUser": false,
+        "value": "Buddy",
+      },
+    },
+  ],
+]
+`);
+    expect(setHiddenPrechatFields.mock.calls).toMatchInlineSnapshot(`
+Array [
+  Array [
+    Object {},
+  ],
+  Array [
+    Object {
+      "First_Name": "Som",
+      "Last_Name": "Buddy",
     },
   ],
 ]
@@ -638,11 +710,11 @@ Array [
   });
 
   it('doesn\'t explode when the service is missing', () => {
-    const fields = {
-      c: '1',
-      d: '2',
-    };
-    renderHook(() => useHiddenPreChatFields(fields));
+    const fields = [
+      {key: 'c', value: '1'},
+      {key: 'd', value: '2'},
+    ];
+    renderHook(() => usePreChatFields(fields));
 
     delete (window as WindowWithEmbed).embeddedservice_bootstrap;
 

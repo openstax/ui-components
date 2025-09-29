@@ -3,7 +3,7 @@ import { NavBarMenuButton, NavBarMenuItem } from '../NavBarMenuButtons';
 import { colors } from '../../theme';
 import styled from 'styled-components';
 import { BodyPortal } from '../BodyPortal';
-import { ChatEmbedServiceConfiguration, useEmbeddedChatService, useHiddenPreChatFields } from './hooks';
+import { ChatEmbedServiceConfiguration, useEmbeddedChatService, usePreChatFields } from './hooks';
 import { chatEmbedDefaults } from './constants'
 
 export const HelpMenuButton = styled(NavBarMenuButton)`
@@ -141,11 +141,8 @@ export const HelpMenu: React.FC<HelpMenuProps> = ({ contactFormParams, chatEmbed
     ...chatEmbedDefaults, ...chatEmbedParams
   }), [chatEmbedParams]);
   const { chatEmbed, error: chatEmbedError } = useEmbeddedChatService(chatConfig);
-  const preChatHiddenFields = React.useMemo(() => (
-    Object.fromEntries(contactFormParams.map(({ key, value }) => [key, value]))
-  ), [contactFormParams]);
 
-  useHiddenPreChatFields(preChatHiddenFields);
+  usePreChatFields(contactFormParams);
 
   const contactFormUrl = React.useMemo(() => {
     const formUrl = 'https://openstax.org/embedded/contact';
