@@ -78,7 +78,7 @@ export const isBusinessHoursResponse = (x: unknown): x is BusinessHoursResponse 
   isBusinessHoursArray((x as any).businessHoursInfo.businessHours)
 );
 
-const getEmbedService = () => (window as WindowWithEmbed).embeddedservice_bootstrap;
+const getEmbeddedService = () => (window as WindowWithEmbed).embeddedservice_bootstrap;
 
 export const useScript = (src: string) => {
   const [ready, setReady] = React.useState(false);
@@ -113,7 +113,7 @@ export const getChatEmbed = ({ businessHoursInfo }: BusinessHoursResponse) => {
     .find(({ startTime, endTime }) => startTime <= now && now < endTime)
 
   const openChat = async () => {
-    const svc = getEmbedService();
+    const svc = getEmbeddedService();
     if (!svc) return undefined;
     return await svc.utilAPI.launchChat();
   }
@@ -121,15 +121,64 @@ export const getChatEmbed = ({ businessHoursInfo }: BusinessHoursResponse) => {
   return todaysHours ? { ...todaysHours, openChat } : null;
 };
 
-export const useHiddenPreChatFields = (fields: { [key: string]: string }) => {
+export const usePreChatFields = (contactFormParams: { key: string, value: string }[]) => {
+  const { visibleFields, hiddenFields } = React.useMemo(() => {
+    // map assignable field name to Salesforce field name
+    // These are currently defined in:
+    // assignments/packages/frontend/src/components/SupportInfo.tsx
+    const hiddenFieldsMapping = [
+      ['assignmentId', 'Assignment_Id'],
+      ['contextId', 'Context_Id'],
+      ['deploymentId', 'Deployment_Id'],
+      ['platformId', 'Platform_Id'],
+      ['registration', 'Registration_Id'],
+      ['schoolName', 'School'],
+      ['userEmail', 'Email'],
+      ['userFirstName', 'First_Name'],
+      ['userId', 'OpenStax_UUID'],
+      ['userLastName', 'Last_Name'],
+    ];
+    const supportInfoMapping = Object.fromEntries(
+      contactFormParams.map(({key, value}) => [key, value])
+    );
+    const hiddenFields = Object.fromEntries(
+      hiddenFieldsMapping
+        .map(([fromKey, toKey]) => [toKey, supportInfoMapping[fromKey]])
+        .filter((tuple): tuple is [string, string] => tuple[1] !== undefined)
+    );
+    const { userName, userFirstName, userLastName, userEmail } = supportInfoMapping;
+    const nameParts = userName?.split(' ') ?? [];
+    // Multiple first names?
+    const firstName = userFirstName ?? nameParts.slice(0, -1).join(' ');
+    // Hopefully no middle name
+    const lastName = userLastName ?? nameParts.slice(-1).join('');
+    // Unless we used the name from accounts, assume we are wrong and allow
+    // the user to edit it
+    const visibleFields = {
+      _firstName: {
+        value: firstName,
+        isEditableByEndUser: userFirstName === undefined,
+      },
+      _lastName: {
+        value: lastName,
+        isEditableByEndUser: userLastName === undefined,
+      },
+      _email: {
+        value: userEmail ?? '',
+        isEditableByEndUser: userEmail === undefined,
+      },
+    };
+    return { visibleFields, hiddenFields };
+  }, [contactFormParams]);
   const ready = React.useRef(false);
-
+  
   const onReady = React.useCallback(() => {
-    const svc = getEmbedService();
+    const svc = getEmbeddedService();
     ready.current = true;
     if (!svc) return;
-    svc.prechatAPI.setHiddenPrechatFields(fields);
-  }, [fields]);
+    svc.prechatAPI.setVisiblePrechatFields(visibleFields);
+    svc.prechatAPI.setHiddenPrechatFields(hiddenFields);
+  }, [visibleFields, hiddenFields]);
 
   React.useEffect(() => {
     // Ready -> set fields -> fields changed -> set fields again
@@ -216,7 +265,7 @@ export const useBusinessHours = (businessHoursURL: string, timeout: number) => {
   }, [handleStart, handleEnd]);
 
   return { hours, error };
-}
+};
 
 export const useEmbeddedChatService = ({
   orgId,
@@ -234,7 +283,7 @@ export const useEmbeddedChatService = ({
     if (!scriptLoaded || typeof window === 'undefined') return;
 
     try {
-      const svc = getEmbedService();
+      const svc = getEmbeddedService();
       if (!svc) throw new Error('Embed service unavailable');
       svc.settings.language = 'en_US';
       svc.settings.hideChatButtonOnLoad = true;
@@ -247,4 +296,4 @@ export const useEmbeddedChatService = ({
   }, [scriptLoaded, orgId, app, deploymentURL, scrt2URL]);
 
   return { chatEmbed, error: scriptError ?? fetchError };
-}
+};

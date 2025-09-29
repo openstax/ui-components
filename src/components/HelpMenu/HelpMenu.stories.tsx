@@ -16,7 +16,7 @@ export const Default = () => {
     <BodyPortalSlotsContext.Provider value={['nav', 'root']}>
       <BodyPortalGlobalStyle />
       <NavBar logo>
-        <HelpMenu contactFormParams={[{key: 'userId', value: 'test'}]}>
+        <HelpMenu contactFormParams={[{key: 'userId', value: 'test'}, {key: 'userFirstName', value: 'test'}]}>
           <HelpMenuItem onAction={() => window.alert('Ran HelpMenu callback function')}>
             Test Callback
           </HelpMenuItem>
