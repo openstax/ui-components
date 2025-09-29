@@ -161,7 +161,7 @@ export const Select = ({
  * radio element
  */
 type RadioProps = React.ComponentPropsWithoutRef<'input'> & InputProps & {
-  onChangeValue?: (value: boolean | undefined) => void;
+  onChangeValue?: (value: string) => void;
   wrapperProps?: React.ComponentPropsWithoutRef<'label'>;
   tooltipText?: string;
 };
@@ -182,8 +182,10 @@ export const Radio = ({
 }: RadioProps) => {
   return <FormInputWrapper {...wrapperProps}>
     <RadioLine>
-      <StyledRadio {...props} onChange={e => {
-        onChangeValue?.(!!e.target.checked);
+      <StyledRadio {...props} labelAs="div" onChange={e => {
+        if (e.target.checked) {
+          onChangeValue?.(e.target.value);
+        }
         props.onChange?.(e);
       }}>
         <RadioFormLabelText><RequiredIndicator show={props.required} />{label}</RadioFormLabelText>

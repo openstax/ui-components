@@ -70,7 +70,7 @@ export const TextArea = (props: MakeControlled<typeof Uncontrolled.TextArea>) =>
 export const Radio = (props: MakeControlled<typeof Uncontrolled.Radio>) => {
   const {data, namespace, setInput} = useFormHelpers();
 
-  const onChangeValue = (value: boolean | undefined) => {
+  const onChangeValue = (value: string) => {
     props.onChangeValue?.(value);
     setInput.field(props.name)(value);
   };
