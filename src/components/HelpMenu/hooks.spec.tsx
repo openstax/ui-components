@@ -438,7 +438,7 @@ describe('getChatEmbed', () => {
     jest.setSystemTime(now);
 
     const response = buildResponse([
-      { start: now + 1_000, end: now + 2_000 }, // starts in the future
+      { start: now + 100_000, end: now + 120_000 }, // starts in the future
     ]);
 
     const result = getChatEmbed(response);
