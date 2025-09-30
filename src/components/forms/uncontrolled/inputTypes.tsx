@@ -292,7 +292,7 @@ const RangeInputWrapper = styled(FormInputWrapper)`
 `;
 type RangeProps = React.ComponentPropsWithoutRef<'input'> & InputProps & {
   wrapperProps?: React.ComponentPropsWithoutRef<'label'>;
-  onChangeValue?: (value: number) => void;
+  onChangeValue?: (value: number | undefined) => void;
   labels?: {value: number; label: string}[];
 };
 export const RangeInput = ({label, help, wrapperProps, onChangeValue, labels, ...props}: RangeProps) => {
@@ -303,8 +303,8 @@ export const RangeInput = ({label, help, wrapperProps, onChangeValue, labels, ..
     <input type="range" {...props}
       list={labels && labels.length > 0 ? datalistId : undefined}
       onChange={e => {
-        const newValue = Number(e.target.value);
-        onChangeValue?.(newValue);
+        const newValue = parseFloat(e.target.value);
+        onChangeValue?.(isNaN(newValue) ? undefined : newValue);
         props.onChange?.(e);
       }}
     />
