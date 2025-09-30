@@ -7,6 +7,7 @@ export * from './components/Checkbox/Checkbox';
 export * from './components/Tree/TreeCheckbox';
 export * from './components/DropdownMenu';
 export * from './components/Error';
+export * from './components/MessageBox';
 export * from './components/ErrorBoundary';
 export * from './components/ErrorMessage';
 export * from './components/ErrorModal';
