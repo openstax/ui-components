@@ -557,7 +557,7 @@ describe('getChatEmbed', () => {
     const interval = { start: now - 10_000, end: now }; // ends exactly at now
     const response = buildResponse([interval]);
 
-    const embed = getChatEmbed(response);
+    const embed = getChatEmbed(response, 0);
     // `now` is equal to endTime → should be *outside* the interval
     expect(embed).toBeNull();
   });

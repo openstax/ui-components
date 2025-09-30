@@ -107,11 +107,15 @@ export const useScript = (src: string) => {
   return { ready, error };
 };
 
-export const getChatEmbed = ({ businessHoursInfo }: BusinessHoursResponse) => {
+export const getChatEmbed = (
+  { businessHoursInfo }: BusinessHoursResponse,
+  gracePeriod = 5_000
+) => {
   const now = Date.now();
-  const gracePeriod = 5_000;
   const todaysHours = businessHoursInfo.businessHours
-    .find(({ startTime, endTime }) => startTime - gracePeriod <= now && now < endTime + gracePeriod)
+    .find(({ startTime, endTime }) =>
+      startTime - gracePeriod <= now && now < endTime + gracePeriod
+    )
 
   const openChat = async () => {
     const svc = getEmbeddedService();
