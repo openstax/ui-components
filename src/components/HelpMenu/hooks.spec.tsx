@@ -137,7 +137,7 @@ describe('useBusinessHours', () => {
     jest.useRealTimers();
   })
 
-  it('fetches business hours and sets hours on success', async () => {
+  it('fetches business hours and sets hours on ready', async () => {
     const validResp = {
       businessHoursInfo: {
         businessHours: [{ startTime: 1000, endTime: 2000 }],
@@ -157,6 +157,34 @@ describe('useBusinessHours', () => {
 
     expect(result.current.hours).toEqual(validResp);
     expect(result.current.error).toBeNull();
+  });
+
+  it('fetches business hours and sets hours on visible', async () => {
+    const validResp = {
+      businessHoursInfo: {
+        businessHours: [{ startTime: 1000, endTime: 2000 }],
+      },
+    };
+
+    global.fetch = createMockFetch(() => Promise.resolve(makeResponse(validResp)));
+
+    const { result, waitForNextUpdate } = renderHook(() =>
+      useBusinessHours('http://localhost/api', 5000)
+    );
+
+    const { document } = global;
+    global.document = new Proxy(document, {
+      get: (target, p) => p === 'hidden' ? false : Reflect.get(target, p, target),
+    });
+
+    act(() => { window.dispatchEvent(new Event('visibilitychange')) });
+
+    // Wait for the first async fetch to resolve
+    await waitForNextUpdate();
+
+    expect(result.current.hours).toEqual(validResp);
+    expect(result.current.error).toBeNull();
+    global.document = document;
   });
 
   it('sets error when response shape is invalid', async () => {
