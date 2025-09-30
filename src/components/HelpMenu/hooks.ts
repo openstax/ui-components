@@ -126,54 +126,66 @@ export const getChatEmbed = (
   return todaysHours ? { ...todaysHours, openChat } : null;
 };
 
+// map assignable field name to Salesforce field name
+// These are currently defined in:
+// assignments/packages/frontend/src/components/SupportInfo.tsx
+const hiddenFieldsMapping = [
+  ['assignmentId', 'Assignment_Id'],
+  ['contextId', 'Context_Id'],
+  ['deploymentId', 'Deployment_Id'],
+  ['platformId', 'Platform_Id'],
+  ['registration', 'Registration_Id'],
+  ['organizationName', 'School'],
+  ['userEmail', 'Email'],
+  ['userFirstName', 'First_Name'],
+  ['userId', 'OpenStax_UUID'],
+  ['userLastName', 'Last_Name'],
+];
+
+const mapHiddenFields = (supportInfoMapping: { [key: string]: string }) => (
+  Object.fromEntries(
+    hiddenFieldsMapping
+      .map(([fromKey, toKey]) => [toKey, supportInfoMapping[fromKey]])
+      .filter((tuple): tuple is [string, string] =>
+        typeof tuple[0] === 'string' && typeof tuple[1] == 'string'
+      )
+  )
+);
+
+const mapVisibleFields = (supportInfoMapping: { [key: string]: string }) => {
+  // userFirstName, userLastName are from accounts
+  const {
+    userName, userFirstName, userLastName, userEmail, organizationName
+  } = supportInfoMapping;
+  const nameParts = userName?.split(' ') ?? [];
+  // Multiple first names?
+  const firstName = userFirstName ?? nameParts.slice(0, -1).join(' ');
+  // Hopefully no middle name
+  const lastName = userLastName ?? nameParts.slice(-1).join('');
+  // Fields that start with '_' are standard, non-custom fields
+  // If we don't get the info from accounts, then the field should be editable
+  const visibleEntries: [string, string, boolean][] = [
+    ['_firstName', firstName, userFirstName === undefined],
+    ['_lastName', lastName, userLastName === undefined],
+    ['_email', userEmail ?? '', userEmail === undefined],
+    ['School', organizationName ?? '', true],
+  ];
+  return Object.fromEntries(
+    visibleEntries.map(([key, value, isEditableByEndUser]) => [
+      key, { value, isEditableByEndUser }
+    ])
+  );
+};
+
 export const usePreChatFields = (contactFormParams: { key: string, value: string }[]) => {
-  const { visibleFields, hiddenFields } = React.useMemo(() => {
-    // map assignable field name to Salesforce field name
-    // These are currently defined in:
-    // assignments/packages/frontend/src/components/SupportInfo.tsx
-    const hiddenFieldsMapping = [
-      ['assignmentId', 'Assignment_Id'],
-      ['contextId', 'Context_Id'],
-      ['deploymentId', 'Deployment_Id'],
-      ['platformId', 'Platform_Id'],
-      ['registration', 'Registration_Id'],
-      ['schoolName', 'School'],
-      ['userEmail', 'Email'],
-      ['userFirstName', 'First_Name'],
-      ['userId', 'OpenStax_UUID'],
-      ['userLastName', 'Last_Name'],
-    ];
+  const { visibleFields, hiddenFields } = React.useMemo(() => {    
     const supportInfoMapping = Object.fromEntries(
       contactFormParams.map(({key, value}) => [key, value])
     );
-    const hiddenFields = Object.fromEntries(
-      hiddenFieldsMapping
-        .map(([fromKey, toKey]) => [toKey, supportInfoMapping[fromKey]])
-        .filter((tuple): tuple is [string, string] => tuple[1] !== undefined)
-    );
-    const { userName, userFirstName, userLastName, userEmail } = supportInfoMapping;
-    const nameParts = userName?.split(' ') ?? [];
-    // Multiple first names?
-    const firstName = userFirstName ?? nameParts.slice(0, -1).join(' ');
-    // Hopefully no middle name
-    const lastName = userLastName ?? nameParts.slice(-1).join('');
-    // Unless we used the name from accounts, assume we are wrong and allow
-    // the user to edit it
-    const visibleFields = {
-      _firstName: {
-        value: firstName,
-        isEditableByEndUser: userFirstName === undefined,
-      },
-      _lastName: {
-        value: lastName,
-        isEditableByEndUser: userLastName === undefined,
-      },
-      _email: {
-        value: userEmail ?? '',
-        isEditableByEndUser: userEmail === undefined,
-      },
+    return {
+      visibleFields: mapVisibleFields(supportInfoMapping),
+      hiddenFields: mapHiddenFields(supportInfoMapping),
     };
-    return { visibleFields, hiddenFields };
   }, [contactFormParams]);
   const ready = React.useRef(false);
   

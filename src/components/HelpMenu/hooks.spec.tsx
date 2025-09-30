@@ -599,10 +599,11 @@ describe('usePreChatFields', () => {
     (window as WindowWithEmbed).embeddedservice_bootstrap = mockService as any;
   })
 
-  it('sets hidden pre-chat fields', () => {
+  it('sets pre-chat fields', () => {
     const fields = [
       {key: 'contextId', value: '1'},
       {key: 'userEmail', value: 't@t'},
+      {key: 'organizationName', value: 'org'},
       {key: 'b', value: '2'},
     ];
     const { unmount } = renderHook(() => usePreChatFields(fields));
@@ -620,6 +621,10 @@ describe('usePreChatFields', () => {
 Array [
   Array [
     Object {
+      "School": Object {
+        "isEditableByEndUser": true,
+        "value": "org",
+      },
       "_email": Object {
         "isEditableByEndUser": false,
         "value": "t@t",
@@ -636,6 +641,10 @@ Array [
   ],
   Array [
     Object {
+      "School": Object {
+        "isEditableByEndUser": true,
+        "value": "org",
+      },
       "_email": Object {
         "isEditableByEndUser": false,
         "value": "t@t",
@@ -658,12 +667,14 @@ Array [
     Object {
       "Context_Id": "1",
       "Email": "t@t",
+      "School": "org",
     },
   ],
   Array [
     Object {
       "Context_Id": "1",
       "Email": "t@t",
+      "School": "org",
     },
   ],
 ]
@@ -690,6 +701,10 @@ Array [
 Array [
   Array [
     Object {
+      "School": Object {
+        "isEditableByEndUser": true,
+        "value": "",
+      },
       "_email": Object {
         "isEditableByEndUser": true,
         "value": "",
@@ -706,6 +721,10 @@ Array [
   ],
   Array [
     Object {
+      "School": Object {
+        "isEditableByEndUser": true,
+        "value": "",
+      },
       "_email": Object {
         "isEditableByEndUser": true,
         "value": "",
