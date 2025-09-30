@@ -12,7 +12,7 @@ exports[`Modal matches snapshot 1`] = `
     hidden=""
   />
   <div
-    class="sc-papXJ dSNZGe"
+    class="sc-jqUVSM mLxLT"
     data-rac=""
     style="--visual-viewport-height: 768px;"
   >
@@ -31,7 +31,7 @@ exports[`Modal matches snapshot 1`] = `
         />
       </div>
       <div
-        class="sc-jqUVSM kHnGYC"
+        class="sc-kDDrLX kcRDJd"
       >
         <section
           aria-labelledby="react-aria-2"
@@ -86,11 +86,11 @@ exports[`Modal matches snapshot 1`] = `
             </button>
           </header>
           <div
-            class="sc-evZas eSCdIH"
+            class="sc-breuTD eiboLU"
             data-testid="error"
           >
             <h3
-              class="sc-crXcEl RjTbW"
+              class="sc-evZas buXsYK"
             >
               Uh-oh, there's been a glitch
             </h3>
@@ -103,12 +103,12 @@ exports[`Modal matches snapshot 1`] = `
             </a>
             .
             <div
-              class="sc-breuTD feIzvt"
+              class="sc-ksZaOG cPKkuS"
               data-testid="event-id"
             />
           </div>
           <div
-            class="sc-kDDrLX elkCOb"
+            class="sc-iqcoie cqUGeK"
           >
             <button
               class="sc-bczRLJ dOOknK"
@@ -140,7 +140,7 @@ exports[`Modal matches snapshot when heading and children are set 1`] = `
     hidden=""
   />
   <div
-    class="sc-papXJ dSNZGe"
+    class="sc-jqUVSM mLxLT"
     data-rac=""
     style="--visual-viewport-height: 768px;"
   >
@@ -159,7 +159,7 @@ exports[`Modal matches snapshot when heading and children are set 1`] = `
         />
       </div>
       <div
-        class="sc-jqUVSM kHnGYC"
+        class="sc-kDDrLX kcRDJd"
       >
         <section
           aria-labelledby="react-aria-4"
@@ -214,11 +214,11 @@ exports[`Modal matches snapshot when heading and children are set 1`] = `
             </button>
           </header>
           <div
-            class="sc-evZas eSCdIH"
+            class="sc-breuTD eiboLU"
             data-testid="error"
           >
             <h3
-              class="sc-crXcEl RjTbW"
+              class="sc-evZas buXsYK"
             >
               Scores not sent
             </h3>
@@ -232,12 +232,12 @@ exports[`Modal matches snapshot when heading and children are set 1`] = `
             </a>
             .
             <div
-              class="sc-breuTD feIzvt"
+              class="sc-ksZaOG cPKkuS"
               data-testid="event-id"
             />
           </div>
           <div
-            class="sc-kDDrLX elkCOb"
+            class="sc-iqcoie cqUGeK"
           >
             <button
               class="sc-bczRLJ dOOknK"

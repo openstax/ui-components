@@ -20,7 +20,7 @@ exports[`Modal matches snapshot 1`] = `
     hidden=""
   />
   <div
-    class="sc-jSMfEi dmcUoH"
+    class="sc-gKXOVf fbFzda"
     data-rac=""
     style="--visual-viewport-height: 768px;"
   >
@@ -39,7 +39,7 @@ exports[`Modal matches snapshot 1`] = `
         />
       </div>
       <div
-        class="sc-gKXOVf jaHBHf"
+        class="sc-iBkjds mgorR"
       >
         <section
           aria-labelledby="react-aria-2"
@@ -94,7 +94,7 @@ exports[`Modal matches snapshot 1`] = `
             </button>
           </header>
           <div
-            class="sc-eCYdqJ GurhM"
+            class="sc-jSMfEi cWLUhq"
           >
             Modal Body
           </div>
