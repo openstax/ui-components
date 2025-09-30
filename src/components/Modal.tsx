@@ -43,6 +43,12 @@ const Heading = styled(RAC.Heading)`
   font-size: 1.8rem;
 `;
 
+export const ModalBodyHeading = styled.h3`
+  font-weight: 400;
+  font-size: 2.2rem;
+  margin-top: 0;
+`;
+
 export const ModalBody = styled.div`
   font-size: 1.6rem;
   padding: ${modalPadding}rem;
