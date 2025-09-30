@@ -1,0 +1,38 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`MessageBox can override margin 1`] = `
+<div
+  className="sc-bczRLJ ezbLuP"
+>
+  <div
+    className="sc-dkzDqf iJAkzW"
+    data-testid="message-box"
+  >
+    Body text
+  </div>
+</div>
+`;
+
+exports[`MessageBox can override text 1`] = `
+<div
+  className="sc-bczRLJ ewgpZQ"
+>
+  <div
+    className="sc-dkzDqf iJAkzW"
+    data-testid="message-box"
+  >
+    Body text
+  </div>
+</div>
+`;
+
+exports[`MessageBox matches snapshot 1`] = `
+<div
+  className="sc-bczRLJ ewgpZQ"
+>
+  <div
+    className="sc-dkzDqf iJAkzW"
+    data-testid="message-box"
+  />
+</div>
+`;

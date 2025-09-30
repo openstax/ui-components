@@ -86,11 +86,11 @@ exports[`Modal matches snapshot 1`] = `
             </button>
           </header>
           <div
-            class="sc-papXJ jvMkIj"
+            class="sc-breuTD eiboLU"
             data-testid="error"
           >
             <h3
-              class="sc-ftvSup dzrTqv"
+              class="sc-evZas buXsYK"
             >
               Uh-oh, there's been a glitch
             </h3>
@@ -103,7 +103,7 @@ exports[`Modal matches snapshot 1`] = `
             </a>
             .
             <div
-              class="sc-crXcEl gaTpxy"
+              class="sc-ksZaOG cPKkuS"
               data-testid="event-id"
             />
           </div>
@@ -214,11 +214,11 @@ exports[`Modal matches snapshot when heading and children are set 1`] = `
             </button>
           </header>
           <div
-            class="sc-papXJ jvMkIj"
+            class="sc-breuTD eiboLU"
             data-testid="error"
           >
             <h3
-              class="sc-ftvSup dzrTqv"
+              class="sc-evZas buXsYK"
             >
               Scores not sent
             </h3>
@@ -232,7 +232,7 @@ exports[`Modal matches snapshot when heading and children are set 1`] = `
             </a>
             .
             <div
-              class="sc-crXcEl gaTpxy"
+              class="sc-ksZaOG cPKkuS"
               data-testid="event-id"
             />
           </div>
