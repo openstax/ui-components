@@ -43,7 +43,7 @@ export const TextInput = (props: MakeControlled<typeof Uncontrolled.TextInput>) 
   return <Uncontrolled.TextInput
     {...props}
     name={namespace + '.' + props.name}
-    value={value || ''}
+    value={(value ?? '').toString()}
     onChangeValue={onChangeValue}
   />;
 };
@@ -171,3 +171,25 @@ export const File = (props: MakeControlled<typeof Uncontrolled.File>) => {
     onChangeValue={onChangeValue}
   />;
 };
+
+export const RangeInput = (props: MakeControlled<typeof Uncontrolled.RangeInput>) => {
+  const {data, namespace, setInput} = useFormHelpers();
+
+  const onChangeValue = (value: number | undefined) => {
+    props.onChangeValue?.(value);
+    setInput.field(props.name)(value);
+  };
+
+  const value = data[props.name];
+  const numberValue = parseFloat((value ?? '').toString());
+  const formValue = isNaN(numberValue) ? '' : numberValue;
+
+  useEmptyDisabledValue(props, formValue, onChangeValue);
+
+  return <Uncontrolled.RangeInput
+    {...props}
+    name={namespace + '.' + props.name}
+    value={formValue}
+    onChangeValue={onChangeValue}
+  />;
+}

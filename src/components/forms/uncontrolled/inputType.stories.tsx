@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Checkbox } from "./inputTypes";
+import { Checkbox, RangeInput } from "./inputTypes";
 
 
 const CheckboxGroup = styled.div`
@@ -39,4 +39,11 @@ export const disabledCheckbox = () => <>
   {renderCheckboxes({error: [], disabled: true, label: 'Checkbox Label', variant: 'disabled', size: 1.6})}
   {renderCheckboxes({error: [], disabled: true, label: 'Checkbox Label', variant: 'disabled', size: 1.8})}
   {renderCheckboxes({error: [], disabled: true, label: 'Checkbox Label', variant: 'disabled', size: 2.0})}
+</>;
+
+export const slider = () => <>
+  <RangeInput min={0} max={100} defaultValue={50} label="Label" name="name" help="Help text" />
+  <RangeInput min={0} max={100} defaultValue={50} label="Label" name="name" help="Help text"
+    labels={[{value: 0, label: '0%'}, {value: 50, label: '50%'}, {value: 100, label: '100%'}]}
+  />
 </>;
