@@ -254,12 +254,17 @@ export const useBusinessHours = (businessHoursURL: string, timeout: number) => {
       // Avoid unnecessary refetching by only handling it once
       window.removeEventListener(embeddedChatEvents.READY, init);
     };
+    const handleVisible = () => {
+      if (!document.hidden) handleStart();
+    };
     window.addEventListener(embeddedChatEvents.READY, init);
+    window.addEventListener('visibilitychange', handleVisible);
     window.addEventListener(embeddedChatEvents.BUSINESS_HOURS_STARTED, handleStart);
     window.addEventListener(embeddedChatEvents.BUSINESS_HOURS_ENDED, handleEnd);
     return () => {
       abortCtrlRef.current?.abort();
       window.removeEventListener(embeddedChatEvents.READY, init);
+      window.removeEventListener('visibilitychange', handleVisible);
       window.removeEventListener(embeddedChatEvents.BUSINESS_HOURS_STARTED, handleStart);
       window.removeEventListener(embeddedChatEvents.BUSINESS_HOURS_ENDED, handleEnd);
     }
