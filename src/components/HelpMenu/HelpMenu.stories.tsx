@@ -11,12 +11,18 @@ const BodyPortalGlobalStyle = createGlobalStyle`
   }
 `;
 
+const contactParams = [
+  { key: 'userId', value: 'test' },
+  { key: 'userFirstName', value: 'test' },
+  { key: 'organizationName', value: 'org' },
+];
+
 export const Default = () => {
   return (
     <BodyPortalSlotsContext.Provider value={['nav', 'root']}>
       <BodyPortalGlobalStyle />
       <NavBar logo>
-        <HelpMenu contactFormParams={[{key: 'userId', value: 'test'}, {key: 'userFirstName', value: 'test'}]}>
+        <HelpMenu contactFormParams={contactParams}>
           <HelpMenuItem onAction={() => window.alert('Ran HelpMenu callback function')}>
             Test Callback
           </HelpMenuItem>
