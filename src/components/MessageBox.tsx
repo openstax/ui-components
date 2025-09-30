@@ -2,14 +2,14 @@ import React from "react";
 import { BoxWrapper, BoxBody } from "./MessageBox.styles";
 
 export interface MessageBoxProps {
-  margin?: string;
+  customMargin?: string;
   children?: React.ReactNode;
 }
 
-export const MessageBox = ({ children, margin, ...props }: MessageBoxProps) => {
+export const MessageBox = ({ children, customMargin, ...props }: MessageBoxProps) => {
 
   return (
-    <BoxWrapper margin={margin}>
+    <BoxWrapper margin={customMargin}>
       <BoxBody {...props} data-testid='message-box'>
         {children}
       </BoxBody>

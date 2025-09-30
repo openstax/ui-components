@@ -18,7 +18,7 @@ describe('MessageBox', () => {
 
   it('can override margin', () => {
     const tree = renderer.create(
-      <MessageBox margin='10rem 0 10rem 0'>Body text</MessageBox>
+      <MessageBox customMargin='10rem 0 10rem 0'>Body text</MessageBox>
     ).toJSON();
     expect(tree).toMatchSnapshot();
   });
