@@ -78,6 +78,12 @@ export const isBusinessHoursResponse = (x: unknown): x is BusinessHoursResponse 
   isBusinessHoursArray((x as any).businessHoursInfo.businessHours)
 );
 
+const businessHoursResponseEqual = (a: BusinessHoursResponse | null, b: BusinessHoursResponse) => (
+  a === b ||
+  true === a?.businessHoursInfo.businessHours
+    .map((h, idx) => [h, b.businessHoursInfo.businessHours[idx]])
+    .every(([a, b]) => a.startTime === b.startTime && a.endTime === b.endTime)
+);
 const getEmbeddedService = () => (window as WindowWithEmbed).embeddedservice_bootstrap;
 
 export const useScript = (src: string) => {
@@ -234,7 +240,7 @@ export const useBusinessHours = (businessHoursURL: string, timeout: number) => {
         setError(new Error('Invalid business hours response'));
         setHours(null);
       } else {
-        setHours(data);
+        setHours((prev) => businessHoursResponseEqual(prev, data) ? prev : data);
       }
 
       lastFetchedAtRef.current = Date.now();
