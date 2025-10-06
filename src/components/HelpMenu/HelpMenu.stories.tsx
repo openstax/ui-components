@@ -1,7 +1,8 @@
 import { createGlobalStyle } from 'styled-components';
 import { BodyPortalSlotsContext } from '../BodyPortalSlotsContext';
-import { HelpMenu, HelpMenuItem } from '.';
+import { HelpMenu, HelpMenuItem, HelpMenuProps } from '.';
 import { NavBar } from '../NavBar';
+import { ChatConfiguration } from './hooks';
 
 const BodyPortalGlobalStyle = createGlobalStyle`
   [data-portal-slot="nav"] {
@@ -11,18 +12,32 @@ const BodyPortalGlobalStyle = createGlobalStyle`
   }
 `;
 
-const contactParams = [
+const happyHoursResponse: ChatConfiguration['businessHours'] = {
+  hours: {
+    businessHoursInfo: {
+      businessHours: [
+        { startTime: Date.now() - 60_000, endTime: Date.now() + 1_440_000 }
+      ]
+    },
+    timestamp: Date.now(),
+  }
+};
+
+const contactParams: HelpMenuProps['contactFormParams'] = [
   { key: 'userId', value: 'test' },
   { key: 'userFirstName', value: 'test' },
   { key: 'organizationName', value: 'org' },
 ];
+
+const chatEmbedPath = '';
+const chatEmbedParams: HelpMenuProps['chatEmbedParams'] = {chatEmbedPath, businessHours: happyHoursResponse};
 
 export const Default = () => {
   return (
     <BodyPortalSlotsContext.Provider value={['nav', 'root']}>
       <BodyPortalGlobalStyle />
       <NavBar logo>
-        <HelpMenu contactFormParams={contactParams}>
+        <HelpMenu contactFormParams={contactParams} chatEmbedParams={chatEmbedParams}>
           <HelpMenuItem onAction={() => window.alert('Ran HelpMenu callback function')}>
             Test Callback
           </HelpMenuItem>

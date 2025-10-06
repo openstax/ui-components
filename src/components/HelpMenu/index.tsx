@@ -3,8 +3,7 @@ import { NavBarMenuButton, NavBarMenuItem } from '../NavBarMenuButtons';
 import { colors } from '../../theme';
 import styled from 'styled-components';
 import { BodyPortal } from '../BodyPortal';
-import { ChatEmbedServiceConfiguration, useEmbeddedChatService, usePreChatFields } from './hooks';
-import { chatEmbedDefaults } from './constants'
+import { ChatConfiguration, getPreChatFields, useChatController, useHoursRange } from './hooks';
 
 export const HelpMenuButton = styled(NavBarMenuButton)`
   color: ${colors.palette.gray};
@@ -104,45 +103,18 @@ export const NewTabIcon = () => (
 
 export interface HelpMenuProps {
   contactFormParams: { key: string; value: string }[];
-  chatEmbedParams?: Partial<ChatEmbedServiceConfiguration>;
+  chatEmbedParams?: Partial<ChatConfiguration>;
   children?: React.ReactNode;
 }
 
-export const formatBusinessHoursRange = (startTime: number, endTime: number) => {
-  // Ensure we are working with a real Date instance
-  const startDate = new Date(startTime);
-  const endDate = new Date(endTime);
-
-  // Bail if the timestamps are not valid numbers
-  if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) return '';
-
-  try {
-    const baseOptions: Parameters<typeof Intl.DateTimeFormat>[1] = {
-      hour: 'numeric', hour12: true
-    };
-    const start = new Intl.DateTimeFormat(undefined, baseOptions).format(startDate);
-    const end = new Intl.DateTimeFormat(undefined, {
-      ...baseOptions, timeZoneName: 'short'
-    }).format(endDate);
-    // Ex: 9 AM - 5 PM CDT
-    return `${start} - ${end}`;
-  } catch (e) {
-    console.warn(
-      'Intl.DateTimeFormat not available, falling back to simple hours.', e
-    );
-    // Ex: 9 - 17
-    return `${startDate.getHours()} - ${endDate.getHours()}`;
-  }
-};
-
 export const HelpMenu: React.FC<HelpMenuProps> = ({ contactFormParams, chatEmbedParams, children }) => {
   const [showIframe, setShowIframe] = React.useState<string | undefined>();
-  const chatConfig = React.useMemo(() => ({
-    ...chatEmbedDefaults, ...chatEmbedParams
-  }), [chatEmbedParams]);
-  const { chatEmbed, error: chatEmbedError } = useEmbeddedChatService(chatConfig);
-
-  usePreChatFields(contactFormParams);
+  const { chatEmbedPath, businessHours } = React.useMemo(() => chatEmbedParams ?? {}, [chatEmbedParams]);
+  const { range: hoursRange, err: chatError } = useHoursRange(businessHours);
+  const preChatFields = React.useMemo(() => (
+    getPreChatFields(contactFormParams)
+  ), [contactFormParams]);
+  const { openChat } = useChatController(chatEmbedPath, preChatFields);
 
   const contactFormUrl = React.useMemo(() => {
     const formUrl = 'https://openstax.org/embedded/contact';
@@ -153,16 +125,7 @@ export const HelpMenu: React.FC<HelpMenuProps> = ({ contactFormParams, chatEmbed
 
     return `${formUrl}?${params}`;
   }, [contactFormParams]);
-
-  const hoursRange = React.useMemo(
-    () => (
-      chatEmbed?.startTime && chatEmbed?.endTime
-        ? formatBusinessHoursRange(chatEmbed.startTime, chatEmbed.endTime)
-        : null
-    ),
-    [chatEmbed?.startTime, chatEmbed?.endTime]
-  );
-
+  
   React.useEffect(() => {
     const closeIt = ({data}: MessageEvent) => {
       if (data === 'CONTACT_FORM_SUBMITTED') {
@@ -174,17 +137,16 @@ export const HelpMenu: React.FC<HelpMenuProps> = ({ contactFormParams, chatEmbed
     return () => window.removeEventListener('message', closeIt, false);
   }, []);
 
-  // TODO: Better way to handle this error?
-  // We don't want to hide the contact us button on error, but we might want to
-  // know if this is exploding. Maybe set error with error context?
-  if (chatEmbedError) console.error(chatEmbedError);
+  if (chatError) {
+    console.error('Error getting business hours', chatError);
+  }
 
   return (
     <>
       <HelpMenuButton label='Help' aria-label='Help menu'>
-        {chatEmbed !== null && chatEmbedError === null
+        {hoursRange && openChat
           ? (
-            <HelpMenuItem onAction={() => chatEmbed.openChat()}>
+            <HelpMenuItem onAction={() => openChat()}>
               Chat With Us ({hoursRange})
             </HelpMenuItem>
           ) : (

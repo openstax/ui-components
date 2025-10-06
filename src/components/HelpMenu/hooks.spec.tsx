@@ -1,127 +1,20 @@
 // __tests__/useScript.test.tsx
-import { act, renderHook } from '@testing-library/react-hooks';
-import { EmbedInterface, getChatEmbed, useBusinessHours, usePreChatFields, useScript, WindowWithEmbed } from './hooks';   // ← your hook
-import { embeddedChatEvents } from './constants';
+import { renderHook } from '@testing-library/react-hooks';
+import { ApiError, BusinessHours, BusinessHoursResponse, formatBusinessHoursRange, getPreChatFields, useBusinessHours, useChatController, useHoursRange } from './hooks';
+import { act } from 'react-test-renderer';
 
-
-describe('useScript', () => {
-  const src = 'http://localhost/foo.js';
-  
-  afterEach(() => {
-    document.querySelectorAll('script').forEach((s) => s.remove());
-  });
-
-  it('returns ready=true immediately if the script already exists', () => {
-    // ── Setup ──
-    const existing = document.createElement('script');
-    existing.src = src;
-    document.body.appendChild(existing);
-
-    // ── Render Hook ──
-    const { result } = renderHook(() => useScript(src));
-
-    // ── Assertions ──
-    expect(result.current.ready).toBe(true);
-    expect(result.current.error).toBeNull();
-    // No new script should have been appended
-    const scripts = document.querySelectorAll(`script[src="${src}"]`);
-    expect(scripts.length).toBe(1);
-  });
-
-  it('appends a script and sets ready=true on load', () => {
-    const { result } = renderHook(() => useScript(src));
-
-    // At the beginning the hook has not yet fired the onload
-    expect(result.current.ready).toBe(false);
-    expect(result.current.error).toBeNull();
-
-    // Grab the script that was just inserted
-    const script = document.querySelector(`script[src="${src}"]`);
-    expect(script).not.toBeNull();
-
-    // ── Simulate load event ──
-    act(() => {
-      script?.dispatchEvent(new Event('load'));
-    });
-
-    // After the event the state should be ready
-    expect(result.current.ready).toBe(true);
-    expect(result.current.error).toBeNull();
-  });
-
-  it('sets error when the script fails to load', () => {
-    const { result } = renderHook(() => useScript(src));
-
-    // Grab the script that was just inserted
-    const script = document.querySelector(`script[src="${src}"]`) as HTMLScriptElement;
-    expect(script).not.toBeNull();
-
-    // ── Simulate error event ──
-    act(() => {
-      script?.dispatchEvent(new Event('error'));
-    });
-
-    expect(result.current.error).toEqual(
-      new Error(`Failed to load ${src}`)
-    );
-    expect(result.current.ready).toBe(false);
-  });
-
-  it('re-runs effect when src changes', () => {
-    const newSrc = 'http://localhost/bar.js';
-    const { result, rerender } = renderHook(
-      ({ url }) => useScript(url),
-      { initialProps: { url: src } }
-    );
-
-    // First load
-    const script1 = document.querySelector(`script[src="${src}"]`);
-    act(() => { script1?.dispatchEvent(new Event('load')) });
-
-    expect(result.current.ready).toBe(true);
-
-    // Now change the prop
-    rerender({ url: newSrc });
-
-    // New script should be inserted
-    const script2 = document.querySelector(`script[src="${newSrc}"]`);
-    expect(script2).not.toBeNull();
-    expect(script1).not.toBe(script2);
-
-    // Simulate its load
-    act(() => { script2?.dispatchEvent(new Event('load')) });
-
-    expect(result.current.ready).toBe(true);
-  });
-
-  it('does not append a duplicate script when the same src is used in multiple hook instances', () => {
-    const { result: result1 } = renderHook(() => useScript(src));
-    const { result: result2 } = renderHook(() => useScript(src));
-
-    const scripts = document.querySelectorAll(`script[src="${src}"]`);
-    // Even though we rendered the hook twice, only one <script> should exist
-    expect(scripts.length).toBe(1);
-
-    // Both hook instances should see the same ready state
-    const script = scripts[0];
-    act(() => { script.dispatchEvent(new Event('load')) });
-
-    expect(result1.current.ready).toBe(true);
-    expect(result2.current.ready).toBe(true);
-  });
+const makeBusinessHours = (startTime: number, endTime: number): BusinessHours => ({
+  startTime, endTime
+});
+const makeBusinessHoursResponse = (now: number, ...businessHours: BusinessHours[]): BusinessHoursResponse => ({
+  businessHoursInfo: { businessHours },
+  timestamp: now,
+});
+const makeResponse = ({ hours, err }: { hours?: BusinessHoursResponse, err?: ApiError}) => ({
+  hours, err
 });
 
 describe('useBusinessHours', () => {
-  const makeResponse = (body: any, ok = true, status = 200) => ({
-    ok,
-    status,
-    json: async () => body,
-  });
-
-  const createMockFetch = (handler: (input: RequestInfo, init?: RequestInit) => Promise<any>) => {
-    return jest.fn(handler) as jest.Mock;
-  };
-
   // Reset fetch before each test
   beforeEach(() => {
     global.fetch = undefined as any;
@@ -137,637 +30,573 @@ describe('useBusinessHours', () => {
     jest.useRealTimers();
   })
 
-  it('fetches business hours and sets hours on ready', async () => {
-    const validResp = {
-      businessHoursInfo: {
-        businessHours: [{ startTime: 1000, endTime: 2000 }],
-      },
-    };
+  it('uses business hours', async () => {
+    const now = Date.now();
+    const active = makeBusinessHours(now - 1000, now + 5 * 60 * 1000);
+    const inactive = makeBusinessHours(now + 10000, now + 5 * 60 * 1000);
+    const hours = makeBusinessHoursResponse(now, inactive, active);
+    const response = makeResponse({ hours });
+    const timeoutSpy = jest.spyOn(global, 'setTimeout');
 
-    global.fetch = createMockFetch(() => Promise.resolve(makeResponse(validResp)));
+    const { result } = renderHook(() => useBusinessHours(response, 0));
 
-    const { result, waitForNextUpdate } = renderHook(() =>
-      useBusinessHours('http://localhost/api', 5000)
-    );
-
-    act(() => { window.dispatchEvent(new Event(embeddedChatEvents.READY)) });
-
-    // Wait for the first async fetch to resolve
-    await waitForNextUpdate();
-
-    expect(result.current.hours).toEqual(validResp);
-    expect(result.current.error).toBeNull();
+    expect(timeoutSpy.mock.lastCall[1]).toBe(active.endTime - now);
+    expect(result.current?.hours).toEqual(active);
+    expect(result.current?.err).not.toBeDefined();
   });
 
-  it('fetches business hours and sets hours on visible', async () => {
-    const validResp = {
-      businessHoursInfo: {
-        businessHours: [{ startTime: 1000, endTime: 2000 }],
-      },
-    };
+  it('returns undefined when no hoursResponse is provided', () => {
+    const { result } = renderHook(() => useBusinessHours(undefined));
+    expect(result.current).toBeUndefined();
+  });
 
-    global.fetch = createMockFetch(() => Promise.resolve(makeResponse(validResp)));
+  it('returns the error object when hoursResponse contains err', () => {
+    const err = { message: 'something bad' } as any;   // just a dummy error
+    const { result } = renderHook(() => useBusinessHours({ err }));
+    expect(result.current).toEqual({ err });
+  });
 
-    const { result, waitForNextUpdate } = renderHook(() =>
-      useBusinessHours('http://localhost/api', 5000)
-    );
-
-    const { document } = global;
-    global.document = new Proxy(document, {
-      get: (target, p) => p === 'hidden' ? false : Reflect.get(target, p, target),
+  it('returns the hour while the window is active', () => {
+    const start = Date.now() - 1000;
+    const end   = Date.now() + 1000;
+    const response = makeResponse({
+      hours: makeBusinessHoursResponse(Date.now(), makeBusinessHours(start, end))
     });
-
-    act(() => { window.dispatchEvent(new Event('visibilitychange')) });
-
-    // Wait for the first async fetch to resolve
-    await waitForNextUpdate();
-
-    expect(result.current.hours).toEqual(validResp);
-    expect(result.current.error).toBeNull();
-    global.document = document;
+  
+    const { result } = renderHook(() =>
+      useBusinessHours(response, 0)
+    );
+  
+    // The hook runs once immediately
+    expect(result.current).toEqual({ hours: { startTime: start, endTime: end } });
+  
+    // The timeout is scheduled for max(end-now, 1000) → 1s
+    act(() => { jest.advanceTimersByTime(999) });
+    expect(result.current).toEqual({ hours: { startTime: start, endTime: end } });
+  
+    act(() => { jest.advanceTimersByTime(1) });
+    expect(result.current).toBeUndefined();          // timeout cleared the state
   });
 
-  it('sets error when response shape is invalid', async () => {
-    const badResp = { bogus: 'data' };
-
-    global.fetch = createMockFetch(() => Promise.resolve(makeResponse(badResp)));
-
-    const { result, waitForNextUpdate } = renderHook(() =>
-      useBusinessHours('http://localhost/api', 5000)
-    );
-
-    act(() => { window.dispatchEvent(new Event(embeddedChatEvents.READY)) });
-
-    await waitForNextUpdate();
-
-    expect(result.current.hours).toBeNull();
-    expect(result.current.error).toEqual(new Error('Invalid business hours response'));
-  });
-
-  it('sets error on HTTP error', async () => {
-    global.fetch = createMockFetch(() =>
-      Promise.resolve(makeResponse({}, false, 500))
-    );
-
-    const { result, waitForNextUpdate } = renderHook(() =>
-      useBusinessHours('http://localhost/api', 5000)
-    );
-
-    act(() => { window.dispatchEvent(new Event(embeddedChatEvents.READY)) });
-
-    await waitForNextUpdate();
-
-    expect(result.current.hours).toBeNull();
-    expect(result.current.error).toEqual(new Error('HTTP 500'));
-  });
-
-  it('cancels previous request on new fetch and ignores AbortError', async () => {
-    const controllerStub = Object.assign(new AbortController(), {
-      abort: jest.fn()
+  it('has grace period that allows a match slightly before the start', () => {
+    const gracePeriod = 5000;
+    const start = Date.now() + 4000;
+    const end   = Date.now() + 10000;
+    const response = makeResponse({
+      hours: makeBusinessHoursResponse(Date.now(), makeBusinessHours(start, end))
     });
-    jest.spyOn(global, 'AbortController').mockReturnValue(controllerStub);
-
-    const fetchStub = createMockFetch(() => Promise.reject({ name: 'AbortError' }));
-
-    global.fetch = fetchStub as any;
-
-    const { result, unmount } = renderHook(() =>
-      useBusinessHours('http://localhost/api', 5000)
+  
+    const { result } = renderHook(() =>
+      useBusinessHours(response, gracePeriod)
     );
-
-    // Act: Trigger READY (the hook will start the fetch)
-    act(() => { window.dispatchEvent(new Event(embeddedChatEvents.READY)) });
-
-    // Immediately unmount before the promise resolves
-    unmount();
- 
-    // abort() should have been called
-    expect(controllerStub.abort).toHaveBeenCalled();
-    // No error should be set because the promise was aborted
-    expect(result.current.error).toBeNull();
+  
+    // Because start – grace <= now, we should still match
+    expect(result.current).toEqual({
+      hours: { startTime: start, endTime: end }
+    });
   });
 
-  it('aborts the previous request when a new fetch starts', async () => {
-    const controllerStub = Object.assign(new AbortController(), {
-      abort: jest.fn()
+  it('returns undefined when no hour matches the window', () => {
+    const start = Date.now() + 10000;
+    const end   = Date.now() + 20000;
+    const response = makeResponse({
+      hours: makeBusinessHoursResponse(Date.now(), makeBusinessHours(start, end))
     });
-    jest.spyOn(global, 'AbortController').mockReturnValue(controllerStub);
-
-    // First fetch never resolves, second fetch resolves immediately
-    global.fetch = createMockFetch(() => {
-      new Promise((resolve) => { setTimeout(resolve, Infinity) }); // First – stuck
-      throw new Error('unreachable');
-    });
-
-    const { result, waitForNextUpdate } = renderHook(() =>
-      useBusinessHours('http://localhost/api', 5000)
+  
+    const { result } = renderHook(() =>
+      useBusinessHours(response, 0)
     );
-
-    act(() => { window.dispatchEvent(new Event(embeddedChatEvents.READY))} );
-    
-    // Now we do a real response, the first should be aborted
-    global.fetch = createMockFetch(() => Promise.resolve(makeResponse({
-      businessHoursInfo: {
-        businessHours: [{ startTime: 1000, endTime: 2000 }],
-      },
-    })));
-
-    // Trigger a BUSINESS_HOURS_STARTED event – this should start a *new* fetch
-    act(() => { window.dispatchEvent(new Event(embeddedChatEvents.BUSINESS_HOURS_STARTED))} );
-
-    // `abort()` of the previous controller must have run
-    expect(controllerStub.abort).toHaveBeenCalledTimes(1);
-
-    await waitForNextUpdate();  // second update from the hook
-
-    expect(result.current.hours).not.toBeNull();
+  
+    expect(result.current?.hours).toBeUndefined();
   });
-
-  it('does not refetch when last fetch is within timeout', async () => {
-    const resp = {
-      businessHoursInfo: {
-        businessHours: [{ startTime: 1000, endTime: 2000 }],
-      },
-    };
-
-    global.fetch = createMockFetch(() => Promise.resolve(makeResponse(resp)));
-
-    const { waitForNextUpdate } = renderHook(() =>
-      useBusinessHours('http://localhost/api', 5000)
-    );
-
-    act(() => { window.dispatchEvent(new Event(embeddedChatEvents.READY)); })
-
-    await waitForNextUpdate(); // first fetch
-
-    // 3 seconds later – still within 5s timeout
-    act(() => {
-      jest.advanceTimersByTime(3000);
-      window.dispatchEvent(new Event(embeddedChatEvents.BUSINESS_HOURS_STARTED));
+  
+  it('clears timeout on unmount', () => {
+    const clearTimeoutSpy = jest.spyOn(global, 'clearTimeout');
+    const start = Date.now() - 1000;
+    const end   = Date.now() + 1000;
+    const response = makeResponse({
+      hours: makeBusinessHoursResponse(Date.now(), makeBusinessHours(start, end))
     });
-
-    // The fetch should *not* have been called a second time
-    expect(global.fetch).toHaveBeenCalledTimes(1);
-  });
-
-  it('clears hours on business hours end', async () => {
-    const resp = {
-      businessHoursInfo: { businessHours: [{ startTime: 0, endTime: 10_000 }] },
-    };
-
-    global.fetch = createMockFetch(() => Promise.resolve(makeResponse(resp)));
-
-    const { result, waitForNextUpdate } = renderHook(() =>
-      useBusinessHours('http://localhost/api', 5000)
-    );
-
-    act(() => { window.dispatchEvent(new Event(embeddedChatEvents.READY)) });
-
-    await waitForNextUpdate();
-
-    expect(result.current.hours).toEqual(resp);
-
-    // Simulate the end event
-    act(() => { window.dispatchEvent(new Event(embeddedChatEvents.BUSINESS_HOURS_ENDED)) });
-
-    expect(result.current.hours).toBeNull();
-  });
-
-  it('aborts fetch and removes listeners on unmount', async () => {
-    const controller = new AbortController();
-    const controllerStub = Object.assign(controller, {
-      abort: jest.spyOn(controller, 'abort'),
-    });
-    jest.spyOn(global, 'AbortController').mockReturnValue(controllerStub);
-
-    global.fetch = createMockFetch(async () => {
-      await new Promise((reject) => {
-        const doAbort = () => {
-          controller.signal.removeEventListener('abort', doAbort);
-          reject({ name: 'AbortError' });
-        };
-        controller.signal.addEventListener('abort', doAbort);
-      });
-    });
-
+  
     const { unmount } = renderHook(() =>
-      useBusinessHours('http://localhost/api', 5000)
+      useBusinessHours(response, 5000)
     );
-
-    act(() => { window.dispatchEvent(new Event(embeddedChatEvents.READY)); });
-
+  
     unmount();
-
-    expect(controllerStub.abort).toHaveBeenCalled(); // abort called in cleanup
-  });
-
-  it('only fetches once per READY event', async () => {
-    const resp = {
-      businessHoursInfo: { businessHours: [{ startTime: 0, endTime: 1000 }] },
-    };
-
-    global.fetch = createMockFetch(() => Promise.resolve(makeResponse(resp)));
-
-    const { waitForNextUpdate } = renderHook(() =>
-      useBusinessHours('http://localhost/api', 5000)
-    );
-
-    // Trigger two READY events
-    act(() => { window.dispatchEvent(new Event(embeddedChatEvents.READY))} );
-    act(() => { window.dispatchEvent(new Event(embeddedChatEvents.READY))} );
-
-    await waitForNextUpdate();
-
-    expect(global.fetch).toHaveBeenCalledTimes(1); // only one fetch
-  });
-
-  it('refetches after timeout expires', async () => {
-    const now = 12345678;
-
-    const first = { businessHoursInfo: { businessHours: [{ startTime: now - 1000, endTime: now + 1000 }] } };
-    const second = { businessHoursInfo: { businessHours: [{ startTime: now - 2000, endTime: now + 2000 }] } };
-
-    let callCount = 0;
-    global.fetch = createMockFetch(() => {
-      callCount += 1;
-      return Promise.resolve(makeResponse(callCount === 1 ? first : second));
-    });
-
-    const { result, waitForNextUpdate } = renderHook(() =>
-      useBusinessHours('http://localhost/api', 5000)
-    );
-
-    act(() => { window.dispatchEvent(new Event(embeddedChatEvents.READY)) });
-
-    await waitForNextUpdate();  // first fetch
-    expect(result.current.hours).toEqual(first);
-
-    // Wait 4 seconds – still within the 5s timeout
-    act(() => { jest.advanceTimersByTime(4000) });
-    act(() => { window.dispatchEvent(new Event(embeddedChatEvents.BUSINESS_HOURS_STARTED)) });
-
-    expect(global.fetch).toHaveBeenCalledTimes(1); // no refetch
-
-    // Wait 2 more seconds – now outside the timeout
-    act(() => { jest.advanceTimersByTime(2000) });
-    act(() => { window.dispatchEvent(new Event(embeddedChatEvents.BUSINESS_HOURS_STARTED)) });
-
-    await waitForNextUpdate(); // new fetch
-    expect(result.current.hours).toEqual(second);
-  });
-
-  it('responds correctly to all event types', async () => {
-    const resp = { businessHoursInfo: { businessHours: [{ startTime: 0, endTime: 10_000 }] } };
-    global.fetch = createMockFetch(() => Promise.resolve(makeResponse(resp)));
-
-    const { result, waitForNextUpdate } = renderHook(() =>
-      useBusinessHours('http://localhost/api', 5000)
-    );
-
-    // Simulate each event sequentially
-    act(() => { window.dispatchEvent(new Event(embeddedChatEvents.READY)) });
-    act(() => { window.dispatchEvent(new Event(embeddedChatEvents.BUSINESS_HOURS_STARTED)) });
-    await waitForNextUpdate();
-    act(() => { window.dispatchEvent(new Event(embeddedChatEvents.BUSINESS_HOURS_ENDED)) });
-
-    expect(result.current.hours).toBeNull();
-  });
-})
-
-describe('getChatEmbed', () => {
-  const buildResponse = (intervals: { start: number; end: number }[]) => ({
-    businessHoursInfo: {
-      businessHours: intervals.map((i) => ({
-        startTime: i.start,
-        endTime: i.end,
-      })),
-    },
-  });
-
-  const setWindowBootstrap = (launchChatMock: jest.Mock<any>) => {
-    (window as any).embeddedservice_bootstrap = {
-      utilAPI: {
-        launchChat: launchChatMock,
-      },
-    };
-  };
-
-  beforeAll(() => {
-    jest.useFakeTimers();
-  });
-
-  afterAll(() => {
-    jest.useRealTimers();
-  });
-
-  it('returns null when the current time is outside all business hours', () => {
-    const now = Date.UTC(2025, 9);
-    // Set the fake clock *outside* the only interval.
-    jest.setSystemTime(now);
-
-    const response = buildResponse([
-      { start: now + 100_000, end: now + 120_000 }, // starts in the future
-    ]);
-
-    const result = getChatEmbed(response);
-    expect(result).toBeNull();
-  });
-
-  it('returns the matching hour with an openChat function when the current time is inside a single interval', async () => {
-    const now = Date.UTC(2025, 9);
-    jest.setSystemTime(now);
-
-    const interval = { start: now - 10_000, end: now + 10_000 }; // open now
-    const response = buildResponse([interval]);
-
-    const launchMock = jest.fn().mockResolvedValue('chat-launched');
-    setWindowBootstrap(launchMock);
-
-    const embed = getChatEmbed(response);
-    expect(embed).not.toBeNull();
-    if (!embed) throw new Error('embed null');
-    expect(embed.startTime).toBe(interval.start);
-    expect(embed.endTime).toBe(interval.end);
-
-    // The returned openChat is a *function* that calls launchChat
-    const result = await embed.openChat();
-    expect(launchMock).toHaveBeenCalledTimes(1);
-    expect(result).toBe('chat-launched');
-  });
-
-  it('returns the first matching interval when multiple overlap', () => {
-    const now = Date.UTC(2025, 9);
-    jest.setSystemTime(now);
-
-    // Two overlapping intervals – only the first should be chosen.
-    const intervals = [
-      { start: now - 20_000, end: now + 20_000 }, // should match
-      { start: now - 5_000, end: now + 5_000 },   // also matches
-    ];
-    const response = buildResponse(intervals);
-
-    const embed = getChatEmbed(response);
-    expect(embed).not.toBeNull();
-    if (!embed) throw new Error('embed null');
-    expect(embed.startTime).toBe(intervals[0].start);
-    expect(embed.endTime).toBe(intervals[0].end);
-  });
-
-  it('returns undefined from openChat when embeddedservice_bootstrap is not present', async () => {
-    const now = Date.UTC(2025, 9);
-    jest.setSystemTime(now);
-
-    (window as any).embeddedservice_bootstrap = undefined;
-
-    const response = buildResponse([
-      { start: now - 10_000, end: now + 10_000 },
-    ]);
-
-    // Do NOT set the window.bootstrap mock.
-    const embed = getChatEmbed(response);
-    expect(embed).not.toBeNull();
-    if (!embed) throw new Error('embed null');
-
-    const result = await embed.openChat(); // should not throw
-    expect(result).toBeUndefined();
-  });
-
-  it('does not call launchChat until openChat is invoked', async () => {
-    const now = Date.UTC(2025, 9);
-    jest.setSystemTime(now);
-
-    const response = buildResponse([{ start: now - 10_000, end: now + 10_000 }]);
-
-    const launchMock = jest.fn().mockResolvedValue('chat-launched');
-    setWindowBootstrap(launchMock);
-
-    const embed = getChatEmbed(response);
-    expect(launchMock).not.toHaveBeenCalled();
-    if (!embed) throw new Error('embed null');
-
-    // Call it now
-    await embed.openChat();
-    expect(launchMock).toHaveBeenCalledTimes(1);
-  });
-
-  it('treats the endTime as exclusive', async () => {
-    const now = Date.UTC(2025, 9);
-    jest.setSystemTime(now);
-
-    const interval = { start: now - 10_000, end: now }; // ends exactly at now
-    const response = buildResponse([interval]);
-
-    const embed = getChatEmbed(response, 0);
-    // `now` is equal to endTime → should be *outside* the interval
-    expect(embed).toBeNull();
-  });
-
-  it('does not reuse the same reference across calls', () => {
-    const now = Date.UTC(2025, 9);
-    jest.setSystemTime(now);
-
-    const interval = { start: now - 10_000, end: now + 10_000 };
-    const response = buildResponse([interval]);
-
-    const firstCall = getChatEmbed(response);
-    const secondCall = getChatEmbed(response);
-
-    expect(firstCall).not.toBe(secondCall);
-    if (!firstCall) throw new Error('firstCall null');
-    if (!secondCall) throw new Error('secondCall null');
-    // but both should contain the same hour data
-    expect(firstCall.startTime).toBe(secondCall.startTime);
-    expect(firstCall.endTime).toBe(secondCall.endTime);
+    expect(clearTimeoutSpy).toHaveBeenCalled();        // ensure the cleanup cleared the timer
   });
 });
 
-describe('usePreChatFields', () => {
-  let setVisiblePrechatFields: jest.Mock;
-  let setHiddenPrechatFields: jest.Mock;
-  let mockService: Pick<EmbedInterface, 'prechatAPI'>;
-    
-
+describe('formatBusinessHoursRange', () => {
   beforeEach(() => {
-    setVisiblePrechatFields = jest.fn();
-    setHiddenPrechatFields = jest.fn();
-    mockService = {
-      prechatAPI: {
-        setVisiblePrechatFields,
-        setHiddenPrechatFields,
-      },
-    };
-    (window as WindowWithEmbed).embeddedservice_bootstrap = mockService as any;
-  })
-
-  it('sets pre-chat fields', () => {
-    const fields = [
-      {key: 'contextId', value: '1'},
-      {key: 'userEmail', value: 't@t'},
-      {key: 'organizationName', value: 'org'},
-      {key: 'b', value: '2'},
-    ];
-    const { unmount } = renderHook(() => usePreChatFields(fields));
-
-    // Should run twice
-    act(() => { window.dispatchEvent(new Event(embeddedChatEvents.READY)); });
-    act(() => { window.dispatchEvent(new Event(embeddedChatEvents.READY)); });
-
-    // Should remove event listener
-    unmount();
-
-    act(() => { window.dispatchEvent(new Event(embeddedChatEvents.READY)); });
-
-    expect(setVisiblePrechatFields.mock.calls).toMatchInlineSnapshot(`
-Array [
-  Array [
-    Object {
-      "School": Object {
-        "isEditableByEndUser": true,
-        "value": "org",
-      },
-      "_email": Object {
-        "isEditableByEndUser": false,
-        "value": "t@t",
-      },
-      "_firstName": Object {
-        "isEditableByEndUser": true,
-        "value": "",
-      },
-      "_lastName": Object {
-        "isEditableByEndUser": true,
-        "value": "",
-      },
-    },
-  ],
-  Array [
-    Object {
-      "School": Object {
-        "isEditableByEndUser": true,
-        "value": "org",
-      },
-      "_email": Object {
-        "isEditableByEndUser": false,
-        "value": "t@t",
-      },
-      "_firstName": Object {
-        "isEditableByEndUser": true,
-        "value": "",
-      },
-      "_lastName": Object {
-        "isEditableByEndUser": true,
-        "value": "",
-      },
-    },
-  ],
-]
-`);
-    expect(setHiddenPrechatFields.mock.calls).toMatchInlineSnapshot(`
-Array [
-  Array [
-    Object {
-      "Context_Id": "1",
-      "Email": "t@t",
-      "School": "org",
-    },
-  ],
-  Array [
-    Object {
-      "Context_Id": "1",
-      "Email": "t@t",
-      "School": "org",
-    },
-  ],
-]
-`);
+    jest.spyOn(console, 'warn').mockImplementation(() => {/* squelch */});
   });
 
-  it('immediately sets fields if ready', async () => {
-    const { rerender } = renderHook(
-      (contactFormParams: {key: string; value: string}[]) => usePreChatFields(contactFormParams),
-      { initialProps: [] as {key: string; value: string}[] }
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
+  it('formats a normal range in 12-hour format with a short TZ for the end', () => {
+    const start = new Date('2023-01-01T09:00:00').getTime();   // 9 AM
+    const end   = new Date('2023-01-01T17:00:00').getTime();   // 5 PM
+
+    const result = formatBusinessHoursRange(start, end);
+
+    // We can’t pin down the exact TZ label (it depends on the CI machine),
+    // but we know the shape is: <start> - <end> <TZ>.
+    // <TZ> Could be something like CST or maybe GMT-7
+    expect(result).toMatch(/^9\s*AM\s*-\s*5\s*PM\s*[A-Z0-9-]+$/);
+  });
+
+  it('handles noon to midnight correctly', () => {
+    const start = new Date('2023-01-01T12:00:00').getTime(); // 12 PM
+    const end   = new Date('2023-01-01T00:00:00').getTime(); // 12 AM next day
+
+    const result = formatBusinessHoursRange(start, end);
+    expect(result).toMatch(/^12\s*PM\s*-\s*12\s*AM\s*[A-Z0-9-]+$/);
+  });
+
+    it('returns an empty string when start or end is NaN', () => {
+    expect(formatBusinessHoursRange(NaN, 123456)).toBe('');
+    expect(formatBusinessHoursRange(123456, NaN)).toBe('');
+    expect(formatBusinessHoursRange(NaN, NaN)).toBe('');
+  });
+
+  it('returns an empty string when timestamps cannot be parsed to a Date', () => {
+    // A value that is a number but is outside the safe integer range
+    const big = Number.MAX_SAFE_INTEGER + 1;
+    expect(formatBusinessHoursRange(big, big)).toBe('');
+  });
+
+  it('falls back to raw hour numbers when Intl.DateTimeFormat throws', () => {
+    // 1.  Mock the constructor so that *any* call throws
+    jest.spyOn(Intl, 'DateTimeFormat').mockImplementation(() => {
+      throw new Error('forced failure');
+    });
+
+    const start = new Date('2023-01-01T09:00:00').getTime();
+    const end   = new Date('2023-01-01T17:00:00').getTime();
+
+    const result = formatBusinessHoursRange(start, end);
+
+    expect(result).toBe(`${new Date(start).getHours()} - ${new Date(end).getHours()}`);
+  });
+
+  it('calls console.warn with the expected message', () => {
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => { /* nothing */ });
+
+    // Force an error from Intl
+    jest.spyOn(Intl, 'DateTimeFormat').mockImplementation(() => {
+      throw new Error('boom');
+    })
+
+    formatBusinessHoursRange(
+      new Date('2023-01-01T09:00:00').getTime(),
+      new Date('2023-01-01T17:00:00').getTime(),
     );
 
-    rerender([{ key: 'userName', value: 'should not set this since we are not ready' } ]);
-    rerender([{ key: 'userName', value: 'Echo Zulu November Alpha Mike Echo' }, { key: 'd', value: '2' } ]);
-    
-    act(() => { window.dispatchEvent(new Event(embeddedChatEvents.READY)); });
+    expect(warnSpy).toHaveBeenCalledTimes(1);
+    expect(warnSpy).toHaveBeenCalledWith(
+      expect.stringContaining('Intl.DateTimeFormat not available'),
+      expect.any(Error),
+    );
+  });
+});
 
-    rerender([
-      { key: 'userFirstName', value: 'Som' },
-      { key: 'userLastName', value: 'Buddy' }
-    ]);
-    
-    expect(setVisiblePrechatFields.mock.calls).toMatchInlineSnapshot(`
-Array [
-  Array [
-    Object {
-      "School": Object {
-        "isEditableByEndUser": true,
-        "value": "",
-      },
-      "_email": Object {
-        "isEditableByEndUser": true,
-        "value": "",
-      },
-      "_firstName": Object {
-        "isEditableByEndUser": true,
-        "value": "Echo Zulu November Alpha Mike",
-      },
-      "_lastName": Object {
-        "isEditableByEndUser": true,
-        "value": "Echo",
-      },
-    },
-  ],
-  Array [
-    Object {
-      "School": Object {
-        "isEditableByEndUser": true,
-        "value": "",
-      },
-      "_email": Object {
-        "isEditableByEndUser": true,
-        "value": "",
-      },
-      "_firstName": Object {
-        "isEditableByEndUser": false,
-        "value": "Som",
-      },
-      "_lastName": Object {
-        "isEditableByEndUser": false,
-        "value": "Buddy",
-      },
-    },
-  ],
-]
-`);
-    expect(setHiddenPrechatFields.mock.calls).toMatchInlineSnapshot(`
-Array [
-  Array [
-    Object {},
-  ],
-  Array [
-    Object {
-      "First_Name": "Som",
-      "Last_Name": "Buddy",
-    },
-  ],
-]
-`);
+describe('useHoursRange', () => {
+  beforeAll(() => {
+    jest.useFakeTimers();
+    jest.setSystemTime(Date.UTC(2025, 1, 1, 5));
   });
 
-  it('doesn\'t explode when the service is missing', () => {
-    const fields = [
-      {key: 'c', value: '1'},
-      {key: 'd', value: '2'},
-    ];
-    renderHook(() => usePreChatFields(fields));
+  it('returns formatted range', () => {
+    const now = Date.now();
+    const active = makeBusinessHours(now - 1000, now + 5 * 60 * 1000);
+    const inactive = makeBusinessHours(now + 10000, now + 5 * 60 * 1000);
+    const hours = makeBusinessHoursResponse(now, inactive, active);
+    const response = makeResponse({ hours });
+    const { result } = renderHook(() => useHoursRange(response));
 
-    delete (window as WindowWithEmbed).embeddedservice_bootstrap;
+    expect(result.current.range).toBe(
+      formatBusinessHoursRange(active.startTime, active.endTime)
+    );
+    expect(result.current.err).toBeUndefined();
+  });
 
-    act(() => { window.dispatchEvent(new Event(embeddedChatEvents.READY)); });
+  it('returns errors', () => {
+    const err = { type: 'test', detail: 'test' };
+    const response = makeResponse({ err });
+    const { result } = renderHook(() => useHoursRange(response));
 
-    expect(setVisiblePrechatFields).not.toHaveBeenCalled();
-    expect(setHiddenPrechatFields).not.toHaveBeenCalled();
+    expect(result.current.range).toBeUndefined();
+    expect(result.current.err).toStrictEqual(err);
+  });
+
+  it('returns default error', () => {
+    const { result } = renderHook(() => useHoursRange({}));
+    
+    expect(result.current.range).toBeUndefined();
+    expect(result.current.err).toBeUndefined();
+  });
+
+  it('memoizes correctly', async () => {
+    const now = Date.now();
+    const response1 = makeResponse(
+      {
+        hours: makeBusinessHoursResponse(now, makeBusinessHours(now - 1000, now + 2 * 3600 * 1000))
+      }
+    );
+    const response2 = makeResponse(
+      {
+        hours: makeBusinessHoursResponse(now, makeBusinessHours(now - 1000, now + 1 * 3600 * 1000))
+      }
+    );
+
+    const { result, rerender } = renderHook(
+      (props: Parameters<typeof useHoursRange>) => useHoursRange(...props),
+      { initialProps: [response1, 0] },
+    );
+
+    rerender([response1, 0]);
+    expect(result.current).toMatchInlineSnapshot(`
+Object {
+  "range": "10 PM - 1 AM CST",
+}
+`);
+
+
+    rerender([response2, 0]);
+    expect(result.current).toMatchInlineSnapshot(`
+Object {
+  "range": "10 PM - 12 AM CST",
+}
+`);
+  });
+});
+
+describe('getPreChatFields', () => {
+  it('returns preChat fields', () => {
+    const params: Parameters<typeof getPreChatFields>[0] = [
+      { key: 'assignmentId', value: '1' },
+      { key: 'userName', value: 'Thomas Andrews' },
+    ]
+    const result = getPreChatFields(params);
+    expect(result).toMatchInlineSnapshot(`
+Object {
+  "hiddenFields": Object {
+    "Assignment_Id": "1",
+  },
+  "visibleFields": Object {
+    "School": Object {
+      "isEditableByEndUser": true,
+      "value": "",
+    },
+    "_email": Object {
+      "isEditableByEndUser": true,
+      "value": "",
+    },
+    "_firstName": Object {
+      "isEditableByEndUser": true,
+      "value": "Thomas",
+    },
+    "_lastName": Object {
+      "isEditableByEndUser": true,
+      "value": "Andrews",
+    },
+  },
+}
+`);
+  });
+  it('makes visible fields readonly when set with info from accounts', () => {
+    const params: Parameters<typeof getPreChatFields>[0] = [
+      { key: 'assignmentId', value: '1' },
+      { key: 'userFirstName', value: 'Thomas' },
+      { key: 'userLastName', value: 'Andrews' },
+      { key: 'userEmail', value: 't@t' },
+      { key: 'organizationName', value: 'Some place' },
+    ]
+    const result = getPreChatFields(params);
+    expect(result).toMatchInlineSnapshot(`
+Object {
+  "hiddenFields": Object {
+    "Assignment_Id": "1",
+    "Email": "t@t",
+    "First_Name": "Thomas",
+    "Last_Name": "Andrews",
+    "School": "Some place",
+  },
+  "visibleFields": Object {
+    "School": Object {
+      "isEditableByEndUser": true,
+      "value": "Some place",
+    },
+    "_email": Object {
+      "isEditableByEndUser": false,
+      "value": "t@t",
+    },
+    "_firstName": Object {
+      "isEditableByEndUser": false,
+      "value": "Thomas",
+    },
+    "_lastName": Object {
+      "isEditableByEndUser": false,
+      "value": "Andrews",
+    },
+  },
+}
+`);
+  });
+});
+
+const createMockPopup = () => ({
+  postMessage: jest.fn(),
+  closed: false,
+  addEventListener: jest.fn(),
+  removeEventListener: jest.fn(),
+});
+
+describe('useChatController', () => {
+  const mockOpen = jest.fn();
+  const mockAddEventListener = jest.fn();
+  const mockRemoveEventListener = jest.fn();
+  const mockClearInterval = jest.fn();
+  const mockSetInterval = jest.fn();
+  const mockClearTimeout = jest.fn();
+  const mockSetTimeout = jest.fn();
+
+  beforeAll(() => {
+    global.window.open = mockOpen;
+    global.window.addEventListener = mockAddEventListener;
+    global.window.removeEventListener = mockRemoveEventListener;
+    global.setInterval = mockSetInterval as any;
+    global.clearInterval = mockClearInterval;
+    global.setTimeout = mockSetTimeout as any;
+    global.clearTimeout = mockClearTimeout;
+  });
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  const preChatFields = getPreChatFields([
+    { key: 'userEmail', value: 'alice@example.com' },
+  ]);
+
+  const path = 'https://example.com/chat';
+
+  /** 2.1. Hook returns an empty object when `path` is undefined */
+  it('returns {} when path is undefined', () => {
+    const { result } = renderHook(() => useChatController(undefined, preChatFields));
+    expect(result.current).toEqual({});
+  });
+
+  /** 2.2. `openChat` is defined only when a path is present */
+  it('exposes openChat when path is defined', () => {
+    const { result } = renderHook(() => useChatController(path, preChatFields));
+    expect(typeof result.current.openChat).toBe('function');
+  });
+
+  /** 2.3. `openChat` does nothing if a popup is already open */
+  it('does not open a new popup if one is already open', () => {
+    const mockPopup = createMockPopup();
+    // fake a previous open
+    mockOpen.mockReturnValue(mockPopup);
+    const { result } = renderHook(() => useChatController(path, preChatFields));
+
+    act(() => {
+      // simulate that the first call already created a popup
+      result.current.openChat?.();
+    });
+
+    // Second call – popup already exists
+    act(() => {
+      result.current.openChat?.();
+    });
+
+    expect(mockOpen).toHaveBeenCalledTimes(1);
+  });
+
+  /** 2.3. `openChat` creates a window with correct geometry */
+  it('opens a popup with the correct size and position', () => {
+    const mockWindow = createMockPopup();
+    mockOpen.mockReturnValue(mockWindow);
+
+    const { result } = renderHook(() => useChatController(path, preChatFields));
+
+    act(() => {
+      result.current.openChat?.();
+    });
+
+    // 1. `window.open` called once
+    expect(mockOpen).toHaveBeenCalledTimes(1);
+
+    // 2. Check the options string
+    const optionsString = mockOpen.mock.calls[0][2];
+    expect(optionsString).toMatch(/width=[^,]+/);
+    expect(optionsString).toMatch(/height=[^,]+/);
+    expect(optionsString).toMatch(/top=[^,]+/);   // bottom-right calc – exact values are hard to test reliably
+    expect(optionsString).toMatch(/left=[^,]+/);   // bottom-right calc – exact values are hard to test reliably
+    expect(optionsString).toContain('popup=true');
+  });
+
+  /** 2.4. `postMessage` flow – popup receives ready → preChatFields → open */
+  it('sends preChatFields and open messages when the child signals ready', () => {
+    const mockPopup = createMockPopup();
+    mockOpen.mockReturnValue(mockPopup);
+
+    const mockHandleMessage = jest.fn();
+    mockAddEventListener.mockImplementation((event: string, cb: () => void) => {
+      if (event === 'message') mockHandleMessage.mockImplementation(cb);
+    });
+
+    // Set up the interval that checks for `closed`
+    mockSetInterval.mockImplementation(() => 42 as any); // fake interval id
+
+    const { result } = renderHook(() => useChatController(path, preChatFields));
+
+    act(() => {
+      result.current.openChat?.();
+    });
+
+    // After opening the popup we register a `handleMessage` listener
+    expect(mockAddEventListener).toHaveBeenCalledWith('message', expect.any(Function), false);
+
+    // Simulate the chat window posting `"ready"`
+    const event: MessageEvent = {
+      source: mockPopup,
+      data: { type: 'ready' } as any,
+    } as any;
+
+    // Grab the actual `handleMessage` that was added
+    const handleMessage = mockAddEventListener.mock.calls.find(
+      (args) => args[0] === 'message'
+    )?.[1];
+    expect(handleMessage).toBeDefined();
+    act(() => {
+      handleMessage(event);
+    });
+
+    // `init` should have been called → sends `preChatFields` then `open`
+    expect(mockPopup.postMessage).toHaveBeenCalledTimes(2);
+    expect(mockPopup.postMessage).toHaveBeenNthCalledWith(
+      1,
+      { type: 'preChatFields', data: preChatFields },
+      new URL(path).origin
+    );
+    expect(mockPopup.postMessage).toHaveBeenNthCalledWith(
+      2,
+      { type: 'open' },
+      new URL(path).origin
+    );
+  });
+
+  /** 2.5. `openChat` cleans up the interval when the popup closes */
+  it('clears the polling interval and removes the message listener when popup closes', () => {
+    const mockPopup = createMockPopup();
+    const intervalId = 99;
+    mockOpen.mockReturnValue(mockPopup);
+    mockSetInterval.mockReturnValue(intervalId as any); // fake interval id
+
+    const { result } = renderHook(() => useChatController(path, preChatFields));
+
+    act(() => {
+      result.current.openChat?.();
+    });
+
+    // Simulate that the popup is closed after 1 tick
+    mockPopup.closed = true;  // set closed flag
+    act(() => {
+      // this calls the interval callback
+      const checkClosed = mockSetInterval.mock.calls[0][0];
+      checkClosed();
+    });
+
+    // Verify cleanup
+    expect(mockRemoveEventListener).toHaveBeenCalledWith('message', expect.any(Function), false);
+    expect(mockClearInterval).toHaveBeenCalledWith(intervalId);
+  });
+
+  /** 2.6. `sendMessage` respects the origin – if the origin does not match it does nothing */
+  it('does not postMessage if popup origin does not match path origin', () => {
+    const mismatchedPath = 'https://evil.com/evil';
+    const { result } = renderHook(() => useChatController(mismatchedPath, preChatFields));
+
+    act(() => {
+      result.current.openChat?.();
+    });
+
+    // popup opened with wrong origin – postMessage will not be called
+    const mockPopup = mockOpen.mock.results[0].value as any;
+    expect(mockPopup.postMessage).not.toBeCalled();
+  });
+
+  /** 2.7. The effect that watches `preChatFields` sends a message immediately on mount and whenever the preChatFields object changes */
+  it('re-sends preChatFields when the payload changes', () => {
+    const { result, rerender } = renderHook(
+      ({ path, fields }) => useChatController(path, fields),
+      {
+        initialProps: { path, fields: preChatFields },
+      }
+    );
+
+    // First render triggers the effect
+    const firstPopup = createMockPopup();
+    mockOpen.mockReturnValue(firstPopup);
+
+    act(() => {
+      result.current.openChat?.();
+    });
+
+    const event: MessageEvent = {
+      source: firstPopup,
+      data: { type: 'ready' } as any,
+    } as any;
+
+    // Grab the actual `handleMessage` that was added
+    const handleMessage = mockAddEventListener.mock.calls.find(
+      (args) => args[0] === 'message'
+    )?.[1];
+    expect(handleMessage).toBeDefined();
+    act(() => {
+      handleMessage(event);
+    });
+
+    // Now change the fields
+    const newFields = getPreChatFields([
+      { key: 'userEmail', value: 'bob@example.com' },
+    ]);
+
+    act(() => {
+      rerender({ path, fields: newFields });
+    });
+
+    expect(firstPopup.postMessage).toHaveBeenCalledTimes(3);
+    const lastCall = firstPopup.postMessage.mock.lastCall;
+    expect(lastCall[0]).toEqual({ type: 'preChatFields', data: newFields });
+  });
+
+  /** 2.8. `sendMessage` is a no-op if no popup has been opened */
+  it('does not sendMessage when popup.current is null', () => {
+    const { rerender } = renderHook(
+      ({ path, fields }) => useChatController(path, fields),
+      {
+        initialProps: { path, fields: preChatFields },
+      }
+    );
+
+    // First render triggers the effect
+    const firstPopup = createMockPopup();
+    mockOpen.mockReturnValue(firstPopup);
+
+    // Now change the fields
+    const newFields = getPreChatFields([
+      { key: 'userEmail', value: 'bob@example.com' },
+    ]);
+
+    act(() => {
+      rerender({ path, fields: newFields });
+    });
+
+    expect(firstPopup.postMessage).toHaveBeenCalledTimes(0);
   });
 });

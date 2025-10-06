@@ -78,10 +78,6 @@ exports[`HelpMenu matches snapshot 1`] = `
   <div
     aria-hidden="true"
   />
-  <script
-    aria-hidden="true"
-    src="https://openstax.my.site.com/ESWWebMessagingDeployme1716235390398/assets/js/bootstrap.min.js"
-  />
   <span
     aria-hidden="true"
     data-focus-scope-start="true"
