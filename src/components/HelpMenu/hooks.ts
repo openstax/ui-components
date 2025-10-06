@@ -1,44 +1,8 @@
 import React from "react";
-import { embeddedChatEvents } from "./constants";
 
-export interface EmbedInterface {
-  prechatAPI: {
-    setVisiblePrechatFields: (
-      fields: {
-        [key: string]: {
-          value: string,
-          isEditableByEndUser: boolean,
-        };
-      },
-    ) => void;
-    setHiddenPrechatFields: (fields: { [key: string]: string }) => void;
-  };
-  utilAPI: {
-    launchChat: () => Promise<void>;
-  };
-  settings: {
-    language: string;
-    hideChatButtonOnLoad: boolean;
-  };
-  init: (
-    orgId: string,
-    app: string,
-    deploymentURL: string,
-    { scrt2URL }: { scrt2URL: string },
-  ) => void;
-}
-
-export interface WindowWithEmbed extends Window {
-  embeddedservice_bootstrap?: EmbedInterface;
-}
-
-export interface ChatEmbedServiceConfiguration {
-  orgId: string;
-  app: string;
-  deploymentURL: string;
-  scrt2URL: string;
-  scriptUrl: string;
-  businessHoursURL: string;
+export interface ApiError {
+  type: string;
+  detail: string;
 }
 
 export interface BusinessHours {
@@ -50,278 +14,240 @@ export interface BusinessHoursResponse {
   businessHoursInfo: {
     businessHours: BusinessHours[];
   };
+  timestamp: number;
 }
 
-export interface ChatEmbed extends BusinessHours {
-  openChat: () => void;
+export interface ChatConfiguration {
+  chatEmbedPath: string;
+  businessHours?: {
+    hours?: BusinessHoursResponse;
+    err?: ApiError;
+  };
 }
-
-export const isBusinessHours = (x: unknown): x is BusinessHours => (
-  typeof x === 'object' &&
-  x !== null &&
-  'startTime' in x &&
-  typeof (x as any).startTime === 'number' &&
-  'endTime' in x &&
-  typeof (x as any).endTime === 'number'
-);
-
-export const isBusinessHoursArray = (x: unknown): x is BusinessHours[] =>
-  Array.isArray(x) && x.every(isBusinessHours);
-
-export const isBusinessHoursResponse = (x: unknown): x is BusinessHoursResponse => (
-  typeof x === 'object' &&
-  x !== null &&
-  'businessHoursInfo' in x &&
-  typeof (x as any).businessHoursInfo === 'object' &&
-  (x as any).businessHoursInfo !== null &&
-  'businessHours' in (x as any).businessHoursInfo &&
-  isBusinessHoursArray((x as any).businessHoursInfo.businessHours)
-);
-
-const businessHoursResponseEqual = (a: BusinessHoursResponse | null, b: BusinessHoursResponse) => (
-  a === b ||
-  true === a?.businessHoursInfo.businessHours
-    .map((h, idx) => [h, b.businessHoursInfo.businessHours[idx]])
-    .every(([a, b]) => a.startTime === b.startTime && a.endTime === b.endTime)
-);
-const getEmbeddedService = () => (window as WindowWithEmbed).embeddedservice_bootstrap;
-
-export const useScript = (src: string) => {
-  const [ready, setReady] = React.useState(false);
-  const [error, setError] = React.useState<Error | null>(null);
-
-  React.useEffect(() => {
-    // Already in the DOM? No need to add it again.
-    if (document.querySelector(`script[src="${src}"]`)) {
-      setReady(true);
-      return;
-    }
-
-    const script = document.createElement('script');
-    script.src = src;
-    script.onload = () => {
-      setReady(true);
-      setError(null);
-    }
-    script.onerror = () => {
-      setError(new Error(`Failed to load ${src}`));
-      setReady(false);
-    };
-    document.body.appendChild(script);
-  }, [src]);
-
-  return { ready, error };
-};
-
-export const getChatEmbed = (
-  { businessHoursInfo }: BusinessHoursResponse,
-  gracePeriod = 5_000
-) => {
-  const now = Date.now();
-  const todaysHours = businessHoursInfo.businessHours
-    .find(({ startTime, endTime }) =>
-      startTime - gracePeriod <= now && now < endTime + gracePeriod
-    )
-
-  const openChat = async () => {
-    const svc = getEmbeddedService();
-    if (!svc) return undefined;
-    return await svc.utilAPI.launchChat();
-  }
-
-  return todaysHours ? { ...todaysHours, openChat } : null;
-};
 
 // map assignable field name to Salesforce field name
 // These are currently defined in:
 // assignments/packages/frontend/src/components/SupportInfo.tsx
 const hiddenFieldsMapping = [
-  ['assignmentId', 'Assignment_Id'],
-  ['contextId', 'Context_Id'],
-  ['deploymentId', 'Deployment_Id'],
-  ['platformId', 'Platform_Id'],
-  ['registration', 'Registration_Id'],
-  ['organizationName', 'School'],
-  ['userEmail', 'Email'],
-  ['userFirstName', 'First_Name'],
-  ['userId', 'OpenStax_UUID'],
-  ['userLastName', 'Last_Name'],
+  ["assignmentId", "Assignment_Id"],
+  ["contextId", "Context_Id"],
+  ["deploymentId", "Deployment_Id"],
+  ["platformId", "Platform_Id"],
+  ["registration", "Registration_Id"],
+  ["organizationName", "School"],
+  ["userEmail", "Email"],
+  ["userFirstName", "First_Name"],
+  ["userId", "OpenStax_UUID"],
+  ["userLastName", "Last_Name"],
 ];
 
-const mapHiddenFields = (supportInfoMapping: { [key: string]: string }) => (
+const mapHiddenFields = (supportInfoMapping: { [key: string]: string }) =>
   Object.fromEntries(
     hiddenFieldsMapping
       .map(([fromKey, toKey]) => [toKey, supportInfoMapping[fromKey]])
-      .filter((tuple): tuple is [string, string] =>
-        typeof tuple[0] === 'string' && typeof tuple[1] == 'string'
-      )
-  )
-);
+      .filter(
+        (tuple): tuple is [string, string] =>
+          typeof tuple[0] === "string" && typeof tuple[1] == "string",
+      ),
+  );
 
 const mapVisibleFields = (supportInfoMapping: { [key: string]: string }) => {
   // userFirstName, userLastName are from accounts
-  const {
-    userName, userFirstName, userLastName, userEmail, organizationName
-  } = supportInfoMapping;
-  const nameParts = userName?.split(' ') ?? [];
+  const { userName, userFirstName, userLastName, userEmail, organizationName } = supportInfoMapping;
+  const nameParts = userName?.split(" ") ?? [];
   // Multiple first names?
-  const firstName = userFirstName ?? nameParts.slice(0, -1).join(' ');
+  const firstName = userFirstName ?? nameParts.slice(0, -1).join(" ");
   // Hopefully no middle name
-  const lastName = userLastName ?? nameParts.slice(-1).join('');
+  const lastName = userLastName ?? nameParts.slice(-1).join("");
   // Fields that start with '_' are standard, non-custom fields
   // If we don't get the info from accounts, then the field should be editable
   const visibleEntries: [string, string, boolean][] = [
-    ['_firstName', firstName, userFirstName === undefined],
-    ['_lastName', lastName, userLastName === undefined],
-    ['_email', userEmail ?? '', userEmail === undefined],
-    ['School', organizationName ?? '', true],
+    ["_firstName", firstName, userFirstName === undefined],
+    ["_lastName", lastName, userLastName === undefined],
+    ["_email", userEmail ?? "", userEmail === undefined],
+    ["School", organizationName ?? "", true],
   ];
   return Object.fromEntries(
     visibleEntries.map(([key, value, isEditableByEndUser]) => [
-      key, { value, isEditableByEndUser }
-    ])
+      key,
+      { value, isEditableByEndUser },
+    ]),
   );
 };
 
-export const usePreChatFields = (contactFormParams: { key: string, value: string }[]) => {
-  const { visibleFields, hiddenFields } = React.useMemo(() => {    
-    const supportInfoMapping = Object.fromEntries(
-      contactFormParams.map(({key, value}) => [key, value])
+export const getPreChatFields = (contactFormParams: { key: string; value: string }[]) => {
+  const supportInfoMapping = Object.fromEntries(
+    contactFormParams.map(({ key, value }) => [key, value]),
+  );
+  return {
+    visibleFields: mapVisibleFields(supportInfoMapping),
+    hiddenFields: mapHiddenFields(supportInfoMapping),
+  };
+};
+
+export const useBusinessHours = (
+  hoursResponse: ChatConfiguration["businessHours"] | undefined,
+  gracePeriod = 5_000,
+) => {
+  const timeoutRef = React.useRef<NodeJS.Timeout>();
+  const [hours, setHours] = React.useState<{
+    hours?: BusinessHours;
+    err?: ApiError;
+  }>();
+
+  React.useEffect(() => {
+    let nextState: { hours?: BusinessHours; err?: ApiError } | undefined;
+    if (hoursResponse?.err !== undefined) {
+      nextState = { err: hoursResponse.err };
+    } else if (hoursResponse?.hours !== undefined) {
+      const {
+        businessHoursInfo: { businessHours },
+        timestamp: now,
+      } = hoursResponse.hours;
+      nextState = {
+        hours: businessHours.find(
+          (h) => h.startTime - gracePeriod <= now && now < h.endTime + gracePeriod,
+        ),
+      };
+    }
+    clearTimeout(timeoutRef.current);
+    if (nextState?.hours !== undefined) {
+      const dT = Math.max(nextState.hours.endTime - Date.now(), 1000);
+      // Unset business hours at the end time
+      timeoutRef.current = setTimeout(() => {
+        setHours(undefined);
+      }, dT);
+    }
+    setHours((prev) =>
+      prev === nextState ||
+      (prev !== undefined &&
+        prev.hours?.startTime === nextState?.hours?.startTime &&
+        prev.hours?.endTime === nextState?.hours?.endTime &&
+        prev.err === nextState?.err)
+        ? prev
+        : nextState,
     );
-    return {
-      visibleFields: mapVisibleFields(supportInfoMapping),
-      hiddenFields: mapHiddenFields(supportInfoMapping),
-    };
-  }, [contactFormParams]);
-  const ready = React.useRef(false);
-  
-  const onReady = React.useCallback(() => {
-    const svc = getEmbeddedService();
-    ready.current = true;
-    if (!svc) return;
-    svc.prechatAPI.setVisiblePrechatFields(visibleFields);
-    svc.prechatAPI.setHiddenPrechatFields(hiddenFields);
-  }, [visibleFields, hiddenFields]);
-
-  React.useEffect(() => {
-    // Ready -> set fields -> fields changed -> set fields again
-    if (ready.current) onReady();
-    window.addEventListener(embeddedChatEvents.READY, onReady);
     return () => {
-      window.removeEventListener(embeddedChatEvents.READY, onReady);
-    }
-  }, [onReady]);
+      clearTimeout(timeoutRef.current);
+    };
+  }, [hoursResponse, gracePeriod]);
+
+  return hours;
 };
 
-export const useBusinessHours = (businessHoursURL: string, timeout: number) => {
-  const [hours, setHours] = React.useState<BusinessHoursResponse | null>(null);
-  const [error, setError] = React.useState<Error | null>(null);
+export const formatBusinessHoursRange = (startTime: number, endTime: number) => {
+  // Ensure we are working with a real Date instance
+  const startDate = new Date(startTime);
+  const endDate = new Date(endTime);
 
-  const isFetchingRef = React.useRef(false);
-  const lastFetchedAtRef = React.useRef<number | null>(null);
-  const abortCtrlRef = React.useRef<AbortController | null>(null);
+  // Bail if the timestamps are not valid numbers
+  if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) return "";
 
-  const doFetch = React.useCallback(async () => {
-    // abort any previous request
-    abortCtrlRef.current?.abort();
-
-    const controller = new AbortController();
-    abortCtrlRef.current = controller;
-
-    isFetchingRef.current = true;
-    setError(null);
-
-    try {
-      const res = await fetch(businessHoursURL, controller);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data = await res.json();
-
-      if (!isBusinessHoursResponse(data)) {
-        setError(new Error('Invalid business hours response'));
-        setHours(null);
-      } else {
-        setHours((prev) => businessHoursResponseEqual(prev, data) ? prev : data);
-      }
-
-      lastFetchedAtRef.current = Date.now();
-    } catch (err: any) {
-      if (err.name === 'AbortError') return;
-      setError(err);
-      setHours(null);
-    } finally {
-      isFetchingRef.current = false;
-    }
-  }, [businessHoursURL]);
-
-  const handleStart = React.useCallback(() => {
-      if (isFetchingRef.current) return;
-
-      const now = Date.now();
-      const last = lastFetchedAtRef.current;
-      if (last && now - last < timeout) {
-        return;
-      }
-
-      doFetch();
-  }, [doFetch, timeout]);
-
-  const handleEnd = React.useCallback(() => {
-    setHours(null);
-  }, []);
-
-  React.useEffect(() => {
-    const init = () => {
-      handleStart();
-      // This ready event happens every time the chat is closed
-      // Avoid unnecessary refetching by only handling it once
-      window.removeEventListener(embeddedChatEvents.READY, init);
+  try {
+    const baseOptions: Parameters<typeof Intl.DateTimeFormat>[1] = {
+      hour: "numeric",
+      hour12: true,
     };
-    const handleVisible = () => {
-      if (!document.hidden) handleStart();
-    };
-    window.addEventListener(embeddedChatEvents.READY, init);
-    window.addEventListener('visibilitychange', handleVisible);
-    window.addEventListener(embeddedChatEvents.BUSINESS_HOURS_STARTED, handleStart);
-    window.addEventListener(embeddedChatEvents.BUSINESS_HOURS_ENDED, handleEnd);
-    return () => {
-      abortCtrlRef.current?.abort();
-      window.removeEventListener(embeddedChatEvents.READY, init);
-      window.removeEventListener('visibilitychange', handleVisible);
-      window.removeEventListener(embeddedChatEvents.BUSINESS_HOURS_STARTED, handleStart);
-      window.removeEventListener(embeddedChatEvents.BUSINESS_HOURS_ENDED, handleEnd);
-    }
-  }, [handleStart, handleEnd]);
-
-  return { hours, error };
+    const start = new Intl.DateTimeFormat(undefined, baseOptions).format(startDate);
+    const end = new Intl.DateTimeFormat(undefined, {
+      ...baseOptions,
+      timeZoneName: "short",
+    }).format(endDate);
+    // Ex: 9 AM - 5 PM CDT
+    return `${start} - ${end}`;
+  } catch (e) {
+    console.warn("Intl.DateTimeFormat not available, falling back to simple hours.", e);
+    // Ex: 9 - 17
+    return `${startDate.getHours()} - ${endDate.getHours()}`;
+  }
 };
 
-export const useEmbeddedChatService = ({
-  orgId,
-  app,
-  deploymentURL,
-  scrt2URL,
-  scriptUrl,
-  businessHoursURL,
-}: ChatEmbedServiceConfiguration) => {
-  const { ready: scriptLoaded, error: scriptError } = useScript(scriptUrl);
-  const { hours, error: fetchError } = useBusinessHours(businessHoursURL, 5000);
-  const chatEmbed = React.useMemo(() => hours && getChatEmbed(hours), [hours]);
+export const useHoursRange = (
+  businessHours: ChatConfiguration["businessHours"],
+  gracePeriod?: number,
+) => {
+  const hoursState = useBusinessHours(businessHours, gracePeriod);
+  return React.useMemo(() => {
+    if (hoursState) {
+      const { hours, err } = hoursState;
+      if (hours)
+        return {
+          range: formatBusinessHoursRange(hours.startTime, hours.endTime),
+        };
+      if (err) return { err };
+    }
+    return {};
+  }, [hoursState]);
+};
+
+export const useChatController = (
+  path: string | undefined,
+  preChatFields: ReturnType<typeof getPreChatFields>,
+) => {
+  const popup = React.useRef<null | Window>(null);
+  const popupOrigin = React.useMemo(() => (path ? new URL(path).origin : undefined), [path]);
+
+  const sendMessage = React.useCallback(
+    <T>(message: { type: string; data?: T }) => {
+      if (!popup.current || !popupOrigin) return;
+      popup.current.postMessage(message, popupOrigin);
+    },
+    [popupOrigin],
+  );
+
+  const sendPreChatFields = React.useCallback(() => {
+    sendMessage({ type: "preChatFields", data: preChatFields });
+  }, [sendMessage, preChatFields]);
+
+  const init = React.useCallback(() => {
+    sendPreChatFields();
+    sendMessage({ type: "open" });
+  }, [sendMessage, sendPreChatFields]);
+
+  const openChat = React.useCallback(() => {
+    if (popup.current || !path) return;
+    // const { origin } = new URL(path);
+    const width = 500;
+    const height = 800;
+
+    // Calculate Bottom-Right Position
+    const rightX = (window.screenX || window.screenLeft) + window.outerWidth;
+    const bottomY = (window.screenY || window.screenTop) + window.outerHeight;
+    const top = bottomY - height;
+    const left = rightX - width;
+
+    const options = Object.entries({ popup: true, width, height, top, left })
+      .map(([k, v]) => `${k}=${v}`)
+      .join(",");
+    popup.current = window.open(path, "_blank", options);
+
+    if (!popup.current) return;
+
+    const handleMessage = (e: MessageEvent) => {
+      const {
+        source,
+        data: { type },
+      } = e;
+      if (source !== popup.current) return;
+      if (type === "ready") {
+        init();
+      }
+    };
+
+    const checkClosed = setInterval(() => {
+      if (popup.current?.closed) {
+        window.removeEventListener("message", handleMessage, false);
+        popup.current = null;
+        clearInterval(checkClosed);
+      }
+    }, 500);
+
+    window.addEventListener("message", handleMessage, false);
+  }, [path, init]);
 
   React.useEffect(() => {
-    if (!scriptLoaded || typeof window === 'undefined') return;
+    sendPreChatFields();
+  }, [sendPreChatFields]);
 
-    try {
-      const svc = getEmbeddedService();
-      if (!svc) throw new Error('Embed service unavailable');
-      svc.settings.language = 'en_US';
-      svc.settings.hideChatButtonOnLoad = true;
-      svc.init(orgId, app, deploymentURL, { scrt2URL });
-    } catch (e) {
-      /* istanbul ignore next */
-      console.error('Error initializing Embedded Messaging', e);
-    }
-
-  }, [scriptLoaded, orgId, app, deploymentURL, scrt2URL]);
-
-  return { chatEmbed, error: scriptError ?? fetchError };
+  return path ? { openChat } : {};
 };
