@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { colors } from "../../src/theme";
+import { colors } from "../../theme";
 
 const modalPadding = 3;
 

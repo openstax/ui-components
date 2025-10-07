@@ -43,12 +43,12 @@ interface ButtonOptions {
 type ButtonBase = React.ComponentPropsWithoutRef<'button'> & ButtonOptions;
 type LinkButtonBase = React.ComponentPropsWithoutRef<'a'> & ButtonOptions;
 
-interface ButtonProps extends ButtonBase {
+export interface ButtonProps extends ButtonBase {
   isWaiting?: never;
   waitingText?: never;
 }
 
-interface WaitingButtonProps extends ButtonBase {
+export interface WaitingButtonProps extends ButtonBase {
   isWaiting: boolean;
   waitingText: string;
 }
