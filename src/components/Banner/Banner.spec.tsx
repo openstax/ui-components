@@ -11,14 +11,22 @@ describe('Banner', () => {
 
   it('matches snapshot (multiple messages, with dismiss)', () => {
     const tree = renderer.create(
-      <Banner messages={['This is warning one', 'This is warning two']} severity='warning' onDismiss={() => {}} />
+      <Banner 
+        messages={['This is warning one', 'This is warning two']} 
+        severity='warning' 
+        onDismiss={() => () => alert('dismiss checkout')} 
+      />
     ).toJSON();
     expect(tree).toMatchSnapshot();
   });
 
   it('matches snapshot (error, with dismiss)', () => {
     const tree = renderer.create(
-      <Banner messages={['This is an error']} severity='error' onDismiss={() => {}} />
+      <Banner 
+        messages={['This is an error']} 
+        severity='error' 
+        onDismiss={() => () => alert('dismiss checkout')} 
+      />
     ).toJSON();
     expect(tree).toMatchSnapshot();
   });
