@@ -1,8 +1,6 @@
 import React from "react";
 import * as Sentry from '@sentry/react';
-import { ModalBody, ModalBodyHeading } from "./Modal";
-import styled from "styled-components";
-import { colors } from "../../src/theme";
+import { BoxBody, BoxHeading, BoxEventId } from "./MessageBox.styles";
 import { ErrorContext } from "../contexts";
 
 export interface ErrorPropTypes {
@@ -10,12 +8,6 @@ export interface ErrorPropTypes {
   children?: React.ReactNode;
   heading?: string;
 }
-
-const EventId = styled.div`
-  font-size: 1.4rem;
-  color: ${colors.palette.neutralMedium};
-  margin-top: 1.6rem;
-`;
 
 export const Error = ({ heading, children, ...props }: ErrorPropTypes) => {
   const context = React.useContext(ErrorContext);
@@ -36,12 +28,12 @@ export const Error = ({ heading, children, ...props }: ErrorPropTypes) => {
     return () => clearInterval(intervalId);
   }, [lastEventId, context.error?.eventId]);
 
-  return <ModalBody {...props} data-testid='error'>
-    <ModalBodyHeading>{heading ?? `Uh-oh, there's been a glitch`}</ModalBodyHeading>
+  return <BoxBody {...props} data-testid='error'>
+    <BoxHeading>{heading ?? `Uh-oh, there's been a glitch`}</BoxHeading>
     {children ?? <>
       We're not quite sure what went wrong. Restart your browser. If this doesn't solve
       the problem, visit our <a href="https://openstax.secure.force.com/help" target="_blank">Support Center</a>.
     </>}
-    <EventId data-testid='event-id'>{context.error?.eventId || lastEventId}</EventId>
-  </ModalBody>
+    <BoxEventId data-testid='event-id'>{context.error?.eventId || lastEventId}</BoxEventId>
+  </BoxBody>
 };
