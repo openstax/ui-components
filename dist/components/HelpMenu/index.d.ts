@@ -15,7 +15,7 @@ export interface HelpMenuProps {
         key: string;
         value: string;
     }[];
-    chatEmbedParams?: Partial<ChatConfiguration>;
+    chatConfig?: Partial<ChatConfiguration>;
     children?: React.ReactNode;
 }
 export declare const HelpMenu: React.FC<HelpMenuProps>;
