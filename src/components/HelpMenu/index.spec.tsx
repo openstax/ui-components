@@ -46,16 +46,17 @@ describe('HelpMenu', () => {
     const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {
       // SILENCE
     });
-    const errorResponse: ChatConfiguration['businessHours'] = {
-      err: { type: 'test', detail: 'test' }
+    const errorResponse: ChatConfiguration['err'] = {
+      type: 'test',
+      detail: 'test'
     };
     const chatEmbedPath = 'https://example.com/';
-    const chatEmbedParams: HelpMenuProps['chatEmbedParams'] = {chatEmbedPath, businessHours: errorResponse};
+    const chatEmbedParams: HelpMenuProps['chatConfig'] = {chatEmbedPath, err: errorResponse};
 
     render(
       <BodyPortalSlotsContext.Provider value={['nav', 'root']}>
         <NavBar logo>
-          <HelpMenu chatEmbedParams={chatEmbedParams} contactFormParams={[{key: 'userId', value: 'test'}, {key: 'other', value: 'param'}]}>
+          <HelpMenu chatConfig={chatEmbedParams} contactFormParams={[{key: 'userId', value: 'test'}, {key: 'other', value: 'param'}]}>
             <HelpMenuItem onAction={() => window.alert('Ran HelpMenu callback function')}>
               Test Callback
             </HelpMenuItem>
@@ -69,22 +70,20 @@ describe('HelpMenu', () => {
 
   it('replaces button within hours', async () => {
     const happyHoursResponse: ChatConfiguration['businessHours'] = {
-      hours: {
-        businessHoursInfo: {
-          businessHours: [
-            { startTime: Date.now() - 60_000, endTime: Date.now() + 1_440_000 }
-          ]
-        },
-        timestamp: Date.now(),
-      }
+      businessHoursInfo: {
+        businessHours: [
+          { startTime: Date.now() - 60_000, endTime: Date.now() + 1_440_000 }
+        ]
+      },
+      timestamp: Date.now(),
     };
     const chatEmbedPath = 'https://example.com/';
-    const chatEmbedParams: HelpMenuProps['chatEmbedParams'] = {chatEmbedPath, businessHours: happyHoursResponse};
+    const chatEmbedParams: HelpMenuProps['chatConfig'] = {chatEmbedPath, businessHours: happyHoursResponse};
   
     render(
       <BodyPortalSlotsContext.Provider value={['nav', 'root']}>
         <NavBar logo>
-          <HelpMenu chatEmbedParams={chatEmbedParams} contactFormParams={[{key: 'userId', value: 'test'}, {key: 'other', value: 'param'}]}>
+          <HelpMenu chatConfig={chatEmbedParams} contactFormParams={[{key: 'userId', value: 'test'}, {key: 'other', value: 'param'}]}>
             <HelpMenuItem onAction={() => window.alert('Ran HelpMenu callback function')}>
               Test Callback
             </HelpMenuItem>

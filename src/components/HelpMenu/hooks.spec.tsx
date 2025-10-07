@@ -1,6 +1,6 @@
 // __tests__/useScript.test.tsx
 import { renderHook } from '@testing-library/react-hooks';
-import { ApiError, BusinessHours, BusinessHoursResponse, formatBusinessHoursRange, getPreChatFields, useBusinessHours, useChatController, useHoursRange } from './hooks';
+import { BusinessHours, BusinessHoursResponse, formatBusinessHoursRange, getPreChatFields, useBusinessHours, useChatController, useHoursRange } from './hooks';
 import { act } from 'react-test-renderer';
 
 const makeBusinessHours = (startTime: number, endTime: number): BusinessHours => ({
@@ -10,8 +10,8 @@ const makeBusinessHoursResponse = (now: number, ...businessHours: BusinessHours[
   businessHoursInfo: { businessHours },
   timestamp: now,
 });
-const makeResponse = ({ hours, err }: { hours?: BusinessHoursResponse, err?: ApiError}) => ({
-  hours, err
+const makeResponse = ({ hours }: { hours: BusinessHoursResponse }) => ({
+  ...hours
 });
 
 describe('useBusinessHours', () => {
@@ -41,19 +41,12 @@ describe('useBusinessHours', () => {
     const { result } = renderHook(() => useBusinessHours(response, 0));
 
     expect(timeoutSpy.mock.lastCall[1]).toBe(active.endTime - now);
-    expect(result.current?.hours).toEqual(active);
-    expect(result.current?.err).not.toBeDefined();
+    expect(result.current).toEqual(active);
   });
 
   it('returns undefined when no hoursResponse is provided', () => {
     const { result } = renderHook(() => useBusinessHours(undefined));
     expect(result.current).toBeUndefined();
-  });
-
-  it('returns the error object when hoursResponse contains err', () => {
-    const err = { message: 'something bad' } as any;   // just a dummy error
-    const { result } = renderHook(() => useBusinessHours({ err }));
-    expect(result.current).toEqual({ err });
   });
 
   it('returns the hour while the window is active', () => {
@@ -68,11 +61,11 @@ describe('useBusinessHours', () => {
     );
   
     // The hook runs once immediately
-    expect(result.current).toEqual({ hours: { startTime: start, endTime: end } });
+    expect(result.current).toEqual({ startTime: start, endTime: end });
   
     // The timeout is scheduled for max(end-now, 1000) → 1s
     act(() => { jest.advanceTimersByTime(999) });
-    expect(result.current).toEqual({ hours: { startTime: start, endTime: end } });
+    expect(result.current).toEqual({ startTime: start, endTime: end });
   
     act(() => { jest.advanceTimersByTime(1) });
     expect(result.current).toBeUndefined();          // timeout cleared the state
@@ -92,7 +85,7 @@ describe('useBusinessHours', () => {
   
     // Because start – grace <= now, we should still match
     expect(result.current).toEqual({
-      hours: { startTime: start, endTime: end }
+      startTime: start, endTime: end
     });
   });
 
@@ -107,7 +100,7 @@ describe('useBusinessHours', () => {
       useBusinessHours(response, 0)
     );
   
-    expect(result.current?.hours).toBeUndefined();
+    expect(result.current).toBeUndefined();
   });
   
   it('clears timeout on unmount', () => {
@@ -217,26 +210,9 @@ describe('useHoursRange', () => {
     const response = makeResponse({ hours });
     const { result } = renderHook(() => useHoursRange(response));
 
-    expect(result.current.range).toBe(
+    expect(result.current).toBe(
       formatBusinessHoursRange(active.startTime, active.endTime)
     );
-    expect(result.current.err).toBeUndefined();
-  });
-
-  it('returns errors', () => {
-    const err = { type: 'test', detail: 'test' };
-    const response = makeResponse({ err });
-    const { result } = renderHook(() => useHoursRange(response));
-
-    expect(result.current.range).toBeUndefined();
-    expect(result.current.err).toStrictEqual(err);
-  });
-
-  it('returns default error', () => {
-    const { result } = renderHook(() => useHoursRange({}));
-    
-    expect(result.current.range).toBeUndefined();
-    expect(result.current.err).toBeUndefined();
   });
 
   it('memoizes correctly', async () => {
@@ -258,19 +234,11 @@ describe('useHoursRange', () => {
     );
 
     rerender([response1, 0]);
-    expect(result.current).toMatchInlineSnapshot(`
-Object {
-  "range": "10 PM - 1 AM CST",
-}
-`);
+    expect(result.current).toMatchInlineSnapshot(`"10 PM - 1 AM CST"`);
 
 
     rerender([response2, 0]);
-    expect(result.current).toMatchInlineSnapshot(`
-Object {
-  "range": "10 PM - 12 AM CST",
-}
-`);
+    expect(result.current).toMatchInlineSnapshot(`"10 PM - 12 AM CST"`);
   });
 });
 

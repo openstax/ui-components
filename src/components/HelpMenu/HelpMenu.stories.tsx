@@ -13,14 +13,12 @@ const BodyPortalGlobalStyle = createGlobalStyle`
 `;
 
 const happyHoursResponse: ChatConfiguration['businessHours'] = {
-  hours: {
-    businessHoursInfo: {
-      businessHours: [
-        { startTime: Date.now() - 60_000, endTime: Date.now() + 1_440_000 }
-      ]
-    },
-    timestamp: Date.now(),
-  }
+  businessHoursInfo: {
+    businessHours: [
+      { startTime: Date.now() - 60_000, endTime: Date.now() + 1_440_000 }
+    ]
+  },
+  timestamp: Date.now(),
 };
 
 const contactParams: HelpMenuProps['contactFormParams'] = [
@@ -29,15 +27,15 @@ const contactParams: HelpMenuProps['contactFormParams'] = [
   { key: 'organizationName', value: 'org' },
 ];
 
-const chatEmbedPath = '';
-const chatEmbedParams: HelpMenuProps['chatEmbedParams'] = {chatEmbedPath, businessHours: happyHoursResponse};
+const chatEmbedPath = 'https://localhost/assignable-chat';
+const chatEmbedParams: HelpMenuProps['chatConfig'] = {chatEmbedPath, businessHours: happyHoursResponse};
 
 export const Default = () => {
   return (
     <BodyPortalSlotsContext.Provider value={['nav', 'root']}>
       <BodyPortalGlobalStyle />
       <NavBar logo>
-        <HelpMenu contactFormParams={contactParams} chatEmbedParams={chatEmbedParams}>
+        <HelpMenu contactFormParams={contactParams} chatConfig={chatEmbedParams}>
           <HelpMenuItem onAction={() => window.alert('Ran HelpMenu callback function')}>
             Test Callback
           </HelpMenuItem>

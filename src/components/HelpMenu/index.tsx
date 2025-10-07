@@ -103,14 +103,14 @@ export const NewTabIcon = () => (
 
 export interface HelpMenuProps {
   contactFormParams: { key: string; value: string }[];
-  chatEmbedParams?: Partial<ChatConfiguration>;
+  chatConfig?: Partial<ChatConfiguration>;
   children?: React.ReactNode;
 }
 
-export const HelpMenu: React.FC<HelpMenuProps> = ({ contactFormParams, chatEmbedParams, children }) => {
+export const HelpMenu: React.FC<HelpMenuProps> = ({ contactFormParams, chatConfig, children }) => {
   const [showIframe, setShowIframe] = React.useState<string | undefined>();
-  const { chatEmbedPath, businessHours } = React.useMemo(() => chatEmbedParams ?? {}, [chatEmbedParams]);
-  const { range: hoursRange, err: chatError } = useHoursRange(businessHours);
+  const { chatEmbedPath, businessHours, err: chatError } = React.useMemo(() => chatConfig ?? {}, [chatConfig]);
+  const hoursRange = useHoursRange(businessHours);
   const preChatFields = React.useMemo(() => (
     getPreChatFields(contactFormParams)
   ), [contactFormParams]);

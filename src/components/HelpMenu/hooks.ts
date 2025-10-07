@@ -14,15 +14,13 @@ export interface BusinessHoursResponse {
   businessHoursInfo: {
     businessHours: BusinessHours[];
   };
-  timestamp: number;
+  timestamp?: number;
 }
 
 export interface ChatConfiguration {
   chatEmbedPath: string;
-  businessHours?: {
-    hours?: BusinessHoursResponse;
-    err?: ApiError;
-  };
+  businessHours?: BusinessHoursResponse;
+  err?: ApiError;
 }
 
 // map assignable field name to Salesforce field name
@@ -61,10 +59,11 @@ const mapVisibleFields = (supportInfoMapping: { [key: string]: string }) => {
   const lastName = userLastName ?? nameParts.slice(-1).join("");
   // Fields that start with '_' are standard, non-custom fields
   // If we don't get the info from accounts, then the field should be editable
+  const isValid = (s: unknown) => typeof s === 'string' && s.length > 0;
   const visibleEntries: [string, string, boolean][] = [
-    ["_firstName", firstName, userFirstName === undefined],
-    ["_lastName", lastName, userLastName === undefined],
-    ["_email", userEmail ?? "", userEmail === undefined],
+    ["_firstName", firstName, !isValid(userFirstName)],
+    ["_lastName", lastName, !isValid(userLastName)],
+    ["_email", userEmail ?? "", !isValid(userEmail)],
     ["School", organizationName ?? "", true],
   ];
   return Object.fromEntries(
@@ -90,40 +89,29 @@ export const useBusinessHours = (
   gracePeriod = 5_000,
 ) => {
   const timeoutRef = React.useRef<NodeJS.Timeout>();
-  const [hours, setHours] = React.useState<{
-    hours?: BusinessHours;
-    err?: ApiError;
-  }>();
+  const [hours, setHours] = React.useState<BusinessHours | undefined>();
 
   React.useEffect(() => {
-    let nextState: { hours?: BusinessHours; err?: ApiError } | undefined;
-    if (hoursResponse?.err !== undefined) {
-      nextState = { err: hoursResponse.err };
-    } else if (hoursResponse?.hours !== undefined) {
-      const {
-        businessHoursInfo: { businessHours },
-        timestamp: now,
-      } = hoursResponse.hours;
-      nextState = {
-        hours: businessHours.find(
-          (h) => h.startTime - gracePeriod <= now && now < h.endTime + gracePeriod,
-        ),
-      };
+    let nextState: BusinessHours | undefined;
+    if (hoursResponse !== undefined) {
+      const now = Date.now();
+      const { businessHoursInfo: { businessHours } } = hoursResponse;
+      nextState = businessHours.find(
+        (h) => h.startTime - gracePeriod <= now && now < h.endTime + gracePeriod,
+      );
     }
     clearTimeout(timeoutRef.current);
-    if (nextState?.hours !== undefined) {
-      const dT = Math.max(nextState.hours.endTime - Date.now(), 1000);
+    if (nextState !== undefined) {
+      const dT = Math.max(nextState.endTime - Date.now(), 1000);
       // Unset business hours at the end time
       timeoutRef.current = setTimeout(() => {
         setHours(undefined);
       }, dT);
     }
     setHours((prev) =>
-      prev === nextState ||
-      (prev !== undefined &&
-        prev.hours?.startTime === nextState?.hours?.startTime &&
-        prev.hours?.endTime === nextState?.hours?.endTime &&
-        prev.err === nextState?.err)
+      prev !== undefined &&
+      prev.startTime === nextState?.startTime &&
+      prev.endTime === nextState?.endTime
         ? prev
         : nextState,
     );
@@ -166,18 +154,10 @@ export const useHoursRange = (
   businessHours: ChatConfiguration["businessHours"],
   gracePeriod?: number,
 ) => {
-  const hoursState = useBusinessHours(businessHours, gracePeriod);
-  return React.useMemo(() => {
-    if (hoursState) {
-      const { hours, err } = hoursState;
-      if (hours)
-        return {
-          range: formatBusinessHoursRange(hours.startTime, hours.endTime),
-        };
-      if (err) return { err };
-    }
-    return {};
-  }, [hoursState]);
+  const hours = useBusinessHours(businessHours, gracePeriod);
+  return React.useMemo(() => (
+    hours ? formatBusinessHoursRange(hours.startTime, hours.endTime) : undefined
+  ), [hours]);
 };
 
 export const useChatController = (
