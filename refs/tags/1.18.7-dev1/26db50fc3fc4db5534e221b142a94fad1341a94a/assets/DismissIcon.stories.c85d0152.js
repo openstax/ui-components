@@ -1,0 +1,1 @@
+import{D as e}from"./DismissIcon.6d3f04c6.js";import{a as t}from"./index.91cf3542.js";const n=()=>t(e,{"aria-hidden":"true",focusable:"false"});typeof window<"u"&&window.document&&window.document.createElement&&document.documentElement.setAttribute("data-storyloaded","");export{n as Default};
