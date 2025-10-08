@@ -109,7 +109,9 @@ export interface HelpMenuProps {
 
 export const HelpMenu: React.FC<HelpMenuProps> = ({ contactFormParams, chatConfig, children }) => {
   const [showIframe, setShowIframe] = React.useState<string | undefined>();
-  const { chatEmbedPath, businessHours, err: chatError } = React.useMemo(() => chatConfig ?? {}, [chatConfig]);
+  const { chatEmbedPath, businessHours, err: chatError } = React.useMemo(() => (
+    chatConfig ?? {}
+  ), [chatConfig]);
   const hoursRange = useHoursRange(businessHours);
   const preChatFields = React.useMemo(() => (
     getPreChatFields(contactFormParams)
@@ -138,7 +140,8 @@ export const HelpMenu: React.FC<HelpMenuProps> = ({ contactFormParams, chatConfi
   }, []);
 
   if (chatError) {
-    console.error('Error getting business hours', chatError);
+    // Silently fail while leaving some indication as to why
+    console.error('Error getting chat config', chatError);
   }
 
   return (

@@ -165,7 +165,9 @@ export const useChatController = (
   preChatFields: ReturnType<typeof getPreChatFields>,
 ) => {
   const popup = React.useRef<null | Window>(null);
-  const popupOrigin = React.useMemo(() => (path ? new URL(path).origin : undefined), [path]);
+  const popupOrigin = React.useMemo(() => (
+    path ? new URL(path).origin : undefined
+  ), [path]);
 
   const sendMessage = React.useCallback(
     <T>(message: { type: string; data?: T }) => {
@@ -186,7 +188,6 @@ export const useChatController = (
 
   const openChat = React.useCallback(() => {
     if (popup.current || !path) return;
-    // const { origin } = new URL(path);
     const width = 500;
     const height = 800;
 
@@ -204,14 +205,9 @@ export const useChatController = (
     if (!popup.current) return;
 
     const handleMessage = (e: MessageEvent) => {
-      const {
-        source,
-        data: { type },
-      } = e;
+      const { source, data: { type } } = e;
       if (source !== popup.current) return;
-      if (type === "ready") {
-        init();
-      }
+      if (type === "ready") init();
     };
 
     const checkClosed = setInterval(() => {
@@ -225,6 +221,7 @@ export const useChatController = (
     window.addEventListener("message", handleMessage, false);
   }, [path, init]);
 
+  // Send pre-chat fields again immediately if they change
   React.useEffect(() => {
     sendPreChatFields();
   }, [sendPreChatFields]);
