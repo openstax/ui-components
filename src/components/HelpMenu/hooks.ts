@@ -45,7 +45,7 @@ const mapHiddenFields = (supportInfoMapping: { [key: string]: string }) =>
       .map(([fromKey, toKey]) => [toKey, supportInfoMapping[fromKey]])
       .filter(
         (tuple): tuple is [string, string] =>
-          typeof tuple[0] === "string" && typeof tuple[1] == "string",
+          typeof tuple[0] === "string" && typeof tuple[1] === "string",
       ),
   );
 
