@@ -12,7 +12,6 @@ export * from './components/MessageBox/MessageBox';
 export * from './components/MessageBox/MessageBox.styles';
 export * from './components/DismissIcon';
 export * from './components/Banner/Banner';
-export * from './components/Banner/GracePeriodNotification';
 export * from './components/ErrorBoundary';
 export * from './components/ErrorMessage';
 export * from './components/ErrorModal';
