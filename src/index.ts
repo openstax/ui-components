@@ -9,7 +9,6 @@ export * from './components/DropdownMenu';
 export * from './components/Error';
 export * from './components/Html';
 export * from './components/MessageBox/MessageBox';
-export * from './components/MessageBox/MessageBox.styles';
 export * from './components/DismissIcon';
 export * from './components/Banner/Banner';
 export * from './components/ErrorBoundary';
