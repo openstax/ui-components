@@ -1,4 +1,4 @@
-import { DismissIcon } from "../DismissIcon";
+import { DismissIcon } from "../svgs/DismissIcon";
 import { Html } from "../Html";
 import styled from 'styled-components';
 import { Button, ButtonLink } from '../Button';
