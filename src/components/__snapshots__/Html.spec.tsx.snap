@@ -1,0 +1,49 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Html matches snapshot (Block) 1`] = `
+<body>
+  <main
+    id="root"
+  />
+  <div>
+    <div
+      class="custom-class"
+    >
+      This is a block of HTML
+    </div>
+  </div>
+</body>
+`;
+
+exports[`Html matches snapshot (Empty) 1`] = `
+<body>
+  <main
+    id="root"
+  />
+  <main
+    id="root"
+  />
+  <main
+    id="root"
+  />
+  <div />
+</body>
+`;
+
+exports[`Html matches snapshot (Inline) 1`] = `
+<body>
+  <main
+    id="root"
+  />
+  <main
+    id="root"
+  />
+  <div>
+    <span
+      class="custom-class"
+    >
+      This is an inline HTML.
+    </span>
+  </div>
+</body>
+`;

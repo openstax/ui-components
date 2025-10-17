@@ -1,6 +1,6 @@
 import React from "react";
 import * as Sentry from '@sentry/react';
-import { BoxBody, BoxHeading, BoxEventId } from "./MessageBox.styles";
+import { BoxBody, BoxHeading, BoxEventId } from "./MessageBox/MessageBox";
 import { ErrorContext } from "../contexts";
 
 export interface ErrorPropTypes {
