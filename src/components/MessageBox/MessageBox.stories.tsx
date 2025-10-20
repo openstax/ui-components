@@ -1,4 +1,4 @@
-import { MessageBox } from './MessageBox';
+import { MessageBox } from "./MessageBox";
 
 export const Empty = () => <MessageBox />;
 export const CustomText = () => <MessageBox>

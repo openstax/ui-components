@@ -1,5 +1,11 @@
+import React from "react";
 import styled from "styled-components";
-import { colors } from "../../src/theme";
+import { colors } from "../../theme";
+
+export interface MessageBoxProps {
+  customMargin?: string;
+  children?: React.ReactNode;
+}
 
 const modalPadding = 3;
 
@@ -27,3 +33,14 @@ export const BoxEventId = styled.div`
   color: ${colors.palette.neutralMedium};
   margin-top: 1.6rem;
 `;
+
+export const MessageBox = ({ children, customMargin, ...props }: MessageBoxProps) => {
+
+  return (
+    <BoxWrapper margin={customMargin}>
+      <BoxBody {...props} data-testid='message-box'>
+        {children}
+      </BoxBody>
+    </BoxWrapper>
+  );
+};
