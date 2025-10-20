@@ -1,8 +1,9 @@
 import React from 'react';
-import { NavBarMenuButton, NavBarMenuItem } from './NavBarMenuButtons';
-import { colors } from '../theme';
+import { NavBarMenuButton, NavBarMenuItem } from '../NavBarMenuButtons';
+import { colors } from '../../theme';
 import styled from 'styled-components';
-import { BodyPortal } from './BodyPortal';
+import { BodyPortal } from '../BodyPortal';
+import { ChatConfiguration, getPreChatFields, useChatController, useHoursRange } from './hooks';
 
 export const HelpMenuButton = styled(NavBarMenuButton)`
   color: ${colors.palette.gray};
@@ -102,11 +103,20 @@ export const NewTabIcon = () => (
 
 export interface HelpMenuProps {
   contactFormParams: { key: string; value: string }[];
+  chatConfig?: Partial<ChatConfiguration>;
   children?: React.ReactNode;
 }
 
-export const HelpMenu: React.FC<HelpMenuProps> = ({ contactFormParams, children }) => {
+export const HelpMenu: React.FC<HelpMenuProps> = ({ contactFormParams, chatConfig, children }) => {
   const [showIframe, setShowIframe] = React.useState<string | undefined>();
+  const { chatEmbedPath, businessHours, err: chatError } = React.useMemo(() => (
+    chatConfig ?? {}
+  ), [chatConfig]);
+  const hoursRange = useHoursRange(businessHours);
+  const preChatFields = React.useMemo(() => (
+    getPreChatFields(contactFormParams)
+  ), [contactFormParams]);
+  const { openChat } = useChatController(chatEmbedPath, preChatFields);
 
   const contactFormUrl = React.useMemo(() => {
     const formUrl = 'https://openstax.org/embedded/contact';
@@ -117,7 +127,7 @@ export const HelpMenu: React.FC<HelpMenuProps> = ({ contactFormParams, children 
 
     return `${formUrl}?${params}`;
   }, [contactFormParams]);
-
+  
   React.useEffect(() => {
     const closeIt = ({data}: MessageEvent) => {
       if (data === 'CONTACT_FORM_SUBMITTED') {
@@ -129,12 +139,25 @@ export const HelpMenu: React.FC<HelpMenuProps> = ({ contactFormParams, children 
     return () => window.removeEventListener('message', closeIt, false);
   }, []);
 
+  if (chatError) {
+    // Silently fail while leaving some indication as to why
+    console.error('Error getting chat config', chatError);
+  }
+
   return (
     <>
       <HelpMenuButton label='Help' aria-label='Help menu'>
-        <HelpMenuItem onAction={() => setShowIframe(contactFormUrl)}>
-          Report an issue
-        </HelpMenuItem>
+        {hoursRange && openChat
+          ? (
+            <HelpMenuItem onAction={() => openChat()}>
+              Chat With Us ({hoursRange})
+            </HelpMenuItem>
+          ) : (
+            <HelpMenuItem onAction={() => setShowIframe(contactFormUrl)}>
+              Report an issue
+            </HelpMenuItem>
+          )
+        }
         {children}
       </HelpMenuButton>
 
