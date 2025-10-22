@@ -7,6 +7,11 @@ type MakeControlled<T extends React.ComponentType<any>> =
     name: string;
     emptyDisabledValue?: boolean;
   };
+type MakeControlledCheckbox<T extends React.ComponentType<any>> =
+  Omit<React.ComponentPropsWithoutRef<T>, 'checked'> & {
+    name: string;
+    emptyDisabledValue?: boolean;
+  };
 
 const useEmptyDisabledValue = (
   props: {disabled?: boolean; emptyDisabledValue?: boolean},
@@ -67,7 +72,7 @@ export const TextArea = (props: MakeControlled<typeof Uncontrolled.TextArea>) =>
   />;
 };
 
-export const Radio = (props: MakeControlled<typeof Uncontrolled.Radio>) => {
+export const Radio = (props: MakeControlledCheckbox<typeof Uncontrolled.Radio>) => {
   const {data, namespace, setInput} = useFormHelpers();
 
   const onChangeValue = (value: string) => {
@@ -85,7 +90,7 @@ export const Radio = (props: MakeControlled<typeof Uncontrolled.Radio>) => {
   />;
 };
 
-export const Checkbox = (props: MakeControlled<typeof Uncontrolled.Checkbox>) => {
+export const Checkbox = (props: MakeControlledCheckbox<typeof Uncontrolled.Checkbox>) => {
   const {data, namespace, setInput} = useFormHelpers();
 
   const onChangeValue = (value: boolean | undefined) => {
