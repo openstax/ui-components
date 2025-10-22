@@ -2,17 +2,17 @@
 
 exports[`Error can override text 1`] = `
 <div
-  className="sc-jSMfEi cWLUhq"
+  className="sc-dkzDqf iJAkzW"
   data-testid="error"
 >
   <h3
-    className="sc-eCYdqJ hrmHjt"
+    className="sc-gsnTZi jDaiGk"
   >
     An important heading
   </h3>
   Body text
   <div
-    className="sc-papXJ dnjAXW"
+    className="sc-hKMtZM bkppVE"
     data-testid="event-id"
   />
 </div>
@@ -20,11 +20,11 @@ exports[`Error can override text 1`] = `
 
 exports[`Error matches snapshot 1`] = `
 <div
-  className="sc-jSMfEi cWLUhq"
+  className="sc-dkzDqf iJAkzW"
   data-testid="error"
 >
   <h3
-    className="sc-eCYdqJ hrmHjt"
+    className="sc-gsnTZi jDaiGk"
   >
     Uh-oh, there's been a glitch
   </h3>
@@ -37,7 +37,7 @@ exports[`Error matches snapshot 1`] = `
   </a>
   .
   <div
-    className="sc-papXJ dnjAXW"
+    className="sc-hKMtZM bkppVE"
     data-testid="event-id"
   />
 </div>
