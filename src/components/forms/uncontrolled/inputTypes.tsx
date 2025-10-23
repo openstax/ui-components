@@ -161,7 +161,7 @@ export const Select = ({
  * radio element
  */
 type RadioProps = React.ComponentPropsWithoutRef<'input'> & InputProps & {
-  onChangeValue?: (value: boolean | undefined) => void;
+  onChangeValue?: (value: string) => void;
   wrapperProps?: React.ComponentPropsWithoutRef<'label'>;
   tooltipText?: string;
 };
@@ -182,8 +182,10 @@ export const Radio = ({
 }: RadioProps) => {
   return <FormInputWrapper {...wrapperProps}>
     <RadioLine>
-      <StyledRadio {...props} onChange={e => {
-        onChangeValue?.(!!e.target.checked);
+      <StyledRadio {...props} labelAs="div" onChange={e => {
+        if (e.target.checked) {
+          onChangeValue?.(e.target.value);
+        }
         props.onChange?.(e);
       }}>
         <RadioFormLabelText><RequiredIndicator show={props.required} />{label}</RadioFormLabelText>
@@ -271,3 +273,48 @@ export const File = ({label, help, wrapperProps, onChangeValue, uploader, value,
     <HelpText value={help} />
   </FormInputWrapper>;
 };
+
+const RangeInputWrapper = styled(FormInputWrapper)`
+  datalist {
+    display: flex;
+    justify-content: space-between;
+    writing-mode:unset;
+    flex-direction: row;
+    padding: 0 1em;
+
+    option {
+      width: 0;
+      text-align: center;
+      display: flex;
+      justify-content: center;
+    }
+  }
+`;
+type RangeProps = React.ComponentPropsWithoutRef<'input'> & InputProps & {
+  wrapperProps?: React.ComponentPropsWithoutRef<'label'>;
+  onChangeValue?: (value: number | undefined) => void;
+  labels?: {value: number; label: string}[];
+};
+export const RangeInput = ({label, help, wrapperProps, onChangeValue, labels, ...props}: RangeProps) => {
+  const datalistId = React.useMemo(() => `datalist-${Math.random().toString(36).substring(2, 15)}`, []);
+
+  return <RangeInputWrapper {...wrapperProps}>
+    <FormLabelText><RequiredIndicator show={props.required} />{label}:</FormLabelText>
+    <input type="range" {...props}
+      list={labels && labels.length > 0 ? datalistId : undefined}
+      onChange={e => {
+        const newValue = parseFloat(e.target.value);
+        onChangeValue?.(isNaN(newValue) ? undefined : newValue);
+        props.onChange?.(e);
+      }}
+    />
+    {labels && labels.length > 0 && (
+      <datalist id={datalistId}>
+        {labels.map(label => (
+          <option key={label.value} value={label.value} label={label.label} />
+        ))}
+      </datalist>
+    )}
+    <HelpText value={help} />
+  </RangeInputWrapper>;
+}

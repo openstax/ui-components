@@ -7,6 +7,11 @@ type MakeControlled<T extends React.ComponentType<any>> =
     name: string;
     emptyDisabledValue?: boolean;
   };
+type MakeControlledCheckbox<T extends React.ComponentType<any>> =
+  Omit<React.ComponentPropsWithoutRef<T>, 'checked'> & {
+    name: string;
+    emptyDisabledValue?: boolean;
+  };
 
 const useEmptyDisabledValue = (
   props: {disabled?: boolean; emptyDisabledValue?: boolean},
@@ -43,7 +48,7 @@ export const TextInput = (props: MakeControlled<typeof Uncontrolled.TextInput>) 
   return <Uncontrolled.TextInput
     {...props}
     name={namespace + '.' + props.name}
-    value={value || ''}
+    value={(value ?? '').toString()}
     onChangeValue={onChangeValue}
   />;
 };
@@ -67,10 +72,10 @@ export const TextArea = (props: MakeControlled<typeof Uncontrolled.TextArea>) =>
   />;
 };
 
-export const Radio = (props: MakeControlled<typeof Uncontrolled.Radio>) => {
+export const Radio = (props: MakeControlledCheckbox<typeof Uncontrolled.Radio>) => {
   const {data, namespace, setInput} = useFormHelpers();
 
-  const onChangeValue = (value: boolean | undefined) => {
+  const onChangeValue = (value: string) => {
     props.onChangeValue?.(value);
     setInput.field(props.name)(value);
   };
@@ -85,7 +90,7 @@ export const Radio = (props: MakeControlled<typeof Uncontrolled.Radio>) => {
   />;
 };
 
-export const Checkbox = (props: MakeControlled<typeof Uncontrolled.Checkbox>) => {
+export const Checkbox = (props: MakeControlledCheckbox<typeof Uncontrolled.Checkbox>) => {
   const {data, namespace, setInput} = useFormHelpers();
 
   const onChangeValue = (value: boolean | undefined) => {
@@ -171,3 +176,25 @@ export const File = (props: MakeControlled<typeof Uncontrolled.File>) => {
     onChangeValue={onChangeValue}
   />;
 };
+
+export const RangeInput = (props: MakeControlled<typeof Uncontrolled.RangeInput>) => {
+  const {data, namespace, setInput} = useFormHelpers();
+
+  const onChangeValue = (value: number | undefined) => {
+    props.onChangeValue?.(value);
+    setInput.field(props.name)(value);
+  };
+
+  const value = data[props.name];
+  const numberValue = parseFloat((value ?? '').toString());
+  const formValue = isNaN(numberValue) ? '' : numberValue;
+
+  useEmptyDisabledValue(props, formValue, onChangeValue);
+
+  return <Uncontrolled.RangeInput
+    {...props}
+    name={namespace + '.' + props.name}
+    value={formValue}
+    onChangeValue={onChangeValue}
+  />;
+}

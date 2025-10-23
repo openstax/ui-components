@@ -54,7 +54,10 @@ const LabelWithTooltipWrapper = styled.div`
 type RadioProps = PropsWithChildren<
   Omit<InputHTMLAttributes<HTMLInputElement>, 'type'>>;
 
-export const Radio = ({ children, disabled, ...props }: RadioProps & {tooltipText?: string}) => {
+export const Radio = ({ children, disabled, labelAs, ...props }: RadioProps & {
+  tooltipText?: string;
+  labelAs?: string;
+}) => {
 
   const state = useTooltipTriggerState({delay: 0});
   const ref = React.useRef(null);
@@ -64,7 +67,7 @@ export const Radio = ({ children, disabled, ...props }: RadioProps & {tooltipTex
   return props.tooltipText
     ? <div>
         <LabelWithTooltipWrapper>
-          <StyledLabel ref={ref} isDisabled={disabled} aria-disabled={disabled} {...triggerProps}>
+          <StyledLabel ref={ref} as={labelAs as any} isDisabled={disabled} aria-disabled={disabled} {...triggerProps}>
             <StyledInput type="radio" onFocus={() => state.open()} isDisabled={disabled} aria-disabled={disabled} {...props} />
             {children}
           {state.isOpen && (
@@ -73,7 +76,7 @@ export const Radio = ({ children, disabled, ...props }: RadioProps & {tooltipTex
           </StyledLabel>
         </LabelWithTooltipWrapper>
       </div>
-    : <StyledLabel isDisabled={disabled} aria-disabled={disabled}>
+    : <StyledLabel isDisabled={disabled} as={labelAs as any} aria-disabled={disabled}>
         <StyledInput type="radio" isDisabled={disabled} aria-disabled={disabled} {...props} />
         {children}
       </StyledLabel>;
