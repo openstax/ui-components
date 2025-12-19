@@ -96,7 +96,7 @@ exports[`Modal matches snapshot 1`] = `
             </h3>
             We're not quite sure what went wrong. Restart your browser. If this doesn't solve the problem, visit our 
             <a
-              href="https://openstax.secure.force.com/help"
+              href="https://help.openstax.org"
               target="_blank"
             >
               Support Center
@@ -224,7 +224,7 @@ exports[`Modal matches snapshot when heading and children are set 1`] = `
             </h3>
             There was an issue syncing your scores. Please try again in a few minutes. If the issue persists, visit our
             <a
-              href="https://openstax.secure.force.com/help"
+              href="https://help.openstax.org"
               rel="noreferrer"
               target="_blank"
             >
