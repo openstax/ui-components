@@ -110,13 +110,79 @@ describe('useBusinessHours', () => {
     const response = makeResponse({
       hours: makeBusinessHoursResponse(Date.now(), makeBusinessHours(start, end))
     });
-  
+
     const { unmount } = renderHook(() =>
       useBusinessHours(response, 5000)
     );
-  
+
     unmount();
     expect(clearTimeoutSpy).toHaveBeenCalled();        // ensure the cleanup cleared the timer
+  });
+
+  it('does not set a timeout when nextState is undefined (not in business hours)', () => {
+    const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
+    const start = Date.now() + 10000;
+    const end   = Date.now() + 20000;
+    const response = makeResponse({
+      hours: makeBusinessHoursResponse(Date.now(), makeBusinessHours(start, end))
+    });
+
+    renderHook(() =>
+      useBusinessHours(response, 0)
+    );
+
+    // When not in business hours (nextState is undefined), no timeout should be set
+    expect(setTimeoutSpy).not.toHaveBeenCalled();
+  });
+
+  it('updates state only when hours actually change (reuses same object reference)', () => {
+    const start = Date.now() - 1000;
+    const end   = Date.now() + 1000;
+    const response = makeResponse({
+      hours: makeBusinessHoursResponse(Date.now(), makeBusinessHours(start, end))
+    });
+
+    const { result, rerender } = renderHook(() =>
+      useBusinessHours(response, 0)
+    );
+
+    const firstResult = result.current;
+    expect(firstResult).toBeDefined();
+
+    // Rerender with the same response
+    rerender();
+
+    // Should return the same object reference (not a new object)
+    expect(result.current).toBe(firstResult);
+  });
+
+  it('returns new object reference when hours don\'t change (line 90 else branch)', () => {
+    const now = Date.now();
+    const start1 = now - 1000;
+    const end1   = now + 1000;
+    const response1 = makeResponse({
+      hours: makeBusinessHoursResponse(now, makeBusinessHours(start1, end1))
+    });
+
+    const { result, rerender } = renderHook(
+      ({ response }) => useBusinessHours(response, 0),
+      { initialProps: { response: response1 } }
+    );
+
+    const firstResult = result.current;
+    expect(firstResult).toBeDefined();
+    expect(firstResult).toEqual({ startTime: start1, endTime: end1 });
+
+    // Same times should return the same object
+    const response2 = makeResponse({
+      hours: makeBusinessHoursResponse(now, makeBusinessHours(start1, end1))
+    });
+
+    // Rerender with the new response
+    rerender({ response: response2 });
+
+    // Should return a new object reference because the hours changed
+    expect(result.current).toBe(firstResult);
   });
 });
 
@@ -570,5 +636,97 @@ describe('useChatController', () => {
     });
 
     expect(firstPopup.postMessage).toHaveBeenCalledTimes(0);
+  });
+
+  /** 2.9. `openChat` handles popup blocking gracefully (line 154) */
+  it('handles popup blocking gracefully when window.open returns null', () => {
+    // Mock window.open to return null (simulating popup blocker)
+    mockOpen.mockReturnValue(null);
+
+    const { result } = renderHook(() => useChatController(path, preChatFields));
+
+    // Clear any existing calls (from other code)
+    mockAddEventListener.mockClear();
+    mockSetInterval.mockClear();
+
+    // This should not throw an error
+    act(() => {
+      result.current.openChat?.();
+    });
+
+    // Verify that no message listeners were added since popup failed
+    const messageListenerCalls = mockAddEventListener.mock.calls.filter(
+      (call) => call[0] === 'message'
+    );
+    expect(messageListenerCalls).toHaveLength(0);
+
+    // Verify that no interval was set since popup failed
+    expect(mockSetInterval).not.toHaveBeenCalled();
+  });
+
+  /** 2.10. `handleMessage` ignores messages from sources other than the popup (line 164) */
+  it('ignores messages from sources other than the opened popup window', () => {
+    const mockPopup = createMockPopup();
+    mockOpen.mockReturnValue(mockPopup);
+
+    const { result } = renderHook(() => useChatController(path, preChatFields));
+
+    act(() => {
+      result.current.openChat?.();
+    });
+
+    // Verify message listener was added
+    expect(mockAddEventListener).toHaveBeenCalledWith('message', expect.any(Function), false);
+
+    // Create a message event from a different source (not our popup)
+    const differentSource = createMockPopup();
+    const event: MessageEvent = {
+      source: differentSource, // Different source than mockPopup
+      data: { type: 'ready' } as any,
+    } as any;
+
+    // Get the handleMessage callback
+    const handleMessage = mockAddEventListener.mock.calls.find(
+      (args) => args[0] === 'message'
+    )?.[1];
+    expect(handleMessage).toBeDefined();
+
+    act(() => {
+      handleMessage(event);
+    });
+
+    // Verify that postMessage was NOT called on our popup
+    // because the message came from a different source
+    expect(mockPopup.postMessage).not.toHaveBeenCalled();
+  });
+
+  /** 2.11. Tests the else branch of line 175 - when popup is still open (not closed) */
+  it('continues polling when popup is still open (line 175 else branch)', () => {
+    const mockPopup = createMockPopup();
+    mockOpen.mockReturnValue(mockPopup);
+
+    const { result } = renderHook(() => useChatController(path, preChatFields));
+
+    act(() => {
+      result.current.openChat?.();
+    });
+
+    // Get the checkClosed callback from setInterval
+    const checkClosed = mockSetInterval.mock.calls[0][0];
+
+    // Simulate the interval running while popup is still open (closed = false)
+    mockPopup.closed = false;
+
+    // Clear mocks to verify what happens in this tick
+    mockRemoveEventListener.mockClear();
+    mockClearInterval.mockClear();
+
+    act(() => {
+      checkClosed();
+    });
+
+    // When popup is NOT closed, cleanup should NOT happen
+    expect(mockRemoveEventListener).not.toHaveBeenCalled();
+    expect(mockClearInterval).not.toHaveBeenCalled();
   });
 });
