@@ -1,9 +1,9 @@
-import { useMemo } from 'react';
+import { useMemo } from "react";
 import {
   calculatePaginationRanges,
   PaginationConfig,
   PaginationRanges,
-} from './Pagination.utils';
+} from "./utils";
 
 /**
  * Custom hook that calculates pagination ranges
@@ -34,12 +34,21 @@ import {
  * // }
  * ```
  */
-export function usePaginationRanges(config: PaginationConfig): PaginationRanges {
-  const { currentPage, totalPages, showFromEnd, showFromCurrent } = config;
-
+export function usePaginationRanges({
+  currentPage,
+  totalPages,
+  showFromEnd,
+  showFromCurrent,
+}: PaginationConfig): PaginationRanges {
+  // Only recalculate if the values change
   return useMemo(
-    () => calculatePaginationRanges(config),
-    // Only recalculate if these values change
-    [currentPage, totalPages, showFromEnd, showFromCurrent]
+    () =>
+      calculatePaginationRanges({
+        currentPage,
+        totalPages,
+        showFromEnd,
+        showFromCurrent,
+      }),
+    [currentPage, totalPages, showFromEnd, showFromCurrent],
   );
 }

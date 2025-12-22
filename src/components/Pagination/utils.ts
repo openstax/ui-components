@@ -94,6 +94,10 @@ function calculateInitialRanges(config: PaginationConfig): {
   return { startRange, middleRange, endRange };
 }
 
+function pagesInRange(range: PageRange) {
+  return Math.max(0, range[1] - range[0]);
+}
+
 /**
  * Counts the total number of page entries (including ellipses) that will be displayed
  *
@@ -108,9 +112,9 @@ function countTotalEntries(
   endRange: PageRange
 ): number {
   // Count pages in each range
-  const startCount = Math.max(0, startRange[1] - startRange[0]);
-  const middleCount = Math.max(0, middleRange[1] - middleRange[0]);
-  const endCount = Math.max(0, endRange[1] - endRange[0]);
+  const startCount = pagesInRange(startRange);
+  const middleCount = pagesInRange(middleRange);
+  const endCount = pagesInRange(endRange);
 
   // Count ellipses (only show if ranges don't touch)
   const firstEllipsis = startRange[1] === middleRange[0] ? 0 : 1;
