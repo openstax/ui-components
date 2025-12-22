@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { BodyPortalSlotsContext } from '../BodyPortalSlotsContext';
-import { HelpMenu, HelpMenuItem, HelpMenuProps } from '.';
+import { HelpMenu, HelpMenuItem, HelpMenuProps, NewTabIcon } from '.';
 import { NavBar } from '../NavBar';
 import { ChatConfiguration } from './hooks';
 
@@ -244,13 +244,11 @@ describe('HelpMenu', () => {
 
   it('exports NewTabIcon component', () => {
     // The NewTabIcon is exported for use in other components
-    const { NewTabIcon } = require('./index');
     expect(NewTabIcon).toBeDefined();
     expect(typeof NewTabIcon).toBe('function');
   });
 
   it('renders NewTabIcon with correct SVG attributes', () => {
-    const { NewTabIcon } = require('./index');
     const { container } = render(<NewTabIcon />);
 
     const svg = container.querySelector('svg');
