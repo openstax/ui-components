@@ -114,7 +114,7 @@ export const useChatController = (
   // Store reference to the popup window
   const popup = React.useRef<Window | null>(null);
 
-  const { sendMessage, popupOrigin } = usePostMessageChannel(popup, path);
+  const { sendMessage } = usePostMessageChannel(popup, path);
 
   /**
    * Sends the pre-chat fields to the popup.
@@ -172,7 +172,7 @@ export const useChatController = (
      * Cleans up event listeners when closed.
      */
     const checkClosed = setInterval(() => {
-      if (popup.current?.closed) {
+      if ((popup.current as Window).closed) {
         // Cleanup: remove message listener
         window.removeEventListener("message", handleMessage, false);
         popup.current = null;

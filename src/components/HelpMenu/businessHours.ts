@@ -84,8 +84,9 @@ export const useBusinessHours = (
     // This prevents unnecessary re-renders when the effect runs
     setHours((prev) =>
       prev !== undefined &&
-      prev.startTime === nextState?.startTime &&
-      prev.endTime === nextState?.endTime
+      nextState !== undefined &&
+      prev.startTime === nextState.startTime &&
+      prev.endTime === nextState.endTime
         ? prev // Keep the same object reference if times haven't changed
         : nextState,
     );
