@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import { palette } from "../theme/palette";
-import { usePaginationRanges } from './Pagination.hooks';
-import { range } from './Pagination.utils';
+import { palette } from "../../theme/palette";
+import { usePaginationRanges } from './hooks';
+import { range } from './utils';
 
 export const LinkForPage = styled(({ page, current, href, onClick, className }: {
   page: number;
