@@ -49,7 +49,7 @@ export const useNavAnimation = () => {
 export const useClickOutside = (
   ref: React.RefObject<HTMLElement | null>,
   onClickOutside: () => void,
-  enabled: boolean = true,
+  enabled: boolean,
 ) => {
   React.useEffect(() => {
     if (!enabled) {
@@ -58,7 +58,7 @@ export const useClickOutside = (
 
     const handleOutsideEvent = (event: MouseEvent | TouchEvent) => {
       if (
-        ref.current &&
+        ref?.current &&
         !ref.current.contains(event.target as Node) &&
         document.body.contains(event.target as Node)
       ) {
@@ -84,7 +84,7 @@ export const useClickOutside = (
  */
 export const useEscapeKey = (
   onEscape: () => void,
-  enabled: boolean = true,
+  enabled: boolean,
 ) => {
   React.useEffect(() => {
     if (!enabled) {
