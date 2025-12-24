@@ -15,7 +15,14 @@ import {
   collapsedWidth,
   navStyles,
 } from "./styles";
-import { useNavAnimation, useSidebarNavProps } from "./hooks";
+import {
+  useNavAnimation,
+  useSidebarNavProps,
+  useClickOutside,
+  useEscapeKey,
+  useScrollRestoration,
+  useNavCollapseHandler,
+} from "./hooks";
 
 type FunctionRender = (_: {
   navIsCollapsed: boolean;
@@ -56,39 +63,18 @@ export const SidebarNavBase = ({
     setNavIsCollapsed(isMobile);
   }, [isMobile]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  React.useEffect(() => {
-    if (!isMobile || navIsCollapsed) {
-      return;
-    }
+  // Close navigation when clicking outside or pressing Escape on mobile
+  const handleClose = React.useCallback(() => {
+    setNavIsCollapsed(true);
+  }, [setNavIsCollapsed]);
 
-    const handleOutsideEvent = (event: any) => {
-      if (
-        isMobile &&
-        !navIsCollapsed &&
-        sidebarNavRef?.current &&
-        !sidebarNavRef.current.contains(event.target) &&
-        document.body.contains(event.target)
-      ) {
-        setNavIsCollapsed(true);
-      }
-    };
+  useClickOutside(
+    sidebarNavRef as React.RefObject<HTMLElement | null>,
+    handleClose,
+    isMobile && !navIsCollapsed,
+  );
 
-    const handleKeyPress = (event: KeyboardEvent) => {
-      if (isMobile && !navIsCollapsed && event.key === "Escape") {
-        setNavIsCollapsed(true);
-      }
-    };
-
-    document.addEventListener("click", handleOutsideEvent);
-    document.addEventListener("touchend", handleOutsideEvent);
-    document.addEventListener("keydown", handleKeyPress);
-
-    return () => {
-      document.removeEventListener("click", handleOutsideEvent);
-      document.removeEventListener("touchend", handleOutsideEvent);
-      document.removeEventListener("keydown", handleKeyPress);
-    };
-  }, [isMobile, navIsCollapsed, setNavIsCollapsed, sidebarNavRef]);
+  useEscapeKey(handleClose, isMobile && !navIsCollapsed);
 
   const functionRenderArguments = {
     navIsCollapsed,
@@ -103,13 +89,7 @@ export const SidebarNavBase = ({
   }, [navAnimation]);
 
   const navBodyRef = React.useRef<HTMLDivElement>(null);
-  const [scrollPosition, setScrollPosition] = React.useState(0);
-
-  requestAnimationFrame(() => {
-    if (navBodyRef.current) {
-      navBodyRef.current.scrollTop = scrollPosition;
-    }
-  });
+  const setScrollPosition = useScrollRestoration(navBodyRef);
 
   return (
     <FocusScope contain={isMobile && !navIsCollapsed}>
@@ -164,13 +144,11 @@ export const SidebarNav = styled(
     const sidebarNavRef = React.useRef<HTMLElement>(null);
     const { navAnimation, setNavAnimation } = useNavAnimation();
 
-    const handleSetNavIsCollapsed = (value: boolean) => {
-      if (value !== navIsCollapsed) {
-        setNavAnimation(value ? "collapsing" : "expanding");
-      }
-
-      setNavIsCollapsed(value);
-    };
+    const handleSetNavIsCollapsed = useNavCollapseHandler(
+      navIsCollapsed,
+      setNavIsCollapsed,
+      setNavAnimation,
+    );
 
     return (
       <nav
@@ -209,13 +187,11 @@ export const BodyPortalSidebarNav = styled(
     const ref = React.useRef<HTMLElement>(document.createElement("NAV"));
     const { navAnimation, setNavAnimation } = useNavAnimation();
 
-    const handleSetNavIsCollapsed = (value: boolean) => {
-      if (value !== navIsCollapsed) {
-        setNavAnimation(value ? "collapsing" : "expanding");
-      }
-
-      setNavIsCollapsed(value);
-    };
+    const handleSetNavIsCollapsed = useNavCollapseHandler(
+      navIsCollapsed,
+      setNavIsCollapsed,
+      setNavAnimation,
+    );
 
     return (
       <BodyPortal
