@@ -39,7 +39,6 @@ const findCurrentBusinessHours = (
   const now = Date.now();
   const { businessHoursInfo: { businessHours } } = hoursResponse;
 
-  // Find a hours window that encompasses the current time (with grace period)
   return businessHours.find(
     (h) => h.startTime - gracePeriod <= now && now < h.endTime + gracePeriod,
   );
@@ -68,10 +67,8 @@ export const useBusinessHours = (
   React.useEffect(() => {
     const nextState = findCurrentBusinessHours(hoursResponse, gracePeriod);
 
-    // Clear any existing timeout
     clearTimeout(timeoutRef.current);
 
-    // If we're in business hours, set a timeout to unset them when they end
     if (nextState !== undefined) {
       // Schedule the update for end time, or at least 1 second in the future
       const dT = Math.max(nextState.endTime - Date.now(), 1000);
@@ -80,7 +77,6 @@ export const useBusinessHours = (
       }, dT);
     }
 
-    // Only update state if the hours actually changed
     // This prevents unnecessary re-renders when the effect runs
     setHours((prev) =>
       prev !== undefined &&
@@ -91,7 +87,6 @@ export const useBusinessHours = (
         : nextState,
     );
 
-    // Cleanup: clear timeout when component unmounts or effect re-runs
     return () => {
       clearTimeout(timeoutRef.current);
     };
@@ -118,13 +113,11 @@ export const formatBusinessHoursRange = (startTime: number, endTime: number): st
   const startDate = new Date(startTime);
   const endDate = new Date(endTime);
 
-  // Validate that we have real timestamps
   if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
     return "";
   }
 
   try {
-    // Use Intl.DateTimeFormat for proper localized formatting
     const baseOptions: Intl.DateTimeFormatOptions = {
       hour: "numeric",
       hour12: true,
@@ -139,7 +132,6 @@ export const formatBusinessHoursRange = (startTime: number, endTime: number): st
     // Example output: "9 AM - 5 PM CDT"
     return `${start} - ${end}`;
   } catch (e) {
-    // Fallback for environments without Intl support
     console.warn("Intl.DateTimeFormat not available, falling back to simple hours.", e);
     // Example output: "9 - 17"
     return `${startDate.getHours()} - ${endDate.getHours()}`;
@@ -166,7 +158,6 @@ export const useHoursRange = (
 ): string | undefined => {
   const hours = useBusinessHours(businessHours, gracePeriod);
 
-  // Memoize the formatted string to avoid recalculating on every render
   return React.useMemo(
     () => (hours ? formatBusinessHoursRange(hours.startTime, hours.endTime) : undefined),
     [hours],

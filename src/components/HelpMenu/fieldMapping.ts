@@ -38,7 +38,6 @@ export const mapHiddenFields = (supportInfoMapping: { [key: string]: string }) =
   Object.fromEntries(
     HIDDEN_FIELDS_MAPPING
       .map(([fromKey, toKey]) => [toKey, supportInfoMapping[fromKey]])
-      // Filter out entries where either key or value is missing
       .filter(
         (tuple): tuple is [string, string] =>
           typeof tuple[0] === "string" && typeof tuple[1] === "string",
@@ -71,7 +70,6 @@ const parseName = (
   // If we have discrete first/last names from accounts, use those
   // Otherwise, parse from userName: everything except last word is first name
   const firstName = userFirstName ?? nameParts.slice(0, -1).join(" ");
-  // Last word is assumed to be last name (no middle name handling)
   const lastName = userLastName ?? nameParts.slice(-1).join("");
 
   return [firstName, lastName];
@@ -97,7 +95,6 @@ export const mapVisibleFields = (supportInfoMapping: { [key: string]: string }) 
 
   const [firstName, lastName] = parseName(userName, userFirstName, userLastName);
 
-  // Define visible fields with their values and editability
   const visibleEntries: [string, string, boolean][] = [
     ["_firstName", firstName, !isValidString(userFirstName)],
     ["_lastName", lastName, !isValidString(userLastName)],
@@ -121,7 +118,6 @@ export const mapVisibleFields = (supportInfoMapping: { [key: string]: string }) 
  * @returns Object containing both visible and hidden fields for the chat system
  */
 export const getPreChatFields = (contactFormParams: { key: string; value: string }[]) => {
-  // Convert array of {key, value} pairs to a lookup object
   const supportInfoMapping = Object.fromEntries(
     contactFormParams.map(({ key, value }) => [key, value]),
   );

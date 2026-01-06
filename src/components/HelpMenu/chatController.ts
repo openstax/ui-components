@@ -25,12 +25,10 @@ const POPUP_CONFIG = {
  * @returns Object with top and left pixel coordinates
  */
 const calculateBottomRightPosition = () => {
-  // Get the current window's position and size
   // screenX/screenY are more reliable than screenLeft/screenTop
   const rightX = (window.screenX || window.screenLeft) + window.outerWidth;
   const bottomY = (window.screenY || window.screenTop) + window.outerHeight;
 
-  // Position popup at bottom-right
   const top = bottomY - POPUP_CONFIG.height;
   const left = rightX - POPUP_CONFIG.width;
 
@@ -71,17 +69,14 @@ const usePostMessageChannel = (
   popup: React.MutableRefObject<Window | null>,
   path: string | undefined,
 ) => {
-  // Extract and memoize the origin from the chat embed path
   // This is used to validate messages and restrict postMessage target
   const popupOrigin = React.useMemo(
     () => (path ? new URL(path).origin : undefined),
     [path],
   );
 
-  // Create a memoized function to send messages to the popup
   const sendMessage = React.useCallback(
     <T,>(message: { type: string; data?: T }) => {
-      // Safety checks: popup must exist and be open, and we must have an origin
       if (!popup.current || !popupOrigin) return;
 
       // Send the message with origin restriction for security
@@ -111,7 +106,6 @@ export const useChatController = (
   path: string | undefined,
   preChatFields: ReturnType<typeof getPreChatFields>,
 ) => {
-  // Store reference to the popup window
   const popup = React.useRef<Window | null>(null);
 
   const { sendMessage } = usePostMessageChannel(popup, path);
@@ -143,14 +137,11 @@ export const useChatController = (
    * 4. Polls for popup closure to clean up
    */
   const openChat = React.useCallback(() => {
-    // Prevent opening multiple popups or opening without a path
     if (popup.current || !path) return;
 
-    // Open the popup window with calculated position
     const options = createPopupOptions();
     popup.current = window.open(path, "_blank", options);
 
-    // If popup was blocked by browser, bail out
     if (!popup.current) return;
 
     /**
@@ -163,7 +154,6 @@ export const useChatController = (
       // Security: only process messages from our popup
       if (source !== popup.current) return;
 
-      // Initialize chat when popup signals ready
       if (type === "ready") init();
     };
 
@@ -173,26 +163,23 @@ export const useChatController = (
      */
     const checkClosed = setInterval(() => {
       if ((popup.current as Window).closed) {
-        // Cleanup: remove message listener
         window.removeEventListener("message", handleMessage, false);
         popup.current = null;
         clearInterval(checkClosed);
       }
     }, 500); // Check every 500ms
 
-    // Set up the message listener
     window.addEventListener("message", handleMessage, false);
   }, [path, init]);
 
   /**
-   * Effect: Re-send pre-chat fields if they change while popup is open.
+   * Re-send pre-chat fields if they change while popup is open.
    * This ensures the popup always has the latest field values.
    */
   React.useEffect(() => {
     sendPreChatFields();
   }, [sendPreChatFields]);
 
-  // Only return the openChat function if we have a valid path
   // This makes it easy for consumers to check if chat is available
   return path ? { openChat } : {};
 };
