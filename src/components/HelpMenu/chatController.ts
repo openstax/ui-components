@@ -143,6 +143,7 @@ export const useChatController = (
     popup.current = window.open(path, "_blank", options);
 
     if (!popup.current) return;
+    const newWindow = popup.current;
 
     /**
      * Handles messages from the popup window.
@@ -152,7 +153,7 @@ export const useChatController = (
       const { source, data: { type } } = e;
 
       // Security: only process messages from our popup
-      if (source !== popup.current) return;
+      if (source !== newWindow) return;
 
       if (type === "ready") init();
     };
@@ -162,7 +163,7 @@ export const useChatController = (
      * Cleans up event listeners when closed.
      */
     const checkClosed = setInterval(() => {
-      if (popup.current?.closed) {
+      if (newWindow.closed) {
         window.removeEventListener("message", handleMessage, false);
         popup.current = null;
         clearInterval(checkClosed);
