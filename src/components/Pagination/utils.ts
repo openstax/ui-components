@@ -111,12 +111,10 @@ function countTotalEntries(
   middleRange: PageRange,
   endRange: PageRange
 ): number {
-  // Count pages in each range
   const startCount = pagesInRange(startRange);
   const middleCount = pagesInRange(middleRange);
   const endCount = pagesInRange(endRange);
 
-  // Count ellipses (only show if ranges don't touch)
   const firstEllipsis = startRange[1] === middleRange[0] ? 0 : 1;
   const secondEllipsis = middleRange[1] === endRange[0] ? 0 : 1;
 

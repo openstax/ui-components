@@ -40,7 +40,6 @@ export function usePaginationRanges({
   showFromEnd,
   showFromCurrent,
 }: PaginationConfig): PaginationRanges {
-  // Only recalculate if the values change
   return useMemo(
     () =>
       calculatePaginationRanges({
