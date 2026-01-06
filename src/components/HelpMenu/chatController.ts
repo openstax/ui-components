@@ -162,12 +162,12 @@ export const useChatController = (
      * Cleans up event listeners when closed.
      */
     const checkClosed = setInterval(() => {
-      if ((popup.current as Window).closed) {
+      if (popup.current?.closed) {
         window.removeEventListener("message", handleMessage, false);
         popup.current = null;
         clearInterval(checkClosed);
       }
-    }, 500); // Check every 500ms
+    }, 500);
 
     window.addEventListener("message", handleMessage, false);
   }, [path, init]);

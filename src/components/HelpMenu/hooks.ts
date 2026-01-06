@@ -23,14 +23,11 @@ export { getPreChatFields } from "./fieldMapping";
 
 export { useChatController } from "./chatController";
 
-// Legacy interface exports for backward compatibility
-export interface ApiError {
-  type: string;
-  detail: string;
-}
-
 export interface ChatConfiguration {
   chatEmbedPath: string;
   businessHours?: import("./businessHours").BusinessHoursResponse;
-  err?: ApiError;
+  err?: {
+    type: string;
+    detail: string;
+  };
 }
