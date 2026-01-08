@@ -21,7 +21,7 @@ describe('Modal', () => {
     render(
       <ErrorModal heading='Scores not sent' onModalClose={jest.fn()} show={true}>
         There was an issue syncing your scores. Please try again in a few minutes. If the issue persists, visit our
-        <a href="https://openstax.secure.force.com/help" target="_blank" rel="noreferrer">Support Center</a>.
+        <a href="https://help.openstax.org" target="_blank" rel="noreferrer">Support Center</a>.
       </ErrorModal>, { container: root }
     );
     expect(document.body).toMatchSnapshot();

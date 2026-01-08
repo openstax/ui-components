@@ -32,7 +32,7 @@ export const Error = ({ heading, children, ...props }: ErrorPropTypes) => {
     <BoxHeading>{heading ?? `Uh-oh, there's been a glitch`}</BoxHeading>
     {children ?? <>
       We're not quite sure what went wrong. Restart your browser. If this doesn't solve
-      the problem, visit our <a href="https://openstax.secure.force.com/help" target="_blank">Support Center</a>.
+      the problem, visit our <a href="https://help.openstax.org" target="_blank">Support Center</a>.
     </>}
     <BoxEventId data-testid='event-id'>{context.error?.eventId || lastEventId}</BoxEventId>
   </BoxBody>
