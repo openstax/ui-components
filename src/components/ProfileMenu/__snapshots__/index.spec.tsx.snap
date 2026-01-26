@@ -39,7 +39,7 @@ exports[`ProfileMenu matches snapshot with user initials 1`] = `
   >
     <div
       aria-labelledby="react-aria-1"
-      class="sc-hKMtZM sc-jSMfEi fKsRUv juCGsP"
+      class="sc-hKMtZM sc-jSMfEi fKsRUv bCatnj"
       data-placement="bottom"
       data-rac=""
       data-trigger="MenuTrigger"
