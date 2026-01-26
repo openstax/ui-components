@@ -16,7 +16,7 @@ const ProfileMenuButton = styled(Button)`
   line-height: 1.6rem;
   font-size: 1.4rem;
   color: ${colors.palette.white};
-  background-color: #007297;
+  background-color: ${colors.palette.darkTeal};
   cursor: pointer;
 
   &:hover {
