@@ -9,7 +9,7 @@ import {
   PopoverProps,
 } from "react-aria-components";
 import styled from "styled-components";
-import { colors } from "../../src/theme";
+import { colors, defaultFocusOutline } from "../../src/theme";
 import { NavBarButton, NavBarButtonProps } from "./NavBarButton";
 
 export const NavBarMenuItem = styled(MenuItem)``;
@@ -18,7 +18,7 @@ export const PopoverContainer = styled.div`
   padding: 1.6rem;
 `;
 
-const NavBarPopover = styled(Popover)`
+export const NavBarPopover = styled(Popover)`
   margin-top: -1rem;
   border-top: 0.4rem solid ${colors.palette.darkGreen};
   box-shadow: 0 0.4rem 0.4rem 0 #00000033;
@@ -32,8 +32,15 @@ const NavBarPopover = styled(Popover)`
     display: flex;
     align-items: center;
 
-    &:hover {
+    &:hover,
+    &[data-hovered],
+    &[data-focused] {
       background: ${colors.palette.neutralLighter};
+    }
+
+    &:focus-visible {
+      ${defaultFocusOutline}
+      outline-offset: -0.2rem;
     }
 
     &:active {

@@ -23,6 +23,7 @@ export * from './components/NavBarLogo';
 export * from './components/NavBarMenuButtons';
 export * from './components/Overlay';
 export * from './components/Pagination';
+export * from './components/ProfileMenu';
 export * from './components/Radio';
 export * from './components/RiceLogo';
 export * from './components/SidebarNav';

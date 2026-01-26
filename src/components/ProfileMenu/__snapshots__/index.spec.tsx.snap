@@ -1,0 +1,126 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ProfileMenu matches snapshot with user initials 1`] = `
+<body>
+  <div
+    aria-hidden="true"
+  >
+    <button
+      aria-controls="react-aria-2"
+      aria-expanded="true"
+      aria-haspopup="true"
+      aria-label="Account actions"
+      class="sc-eCYdqJ lnRpKy"
+      data-focus-visible="true"
+      data-focused="true"
+      data-pressed="true"
+      data-rac=""
+      data-react-aria-pressable="true"
+      data-testid="profile-menu"
+      id="react-aria-1"
+      tabindex="0"
+      type="button"
+    >
+      JD
+    </button>
+  </div>
+  <span
+    aria-hidden="true"
+    data-focus-scope-start="true"
+    hidden=""
+  />
+  <div
+    aria-hidden="true"
+    data-testid="underlay"
+    style="position: fixed; inset: 0;"
+  />
+  <div
+    style="display: contents;"
+  >
+    <div
+      aria-labelledby="react-aria-1"
+      class="sc-hKMtZM sc-jSMfEi fKsRUv juCGsP"
+      data-placement="bottom"
+      data-rac=""
+      data-trigger="MenuTrigger"
+      dir="ltr"
+      role="dialog"
+      style="position: absolute; z-index: 100000; max-height: -24px; left: 12px; top: 8px;"
+      tabindex="-1"
+    >
+      <div
+        style="border: 0px; clip-path: inset(50%); height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px; white-space: nowrap;"
+      >
+        <button
+          aria-label="Dismiss"
+          id="react-aria-4"
+          style="width: 1px; height: 1px;"
+          tabindex="-1"
+        />
+      </div>
+      <template
+        data-react-aria-hidden="true"
+      />
+      <span
+        data-focus-scope-start="true"
+        hidden=""
+      />
+      <div
+        aria-labelledby="react-aria-1"
+        class="react-aria-Menu"
+        data-collection="react-aria-5"
+        data-rac=""
+        id="react-aria-2"
+        role="menu"
+        tabindex="-1"
+      >
+        <div
+          class="sc-gsnTZi sc-gKXOVf  eGqIEs"
+          data-collection="react-aria-5"
+          data-focus-visible="true"
+          data-focused="true"
+          data-key="profile"
+          data-rac=""
+          data-react-aria-pressable="true"
+          id="react-aria-10"
+          role="menuitem"
+          tabindex="0"
+        >
+          Profile
+        </div>
+        <div
+          class="sc-gsnTZi sc-gKXOVf  eGqIEs"
+          data-collection="react-aria-5"
+          data-key="logout"
+          data-rac=""
+          data-react-aria-pressable="true"
+          id="react-aria-14"
+          role="menuitem"
+          tabindex="-1"
+        >
+          Log out
+        </div>
+      </div>
+      <span
+        data-focus-scope-end="true"
+        hidden=""
+      />
+      <div
+        style="border: 0px; clip-path: inset(50%); height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px; white-space: nowrap;"
+      >
+        <button
+          aria-label="Dismiss"
+          id="react-aria-6"
+          style="width: 1px; height: 1px;"
+          tabindex="-1"
+        />
+      </div>
+    </div>
+  </div>
+  <span
+    aria-hidden="true"
+    data-focus-scope-end="true"
+    hidden=""
+  />
+</body>
+`;

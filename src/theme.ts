@@ -26,6 +26,11 @@ export const padding = {
   },
 };
 
+export const defaultFocusOutline = css`
+  outline: 0.2rem auto Highlight;
+  outline: 0.2rem auto -webkit-focus-ring-color;
+`;
+
 const mobileNavBreak = 38.75; // 620px
 const mobileBreak = 75; // 1200px
 const desktopBreak = mobileBreak + .0625; // 1201px
