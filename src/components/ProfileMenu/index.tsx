@@ -5,7 +5,7 @@ import { colors, defaultFocusOutline } from '../../theme';
 import { NavBarPopover, NavBarMenuItem } from '../NavBarMenuButtons';
 import { UserIcon } from './UserIcon';
 
-const ProfileMenuButton = styled(Button)`
+export const ProfileMenuButton = styled(Button)`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -34,7 +34,7 @@ const ProfileMenuButton = styled(Button)`
   }
 `;
 
-const ProfileMenuPopover = styled(NavBarPopover)`
+export const ProfileMenuPopover = styled(NavBarPopover)`
   min-width: 10rem;
   margin-top: 0.4rem;
 `;
