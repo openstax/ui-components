@@ -41,6 +41,7 @@ export const ProfileMenuPopover = styled(NavBarPopover)`
 
 export const ProfileMenuItem = styled(NavBarMenuItem)`
   color: ${colors.palette.neutralDarker};
+  text-decoration: none;
 `;
 
 function getInitials(

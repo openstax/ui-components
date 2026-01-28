@@ -75,7 +75,7 @@ exports[`ProfileMenu matches snapshot with user initials 1`] = `
         tabindex="-1"
       >
         <div
-          class="sc-gsnTZi sc-gKXOVf  eGqIEs"
+          class="sc-gsnTZi sc-gKXOVf  jjVNxD"
           data-collection="react-aria-5"
           data-focus-visible="true"
           data-focused="true"
@@ -89,7 +89,7 @@ exports[`ProfileMenu matches snapshot with user initials 1`] = `
           Profile
         </div>
         <div
-          class="sc-gsnTZi sc-gKXOVf  eGqIEs"
+          class="sc-gsnTZi sc-gKXOVf  jjVNxD"
           data-collection="react-aria-5"
           data-key="logout"
           data-rac=""
