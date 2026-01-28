@@ -58,19 +58,15 @@ function getInitials(
 
 export interface ProfileMenuProps {
   user?: { firstName?: string; lastName?: string };
-  onAction: (key: Key) => void;
-  profileLabel?: string;
-  logoutLabel?: string;
+  onAction?: (key: Key) => void;
   ariaLabel?: string;
-  children?: React.ReactNode;
+  children: React.ReactNode;
   'data-testid'?: string;
 }
 
 export const ProfileMenu: React.FC<ProfileMenuProps> = ({
   user,
   onAction,
-  profileLabel = 'Profile',
-  logoutLabel = 'Log out',
   ariaLabel = 'Account actions',
   children,
   'data-testid': testId,
@@ -88,8 +84,6 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
       <ProfileMenuPopover placement="bottom end">
         <Menu onAction={onAction}>
           {children}
-          <ProfileMenuItem id="profile">{profileLabel}</ProfileMenuItem>
-          <ProfileMenuItem id="logout">{logoutLabel}</ProfileMenuItem>
         </Menu>
       </ProfileMenuPopover>
     </MenuTrigger>

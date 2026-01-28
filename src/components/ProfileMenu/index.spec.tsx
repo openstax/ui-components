@@ -17,7 +17,10 @@ describe('ProfileMenu', () => {
         user={{ firstName: 'John', lastName: 'Doe' }}
         onAction={onAction}
         data-testid="profile-menu"
-      />
+      >
+        <ProfileMenuItem id="profile">Profile</ProfileMenuItem>
+        <ProfileMenuItem id="logout">Log out</ProfileMenuItem>
+      </ProfileMenu>
     );
 
     const button = screen.getByTestId('profile-menu');
@@ -30,14 +33,13 @@ describe('ProfileMenu', () => {
   });
 
   it('renders with user initials', () => {
-    const onAction = jest.fn();
-
     render(
       <ProfileMenu
         user={{ firstName: 'John', lastName: 'Doe' }}
-        onAction={onAction}
         data-testid="profile-menu"
-      />
+      >
+        <ProfileMenuItem id="profile">Profile</ProfileMenuItem>
+      </ProfileMenu>
     );
 
     const button = screen.getByTestId('profile-menu');
@@ -46,14 +48,13 @@ describe('ProfileMenu', () => {
 
 
   it('renders with first name only', () => {
-    const onAction = jest.fn();
-
     render(
       <ProfileMenu
         user={{ firstName: 'John' }}
-        onAction={onAction}
         data-testid="profile-menu"
-      />
+      >
+        <ProfileMenuItem id="profile">Profile</ProfileMenuItem>
+      </ProfileMenu>
     );
 
     const button = screen.getByTestId('profile-menu');
@@ -61,13 +62,10 @@ describe('ProfileMenu', () => {
   });
 
   it('renders UserIcon fallback when no user data', () => {
-    const onAction = jest.fn();
-
     render(
-      <ProfileMenu
-        onAction={onAction}
-        data-testid="profile-menu"
-      />
+      <ProfileMenu data-testid="profile-menu">
+        <ProfileMenuItem id="profile">Profile</ProfileMenuItem>
+      </ProfileMenu>
     );
 
     const button = screen.getByTestId('profile-menu');
@@ -76,14 +74,14 @@ describe('ProfileMenu', () => {
   });
 
   it('opens menu on click', async () => {
-    const onAction = jest.fn();
-
     render(
       <ProfileMenu
         user={{ firstName: 'John', lastName: 'Doe' }}
-        onAction={onAction}
         data-testid="profile-menu"
-      />
+      >
+        <ProfileMenuItem id="profile">Profile</ProfileMenuItem>
+        <ProfileMenuItem id="logout">Log out</ProfileMenuItem>
+      </ProfileMenu>
     );
 
     fireEvent.click(screen.getByTestId('profile-menu'));
@@ -95,7 +93,7 @@ describe('ProfileMenu', () => {
     expect(screen.getByRole('menuitem', { name: 'Log out' })).toBeTruthy();
   });
 
-  it('fires profile action callback', async () => {
+  it('fires onAction callback with menu item id', async () => {
     const onAction = jest.fn();
 
     render(
@@ -103,7 +101,10 @@ describe('ProfileMenu', () => {
         user={{ firstName: 'John', lastName: 'Doe' }}
         onAction={onAction}
         data-testid="profile-menu"
-      />
+      >
+        <ProfileMenuItem id="profile">Profile</ProfileMenuItem>
+        <ProfileMenuItem id="logout">Log out</ProfileMenuItem>
+      </ProfileMenu>
     );
 
     fireEvent.click(screen.getByTestId('profile-menu'));
@@ -114,15 +115,17 @@ describe('ProfileMenu', () => {
     expect(onAction).toHaveBeenCalledWith('profile');
   });
 
-  it('fires logout action callback', async () => {
-    const onAction = jest.fn();
+  it('fires individual item onAction callback', async () => {
+    const onItemAction = jest.fn();
 
     render(
       <ProfileMenu
         user={{ firstName: 'John', lastName: 'Doe' }}
-        onAction={onAction}
         data-testid="profile-menu"
-      />
+      >
+        <ProfileMenuItem id="profile">Profile</ProfileMenuItem>
+        <ProfileMenuItem onAction={onItemAction}>Log out</ProfileMenuItem>
+      </ProfileMenu>
     );
 
     fireEvent.click(screen.getByTestId('profile-menu'));
@@ -130,20 +133,18 @@ describe('ProfileMenu', () => {
     const logoutItem = await screen.findByRole('menuitem', { name: 'Log out' });
     fireEvent.click(logoutItem);
 
-    expect(onAction).toHaveBeenCalledWith('logout');
+    expect(onItemAction).toHaveBeenCalled();
   });
 
-  it('renders custom menu labels', async () => {
-    const onAction = jest.fn();
-
+  it('renders menu items with custom labels', async () => {
     render(
       <ProfileMenu
         user={{ firstName: 'John', lastName: 'Doe' }}
-        onAction={onAction}
-        profileLabel="My Account"
-        logoutLabel="Sign Out"
         data-testid="profile-menu"
-      />
+      >
+        <ProfileMenuItem id="profile">My Account</ProfileMenuItem>
+        <ProfileMenuItem id="logout">Sign Out</ProfileMenuItem>
+      </ProfileMenu>
     );
 
     fireEvent.click(screen.getByTestId('profile-menu'));
@@ -152,7 +153,7 @@ describe('ProfileMenu', () => {
     expect(screen.getByRole('menuitem', { name: 'Sign Out' })).toBeTruthy();
   });
 
-  it('renders custom children menu items', async () => {
+  it('renders multiple custom menu items', async () => {
     const onAction = jest.fn();
 
     render(
@@ -163,6 +164,8 @@ describe('ProfileMenu', () => {
       >
         <ProfileMenuItem id="settings">Settings</ProfileMenuItem>
         <ProfileMenuItem id="help">Help</ProfileMenuItem>
+        <ProfileMenuItem id="profile">Profile</ProfileMenuItem>
+        <ProfileMenuItem id="logout">Log out</ProfileMenuItem>
       </ProfileMenu>
     );
 
@@ -198,15 +201,14 @@ describe('ProfileMenu', () => {
   });
 
   it('has correct aria-label', () => {
-    const onAction = jest.fn();
-
     render(
       <ProfileMenu
         user={{ firstName: 'John', lastName: 'Doe' }}
-        onAction={onAction}
         ariaLabel="User menu"
         data-testid="profile-menu"
-      />
+      >
+        <ProfileMenuItem id="profile">Profile</ProfileMenuItem>
+      </ProfileMenu>
     );
 
     const button = screen.getByLabelText('User menu');
@@ -214,14 +216,13 @@ describe('ProfileMenu', () => {
   });
 
   it('uses default aria-label', () => {
-    const onAction = jest.fn();
-
     render(
       <ProfileMenu
         user={{ firstName: 'John', lastName: 'Doe' }}
-        onAction={onAction}
         data-testid="profile-menu"
-      />
+      >
+        <ProfileMenuItem id="profile">Profile</ProfileMenuItem>
+      </ProfileMenu>
     );
 
     const button = screen.getByLabelText('Account actions');
@@ -229,14 +230,14 @@ describe('ProfileMenu', () => {
   });
 
   it('supports keyboard navigation', async () => {
-    const onAction = jest.fn();
-
     render(
       <ProfileMenu
         user={{ firstName: 'John', lastName: 'Doe' }}
-        onAction={onAction}
         data-testid="profile-menu"
-      />
+      >
+        <ProfileMenuItem id="profile">Profile</ProfileMenuItem>
+        <ProfileMenuItem id="logout">Log out</ProfileMenuItem>
+      </ProfileMenu>
     );
 
     const button = screen.getByTestId('profile-menu');
@@ -245,6 +246,26 @@ describe('ProfileMenu', () => {
 
     const menu = await screen.findByRole('menu');
     expect(menu).toBeTruthy();
+  });
+
+  it('supports href on menu items', async () => {
+    render(
+      <ProfileMenu
+        user={{ firstName: 'John', lastName: 'Doe' }}
+        data-testid="profile-menu"
+      >
+        <ProfileMenuItem href="/profile">Profile</ProfileMenuItem>
+        <ProfileMenuItem href="/settings">Settings</ProfileMenuItem>
+      </ProfileMenu>
+    );
+
+    fireEvent.click(screen.getByTestId('profile-menu'));
+
+    const profileLink = await screen.findByRole('menuitem', { name: 'Profile' });
+    expect(profileLink.getAttribute('href')).toBe('/profile');
+
+    const settingsLink = screen.getByRole('menuitem', { name: 'Settings' });
+    expect(settingsLink.getAttribute('href')).toBe('/settings');
   });
 });
 

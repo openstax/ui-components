@@ -13,13 +13,7 @@ const BodyPortalGlobalStyle = createGlobalStyle`
 `;
 
 const handleAction = (key: Key) => {
-  if (key === 'profile') {
-    window.alert('Navigating to profile...');
-  } else if (key === 'logout') {
-    window.alert('Logging out...');
-  } else {
-    window.alert(`Action: ${key}`);
-  }
+  window.alert(`Action: ${key}`);
 };
 
 export const WithInitials = () => {
@@ -30,7 +24,10 @@ export const WithInitials = () => {
         <ProfileMenu
           user={{ firstName: 'John', lastName: 'Doe' }}
           onAction={handleAction}
-        />
+        >
+          <ProfileMenuItem id="profile">Profile</ProfileMenuItem>
+          <ProfileMenuItem id="logout">Log out</ProfileMenuItem>
+        </ProfileMenu>
       </NavBar>
     </BodyPortalSlotsContext.Provider>
   );
@@ -41,9 +38,10 @@ export const WithUserIconFallback = () => {
     <BodyPortalSlotsContext.Provider value={['nav', 'root']}>
       <BodyPortalGlobalStyle />
       <NavBar logo>
-        <ProfileMenu
-          onAction={handleAction}
-        />
+        <ProfileMenu onAction={handleAction}>
+          <ProfileMenuItem id="profile">Profile</ProfileMenuItem>
+          <ProfileMenuItem id="logout">Log out</ProfileMenuItem>
+        </ProfileMenu>
       </NavBar>
     </BodyPortalSlotsContext.Provider>
   );
@@ -57,9 +55,31 @@ export const WithCustomLabels = () => {
         <ProfileMenu
           user={{ firstName: 'Jane', lastName: 'Smith' }}
           onAction={handleAction}
-          profileLabel="My Account"
-          logoutLabel="Sign Out"
-        />
+        >
+          <ProfileMenuItem id="profile">My Account</ProfileMenuItem>
+          <ProfileMenuItem id="logout">Sign Out</ProfileMenuItem>
+        </ProfileMenu>
+      </NavBar>
+    </BodyPortalSlotsContext.Provider>
+  );
+};
+
+export const WithLinks = () => {
+  return (
+    <BodyPortalSlotsContext.Provider value={['nav', 'root']}>
+      <BodyPortalGlobalStyle />
+      <NavBar logo>
+        <ProfileMenu user={{ firstName: 'Jane', lastName: 'Smith' }}>
+          <ProfileMenuItem href="/account/profile">Profile</ProfileMenuItem>
+          <ProfileMenuItem href="/account/settings">Settings</ProfileMenuItem>
+          <ProfileMenuItem
+            onAction={() => {
+              window.alert('Logging out...');
+            }}
+          >
+            Log out
+          </ProfileMenuItem>
+        </ProfileMenu>
       </NavBar>
     </BodyPortalSlotsContext.Provider>
   );
@@ -76,6 +96,8 @@ export const WithCustomMenuItems = () => {
         >
           <ProfileMenuItem id="settings">Settings</ProfileMenuItem>
           <ProfileMenuItem id="preferences">Preferences</ProfileMenuItem>
+          <ProfileMenuItem id="profile">Profile</ProfileMenuItem>
+          <ProfileMenuItem id="logout">Log out</ProfileMenuItem>
         </ProfileMenu>
       </NavBar>
     </BodyPortalSlotsContext.Provider>
@@ -88,7 +110,10 @@ export const Standalone = () => {
       <ProfileMenu
         user={{ firstName: 'Test', lastName: 'User' }}
         onAction={handleAction}
-      />
+      >
+        <ProfileMenuItem id="profile">Profile</ProfileMenuItem>
+        <ProfileMenuItem id="logout">Log out</ProfileMenuItem>
+      </ProfileMenu>
     </div>
   );
 };
