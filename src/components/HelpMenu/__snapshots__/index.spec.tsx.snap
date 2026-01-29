@@ -93,7 +93,7 @@ exports[`HelpMenu matches snapshot 1`] = `
   >
     <div
       aria-labelledby="react-aria-1"
-      class="sc-hKMtZM gqPqDX"
+      class="sc-hKMtZM fKsRUv"
       data-placement="bottom"
       data-rac=""
       data-trigger="MenuTrigger"
