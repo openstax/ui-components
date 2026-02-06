@@ -67,8 +67,8 @@ export const Radio = ({ children, disabled, labelAs, ...props }: RadioProps & {
   return props.tooltipText
     ? <div>
         <LabelWithTooltipWrapper>
-          <StyledLabel ref={ref} as={labelAs as any} isDisabled={disabled} aria-disabled={disabled} {...triggerProps}>
-            <StyledInput type="radio" onFocus={() => state.open()} isDisabled={disabled} aria-disabled={disabled} {...props} />
+          <StyledLabel ref={ref} as={labelAs as any} isDisabled={disabled} {...triggerProps}>
+            <StyledInput type="radio" onFocus={() => state.open()} isDisabled={disabled} disabled={disabled} {...props} />
             {children}
           {state.isOpen && (
             <CustomTooltip state={state} {...tooltipProps} placement='right'>{props.tooltipText}</CustomTooltip>
@@ -76,8 +76,8 @@ export const Radio = ({ children, disabled, labelAs, ...props }: RadioProps & {
           </StyledLabel>
         </LabelWithTooltipWrapper>
       </div>
-    : <StyledLabel isDisabled={disabled} as={labelAs as any} aria-disabled={disabled}>
-        <StyledInput type="radio" isDisabled={disabled} aria-disabled={disabled} {...props} />
+    : <StyledLabel isDisabled={disabled} as={labelAs as any}>
+        <StyledInput type="radio" isDisabled={disabled} disabled={disabled} {...props} />
         {children}
       </StyledLabel>;
 };

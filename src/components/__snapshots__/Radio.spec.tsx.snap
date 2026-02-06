@@ -2,12 +2,11 @@
 
 exports[`Radio matches disabled snapshot 1`] = `
 <label
-  aria-disabled={true}
   className="sc-hKMtZM esvHSN"
 >
   <input
-    aria-disabled={true}
     className="sc-eCYdqJ fazssI"
+    disabled={true}
     type="radio"
   />
   Disabled

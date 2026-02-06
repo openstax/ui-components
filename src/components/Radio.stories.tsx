@@ -25,3 +25,13 @@ export const Default = () => <>
 export const WithTooltip = () => <>
   {renderRadios({name: 'withTooltip', tooltipText: 'Tooltip text for radio input goes here'})}
 </>;
+
+const renderDisabledRadios = (props: RadioProps) => <RadioGroup>
+  <Radio disabled {...props}>Disabled label</Radio>
+  <Radio disabled defaultChecked {...props}>Disabled label</Radio>
+</RadioGroup>;
+
+export const Disabled = () => <>
+  {renderDisabledRadios({name: 'disabled'})}
+  {renderDisabledRadios({name: 'disabledWithTooltip', tooltipText: 'Tooltip text for disabled radio'})}
+</>;
