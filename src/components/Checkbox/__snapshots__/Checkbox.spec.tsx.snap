@@ -19,6 +19,7 @@ exports[`Checkbox handles disabled state 1`] = `
 >
   <input
     className="sc-gsnTZi dJvfbo"
+    disabled={true}
     type="checkbox"
   />
   Click Me
