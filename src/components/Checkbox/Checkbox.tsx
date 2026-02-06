@@ -23,7 +23,7 @@ type CheckboxProps = PropsWithChildren<
 export const Checkbox = ({ children, disabled, variant = 'primary', bold = false, size = 1.6, labelProps, ...props }: CheckboxProps) => {
   return (
     <StyledLabel bold={bold} variant={variant} isDisabled={disabled} {...labelProps}>
-      <StyledInput {...props} type="checkbox" variant={variant} checkboxSize={size} isDisabled={disabled} />
+      <StyledInput {...props} type="checkbox" variant={variant} checkboxSize={size} isDisabled={disabled} disabled={disabled} />
       {children}
     </StyledLabel>
   );

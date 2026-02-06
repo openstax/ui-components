@@ -32,3 +32,17 @@ export const Light = () => <>
   {renderCheckboxes('light', 1.8)}
   {renderCheckboxes('light', 2)}
 </>
+
+const renderDisabledCheckboxes = (variant: CheckboxProps['variant'], size: CheckboxProps['size']) => <CheckboxGroup>
+  <h2>{variant} - Size {size}</h2>
+  <Checkbox {...{size, variant}} disabled>Checkbox label</Checkbox>
+  <Checkbox {...{size, variant}} disabled defaultChecked>Checkbox label</Checkbox>
+  <Checkbox {...{size, variant}} disabled defaultChecked bold>Checkbox label</Checkbox>
+</CheckboxGroup>;
+
+export const Disabled = () => <>
+  {renderDisabledCheckboxes('primary', 1.6)}
+  {renderDisabledCheckboxes('primary', 2)}
+  {renderDisabledCheckboxes('light', 1.6)}
+  {renderDisabledCheckboxes('light', 2)}
+</>
