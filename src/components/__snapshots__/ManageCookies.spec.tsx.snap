@@ -3,6 +3,7 @@
 exports[`ManageCookies when CookieYes loads renders button 1`] = `
 <button
   className="sc-dkzDqf sc-hKMtZM bLbJrC bAtAjm cky-banner-element"
+  onClick={[Function]}
 >
   Manage Cookies
 </button>
@@ -12,6 +13,7 @@ exports[`ManageCookies when CookieYes loads renders button in wrapper 1`] = `
 <div>
   <button
     className="sc-dkzDqf sc-hKMtZM bLbJrC bAtAjm cky-banner-element"
+    onClick={[Function]}
   >
     Manage Cookies
   </button>
@@ -21,6 +23,7 @@ exports[`ManageCookies when CookieYes loads renders button in wrapper 1`] = `
 exports[`ManageCookies when CookieYes loads renders button with className 1`] = `
 <button
   className="sc-dkzDqf sc-hKMtZM bLbJrC bAtAjm cky-banner-element test"
+  onClick={[Function]}
 >
   Manage Cookies
 </button>
@@ -29,6 +32,7 @@ exports[`ManageCookies when CookieYes loads renders button with className 1`] = 
 exports[`ManageCookies when CookieYes loads renders button with content and correct class 1`] = `
 <button
   className="sc-dkzDqf sc-hKMtZM bLbJrC bAtAjm cky-banner-element"
+  onClick={[Function]}
 >
   some content
 </button>
@@ -37,6 +41,7 @@ exports[`ManageCookies when CookieYes loads renders button with content and corr
 exports[`ManageCookies with CookieYes already loaded renders button 1`] = `
 <button
   className="sc-dkzDqf sc-hKMtZM bLbJrC bAtAjm cky-banner-element"
+  onClick={[Function]}
 >
   Manage Cookies
 </button>
@@ -46,6 +51,7 @@ exports[`ManageCookies with CookieYes already loaded renders button in wrapper 1
 <div>
   <button
     className="sc-dkzDqf sc-hKMtZM bLbJrC bAtAjm cky-banner-element"
+    onClick={[Function]}
   >
     Manage Cookies
   </button>
@@ -55,6 +61,7 @@ exports[`ManageCookies with CookieYes already loaded renders button in wrapper 1
 exports[`ManageCookies with CookieYes already loaded renders button with content and correct class 1`] = `
 <button
   className="sc-dkzDqf sc-hKMtZM bLbJrC bAtAjm cky-banner-element"
+  onClick={[Function]}
 >
   some content
 </button>

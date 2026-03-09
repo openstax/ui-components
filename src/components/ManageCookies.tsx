@@ -16,6 +16,8 @@ export const ManageCookiesLink = ({children, className, wrapper, ...props}: Mana
   const [cookieYesLoaded, setCookieYesLoaded] = React.useState(false);
   const buttonRef = React.useRef<HTMLButtonElement | null>(null);
   const observerRef = React.useRef<MutationObserver | null>(null);
+  const timeoutIdRef = React.useRef<number | null>(null);
+  const observerTimeoutIdRef = React.useRef<number | null>(null);
 
   React.useEffect(() => {
     if (inBrowser && !cookieYesLoaded) {
@@ -30,9 +32,20 @@ export const ManageCookiesLink = ({children, className, wrapper, ...props}: Mana
     return;
   }, [cookieYesLoaded, inBrowser]);
 
-  // Cleanup observer on unmount
+  // Cleanup observer and timeouts on unmount
   React.useEffect(() => {
     return () => {
+      // Cancel any pending setTimeout
+      if (timeoutIdRef.current !== null) {
+        clearTimeout(timeoutIdRef.current);
+        timeoutIdRef.current = null;
+      }
+      // Cancel any observer safety timeout
+      if (observerTimeoutIdRef.current !== null) {
+        clearTimeout(observerTimeoutIdRef.current);
+        observerTimeoutIdRef.current = null;
+      }
+      // Disconnect observer
       if (observerRef.current) {
         observerRef.current.disconnect();
         observerRef.current = null;
@@ -52,13 +65,18 @@ export const ManageCookiesLink = ({children, className, wrapper, ...props}: Mana
     // Set up MutationObserver to detect when CookieYes modal closes
     if (button && inBrowser) {
       // Wait for the modal to appear in the DOM
-      setTimeout(() => {
+      timeoutIdRef.current = window.setTimeout(() => {
+        timeoutIdRef.current = null;
         const ckyModal = document.querySelector('.cky-modal');
 
         if (ckyModal) {
-          // Clean up any existing observer
+          // Clean up any existing observer and timeouts
           if (observerRef.current) {
             observerRef.current.disconnect();
+          }
+          if (observerTimeoutIdRef.current !== null) {
+            clearTimeout(observerTimeoutIdRef.current);
+            observerTimeoutIdRef.current = null;
           }
 
           // Create new observer to watch for class changes
@@ -70,10 +88,14 @@ export const ManageCookiesLink = ({children, className, wrapper, ...props}: Mana
                 if (!target.classList.contains('cky-modal-open')) {
                   // Modal closed - restore focus
                   button.focus();
-                  // Clean up observer
+                  // Clean up observer and safety timeout
                   if (observerRef.current) {
                     observerRef.current.disconnect();
                     observerRef.current = null;
+                  }
+                  if (observerTimeoutIdRef.current !== null) {
+                    clearTimeout(observerTimeoutIdRef.current);
+                    observerTimeoutIdRef.current = null;
                   }
                   break;
                 }
@@ -86,6 +108,15 @@ export const ManageCookiesLink = ({children, className, wrapper, ...props}: Mana
             attributes: true,
             attributeFilter: ['class']
           });
+
+          // Safety timeout: disconnect observer after 10 seconds if modal never closes properly
+          observerTimeoutIdRef.current = window.setTimeout(() => {
+            if (observerRef.current) {
+              observerRef.current.disconnect();
+              observerRef.current = null;
+            }
+            observerTimeoutIdRef.current = null;
+          }, 10000);
         }
       }, 100); // Small delay to allow CookieYes to add the modal to DOM
     }
