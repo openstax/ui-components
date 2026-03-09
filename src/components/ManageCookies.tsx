@@ -64,6 +64,11 @@ export const ManageCookiesLink = ({children, className, wrapper, ...props}: Mana
 
     // Set up MutationObserver to detect when CookieYes modal closes
     if (button && inBrowser) {
+      // Clear any existing timeout from previous clicks
+      if (timeoutIdRef.current !== null) {
+        clearTimeout(timeoutIdRef.current);
+      }
+
       // Wait for the modal to appear in the DOM
       timeoutIdRef.current = window.setTimeout(() => {
         timeoutIdRef.current = null;

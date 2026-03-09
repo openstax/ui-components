@@ -142,13 +142,18 @@ describe('ManageCookies', () => {
     let mockDisconnect: jest.Mock;
     let observerCallback: MutationCallback;
     let modalElement: HTMLDivElement;
+    let originalMutationObserver: typeof MutationObserver;
 
     beforeAll(() => {
       (window as any).getCkyConsent = jest.fn();
+      // Save original MutationObserver
+      originalMutationObserver = global.MutationObserver;
     });
 
     afterAll(() => {
       delete (window as any).getCkyConsent;
+      // Restore original MutationObserver
+      global.MutationObserver = originalMutationObserver;
     });
 
     beforeEach(() => {
