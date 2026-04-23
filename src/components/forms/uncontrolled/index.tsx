@@ -67,5 +67,5 @@ export const Submit = styled(({...props}: SubmitButtonProps) =>
 
 // cancel button
 type CancelButtonProps = React.ComponentPropsWithoutRef<'button'>;
-export const Cancel = styled(({...props}: CancelButtonProps) => <button role="button" {...props} />)`
+export const Cancel = styled(({...props}: CancelButtonProps) => <button type="button" {...props} />)`
 `;
