@@ -4,14 +4,14 @@ exports[`HelpMenu matches snapshot 1`] = `
 <body>
   <nav
     aria-hidden="true"
-    class="sc-jqUVSM cCVOTe"
+    class="sc-jqUVSM fQDbGC"
     data-portal-slot="nav"
   >
     <div
-      class="sc-kDDrLX bsNXsf"
+      class="sc-kDDrLX JRmaf"
     >
       <svg
-        class="sc-papXJ iUtXIA"
+        class="sc-papXJ iUyWnb"
         height="80.97"
         role="img"
         viewBox="0 0 353.76001 80.973335"

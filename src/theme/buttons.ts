@@ -1,4 +1,3 @@
-import { css } from "styled-components";
 import { palette } from "./palette";
 
 export type ButtonVariant = keyof typeof buttonStyleSets;
@@ -46,7 +45,7 @@ const buttonStyleSets = asButtonStyleSetTypes({
 
 export const applyButtonVariantStyles = (variant: ButtonVariant) => {
   const set = buttonStyleSets[variant];
-  return css`
+  return `
     background-color: ${set.background};
     color: ${set.color};
     font-weight: ${set.fontWeight ?? 700};

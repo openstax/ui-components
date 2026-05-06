@@ -1,4 +1,3 @@
-import { css, FlattenSimpleInterpolation } from "styled-components";
 import { palette } from "./theme/palette";
 
 export const colors = {
@@ -26,7 +25,7 @@ export const padding = {
   },
 };
 
-export const defaultFocusOutline = css`
+export const defaultFocusOutline = `
   outline: 0.2rem auto Highlight;
   outline: 0.2rem auto -webkit-focus-ring-color;
 `;
@@ -38,11 +37,6 @@ export const breakpoints = {
   mobileNavBreak,
   mobileBreak,
   desktopBreak,
-  desktop: (style: FlattenSimpleInterpolation) => css`
-    @media screen and (min-width: ${desktopBreak}em) {
-      ${style}
-    }
-  `,
 };
 
 const theme = {

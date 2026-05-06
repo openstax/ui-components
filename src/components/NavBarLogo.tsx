@@ -1,5 +1,5 @@
 import theme from "../../src/theme";
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import { navLogoDesktopHeight, navLogoMobileHeight } from "../../src/constants";
 
 
@@ -7,9 +7,9 @@ const StyledLogo = styled.svg`
   display: block;
   width: auto;
   height: ${navLogoMobileHeight}rem;
-  ${theme.breakpoints.desktop(css`
+  @media screen and (min-width: ${theme.breakpoints.desktopBreak}em) {
     height: ${navLogoDesktopHeight}rem;
-  `)}
+  }
 `;
 
 export const NavBarLogo = ({ alt }: { alt: string; }) => (
