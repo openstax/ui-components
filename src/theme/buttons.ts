@@ -43,7 +43,7 @@ const buttonStyleSets = asButtonStyleSetTypes({
   },
 } as const);
 
-export const applyButtonVariantStyles = (variant: ButtonVariant) => {
+export const applyButtonVariantStyles = (variant: ButtonVariant): string => {
   const set = buttonStyleSets[variant];
   return `
     background-color: ${set.background};
