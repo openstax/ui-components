@@ -1,5 +1,15 @@
 import { palette } from "./theme/palette";
 
+/**
+ * Type alias for CSS fragments used in styled-components.
+ * During the migration away from styled-components, this is now just a string
+ * instead of FlattenSimpleInterpolation from styled-components.
+ *
+ * @deprecated This type will be removed once the styled-components migration is complete.
+ * Use plain strings for CSS content.
+ */
+export type CssFragment = string;
+
 export const colors = {
   palette: palette,
   link: {
@@ -25,7 +35,15 @@ export const padding = {
   },
 };
 
-export const defaultFocusOutline = `
+/**
+ * Default focus outline styles for accessibility.
+ *
+ * @type {CssFragment}
+ * @note Breaking change: Previously returned FlattenSimpleInterpolation from styled-components,
+ * now returns a plain string. This is part of the migration away from styled-components.
+ * The string can still be used in styled-components template literals.
+ */
+export const defaultFocusOutline: CssFragment = `
   outline: 0.2rem auto Highlight;
   outline: 0.2rem auto -webkit-focus-ring-color;
 `;
@@ -33,6 +51,24 @@ export const defaultFocusOutline = `
 const mobileNavBreak = 38.75; // 620px
 const mobileBreak = 75; // 1200px
 const desktopBreak = mobileBreak + .0625; // 1201px
+
+/**
+ * Breakpoints for responsive design.
+ *
+ * @note Breaking change: The `desktop()` helper function has been removed as part of
+ * the migration away from styled-components. Use `desktopBreak` directly in media queries instead.
+ *
+ * Migration example:
+ * ```
+ * // Old (with styled-components):
+ * ${theme.breakpoints.desktop(css`padding: 2rem;`)}
+ *
+ * // New (plain CSS):
+ * @media screen and (min-width: ${theme.breakpoints.desktopBreak}em) {
+ *   padding: 2rem;
+ * }
+ * ```
+ */
 export const breakpoints = {
   mobileNavBreak,
   mobileBreak,
