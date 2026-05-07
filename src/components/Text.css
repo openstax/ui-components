@@ -1,0 +1,17 @@
+.text-h2 {
+  color: #424242;
+  font-size: 3.6rem;
+  font-weight: 700;
+}
+
+.text-h3 {
+  color: #424242;
+  font-size: 1.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.text-paragraph {
+  color: #424242;
+  font-size: 1.8rem;
+}

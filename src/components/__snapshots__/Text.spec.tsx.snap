@@ -2,7 +2,7 @@
 
 exports[`Text matches body snapshot 1`] = `
 <p
-  className="sc-dkzDqf fZIluk"
+  className="text-paragraph"
 >
   This is a paragraph
 </p>
@@ -10,7 +10,7 @@ exports[`Text matches body snapshot 1`] = `
 
 exports[`Text matches h2 snapshot 1`] = `
 <h2
-  className="sc-bczRLJ fZeHof"
+  className="text-h2"
 >
   This is a heading
 </h2>
@@ -18,7 +18,7 @@ exports[`Text matches h2 snapshot 1`] = `
 
 exports[`Text matches h3 snapshot 1`] = `
 <h3
-  className="sc-gsnTZi FFLwu"
+  className="text-h3"
 >
   This is a heading
 </h3>
