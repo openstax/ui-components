@@ -1,20 +1,14 @@
-import styled from "styled-components";
-import { palette } from "../theme/palette";
+import React from 'react';
+import './Text.css';
 
-export const H2 = styled.h2`
-  color: ${palette.neutralDarker};
-  font-size: 3.6rem;
-  font-weight: 700;
-`;
+export const H2 = ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
+  <h2 className={`text-h2${className ? ' ' + className : ''}`} {...props} />
+);
 
-export const H3 = styled.h3`
-  color: ${palette.neutralDarker};
-  font-size: 1.6rem;
-  font-weight: 700;
-  text-transform: uppercase;
-`;
+export const H3 = ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
+  <h3 className={`text-h3${className ? ' ' + className : ''}`} {...props} />
+);
 
-export const Paragraph = styled.p`
-  color: ${palette.neutralDarker};
-  font-size: 1.8rem;
-`;
+export const Paragraph = ({ className, ...props }: React.HTMLAttributes<HTMLParagraphElement>) => (
+  <p className={`text-paragraph${className ? ' ' + className : ''}`} {...props} />
+);
