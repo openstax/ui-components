@@ -1,4 +1,5 @@
 import classNames from 'classnames';
+import type { CSSProperties } from 'react';
 import './Loader.css';
 
 interface Props {
@@ -16,7 +17,7 @@ export const Loader = ({ large, delay, className, ...props }: Props) => (
     y='0px'
     viewBox='0 -30 57.6 69.1'
     className={classNames('loading-icon', { large }, className)}
-    style={{ '--loader-delay': delay ? `${delay}ms` : undefined } as React.CSSProperties}
+    style={{ '--loader-delay': delay ? `${delay}ms` : undefined } as CSSProperties}
     {...props}
   >
     <path
