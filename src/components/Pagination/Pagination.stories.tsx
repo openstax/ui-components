@@ -1,5 +1,5 @@
 import React from "react";
-import { Pagination, LinkForPage } from "./Pagination";
+import { Pagination, LinkForPage } from ".";
 
 export const Examples = () => {
   const [currentPage, setCurrentPage] = React.useState(1);

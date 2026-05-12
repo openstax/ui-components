@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import renderer, { act } from 'react-test-renderer';
+import { render, cleanup } from '@testing-library/react';
 import { ManageCookiesLink } from "./ManageCookies";
 
 describe('ManageCookies', () => {
@@ -133,6 +134,185 @@ describe('ManageCookies', () => {
 
       component.root.findByType('button').props.onClick();
       expect(onClick).toHaveBeenCalled();
+    });
+  });
+
+  describe('focus restoration', () => {
+    let mockObserve: jest.Mock;
+    let mockDisconnect: jest.Mock;
+    let observerCallback: MutationCallback;
+    let modalElement: HTMLDivElement;
+    let originalMutationObserver: typeof MutationObserver;
+
+    beforeAll(() => {
+      (window as any).getCkyConsent = jest.fn();
+      // Save original MutationObserver
+      originalMutationObserver = global.MutationObserver;
+    });
+
+    afterAll(() => {
+      delete (window as any).getCkyConsent;
+      // Restore original MutationObserver
+      global.MutationObserver = originalMutationObserver;
+    });
+
+    beforeEach(() => {
+      jest.useFakeTimers();
+      jest.clearAllMocks();
+
+      // Create mock modal element
+      modalElement = document.createElement('div');
+      modalElement.className = 'cky-modal';
+      document.body.appendChild(modalElement);
+
+      // Mock MutationObserver
+      mockObserve = jest.fn();
+      mockDisconnect = jest.fn();
+
+      (global as any).MutationObserver = jest.fn((callback: MutationCallback) => {
+        observerCallback = callback;
+        return {
+          observe: mockObserve,
+          disconnect: mockDisconnect,
+          takeRecords: jest.fn(),
+        };
+      });
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+      if (document.body.contains(modalElement)) {
+        document.body.removeChild(modalElement);
+      }
+      cleanup();
+    });
+
+    it('restores focus to button when cky-modal-open class is removed', () => {
+      const { container } = render(<ManageCookiesLink />);
+      const button = container.querySelector('button') as HTMLButtonElement;
+      const focusSpy = jest.spyOn(button, 'focus');
+
+      // Click the button
+      button.click();
+
+      // Advance timers to trigger setTimeout
+      jest.advanceTimersByTime(100);
+
+      // Verify observer was created and started observing
+      expect(mockObserve).toHaveBeenCalledWith(modalElement, {
+        attributes: true,
+        attributeFilter: ['class']
+      });
+
+      // Simulate modal opening (add class)
+      modalElement.classList.add('cky-modal-open');
+
+      // Simulate modal closing (remove class)
+      modalElement.classList.remove('cky-modal-open');
+      observerCallback([{
+        type: 'attributes',
+        attributeName: 'class',
+        target: modalElement,
+        oldValue: 'cky-modal cky-modal-open',
+      } as unknown as MutationRecord], {} as MutationObserver);
+
+      // Verify focus was restored
+      expect(focusSpy).toHaveBeenCalled();
+
+      // Verify observer was disconnected
+      expect(mockDisconnect).toHaveBeenCalled();
+
+      focusSpy.mockRestore();
+    });
+
+    it('disconnects observer on component unmount', () => {
+      const { container, unmount } = render(<ManageCookiesLink />);
+      const button = container.querySelector('button') as HTMLButtonElement;
+
+      // Click the button to create observer
+      button.click();
+
+      // Advance timers
+      jest.advanceTimersByTime(100);
+
+      // Verify observer was created
+      expect(mockObserve).toHaveBeenCalled();
+
+      // Unmount component
+      unmount();
+
+      // Verify observer was disconnected
+      expect(mockDisconnect).toHaveBeenCalled();
+    });
+
+    it('clears timeout on component unmount before setTimeout fires', () => {
+      const { container, unmount } = render(<ManageCookiesLink />);
+      const button = container.querySelector('button') as HTMLButtonElement;
+
+      // Click the button
+      button.click();
+
+      // Unmount before setTimeout fires (before 100ms)
+      unmount();
+
+      // Advance timers
+      jest.advanceTimersByTime(100);
+
+      // Verify observer was never created (because timeout was cleared)
+      expect(mockObserve).not.toHaveBeenCalled();
+    });
+
+    it('disconnects observer after 10 second safety timeout', () => {
+      const { container } = render(<ManageCookiesLink />);
+      const button = container.querySelector('button') as HTMLButtonElement;
+
+      // Click the button
+      button.click();
+
+      // Advance timers to create observer
+      jest.advanceTimersByTime(100);
+
+      // Verify observer was created
+      expect(mockObserve).toHaveBeenCalled();
+
+      // Clear the mock to verify it's called again by safety timeout
+      mockDisconnect.mockClear();
+
+      // Advance timers to trigger 10 second safety timeout (without modal closing)
+      jest.advanceTimersByTime(10000);
+
+      // Verify observer was disconnected by safety timeout
+      expect(mockDisconnect).toHaveBeenCalled();
+    });
+
+    it('clears safety timeout when modal closes normally', () => {
+      const { container } = render(<ManageCookiesLink />);
+      const button = container.querySelector('button') as HTMLButtonElement;
+
+      // Click the button
+      button.click();
+
+      // Advance timers to create observer
+      jest.advanceTimersByTime(100);
+
+      // Add then remove the class (normal modal close)
+      modalElement.classList.add('cky-modal-open');
+      modalElement.classList.remove('cky-modal-open');
+      observerCallback([{
+        type: 'attributes',
+        attributeName: 'class',
+        target: modalElement,
+        oldValue: 'cky-modal cky-modal-open',
+      } as unknown as MutationRecord], {} as MutationObserver);
+
+      // Clear disconnect mock
+      mockDisconnect.mockClear();
+
+      // Advance past safety timeout
+      jest.advanceTimersByTime(10000);
+
+      // Verify disconnect was NOT called again (safety timeout was cleared)
+      expect(mockDisconnect).not.toHaveBeenCalled();
     });
   });
 });
