@@ -1,47 +1,33 @@
 {
   "compilerOptions": {
-    "outDir": "dist",
-    "declarationDir": "./dist/",
-    "module": "esnext",
-    "lib": [
-      "dom",
-      "esnext"
-    ],
-    "baseUrl": "",
-    "moduleResolution": "node",
     "jsx": "react-jsx",
-    "jsxFactory": "",
-    "jsxFragmentFactory": "",
-    "sourceMap": true,
-    "experimentalDecorators": true,
-    "useDefineForClassFields": true,
-    "declaration": true,
+    "incremental": true,
+    "allowJs": false,
+    "allowSyntheticDefaultImports": true,
+    "alwaysStrict": true,
     "esModuleInterop": true,
-    "noImplicitReturns": true,
-    "noImplicitThis": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "noEmit": true,
     "noImplicitAny": true,
-    "strictNullChecks": true,
+    "listEmittedFiles": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "allowSyntheticDefaultImports": true,
-    "target": "es5",
-    "allowJs": true,
+    "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "downlevelIteration": true,
-    "noEmit": true,
-    "types": [
-      "jest",
-      "node",
-      ],
-    "typeRoots": [ "./types", "node_modules/@types" ],
-    },
-  "include": ["**/*.ts", "**/*.tsx"],
-  "exclude": [
-    "node_modules",
-    "dist"
+    "target": "es2019",
+    "lib": [
+      "dom",
+      "es2020"
+    ],
+    "noFallthroughCasesInSwitch": true,
+    "outDir": "dist",
+    "declaration": true
+  },
+  "include": [
+    "src"
   ]
 }
