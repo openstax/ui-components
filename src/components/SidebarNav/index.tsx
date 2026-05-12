@@ -184,7 +184,9 @@ export const BodyPortalSidebarNav = styled(
     const { isMobile, navIsCollapsed, setNavIsCollapsed } =
       useSidebarNavProps(props);
 
-    const ref = React.useRef<HTMLElement>(document.createElement("NAV"));
+    const ref = React.useRef<HTMLElement | null>(
+      typeof document !== 'undefined' ? document.createElement("NAV") : null
+    );
     const { navAnimation, setNavAnimation } = useNavAnimation();
 
     const handleSetNavIsCollapsed = useNavCollapseHandler(
