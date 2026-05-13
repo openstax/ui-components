@@ -2,25 +2,41 @@
   "name": "@openstax/ui-components",
   "version": "1.21.1",
   "license": "MIT",
-  "source": "./src/index.ts",
-  "types": "./dist/index.d.ts",
+  "sideEffects": false,
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/esm/index.d.ts",
   "exports": {
-    "require": "./dist/index.js",
-    "default": "./dist/index.modern.mjs"
+    ".": {
+      "browser": "./dist/esm/index.js",
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js"
+    },
+    "./*": {
+      "browser": "./dist/esm/*.js",
+      "import": "./dist/esm/*.js",
+      "require": "./dist/cjs/*.js"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "*": [
+        "dist/esm/*",
+        "dist/esm/*.d.ts",
+        "dist/esm/*/index.d.ts"
+      ]
+    }
   },
   "files": [
     "dist",
     "src"
   ],
-  "main": "./dist/index.js",
-  "module": "./dist/index.module.js",
-  "unpkg": "./dist/index.umd.js",
   "scripts": {
     "build": "./scripts/build.bash",
     "clean": "rm -rf ./dist",
     "build:clean": "npm-run-all clean build",
     "dist": "npm-run-all clean build",
-    "dev": "microbundle watch --no-compress",
+    "dev": "./scripts/build.bash --watch",
     "test": "jest --coverage .",
     "lint": "eslint src/*ts",
     "typecheck": "tsc --noEmit",
@@ -59,7 +75,6 @@
     "jest": "^28.1.2",
     "jest-environment-jsdom": "^29.3.1",
     "jest-environment-node": "^29.6.2",
-    "microbundle": "^0.15.1",
     "node-fetch": "<3.0.0",
     "npm-run-all": "^4.1.5",
     "react": "^17.0.2",
@@ -74,10 +89,8 @@
   "dependencies": {
     "@sentry/react": "^7.120.3",
     "classnames": "^2.3.1",
-    "crypto": "npm:crypto-browserify@^3.12.0",
     "dompurify": "^3.0.1",
     "react-aria": "^3.37.0",
-    "react-aria-components": "1.10.1",
-    "stream": "npm:stream-browserify@^3.0.0"
+    "react-aria-components": "1.10.1"
   }
 }

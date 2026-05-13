@@ -35,11 +35,13 @@ export const BodyPortal = React.forwardRef<HTMLElement, BodyPortalProps>((
   { children, className, role, slot, tagName, id, ariaLabel, ...props }, ref?: React.ForwardedRef<HTMLElement>
 ) => {
   const tag = tagName?.toUpperCase() ?? 'DIV';
-  const internalRef = React.useRef<HTMLElement>(document.createElement(tag));
-  if (internalRef.current.tagName !== tag) {
+  const internalRef = React.useRef<HTMLElement | null>(
+    typeof document !== 'undefined' ? document.createElement(tag) : null
+  );
+  if (typeof document !== 'undefined' && (!internalRef.current || internalRef.current.tagName !== tag)) {
     internalRef.current = document.createElement(tag);
   }
-  if (ref) {
+  if (ref && internalRef.current) {
     if (typeof ref === 'function') {
       ref(internalRef.current);
     } else {
@@ -52,6 +54,7 @@ export const BodyPortal = React.forwardRef<HTMLElement, BodyPortalProps>((
 
   React.useLayoutEffect(() => {
     const element = internalRef.current;
+    if (!element) { return; }
 
     if (className) { element.classList.add(...className.split(' ')); }
 
@@ -85,6 +88,8 @@ export const BodyPortal = React.forwardRef<HTMLElement, BodyPortalProps>((
       if (testId) { delete element.dataset.testid; }
     };
   }, [bodyPortalOrderedRefs, className, id, role, slot, ariaLabel, tag, testId]);
+
+  if (!internalRef.current) { return null; }
 
   return createPortal(children, internalRef.current);
 });
