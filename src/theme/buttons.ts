@@ -1,5 +1,5 @@
-import { css } from "styled-components";
 import { palette } from "./palette";
+import type { CssFragment } from "../theme";
 
 export type ButtonVariant = keyof typeof buttonStyleSets;
 
@@ -44,9 +44,19 @@ const buttonStyleSets = asButtonStyleSetTypes({
   },
 } as const);
 
-export const applyButtonVariantStyles = (variant: ButtonVariant) => {
+/**
+ * Applies button variant styles based on the specified variant.
+ *
+ * @param variant - The button variant to apply
+ * @returns CSS string with button styles
+ * @type {CssFragment}
+ * @note Breaking change: Previously returned FlattenSimpleInterpolation from styled-components,
+ * now returns a plain string. This is part of the migration away from styled-components.
+ * The string can still be used in styled-components template literals.
+ */
+export const applyButtonVariantStyles = (variant: ButtonVariant): CssFragment => {
   const set = buttonStyleSets[variant];
-  return css`
+  return `
     background-color: ${set.background};
     color: ${set.color};
     font-weight: ${set.fontWeight ?? 700};

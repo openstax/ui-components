@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import * as Constants from '../../src/constants';
 import theme from '../../src/theme';
 import { BodyPortal } from './BodyPortal';
@@ -11,9 +11,9 @@ const BarWrapper = styled(BodyPortal)`
   position: relative;
   padding: 0 ${theme.padding.navbar.mobile}rem;
   box-shadow: 0 0.2rem 0.2rem 0 rgba(0, 0, 0, 0.1);
-  ${theme.breakpoints.desktop(css`
-    padding: 0 ${theme.padding.navbar.mobile}rem;
-  `)}
+  @media screen and (min-width: ${theme.breakpoints.desktopBreak}em) {
+    padding: 0 ${theme.padding.navbar.desktop}rem;
+  }
   min-width: 0;
 `;
 
@@ -30,9 +30,9 @@ const StyledNavBar = styled.div<{
   height: ${props => props.navMobileHeight}rem;
   ${props => props.maxWidth ? `max-width: ${props.maxWidth}rem;` : null}
   margin: 0 auto;
-  ${props => theme.breakpoints.desktop(css`
-    height: ${props.navDesktopHeight}rem;
-  `)}
+  @media screen and (min-width: ${theme.breakpoints.desktopBreak}em) {
+    height: ${props => props.navDesktopHeight}rem;
+  }
   @media print { display: none; }
 `;
 

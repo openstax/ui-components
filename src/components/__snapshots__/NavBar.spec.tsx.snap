@@ -6,11 +6,11 @@ exports[`NavBar matches snapshot 1`] = `
     id="root"
   />
   <nav
-    class="sc-gsnTZi cnSXvF"
+    class="sc-gsnTZi kPpMcP"
     data-portal-slot="nav"
   >
     <div
-      class="sc-dkzDqf bpDzAE"
+      class="sc-dkzDqf dZnMpc"
     >
       NavBar content
     </div>
@@ -25,11 +25,11 @@ exports[`NavBar sets the ariaLabel 1`] = `
   />
   <nav
     aria-label="test"
-    class="sc-gsnTZi cnSXvF"
+    class="sc-gsnTZi kPpMcP"
     data-portal-slot="nav"
   >
     <div
-      class="sc-dkzDqf gQjsvL"
+      class="sc-dkzDqf eiozwP"
     >
       NavBar content
     </div>
@@ -43,11 +43,11 @@ exports[`NavBar sets the maxWidth 1`] = `
     id="root"
   />
   <nav
-    class="sc-gsnTZi cnSXvF"
+    class="sc-gsnTZi kPpMcP"
     data-portal-slot="nav"
   >
     <div
-      class="sc-dkzDqf gQjsvL"
+      class="sc-dkzDqf eiozwP"
     >
       NavBar content
     </div>
@@ -61,14 +61,14 @@ exports[`NavBar with a logo customizes the alt text 1`] = `
     id="root"
   />
   <nav
-    class="sc-gsnTZi cnSXvF"
+    class="sc-gsnTZi kPpMcP"
     data-portal-slot="nav"
   >
     <div
-      class="sc-dkzDqf bpDzAE"
+      class="sc-dkzDqf dZnMpc"
     >
       <svg
-        class="sc-bczRLJ qyeAg"
+        class="sc-bczRLJ gDxJyP"
         height="80.97"
         role="img"
         viewBox="0 0 353.76001 80.973335"
@@ -119,17 +119,17 @@ exports[`NavBar with a logo links the logo 1`] = `
     id="root"
   />
   <nav
-    class="sc-gsnTZi cnSXvF"
+    class="sc-gsnTZi kPpMcP"
     data-portal-slot="nav"
   >
     <div
-      class="sc-dkzDqf bpDzAE"
+      class="sc-dkzDqf dZnMpc"
     >
       <a
         href="/"
       >
         <svg
-          class="sc-bczRLJ qyeAg"
+          class="sc-bczRLJ gDxJyP"
           height="80.97"
           role="img"
           viewBox="0 0 353.76001 80.973335"
@@ -181,14 +181,14 @@ exports[`NavBar with a logo matches snapshot 1`] = `
     id="root"
   />
   <nav
-    class="sc-gsnTZi cnSXvF"
+    class="sc-gsnTZi kPpMcP"
     data-portal-slot="nav"
   >
     <div
-      class="sc-dkzDqf bpDzAE"
+      class="sc-dkzDqf dZnMpc"
     >
       <svg
-        class="sc-bczRLJ qyeAg"
+        class="sc-bczRLJ gDxJyP"
         height="80.97"
         role="img"
         viewBox="0 0 353.76001 80.973335"
