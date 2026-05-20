@@ -1,4 +1,4 @@
-import { useMatchMediaQuery } from "../../src/hooks";
+import { useMatchMediaQuery } from "../hooks";
 import styled, { createGlobalStyle, css } from "styled-components";
 import {
   BodyPortalSidebarNav,
@@ -10,7 +10,7 @@ import { BodyPortal } from "./BodyPortal";
 import { NavBar } from "./NavBar";
 import { NavBarLogo } from "./NavBarLogo";
 import React from "react";
-import { breakpoints, colors } from "../../src/theme";
+import { breakpoints, colors } from "../theme";
 import { NavBarPopoverButton, PopoverContainer } from "./NavBarMenuButtons";
 
 const GlobalStyle = createGlobalStyle`

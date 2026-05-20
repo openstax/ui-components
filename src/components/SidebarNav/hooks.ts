@@ -1,6 +1,6 @@
 import React from "react";
-import { useMatchMediaQuery } from "../../../src/hooks";
-import { breakpoints } from "../../../src/theme";
+import { useMatchMediaQuery } from "../../hooks";
+import { breakpoints } from "../../theme";
 
 export const useSidebarNavProps = ({
   mobileBreakpoint = `${breakpoints.mobileNavBreak}em`,

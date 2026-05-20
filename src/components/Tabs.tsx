@@ -2,7 +2,7 @@ import React from "react";
 import * as RAC from "react-aria-components";
 import { colors } from "../theme";
 import styled, { css } from "styled-components";
-import { palette } from "../../src/theme/palette";
+import { palette } from "../theme/palette";
 
 export type TabsProps = {
   variant?: "button-bar";

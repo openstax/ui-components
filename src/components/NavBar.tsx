@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
-import * as Constants from '../../src/constants';
-import theme from '../../src/theme';
+import * as Constants from '../constants';
+import theme from '../theme';
 import { BodyPortal } from './BodyPortal';
 import { NavBarLogo as OpenstaxLogo } from './NavBarLogo';
 

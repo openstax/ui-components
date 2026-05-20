@@ -1,5 +1,5 @@
 import styled, {css} from "styled-components";
-import theme from '../../src/theme';
+import theme from '../theme';
 import { applyButtonVariantStyles, ButtonVariant } from "../theme/buttons";
 
 export { applyButtonVariantStyles };

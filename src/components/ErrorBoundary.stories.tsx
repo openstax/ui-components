@@ -2,7 +2,7 @@ import React from "react";
 import { ErrorBoundary } from "./ErrorBoundary";
 import { ErrorMessage } from "./ErrorMessage";
 import { UnauthorizedError, SessionExpiredError } from "@openstax/ts-utils/errors";
-import { useSetAppError } from "../../src/hooks";
+import { useSetAppError } from "../hooks";
 
 const ErrorComponent = ({ doThrow, setShowError, error: error, errorMessage }: {
   doThrow: boolean;

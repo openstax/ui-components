@@ -12,7 +12,7 @@ import {
   CheckboxVariant 
 } from "../Checkbox/sharedCheckboxStyles";
 import { checkedMixIcon } from "../svgs/checkmarksvgs";
-import theme from '../../../src/theme';
+import theme from '../../theme';
 
 export interface TreeCheckboxProps
   extends PropsWithChildren<Omit<RACCheckboxProps, "children">> {
