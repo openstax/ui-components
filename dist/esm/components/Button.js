@@ -1,0 +1,68 @@
+import { jsx as _jsx } from "react/jsx-runtime";
+import styled, { css } from "styled-components";
+import theme from '../theme';
+import { applyButtonVariantStyles } from "../theme/buttons";
+export { applyButtonVariantStyles };
+export const buttonCss = css `
+  ${props => applyButtonVariantStyles(props.variant || 'primary')}
+
+  font-size: 1.6rem;
+  line-height: 2rem;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  height: 4rem;
+  padding: 0 3rem;
+  border: 0;
+  border-radius: 0.5rem;
+  box-shadow: 0px 0.2rem 0.4rem rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease-in-out;
+  text-decoration: none;
+  user-select: none;
+  white-space: nowrap;
+
+  &:not([disabled]) {
+    cursor: pointer;
+  }
+  &:disabled {
+    opacity: 0.4;
+  }
+
+  & + & {
+    margin-left: 1.6rem;
+  }
+`;
+export const Button = styled((props) => {
+    const { disabled, isWaiting, waitingText, children, variant, ...otherProps } = props;
+    return _jsx("button", { ...otherProps, disabled: isWaiting || disabled, children: (isWaiting && waitingText) || children });
+}) `
+  ${buttonCss}
+`;
+export const LinkButton = styled(({ variant, ...props }) => _jsx("a", { ...props, children: props.children })) `
+  ${buttonCss}
+`;
+export const linkStyle = css `
+  color: ${theme.colors.link.color};
+  cursor: pointer;
+  text-decoration: none;
+
+  :hover,
+  :focus {
+    text-decoration: underline;
+    color: ${theme.colors.link.hover};
+  }
+`;
+export const PlainButton = styled.button `
+  cursor: pointer;
+  border: none;
+  margin: 0;
+  padding: 0;
+  background: none;
+`;
+// tslint:disable-next-line:variable-name
+export const ButtonLink = styled(PlainButton) `
+  ${linkStyle}
+`;

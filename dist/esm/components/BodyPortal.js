@@ -1,0 +1,92 @@
+import React from 'react';
+import { createPortal } from 'react-dom';
+import { BodyPortalSlotsContext } from './BodyPortalSlotsContext';
+const getInsertBeforeTarget = (bodyPortalSlots, slot) => {
+    // Note: If the slot is not found in bodyPortalSlots, this code will append the tag instead,
+    //       meaning the ordering will then depend on the rendering order and may change
+    const slotIndex = bodyPortalSlots.findIndex((sl) => sl === slot);
+    if (slotIndex === -1) {
+        return null;
+    }
+    // Find the next slot that is present in the DOM and return it
+    for (let index = slotIndex + 1; index < bodyPortalSlots.length; index++) {
+        const sl = bodyPortalSlots[index];
+        const tag = sl === 'root'
+            ? document.body.querySelector('#root')
+            : document.body.querySelector(`[data-portal-slot="${sl}"]`);
+        if (tag) {
+            return tag;
+        }
+    }
+    // None of the slots after this one are present in the DOM, so just append it instead
+    return null;
+};
+export const BodyPortal = React.forwardRef(({ children, className, role, slot, tagName, id, ariaLabel, ...props }, ref) => {
+    var _a;
+    const tag = (_a = tagName === null || tagName === void 0 ? void 0 : tagName.toUpperCase()) !== null && _a !== void 0 ? _a : 'DIV';
+    const internalRef = React.useRef(typeof document !== 'undefined' ? document.createElement(tag) : null);
+    if (typeof document !== 'undefined' && (!internalRef.current || internalRef.current.tagName !== tag)) {
+        internalRef.current = document.createElement(tag);
+    }
+    if (ref && internalRef.current) {
+        if (typeof ref === 'function') {
+            ref(internalRef.current);
+        }
+        else {
+            ref.current = internalRef.current;
+        }
+    }
+    const bodyPortalOrderedRefs = React.useContext(BodyPortalSlotsContext);
+    const testId = props['data-testid'];
+    React.useLayoutEffect(() => {
+        const element = internalRef.current;
+        if (!element) {
+            return;
+        }
+        if (className) {
+            element.classList.add(...className.split(' '));
+        }
+        if (id) {
+            element.id = id;
+        }
+        if (testId) {
+            element.dataset.testid = testId;
+        }
+        if (role) {
+            element.setAttribute('role', role);
+        }
+        if (slot) {
+            element.dataset.portalSlot = slot;
+        }
+        if (ariaLabel)
+            element.setAttribute('aria-label', ariaLabel);
+        document.body.insertBefore(element, getInsertBeforeTarget(bodyPortalOrderedRefs, slot));
+        return () => {
+            if (element.parentNode) {
+                element.parentNode.removeChild(element);
+            }
+            if (slot) {
+                delete element.dataset.portalSlot;
+            }
+            if (role) {
+                element.removeAttribute('role');
+            }
+            if (ariaLabel) {
+                element.removeAttribute('aria-label');
+            }
+            if (className) {
+                element.classList.remove(...className.split(' '));
+            }
+            if (id) {
+                element.id = '';
+            }
+            if (testId) {
+                delete element.dataset.testid;
+            }
+        };
+    }, [bodyPortalOrderedRefs, className, id, role, slot, ariaLabel, tag, testId]);
+    if (!internalRef.current) {
+        return null;
+    }
+    return createPortal(children, internalRef.current);
+});
