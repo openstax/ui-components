@@ -1,4 +1,4 @@
-import { colors } from "../../src/theme";
+import { colors } from "../theme";
 import styled from "styled-components";
 import { NavBar } from "./NavBar";
 import { NavBarButton } from "./NavBarButton";

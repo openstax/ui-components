@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-import { colors, zIndex } from "../../src/theme";
+import { colors, zIndex } from "../theme";
 import { CloseModalButton } from "./CloseModalButton";
 import * as RAC from "react-aria-components";
 import React from "react";

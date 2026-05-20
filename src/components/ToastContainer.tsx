@@ -1,8 +1,8 @@
 import styled, { css, ThemedStyledFunction } from 'styled-components';
 import { BodyPortal } from './BodyPortal';
 import { Toast } from './Toast';
-import { zIndex } from '../../src/theme';
-import { ToastData } from '../../src/types';
+import { zIndex } from '../theme';
+import { ToastData } from '../types';
 import { ComponentType } from 'react';
 
 const makeStyledToastContainer = <T extends keyof JSX.IntrinsicElements | ComponentType<any>>(

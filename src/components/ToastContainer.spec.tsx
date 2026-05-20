@@ -1,6 +1,6 @@
 import { act, render } from '@testing-library/react';
 import { BodyPortalToastContainer, ToastContainer } from './ToastContainer';
-import { ToastData } from '../../src/types';
+import { ToastData } from '../types';
 
 jest.useFakeTimers();
 
