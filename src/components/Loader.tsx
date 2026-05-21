@@ -9,7 +9,7 @@ interface Props extends React.SVGProps<SVGSVGElement> {
 }
 
 export const Loader = React.forwardRef<SVGSVGElement, Props>(
-  ({ large, delay, className, ...props }, ref) => (
+  ({ large, delay, className, style, ...props }, ref) => (
     <svg
       ref={ref}
       data-testid='loader'
@@ -19,7 +19,10 @@ export const Loader = React.forwardRef<SVGSVGElement, Props>(
       y='0px'
       viewBox='0 -30 57.6 69.1'
       className={classNames('loading-icon', { large }, className)}
-      style={{ '--loader-delay': delay ? `${delay}ms` : undefined } as React.CSSProperties}
+      style={{
+        ...style,
+        '--loader-delay': delay ? `${delay}ms` : undefined
+      } as React.CSSProperties}
       {...props}
     >
     <path
