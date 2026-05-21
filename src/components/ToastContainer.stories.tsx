@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { ToastData } from '../../src/types';
+import { ToastData } from '../types';
 import { BodyPortalToastContainer, ToastContainer } from './ToastContainer';
 
 const StyledBodyPortalToastContainer = styled(BodyPortalToastContainer)`

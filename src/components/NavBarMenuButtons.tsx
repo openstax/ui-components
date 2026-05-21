@@ -9,7 +9,7 @@ import {
   PopoverProps,
 } from "react-aria-components";
 import styled from "styled-components";
-import { colors, defaultFocusOutline } from "../../src/theme";
+import { colors, defaultFocusOutline } from "../theme";
 import { NavBarButton, NavBarButtonProps } from "./NavBarButton";
 
 export const NavBarMenuItem = styled(MenuItem)``;

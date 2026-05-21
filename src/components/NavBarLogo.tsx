@@ -1,6 +1,6 @@
-import theme from "../../src/theme";
+import theme from "../theme";
 import styled from "styled-components";
-import { navLogoDesktopHeight, navLogoMobileHeight } from "../../src/constants";
+import { navLogoDesktopHeight, navLogoMobileHeight } from "../constants";
 
 
 const StyledLogo = styled.svg`

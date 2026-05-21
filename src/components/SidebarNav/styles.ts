@@ -1,4 +1,4 @@
-import { colors, zIndex } from "../../../src/theme";
+import { colors, zIndex } from "../../theme";
 import styled, { css } from "styled-components";
 
 export const collapsedWidth = "5.6rem";
