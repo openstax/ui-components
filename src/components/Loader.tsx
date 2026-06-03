@@ -19,10 +19,10 @@ export const Loader = React.forwardRef<SVGSVGElement, Props>(
       y='0px'
       viewBox='0 -30 57.6 69.1'
       className={classNames('loading-icon', { large }, className)}
-      style={{
+      style={({
         ...style,
-        '--loader-delay': delay ? `${delay}ms` : undefined
-      } as React.CSSProperties}
+        ...(delay != null ? { '--loader-delay': `${delay}ms` } : {})
+      } as React.CSSProperties)}
       {...props}
     >
     <path
