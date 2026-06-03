@@ -18,10 +18,10 @@
   user-select: none;
   white-space: nowrap;
 
-  /* Variant-specific styles using CSS custom properties */
-  background-color: var(--button-bg);
-  color: var(--button-color);
-  font-weight: var(--button-font-weight);
+  /* Variant-specific styles using CSS custom properties with fallback defaults (primary variant) */
+  background-color: var(--button-bg, #d4450c);
+  color: var(--button-color, #ffffff);
+  font-weight: var(--button-font-weight, 700);
 }
 
 .button-base:not([disabled]) {
@@ -37,16 +37,16 @@
 }
 
 .button-base:not([disabled]):hover {
-  background: var(--button-bg-hover);
+  background: var(--button-bg-hover, #be3c08);
 }
 
 .button-base:not([disabled]):active {
-  background: var(--button-bg-active);
+  background: var(--button-bg-active, #b03808);
 }
 
 .button-base:focus {
-  outline: solid var(--button-outline);
-  box-shadow: inset 0 0 0 0.3rem var(--button-shadow);
+  outline: solid var(--button-outline, #ffffff);
+  box-shadow: inset 0 0 0 0.3rem var(--button-shadow, #424242);
 }
 
 /* Plain button - minimal styling */
@@ -65,12 +65,12 @@
   margin: 0;
   padding: 0;
   background: none;
-  color: var(--link-color);
+  color: var(--link-color, #026AA1);
   text-decoration: none;
 }
 
 .button-link:hover,
 .button-link:focus {
   text-decoration: underline;
-  color: var(--link-hover-color);
+  color: var(--link-hover-color, #005481);
 }

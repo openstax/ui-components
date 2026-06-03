@@ -10,6 +10,26 @@ export { applyButtonVariantStyles } from "../theme/buttons";
 // Export buttonCss as a string for backwards compatibility
 export const buttonCss = 'button-base';
 
+/**
+ * Link style CSS fragment for backwards compatibility.
+ *
+ * @deprecated This export is deprecated. Use the ButtonLink component instead.
+ * @note Breaking change: Previously returned a styled-components css fragment,
+ * now returns a plain CSS string. This is part of the migration away from styled-components.
+ * The string can still be used in styled-components template literals.
+ */
+export const linkStyle = `
+  color: ${theme.colors.link.color};
+  cursor: pointer;
+  text-decoration: none;
+
+  :hover,
+  :focus {
+    text-decoration: underline;
+    color: ${theme.colors.link.hover};
+  }
+`;
+
 interface ButtonOptions {
   variant?: ButtonVariant;
 }
@@ -70,7 +90,7 @@ Button.displayName = 'Button';
 
 export const LinkButton = React.forwardRef<HTMLAnchorElement, LinkButtonBase>(
   (props, ref) => {
-    const { variant = 'primary', className, style, ...otherProps } = props;
+    const { variant = 'primary', className, style, children, ...otherProps } = props;
 
     const variantStyles = getButtonVariantStyles(variant);
     const linkStyle = {
@@ -91,7 +111,7 @@ export const LinkButton = React.forwardRef<HTMLAnchorElement, LinkButtonBase>(
         className={classNames('button-base', className)}
         style={linkStyle}
       >
-        {props.children}
+        {children}
       </a>
     );
   }
@@ -101,14 +121,14 @@ LinkButton.displayName = 'LinkButton';
 
 export const PlainButton = React.forwardRef<HTMLButtonElement, React.ComponentPropsWithoutRef<'button'>>(
   (props, ref) => {
-    const { className, ...otherProps } = props;
+    const { className, children, ...otherProps } = props;
     return (
       <button
         {...otherProps}
         ref={ref}
         className={classNames('plain-button', className)}
       >
-        {props.children}
+        {children}
       </button>
     );
   }
@@ -118,7 +138,7 @@ PlainButton.displayName = 'PlainButton';
 
 export const ButtonLink = React.forwardRef<HTMLButtonElement, React.ComponentPropsWithoutRef<'button'>>(
   (props, ref) => {
-    const { className, style, ...otherProps } = props;
+    const { className, style, children, ...otherProps } = props;
 
     const linkStyleVars = {
       '--link-color': theme.colors.link.color,
@@ -133,7 +153,7 @@ export const ButtonLink = React.forwardRef<HTMLButtonElement, React.ComponentPro
         className={classNames('button-link', className)}
         style={linkStyleVars}
       >
-        {props.children}
+        {children}
       </button>
     );
   }
