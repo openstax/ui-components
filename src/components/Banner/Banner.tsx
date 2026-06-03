@@ -1,7 +1,7 @@
 import { DismissIcon } from "../svgs/DismissIcon";
 import { Html } from "../Html";
 import styled from 'styled-components';
-import { Button, ButtonLink } from '../Button';
+import { Button } from '../Button';
 import { colors } from '../../theme';
 
 export type BannerSeverity = 'note' | 'warning' | 'error';
@@ -32,7 +32,7 @@ export const StyledBanner = styled.div<{severity: BannerSeverity}>`
     }
   }
 
-  ${ButtonLink} {
+  .button-link {
     font-size: 1.6rem;
   }
 `;

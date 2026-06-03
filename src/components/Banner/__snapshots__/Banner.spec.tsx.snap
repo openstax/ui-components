@@ -2,7 +2,7 @@
 
 exports[`Banner matches snapshot (error, with dismiss) 1`] = `
 <div
-  className="sc-jSMfEi iGEqwr"
+  className="sc-gsnTZi bbCSY"
 >
   <div>
     <span
@@ -15,9 +15,20 @@ exports[`Banner matches snapshot (error, with dismiss) 1`] = `
   </div>
   <button
     aria-label="dismiss"
-    className="sc-bczRLJ sc-gKXOVf dOOknK dwyZcw"
+    className="button-base sc-dkzDqf dzRdnV"
     onClick={[Function]}
     severity="error"
+    style={
+      Object {
+        "--button-bg": "#D4450C",
+        "--button-bg-active": "#b03808",
+        "--button-bg-hover": "#be3c08",
+        "--button-color": "#ffffff",
+        "--button-font-weight": 700,
+        "--button-outline": "#ffffff",
+        "--button-shadow": "#000000",
+      }
+    }
   >
     <svg
       aria-hidden="true"
@@ -53,11 +64,11 @@ exports[`Banner matches snapshot (error, with dismiss) 1`] = `
 
 exports[`Banner matches snapshot (multiple messages, with dismiss) 1`] = `
 <div
-  className="sc-jSMfEi lmuhoy"
+  className="sc-gsnTZi iNpbIt"
 >
   <div>
     <span
-      className="sc-eCYdqJ EIRbC"
+      className="sc-bczRLJ jqtwgx"
     >
       Warning: 
     </span>
@@ -78,9 +89,20 @@ exports[`Banner matches snapshot (multiple messages, with dismiss) 1`] = `
   </div>
   <button
     aria-label="dismiss"
-    className="sc-bczRLJ sc-gKXOVf dOOknK fGvwkl"
+    className="button-base sc-dkzDqf cLwIlc"
     onClick={[Function]}
     severity="warning"
+    style={
+      Object {
+        "--button-bg": "#D4450C",
+        "--button-bg-active": "#b03808",
+        "--button-bg-hover": "#be3c08",
+        "--button-color": "#ffffff",
+        "--button-font-weight": 700,
+        "--button-outline": "#ffffff",
+        "--button-shadow": "#000000",
+      }
+    }
   >
     <svg
       aria-hidden="true"
@@ -116,11 +138,11 @@ exports[`Banner matches snapshot (multiple messages, with dismiss) 1`] = `
 
 exports[`Banner matches snapshot (single message, no dismiss) 1`] = `
 <div
-  className="sc-jSMfEi lmuhoy"
+  className="sc-gsnTZi iNpbIt"
 >
   <div>
     <span
-      className="sc-eCYdqJ EIRbC"
+      className="sc-bczRLJ jqtwgx"
     >
       Note: 
     </span>

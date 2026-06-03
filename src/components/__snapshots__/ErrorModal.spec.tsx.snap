@@ -12,7 +12,7 @@ exports[`Modal matches snapshot 1`] = `
     hidden=""
   />
   <div
-    class="sc-jqUVSM mLxLT"
+    class="sc-gKXOVf fbFzda"
     data-rac=""
     style="--visual-viewport-height: 768px;"
   >
@@ -31,20 +31,20 @@ exports[`Modal matches snapshot 1`] = `
         />
       </div>
       <div
-        class="sc-kDDrLX kcRDJd"
+        class="sc-iBkjds mgorR"
       >
         <section
           aria-labelledby="react-aria-2"
-          class="sc-jSMfEi jOuQOj"
+          class="sc-gsnTZi gQTek"
           data-rac=""
           role="dialog"
           tabindex="-1"
         >
           <header
-            class="sc-gKXOVf fMZXQS"
+            class="sc-dkzDqf gXnWMX"
           >
             <h2
-              class="sc-iBkjds crmGxr"
+              class="sc-hKMtZM gKFAwv"
               id="react-aria-2"
               slot="title"
             >
@@ -52,7 +52,7 @@ exports[`Modal matches snapshot 1`] = `
             </h2>
             <button
               aria-label="Close"
-              class="sc-eCYdqJ dRnxZp"
+              class="sc-bczRLJ elXiRy"
               type="button"
             >
               <svg
@@ -86,11 +86,11 @@ exports[`Modal matches snapshot 1`] = `
             </button>
           </header>
           <div
-            class="sc-breuTD eiboLU"
+            class="sc-kDDrLX jaUAqV"
             data-testid="error"
           >
             <h3
-              class="sc-evZas buXsYK"
+              class="sc-jqUVSM iTXlJL"
             >
               Uh-oh, there's been a glitch
             </h3>
@@ -103,15 +103,16 @@ exports[`Modal matches snapshot 1`] = `
             </a>
             .
             <div
-              class="sc-ksZaOG cPKkuS"
+              class="sc-iqcoie hdouAN"
               data-testid="event-id"
             />
           </div>
           <div
-            class="sc-iqcoie cqUGeK"
+            class="sc-ftvSup dVGJds"
           >
             <button
-              class="sc-bczRLJ dOOknK"
+              class="button-base"
+              style="--button-bg: #D4450C; --button-bg-hover: #be3c08; --button-bg-active: #b03808; --button-color: #ffffff; --button-outline: #ffffff; --button-shadow: #000000; --button-font-weight: 700;"
             >
               OK
             </button>
@@ -140,7 +141,7 @@ exports[`Modal matches snapshot when heading and children are set 1`] = `
     hidden=""
   />
   <div
-    class="sc-jqUVSM mLxLT"
+    class="sc-gKXOVf fbFzda"
     data-rac=""
     style="--visual-viewport-height: 768px;"
   >
@@ -159,20 +160,20 @@ exports[`Modal matches snapshot when heading and children are set 1`] = `
         />
       </div>
       <div
-        class="sc-kDDrLX kcRDJd"
+        class="sc-iBkjds mgorR"
       >
         <section
           aria-labelledby="react-aria-4"
-          class="sc-jSMfEi jOuQOj"
+          class="sc-gsnTZi gQTek"
           data-rac=""
           role="dialog"
           tabindex="-1"
         >
           <header
-            class="sc-gKXOVf fMZXQS"
+            class="sc-dkzDqf gXnWMX"
           >
             <h2
-              class="sc-iBkjds crmGxr"
+              class="sc-hKMtZM gKFAwv"
               id="react-aria-4"
               slot="title"
             >
@@ -180,7 +181,7 @@ exports[`Modal matches snapshot when heading and children are set 1`] = `
             </h2>
             <button
               aria-label="Close"
-              class="sc-eCYdqJ dRnxZp"
+              class="sc-bczRLJ elXiRy"
               type="button"
             >
               <svg
@@ -214,11 +215,11 @@ exports[`Modal matches snapshot when heading and children are set 1`] = `
             </button>
           </header>
           <div
-            class="sc-breuTD eiboLU"
+            class="sc-kDDrLX jaUAqV"
             data-testid="error"
           >
             <h3
-              class="sc-evZas buXsYK"
+              class="sc-jqUVSM iTXlJL"
             >
               Scores not sent
             </h3>
@@ -232,15 +233,16 @@ exports[`Modal matches snapshot when heading and children are set 1`] = `
             </a>
             .
             <div
-              class="sc-ksZaOG cPKkuS"
+              class="sc-iqcoie hdouAN"
               data-testid="event-id"
             />
           </div>
           <div
-            class="sc-iqcoie cqUGeK"
+            class="sc-ftvSup dVGJds"
           >
             <button
-              class="sc-bczRLJ dOOknK"
+              class="button-base"
+              style="--button-bg: #D4450C; --button-bg-hover: #be3c08; --button-bg-active: #b03808; --button-color: #ffffff; --button-outline: #ffffff; --button-shadow: #000000; --button-font-weight: 700;"
             >
               OK
             </button>

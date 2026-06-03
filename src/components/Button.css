@@ -1,0 +1,76 @@
+/* Base button styles */
+.button-base {
+  font-size: 1.6rem;
+  line-height: 2rem;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  height: 4rem;
+  padding: 0 3rem;
+  border: 0;
+  border-radius: 0.5rem;
+  box-shadow: 0px 0.2rem 0.4rem rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease-in-out;
+  text-decoration: none;
+  user-select: none;
+  white-space: nowrap;
+
+  /* Variant-specific styles using CSS custom properties */
+  background-color: var(--button-bg);
+  color: var(--button-color);
+  font-weight: var(--button-font-weight);
+}
+
+.button-base:not([disabled]) {
+  cursor: pointer;
+}
+
+.button-base:disabled {
+  opacity: 0.4;
+}
+
+.button-base + .button-base {
+  margin-left: 1.6rem;
+}
+
+.button-base:not([disabled]):hover {
+  background: var(--button-bg-hover);
+}
+
+.button-base:not([disabled]):active {
+  background: var(--button-bg-active);
+}
+
+.button-base:focus {
+  outline: solid var(--button-outline);
+  box-shadow: inset 0 0 0 0.3rem var(--button-shadow);
+}
+
+/* Plain button - minimal styling */
+.plain-button {
+  cursor: pointer;
+  border: none;
+  margin: 0;
+  padding: 0;
+  background: none;
+}
+
+/* Button that looks like a link */
+.button-link {
+  cursor: pointer;
+  border: none;
+  margin: 0;
+  padding: 0;
+  background: none;
+  color: var(--link-color);
+  text-decoration: none;
+}
+
+.button-link:hover,
+.button-link:focus {
+  text-decoration: underline;
+  color: var(--link-hover-color);
+}

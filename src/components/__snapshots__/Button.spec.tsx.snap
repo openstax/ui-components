@@ -2,8 +2,19 @@
 
 exports[`Button isWaiting state matches snapshot 1`] = `
 <button
-  className="sc-bczRLJ dOOknK"
+  className="button-base"
   disabled={true}
+  style={
+    Object {
+      "--button-bg": "#D4450C",
+      "--button-bg-active": "#b03808",
+      "--button-bg-hover": "#be3c08",
+      "--button-color": "#ffffff",
+      "--button-font-weight": 700,
+      "--button-outline": "#ffffff",
+      "--button-shadow": "#000000",
+    }
+  }
 >
   Submitting...
 </button>
@@ -11,7 +22,18 @@ exports[`Button isWaiting state matches snapshot 1`] = `
 
 exports[`Button matches light color snapshot 1`] = `
 <button
-  className="sc-bczRLJ esoxNv"
+  className="button-base"
+  style={
+    Object {
+      "--button-bg": "#ffffff",
+      "--button-bg-active": "#e5e5e5",
+      "--button-bg-hover": "#ffffff",
+      "--button-color": "#424242",
+      "--button-font-weight": 400,
+      "--button-outline": "#ffffff",
+      "--button-shadow": "#000000",
+    }
+  }
 >
   Click Me
 </button>
@@ -19,7 +41,18 @@ exports[`Button matches light color snapshot 1`] = `
 
 exports[`Button matches snapshot 1`] = `
 <button
-  className="sc-bczRLJ dOOknK"
+  className="button-base"
+  style={
+    Object {
+      "--button-bg": "#D4450C",
+      "--button-bg-active": "#b03808",
+      "--button-bg-hover": "#be3c08",
+      "--button-color": "#ffffff",
+      "--button-font-weight": 700,
+      "--button-outline": "#ffffff",
+      "--button-shadow": "#000000",
+    }
+  }
 >
   Click Me
 </button>
@@ -27,7 +60,18 @@ exports[`Button matches snapshot 1`] = `
 
 exports[`Button renders as a tag 1`] = `
 <a
-  className="sc-gsnTZi bOGeQ"
+  className="button-base"
+  style={
+    Object {
+      "--button-bg": "#D4450C",
+      "--button-bg-active": "#b03808",
+      "--button-bg-hover": "#be3c08",
+      "--button-color": "#ffffff",
+      "--button-font-weight": 700,
+      "--button-outline": "#ffffff",
+      "--button-shadow": "#000000",
+    }
+  }
 >
   Click Me
 </a>
@@ -35,7 +79,18 @@ exports[`Button renders as a tag 1`] = `
 
 exports[`Button renders as a tag variant 1`] = `
 <a
-  className="sc-gsnTZi gaKcuZ"
+  className="button-base"
+  style={
+    Object {
+      "--button-bg": "#ffffff",
+      "--button-bg-active": "#e5e5e5",
+      "--button-bg-hover": "#ffffff",
+      "--button-color": "#424242",
+      "--button-font-weight": 400,
+      "--button-outline": "#ffffff",
+      "--button-shadow": "#000000",
+    }
+  }
 >
   Click Me
 </a>
@@ -43,7 +98,13 @@ exports[`Button renders as a tag variant 1`] = `
 
 exports[`Button renders button that looks like a link 1`] = `
 <button
-  className="sc-dkzDqf sc-hKMtZM bLbJrC bAtAjm"
+  className="button-link"
+  style={
+    Object {
+      "--link-color": "#026AA1",
+      "--link-hover-color": "#005481",
+    }
+  }
 >
   Click Me
 </button>
@@ -51,7 +112,7 @@ exports[`Button renders button that looks like a link 1`] = `
 
 exports[`Button renders plain button 1`] = `
 <button
-  className="sc-dkzDqf bLbJrC"
+  className="plain-button"
 >
   Click Me
 </button>
