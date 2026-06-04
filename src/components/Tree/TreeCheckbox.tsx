@@ -1,18 +1,17 @@
-import styled from "styled-components";
 import {
   Checkbox as RACCheckbox,
   CheckboxProps as RACCheckboxProps
 } from "react-aria-components";
 import { PropsWithChildren } from "react";
-import { 
-  checkboxLabelStyles,
-  checkboxInputStyles,
-  checkboxSelectionSlotCheckedStyles,
-  CheckboxSize, 
-  CheckboxVariant 
+import {
+  checkboxVariants,
+  CheckboxSize,
+  CheckboxVariant
 } from "../Checkbox/sharedCheckboxStyles";
 import { checkedMixIcon } from "../svgs/checkmarksvgs";
-import theme from '../../theme';
+import { colors } from '../../theme';
+import classNames from "classnames";
+import "../Checkbox/Checkbox.css";
 
 export interface TreeCheckboxProps
   extends PropsWithChildren<Omit<RACCheckboxProps, "children">> {
@@ -21,50 +20,54 @@ export interface TreeCheckboxProps
   bold?: boolean;
 }
 
-const StyledCheckbox = styled(RACCheckbox) <{
-  variant: CheckboxVariant;
-  checkboxSize: CheckboxSize;
-  bold: boolean;
-  isDisabled?: boolean;
-}>`
-  ${checkboxLabelStyles}
-
-  [data-slot="selection"] {
-    ${checkboxInputStyles}
-  }
-
-  &[data-selected] [data-slot="selection"]::before {
-    ${checkboxSelectionSlotCheckedStyles}
-  }
-
-  &[data-indeterminate="true"] {
-    [data-slot="selection"]::before { 
-      content: "";
-      position: relative;
-      transform: scale(1);
-      background-color: ${theme.colors.palette.mediumBlue};
-      border: none;
-      background-image: url('${checkedMixIcon}');
-    }
-  }
-`;
-
 export const TreeCheckbox = ({
   size = 1.6,
   variant = "primary",
   bold = false,
   children,
+  isDisabled,
+  className,
+  style,
   ...props
 }: TreeCheckboxProps) => {
+  // Get variant styles for CSS variables
+  const variantStyles = isDisabled ? checkboxVariants.disabled : checkboxVariants[variant];
+
+  // Build className
+  const checkboxClassName = classNames(
+    'checkbox-label',
+    { 'disabled': isDisabled },
+    className
+  );
+
+  // Build style with CSS variables
+  const checkboxStyle = {
+    '--checkbox-font-weight': bold ? 700 : 400,
+    '--checkbox-color': variantStyles.color,
+    '--checkbox-disabled-color': colors.palette.neutralLight,
+    '--checkbox-size': `${size}rem`,
+    '--checkbox-bg-unchecked': colors.palette.white,
+    '--checkbox-bg': variantStyles.backgroundColor,
+    '--checkbox-border-unchecked': variantStyles.unCheckedBorder,
+    '--checkbox-border-checked': variantStyles.checkedBorder,
+    '--checkbox-checkmark': `url('${variantStyles.backgroundImage}')`,
+    '--checkbox-opacity': isDisabled ? '0.4' : '1',
+    '--checkbox-checked-opacity': isDisabled ? '0' : '1',
+    '--checkbox-disabled-border': `1px solid ${colors.palette.pale}`,
+    '--checkbox-indeterminate-bg': colors.palette.mediumBlue,
+    '--checkbox-indeterminate-icon': `url('${checkedMixIcon}')`,
+    ...style
+  } as React.CSSProperties;
+
   return (
-    <StyledCheckbox
+    <RACCheckbox
       {...props}
-      variant={variant}
-      checkboxSize={size}
-      bold={bold}
+      className={checkboxClassName}
+      style={checkboxStyle}
+      isDisabled={isDisabled}
     >
-      <div data-slot="selection" />
+      <div className="checkbox-input" data-slot="selection" />
       {children}
-    </StyledCheckbox>
+    </RACCheckbox>
   );
 };
