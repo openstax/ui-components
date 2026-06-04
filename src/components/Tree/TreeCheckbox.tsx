@@ -42,6 +42,7 @@ export const TreeCheckbox = ({
 
   // Build style with CSS variables
   const checkboxStyle = {
+    ...style,
     '--checkbox-font-weight': bold ? 700 : 400,
     '--checkbox-color': variantStyles.color,
     '--checkbox-disabled-color': colors.palette.neutralLight,
@@ -56,7 +57,6 @@ export const TreeCheckbox = ({
     '--checkbox-disabled-border': `1px solid ${colors.palette.pale}`,
     '--checkbox-indeterminate-bg': colors.palette.mediumBlue,
     '--checkbox-indeterminate-icon': `url('${checkedMixIcon}')`,
-    ...style
   } as React.CSSProperties;
 
   return (
