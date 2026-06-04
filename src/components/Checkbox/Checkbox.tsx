@@ -1,16 +1,9 @@
 import { LabelHTMLAttributes, PropsWithChildren } from "react";
-import {  checkboxLabelStyles, checkboxInputStyles, CheckboxVariant, CheckboxSize } from "./sharedCheckboxStyles";
-import styled from "styled-components";
+import { checkboxVariants, CheckboxVariant, CheckboxSize } from "./sharedCheckboxStyles";
 import { InputHTMLAttributes } from "react";
-
-const StyledLabel = styled.label<{ bold: boolean; variant: CheckboxVariant; isDisabled?: boolean; }>`
-  ${checkboxLabelStyles}
-`;
-
-// https://moderncss.dev/pure-css-custom-checkbox-style/
-const StyledInput = styled.input<{ variant: CheckboxVariant; checkboxSize: CheckboxSize; isDisabled?: boolean; }>`
-  ${checkboxInputStyles}
-`;
+import { colors } from "../../theme";
+import classNames from "classnames";
+import "./Checkbox.css";
 
 type CheckboxProps = PropsWithChildren<
   Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> & {
@@ -20,11 +13,56 @@ type CheckboxProps = PropsWithChildren<
   labelProps?: LabelHTMLAttributes<HTMLLabelElement>;
 }>;
 
-export const Checkbox = ({ children, disabled, variant = 'primary', bold = false, size = 1.6, labelProps, ...props }: CheckboxProps) => {
+export const Checkbox = ({ children, disabled, variant = 'primary', bold = false, size = 1.6, labelProps, className, style, ...props }: CheckboxProps) => {
+  // Get variant styles for CSS variables
+  const variantStyles = disabled ? checkboxVariants.disabled : checkboxVariants[variant];
+
+  // Merge labelProps className with our label classes
+  const labelClassName = classNames(
+    'checkbox-label',
+    { 'disabled': disabled },
+    labelProps?.className
+  );
+
+  // Merge labelProps style with our CSS variables
+  const labelStyle = {
+    '--checkbox-font-weight': bold ? 700 : 400,
+    '--checkbox-color': variantStyles.color,
+    '--checkbox-disabled-color': colors.palette.neutralLight,
+    ...labelProps?.style
+  } as React.CSSProperties;
+
+  // Merge input className
+  const inputClassName = classNames(
+    'checkbox-input',
+    { 'disabled': disabled },
+    className
+  );
+
+  // Merge input style with our CSS variables
+  const inputStyle = {
+    '--checkbox-size': `${size}rem`,
+    '--checkbox-bg-unchecked': colors.palette.white,
+    '--checkbox-bg': variantStyles.backgroundColor,
+    '--checkbox-border-unchecked': variantStyles.unCheckedBorder,
+    '--checkbox-border-checked': variantStyles.checkedBorder,
+    '--checkbox-checkmark': `url('${variantStyles.backgroundImage}')`,
+    '--checkbox-opacity': disabled ? '0.4' : '1',
+    '--checkbox-checked-opacity': disabled ? '0' : '1',
+    '--checkbox-disabled-border': `1px solid ${colors.palette.pale}`,
+    ...style
+  } as React.CSSProperties;
+
   return (
-    <StyledLabel bold={bold} variant={variant} isDisabled={disabled} {...labelProps}>
-      <StyledInput {...props} type="checkbox" variant={variant} checkboxSize={size} isDisabled={disabled} disabled={disabled} />
+    <label {...labelProps} className={labelClassName} style={labelStyle}>
+      <input
+        {...props}
+        type="checkbox"
+        className={inputClassName}
+        style={inputStyle}
+        disabled={disabled}
+      />
       {children}
-    </StyledLabel>
+    </label>
   );
 };
