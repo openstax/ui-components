@@ -51,7 +51,7 @@ const buttonStyleSets = asButtonStyleSetTypes({
  * @param variant - The button variant to get styles for
  * @returns ButtonStyleSet containing all variant-specific colors
  */
-export const getButtonVariantStyles = (variant: ButtonVariant): ButtonStyleSet => {
+export const getButtonVariantStyles = (variant: ButtonVariant) => {
   return buttonStyleSets[variant];
 };
 
