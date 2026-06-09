@@ -45,11 +45,23 @@ const buttonStyleSets = asButtonStyleSetTypes({
 } as const);
 
 /**
+ * Gets the button style set for a specific variant.
+ * Use this for binding theme colors to CSS custom properties.
+ *
+ * @param variant - The button variant to get styles for
+ * @returns ButtonStyleSet containing all variant-specific colors
+ */
+export const getButtonVariantStyles = (variant: ButtonVariant) => {
+  return buttonStyleSets[variant];
+};
+
+/**
  * Applies button variant styles based on the specified variant.
  *
  * @param variant - The button variant to apply
  * @returns CSS string with button styles
  * @type {CssFragment}
+ * @deprecated This function is deprecated. Use getButtonVariantStyles() with CSS custom properties instead.
  * @note Breaking change: Previously returned FlattenSimpleInterpolation from styled-components,
  * now returns a plain string. This is part of the migration away from styled-components.
  * The string can still be used in styled-components template literals.
