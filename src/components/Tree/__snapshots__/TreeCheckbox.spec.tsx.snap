@@ -24,7 +24,7 @@ exports[`TreeCheckbox handles disabled state 1`] = `
       "--checkbox-border-checked": "1px solid #d5d5d5",
       "--checkbox-border-unchecked": "1px solid #d5d5d5",
       "--checkbox-checked-opacity": "0",
-      "--checkbox-checkmark": "url('none')",
+      "--checkbox-checkmark": "none",
       "--checkbox-color": "inherit",
       "--checkbox-disabled-border": "1px solid #d5d5d5",
       "--checkbox-disabled-color": "#e5e5e5",

@@ -11,7 +11,7 @@ import "./Radio.css";
 type RadioProps = PropsWithChildren<
   Omit<InputHTMLAttributes<HTMLInputElement>, 'type'>>;
 
-export const Radio = ({ children, disabled, labelAs, className, style, ...props }: RadioProps & {
+export const Radio = ({ children, disabled, labelAs, className, style, tooltipText, ...props }: RadioProps & {
   tooltipText?: string;
   labelAs?: string;
 }) => {
@@ -30,7 +30,7 @@ export const Radio = ({ children, disabled, labelAs, className, style, ...props 
   const labelStyle = {
     '--radio-label-color': 'inherit',
     '--radio-disabled-color': colors.palette.pale,
-  } as React.CSSProperties;
+  } as unknown as React.CSSProperties;
 
   // Input className
   const inputClassName = classNames(
@@ -48,35 +48,54 @@ export const Radio = ({ children, disabled, labelAs, className, style, ...props 
     '--radio-opacity': disabled ? '0.4' : '1',
     '--radio-checked-opacity': disabled ? '0' : '1',
     ...style
-  } as React.CSSProperties;
+  } as unknown as React.CSSProperties;
 
-  return props.tooltipText
+  const labelElement = labelAs || 'label';
+
+  const labelContent = (
+    <>
+      <input
+        type="radio"
+        className={inputClassName}
+        style={inputStyle}
+        disabled={disabled}
+        {...props}
+      />
+      {children}
+    </>
+  );
+
+  const labelWithTooltip = (
+    <>
+      {labelContent}
+      {state.isOpen && (
+        <CustomTooltip state={state} {...tooltipProps} placement='right'>{tooltipText}</CustomTooltip>
+      )}
+    </>
+  );
+
+  return tooltipText
     ? <div>
         <div className="radio-label-with-tooltip-wrapper">
-          <label ref={ref} className={labelClassName} style={labelStyle} {...triggerProps} {...(labelAs ? { as: labelAs } as any : {})}>
-            <input
-              type="radio"
-              className={inputClassName}
-              style={inputStyle}
-              onFocus={() => state.open()}
-              disabled={disabled}
-              {...props}
-            />
-            {children}
-          {state.isOpen && (
-            <CustomTooltip state={state} {...tooltipProps} placement='right'>{props.tooltipText}</CustomTooltip>
+          {React.createElement(
+            labelElement,
+            {
+              ref,
+              className: labelClassName,
+              style: labelStyle,
+              ...triggerProps,
+              onFocus: () => state.open(),
+            },
+            labelWithTooltip
           )}
-          </label>
         </div>
       </div>
-    : <label className={labelClassName} style={labelStyle} {...(labelAs ? { as: labelAs } as any : {})}>
-        <input
-          type="radio"
-          className={inputClassName}
-          style={inputStyle}
-          disabled={disabled}
-          {...props}
-        />
-        {children}
-      </label>;
+    : React.createElement(
+        labelElement,
+        {
+          className: labelClassName,
+          style: labelStyle,
+        },
+        labelContent
+      );
 };

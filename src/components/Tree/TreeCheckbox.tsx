@@ -2,7 +2,6 @@ import {
   Checkbox as RACCheckbox,
   CheckboxProps as RACCheckboxProps
 } from "react-aria-components";
-import type React from "react";
 import { PropsWithChildren } from "react";
 import {
   checkboxVariants,
@@ -58,7 +57,7 @@ export const TreeCheckbox = ({
     '--checkbox-indeterminate-bg': colors.palette.mediumBlue,
     '--checkbox-indeterminate-icon': `url('${checkedMixIcon}')`,
     ...style,
-  } as React.CSSProperties;
+  } as unknown as RACCheckboxProps['style']; // --vars are not in the type
 
   return (
     <RACCheckbox

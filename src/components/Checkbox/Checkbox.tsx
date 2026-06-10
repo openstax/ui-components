@@ -31,7 +31,7 @@ export const Checkbox = ({ children, disabled, variant = 'primary', bold = false
     '--checkbox-color': variantStyles.color,
     '--checkbox-disabled-color': colors.palette.neutralLight,
     ...labelProps?.style
-  } as React.CSSProperties;
+  } as unknown as React.CSSProperties;
 
   // Merge input className
   const inputClassName = classNames(
@@ -51,7 +51,7 @@ export const Checkbox = ({ children, disabled, variant = 'primary', bold = false
     '--checkbox-opacity': disabled ? '0.4' : '1',
     '--checkbox-disabled-border': `1px solid ${colors.palette.pale}`,
     ...style
-  } as React.CSSProperties;
+  } as unknown as React.CSSProperties;
 
   return (
     <label {...labelProps} className={labelClassName} style={labelStyle}>
