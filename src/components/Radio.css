@@ -8,7 +8,7 @@
   position: relative;
 }
 
-.radio-label.disabled {
+.radio-label--disabled {
   color: var(--radio-disabled-color, #d5d5d5);
 }
 
@@ -43,11 +43,11 @@
   opacity: var(--radio-checked-opacity, 1);
 }
 
-.radio-input.disabled {
+.radio-input--disabled {
   opacity: 0.4;
 }
 
-.radio-input.disabled:checked::before {
+.radio-input--disabled:checked::before {
   opacity: 0;
 }
 

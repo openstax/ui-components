@@ -16,14 +16,14 @@ export const Radio = ({ children, disabled, labelAs, className, style, tooltipTe
   labelAs?: string;
 }) => {
   const state = useTooltipTriggerState({delay: 0});
-  const ref = React.useRef(null);
+  const ref = React.useRef<HTMLElement>(null);
 
   const { triggerProps, tooltipProps } = useTooltipTrigger({delay: 0}, state, ref);
 
   // Label className
   const labelClassName = classNames(
     'radio-label',
-    { 'disabled': disabled }
+    { 'radio-label--disabled': disabled }
   );
 
   // Label style with CSS variables
@@ -35,7 +35,7 @@ export const Radio = ({ children, disabled, labelAs, className, style, tooltipTe
   // Input className
   const inputClassName = classNames(
     'radio-input',
-    { 'disabled': disabled },
+    { 'radio-input--disabled': disabled },
     className
   );
 

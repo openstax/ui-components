@@ -2,7 +2,7 @@
 
 exports[`TreeCheckbox handles disabled state 1`] = `
 <label
-  className="checkbox-label disabled"
+  className="checkbox-label checkbox-label--disabled"
   data-disabled={true}
   data-rac=""
   data-react-aria-pressable={true}

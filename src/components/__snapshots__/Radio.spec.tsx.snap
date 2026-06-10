@@ -2,7 +2,7 @@
 
 exports[`Radio matches disabled snapshot 1`] = `
 <label
-  className="radio-label disabled"
+  className="radio-label radio-label--disabled"
   style={
     Object {
       "--radio-disabled-color": "#d5d5d5",
@@ -11,7 +11,7 @@ exports[`Radio matches disabled snapshot 1`] = `
   }
 >
   <input
-    className="radio-input disabled"
+    className="radio-input radio-input--disabled"
     disabled={true}
     style={
       Object {

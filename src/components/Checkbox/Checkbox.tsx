@@ -21,7 +21,7 @@ export const Checkbox = ({ children, disabled, variant = 'primary', bold = false
   // Merge labelProps className with our label classes
   const labelClassName = classNames(
     'checkbox-label',
-    { 'disabled': disabled },
+    { 'checkbox-label--disabled': disabled },
     labelProps?.className
   );
 
@@ -36,7 +36,7 @@ export const Checkbox = ({ children, disabled, variant = 'primary', bold = false
   // Merge input className
   const inputClassName = classNames(
     'checkbox-input',
-    { 'disabled': disabled },
+    { 'checkbox-input--disabled': disabled },
     className
   );
 

@@ -34,7 +34,7 @@ exports[`Checkbox allows setting props on label 1`] = `
 
 exports[`Checkbox handles disabled state 1`] = `
 <label
-  className="checkbox-label disabled"
+  className="checkbox-label checkbox-label--disabled"
   style={
     Object {
       "--checkbox-color": "inherit",
@@ -44,7 +44,7 @@ exports[`Checkbox handles disabled state 1`] = `
   }
 >
   <input
-    className="checkbox-input disabled"
+    className="checkbox-input checkbox-input--disabled"
     disabled={true}
     style={
       Object {

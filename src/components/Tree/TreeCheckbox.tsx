@@ -36,7 +36,7 @@ export const TreeCheckbox = ({
   // Build className
   const checkboxClassName = classNames(
     'checkbox-label',
-    { 'disabled': isDisabled },
+    { 'checkbox-label--disabled': isDisabled },
     className
   );
 
