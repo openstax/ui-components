@@ -2,6 +2,7 @@ import {
   Checkbox as RACCheckbox,
   CheckboxProps as RACCheckboxProps
 } from "react-aria-components";
+import type React from "react";
 import { PropsWithChildren } from "react";
 import {
   checkboxVariants,
@@ -42,7 +43,6 @@ export const TreeCheckbox = ({
 
   // Build style with CSS variables
   const checkboxStyle = {
-    ...style,
     '--checkbox-font-weight': bold ? 700 : 400,
     '--checkbox-color': variantStyles.color,
     '--checkbox-disabled-color': colors.palette.neutralLight,
@@ -51,12 +51,13 @@ export const TreeCheckbox = ({
     '--checkbox-bg': variantStyles.backgroundColor,
     '--checkbox-border-unchecked': variantStyles.unCheckedBorder,
     '--checkbox-border-checked': variantStyles.checkedBorder,
-    '--checkbox-checkmark': `url('${variantStyles.backgroundImage}')`,
+    '--checkbox-checkmark': variantStyles.backgroundImage === 'none' ? 'none' : `url('${variantStyles.backgroundImage}')`,
     '--checkbox-opacity': isDisabled ? '0.4' : '1',
     '--checkbox-checked-opacity': isDisabled ? '0' : '1',
     '--checkbox-disabled-border': `1px solid ${colors.palette.pale}`,
     '--checkbox-indeterminate-bg': colors.palette.mediumBlue,
     '--checkbox-indeterminate-icon': `url('${checkedMixIcon}')`,
+    ...style,
   } as React.CSSProperties;
 
   return (

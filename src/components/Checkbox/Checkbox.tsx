@@ -1,3 +1,4 @@
+import type React from "react";
 import { LabelHTMLAttributes, PropsWithChildren } from "react";
 import { checkboxVariants, CheckboxVariant, CheckboxSize } from "./sharedCheckboxStyles";
 import { InputHTMLAttributes } from "react";
@@ -46,9 +47,8 @@ export const Checkbox = ({ children, disabled, variant = 'primary', bold = false
     '--checkbox-bg': variantStyles.backgroundColor,
     '--checkbox-border-unchecked': variantStyles.unCheckedBorder,
     '--checkbox-border-checked': variantStyles.checkedBorder,
-    '--checkbox-checkmark': `url('${variantStyles.backgroundImage}')`,
+    '--checkbox-checkmark': variantStyles.backgroundImage === 'none' ? 'none' : `url('${variantStyles.backgroundImage}')`,
     '--checkbox-opacity': disabled ? '0.4' : '1',
-    '--checkbox-checked-opacity': disabled ? '0' : '1',
     '--checkbox-disabled-border': `1px solid ${colors.palette.pale}`,
     ...style
   } as React.CSSProperties;
