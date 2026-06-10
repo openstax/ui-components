@@ -1,20 +1,27 @@
-import styled from "styled-components";
-import { palette } from "../theme/palette";
+import React from 'react';
+import classNames from 'classnames';
+import './Text.css';
 
-export const H2 = styled.h2`
-  color: ${palette.neutralDarker};
-  font-size: 3.6rem;
-  font-weight: 700;
-`;
+export const H2 = React.forwardRef<HTMLHeadingElement, React.ComponentPropsWithoutRef<'h2'>>(
+  ({ className, ...props }, ref) => (
+    <h2 ref={ref} className={classNames('text-h2', className)} {...props} />
+  )
+);
 
-export const H3 = styled.h3`
-  color: ${palette.neutralDarker};
-  font-size: 1.6rem;
-  font-weight: 700;
-  text-transform: uppercase;
-`;
+H2.displayName = 'H2';
 
-export const Paragraph = styled.p`
-  color: ${palette.neutralDarker};
-  font-size: 1.8rem;
-`;
+export const H3 = React.forwardRef<HTMLHeadingElement, React.ComponentPropsWithoutRef<'h3'>>(
+  ({ className, ...props }, ref) => (
+    <h3 ref={ref} className={classNames('text-h3', className)} {...props} />
+  )
+);
+
+H3.displayName = 'H3';
+
+export const Paragraph = React.forwardRef<HTMLParagraphElement, React.ComponentPropsWithoutRef<'p'>>(
+  ({ className, ...props }, ref) => (
+    <p ref={ref} className={classNames('text-paragraph', className)} {...props} />
+  )
+);
+
+Paragraph.displayName = 'Paragraph';
