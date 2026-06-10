@@ -32,7 +32,6 @@
   width: var(--checkbox-size, 1.6rem);
   height: var(--checkbox-size, 1.6rem);
   border: var(--checkbox-border-checked, 1px solid #026AA1);
-  border-radius: 0.2rem;
   transform: scale(0);
   background-color: var(--checkbox-bg, #026AA1);
   background-image: var(--checkbox-checkmark, none);
@@ -76,7 +75,6 @@
   width: var(--checkbox-size, 1.6rem);
   height: var(--checkbox-size, 1.6rem);
   border: var(--checkbox-border-checked, 1px solid #026AA1);
-  border-radius: 0.2rem;
   transform: scale(0);
   background-color: var(--checkbox-bg, #026AA1);
   background-image: var(--checkbox-checkmark, none);
