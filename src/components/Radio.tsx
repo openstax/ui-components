@@ -73,6 +73,13 @@ export const Radio = ({ children, disabled, labelAs, className, style, tooltipTe
       )}
     </>
   );
+  const tPropsWithUpdatedOnFocus = {
+    ...triggerProps,
+    onFocus: (e: React.FocusEvent<HTMLElement>) => {
+      triggerProps.onFocus?.(e);
+      state.open();
+    },
+  };
 
   return tooltipText
     ? <div>
@@ -83,8 +90,7 @@ export const Radio = ({ children, disabled, labelAs, className, style, tooltipTe
               ref,
               className: labelClassName,
               style: labelStyle,
-              ...triggerProps,
-              onFocus: () => state.open(),
+              ...tPropsWithUpdatedOnFocus,
             },
             labelWithTooltip
           )}
