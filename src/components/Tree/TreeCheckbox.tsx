@@ -66,7 +66,7 @@ export const TreeCheckbox = ({
       style={checkboxStyle}
       isDisabled={isDisabled}
     >
-      <div className="checkbox-input" data-slot="selection" />
+      <div data-slot="selection" />
       {children}
     </RACCheckbox>
   );
