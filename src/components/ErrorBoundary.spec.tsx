@@ -5,6 +5,15 @@ import * as Sentry from '@sentry/react';
 import { findByTestId } from '../test/utils';
 import { SessionExpiredError } from '@openstax/ts-utils/errors';
 
+// Sentry v8+ exposes its named exports as read-only getters, so they can no longer
+// be replaced with jest.spyOn directly. Mock the module to make lastEventId spyable
+// while keeping the real init/captureException so the testkit transport still works.
+jest.mock('@sentry/react', () => ({
+  __esModule: true,
+  ...jest.requireActual('@sentry/react'),
+  lastEventId: jest.fn(),
+}));
+
 const { testkit, sentryTransport } = sentryTestkit();
 
 const ErrorComponent = () => { throw new Error('Test Error') };
@@ -21,6 +30,9 @@ describe('ErrorBoundary', () => {
 
   afterEach(() => {
     jest.resetAllMocks();
+    // Sentry v8+ flushes captured events to the testkit transport synchronously,
+    // so reports leak between tests unless we clear them after each one.
+    testkit.reset();
   });
 
   it('renders children', () => {
