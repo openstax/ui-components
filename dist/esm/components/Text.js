@@ -1,0 +1,10 @@
+import { jsx as _jsx } from "react/jsx-runtime";
+import React from 'react';
+import classNames from 'classnames';
+import './Text.css';
+export const H2 = React.forwardRef(({ className, ...props }, ref) => (_jsx("h2", { ref: ref, className: classNames('text-h2', className), ...props })));
+H2.displayName = 'H2';
+export const H3 = React.forwardRef(({ className, ...props }, ref) => (_jsx("h3", { ref: ref, className: classNames('text-h3', className), ...props })));
+H3.displayName = 'H3';
+export const Paragraph = React.forwardRef(({ className, ...props }, ref) => (_jsx("p", { ref: ref, className: classNames('text-paragraph', className), ...props })));
+Paragraph.displayName = 'Paragraph';
