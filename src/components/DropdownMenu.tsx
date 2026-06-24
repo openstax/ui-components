@@ -85,7 +85,6 @@ interface DropdownMenuButtonProps<T> extends MenuProps<T>, Omit<MenuTriggerProps
 export const DropdownMenu = <T extends object>(
   { text, children, variant, width, disabled, ...props }: DropdownMenuButtonProps<T>
 ) => {
-  console.log('width', width);
   return (
     <MenuTrigger {...props}>
       <StyledButton variant={variant} width={width} isDisabled={disabled}>{text}</StyledButton>
