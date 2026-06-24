@@ -1,0 +1,2 @@
+export declare const StyledToggleButtonGroup: import("styled-components").StyledComponent<(props: import("react-aria-components").ToggleButtonGroupProps & React.RefAttributes<HTMLDivElement>) => React.ReactElement | null, any, {}, never>;
+export declare const StyledToggleButton: import("styled-components").StyledComponent<(props: import("react-aria-components").ToggleButtonProps & React.RefAttributes<HTMLButtonElement>) => React.ReactElement | null, any, {}, never>;
