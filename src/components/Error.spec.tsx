@@ -3,6 +3,14 @@ import { render, act } from '@testing-library/react';
 import { Error } from './Error';
 import * as Sentry from '@sentry/react';
 
+// Sentry v8+ exposes its named exports as read-only getters, so they can no longer
+// be replaced with jest.spyOn directly. Mock the module to make lastEventId spyable.
+jest.mock('@sentry/react', () => ({
+  __esModule: true,
+  ...jest.requireActual('@sentry/react'),
+  lastEventId: jest.fn(),
+}));
+
 describe('Error', () => {
   it('matches snapshot', () => {
     const tree = renderer.create(

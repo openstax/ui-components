@@ -67,7 +67,7 @@ export const Fallback_GenericError_Custom = () => {
     fallback={(props) => (
       <>
       <h2>This is a custom error fallback</h2>
-        <p>{props && props.error.toString()}</p>
+        <p>{props && String(props.error)}</p>
         {props && props.resetError ? <button onClick={props && props.resetError}>Reset</button> : null}
       </>
     )}>

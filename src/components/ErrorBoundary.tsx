@@ -1,7 +1,7 @@
 import * as Sentry from '@sentry/react';
+import type { ErrorBoundaryProps } from '@sentry/react';
 import React from 'react';
 import { Error as ErrorComponent, ErrorPropTypes } from './Error';
-import type { ErrorBoundaryProps } from '@sentry/react/types/errorboundary';
 import { ErrorContext } from '../contexts';
 import { SentryError } from '../types';
 import { getTypeFromError } from '../utils';
@@ -94,9 +94,11 @@ export const ErrorBoundary = ({
       fallback={renderElement}
       onError={(error, componentStack, eventId) => {
         setError({
-          error,
+          // Sentry v8+ types this callback's error as `unknown`; a React error boundary
+          // always hands us a thrown Error here.
+          error: error as Error,
           // If the error is a custom error from ts-utils, use the custom type instead of 'Error'
-          type: getTypeFromError(error),
+          type: getTypeFromError(error as Error),
           componentStack,
           eventId
         });

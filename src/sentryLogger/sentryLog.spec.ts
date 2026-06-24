@@ -2,6 +2,14 @@ import { createSentryLogger } from './sentryLog';
 import * as Sentry from "@sentry/react";
 import { Level, Logger } from '@openstax/ts-utils/services/logger';
 
+// Sentry v8+ exposes its named exports as read-only getters, so they can no longer
+// be replaced with jest.spyOn directly. Mock the module to make addBreadcrumb spyable.
+jest.mock('@sentry/react', () => ({
+  __esModule: true,
+  ...jest.requireActual('@sentry/react'),
+  addBreadcrumb: jest.fn(),
+}));
+
 describe('createConsoleLogger', () => {
   let logFn: jest.SpyInstance;
   let logger: Logger;
