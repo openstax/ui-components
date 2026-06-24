@@ -14,15 +14,15 @@ const StyledButton = styled(Button)<{ variant: ButtonVariant; width?: string }>`
   flex-direction: row;
   font-size: 1.6rem;
   position: relative;
-  justify-content: center;
+  justify-content: space-between;
   line-height: 2rem;
   min-height: 2.5rem;
-  padding: 0 1.5rem 0 0.5rem;
+  padding: 1rem 2.5rem 1rem 1rem;
   text-align: left;
   text-decoration: none;
   transition: all 0.2s ease-in-out;
   user-select: none;
-  ${(props) => props.width ? `width: ${props.width}` : null}
+  ${(props) => props.width ? `width: ${props.width};` : null}
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
 
@@ -40,11 +40,11 @@ const StyledButton = styled(Button)<{ variant: ButtonVariant; width?: string }>`
     content: ' ';
     display: block;
     position: absolute;
-    height: 0.5rem;
+    height: 0.6rem;
     margin-top: -0.25rem;
-    right: 0.5rem;
+    right: 1rem;
     transform: rotate(135deg);
-    width: 0.5rem;
+    width: 0.6rem;
   }
 `;
 
@@ -52,22 +52,25 @@ const StyledMenu = styled(Menu)`
   margin-top: -0.6rem;
   background-color: ${palette.white};
   border: 0.1rem solid ${palette.pale};
-  padding: 0.3rem 0;
+  padding: 0;
   cursor: pointer;
   color: ${palette.black};
 
   [role="menuitem"] {
+    display: block;
+    color: inherit;
+    text-decoration: none;
     font-size: 1.6rem;
     min-height: 2.5rem;
     line-height: 2rem;
-    padding: 0 0.5rem;
+    padding: 1rem 0.5rem;
     cursor: pointer;
     transition: all 0.2s ease-in-out;
     -moz-osx-font-smoothing: grayscale;
     -webkit-font-smoothing: antialiased;
 
     &:hover {
-      background-color: ${palette.pale};
+      background-color: ${palette.neutralLighter};
     }
   }
 `;
@@ -82,6 +85,7 @@ interface DropdownMenuButtonProps<T> extends MenuProps<T>, Omit<MenuTriggerProps
 export const DropdownMenu = <T extends object>(
   { text, children, variant, width, disabled, ...props }: DropdownMenuButtonProps<T>
 ) => {
+  console.log('width', width);
   return (
     <MenuTrigger {...props}>
       <StyledButton variant={variant} width={width} isDisabled={disabled}>{text}</StyledButton>
