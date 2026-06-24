@@ -1,76 +1,8 @@
+import React from 'react';
 import { Button, Menu, MenuItem, MenuProps, MenuTrigger, MenuTriggerProps, Popover } from 'react-aria-components';
-import styled from 'styled-components';
-import { ButtonVariant, applyButtonVariantStyles } from '../theme/buttons';
+import { ButtonVariant, getButtonVariantStyles } from '../theme/buttons';
 import { palette } from '../theme/palette';
-
-const StyledButton = styled(Button)<{ variant: ButtonVariant; width?: string }>`
-  ${(props) => applyButtonVariantStyles(props.variant)}
-
-  align-items: center;
-  border: 0;
-  border-radius: 0.5rem;
-  box-shadow: 0px 0.2rem 0.4rem rgba(0, 0, 0, 0.2);
-  display: inline-flex;
-  flex-direction: row;
-  font-size: 1.6rem;
-  position: relative;
-  justify-content: center;
-  line-height: 2rem;
-  min-height: 2.5rem;
-  padding: 0 1.5rem 0 0.5rem;
-  text-align: left;
-  text-decoration: none;
-  transition: all 0.2s ease-in-out;
-  user-select: none;
-  ${(props) => props.width ? `width: ${props.width}` : null}
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-font-smoothing: antialiased;
-
-  &:disabled {
-    opacity: 0.4;
-  }
-
-  &:not([disabled]) {
-    cursor: pointer;
-  }
-
-  :after {
-    background: ${(props) => props.variant === 'light' ? palette.black : palette.white};
-    clip-path: polygon(0 0, 100% 100%, 100% 0);
-    content: ' ';
-    display: block;
-    position: absolute;
-    height: 0.5rem;
-    margin-top: -0.25rem;
-    right: 0.5rem;
-    transform: rotate(135deg);
-    width: 0.5rem;
-  }
-`;
-
-const StyledMenu = styled(Menu)`
-  margin-top: -0.6rem;
-  background-color: ${palette.white};
-  border: 0.1rem solid ${palette.pale};
-  padding: 0.3rem 0;
-  cursor: pointer;
-  color: ${palette.black};
-
-  [role="menuitem"] {
-    font-size: 1.6rem;
-    min-height: 2.5rem;
-    line-height: 2rem;
-    padding: 0 0.5rem;
-    cursor: pointer;
-    transition: all 0.2s ease-in-out;
-    -moz-osx-font-smoothing: grayscale;
-    -webkit-font-smoothing: antialiased;
-
-    &:hover {
-      background-color: ${palette.pale};
-    }
-  }
-`;
+import './DropdownMenu.css';
 
 interface DropdownMenuButtonProps<T> extends MenuProps<T>, Omit<MenuTriggerProps, 'children'> {
   text?: string;
@@ -82,13 +14,26 @@ interface DropdownMenuButtonProps<T> extends MenuProps<T>, Omit<MenuTriggerProps
 export const DropdownMenu = <T extends object>(
   { text, children, variant, width, disabled, ...props }: DropdownMenuButtonProps<T>
 ) => {
+  const variantStyles = getButtonVariantStyles(variant);
+  const buttonStyle = {
+    '--button-bg': variantStyles.background,
+    '--button-bg-hover': variantStyles.backgroundHover,
+    '--button-bg-active': variantStyles.backgroundActive,
+    '--button-color': variantStyles.color,
+    '--button-outline': variantStyles.outline,
+    '--button-shadow': variantStyles.shadow,
+    '--button-font-weight': variantStyles.fontWeight ?? 700,
+    '--dropdown-caret-color': variant === 'light' ? palette.black : palette.white,
+    ...(width ? { width } : {}),
+  } as React.CSSProperties;
+
   return (
     <MenuTrigger {...props}>
-      <StyledButton variant={variant} width={width} isDisabled={disabled}>{text}</StyledButton>
+      <Button className="dropdown-menu-button" style={buttonStyle} isDisabled={disabled}>{text}</Button>
       <Popover>
-        <StyledMenu {...props}>
+        <Menu {...props} className="dropdown-menu">
           {children}
-        </StyledMenu>
+        </Menu>
       </Popover>
     </MenuTrigger>
   );
