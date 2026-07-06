@@ -57,13 +57,13 @@ jobs:
         id: node_modules
         with:
           path: node_modules
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
 
       - id: build
         run: |
           prefix="${{ steps.setup.outputs.prefix }}"
-          yarn
-          yarn ladle-build --base "/ui-components/$prefix/"
+          npm ci
+          npm run ladle-build -- --base "/ui-components/$prefix/"
           mkdir -p "./$prefix"
           mv ./docs/* "./$prefix"
 
