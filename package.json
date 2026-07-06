@@ -56,7 +56,7 @@
   },
   "devDependencies": {
     "@ladle/react": "^2.1.2",
-    "@openstax/ts-utils": "^1.32.5",
+    "@openstax/ts-utils": "^1.50.2",
     "@playwright/test": "^1.25.0",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.4.8",
