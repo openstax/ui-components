@@ -6,6 +6,10 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      deployments: write
+      packages: read
 
     steps:
       - id: setup
@@ -57,13 +61,17 @@ jobs:
         id: node_modules
         with:
           path: node_modules
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+
+      - run: echo '//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}' >> ~/.npmrc
 
       - id: build
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           prefix="${{ steps.setup.outputs.prefix }}"
-          yarn
-          yarn ladle-build --base "/ui-components/$prefix/"
+          npm ci
+          npm run ladle-build -- --base "/ui-components/$prefix/"
           mkdir -p "./$prefix"
           mv ./docs/* "./$prefix"
 

@@ -44,11 +44,11 @@ import { Button, Modal } from '@openstax/ui-components';
 ## Development
 
 ```bash
-yarn dev         # Watch mode
-yarn ladle serve # Component demos at localhost:61000
-yarn test        # Run tests
-yarn lint        # Check code rules
-yarn dist        # Build distribution files
+npm run dev        # Watch mode
+npx ladle serve    # Component demos at localhost:61000
+npm run test       # Run tests
+npm run lint       # Check code rules
+npm run dist       # Build distribution files
 ```
 
 ## Testing Across Projects
