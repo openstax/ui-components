@@ -1,0 +1,9 @@
+import{s as a,j as r,F as c,a as t}from"./index.005ed882.js";import{C as l}from"./Checkbox.ce855103.js";import"./sharedCheckboxStyles.a055ce2c.js";import"./theme.469067e1.js";import"./palette.5e342580.js";import"./Tooltip.ebca4810.js";import"./Button.module.cd444d72.js";import"./useFocusRing.module.2167027c.js";import"./context.module.d7ed4a1e.js";import"./useButton.module.5d647851.js";import"./OverlayArrow.module.6121e775.js";import"./Info.e614cb7d.js";const h=a.div`
+  text-transform: capitalize;
+  & + & {
+    margin-top: 3.2rem;
+  }
+  > * + * {
+    margin-top: 0.5rem;
+  }
+`,o=(i,e)=>r(h,{children:[r("h2",{children:["Size ",e]}),t(l,{size:e,variant:i,children:"Checkbox label"}),t(l,{size:e,variant:i,defaultChecked:!0,children:"Checkbox label"}),t(l,{size:e,variant:i,defaultChecked:!0,bold:!0,children:"Checkbox label"})]}),w=()=>r(c,{children:[o("primary",1.4),o("primary",1.6),o("primary",1.8),o("primary",2)]}),T=()=>r(c,{children:[o("light",1.4),o("light",1.6),o("light",1.8),o("light",2)]}),d=(i,e)=>r(h,{children:[r("h2",{children:[i," - Size ",e]}),t(l,{size:e,variant:i,disabled:!0,children:"Checkbox label"}),t(l,{size:e,variant:i,disabled:!0,defaultChecked:!0,children:"Checkbox label"}),t(l,{size:e,variant:i,disabled:!0,defaultChecked:!0,bold:!0,children:"Checkbox label"})]}),D=()=>r(c,{children:[d("primary",1.6),d("primary",2),d("light",1.6),d("light",2)]}),j=()=>r(h,{children:[t(l,{tooltipText:"Tooltip text for checkbox goes here",children:"Checkbox label"}),t(l,{disabled:!0,tooltipText:"This option is unavailable",children:"Disabled label with tooltip"}),t(l,{disabled:!0,defaultChecked:!0,tooltipText:"This option is unavailable",children:"Disabled checked label with tooltip"})]});typeof window<"u"&&window.document&&window.document.createElement&&document.documentElement.setAttribute("data-storyloaded","");export{D as Disabled,T as Light,w as Primary,j as WithTooltip};
