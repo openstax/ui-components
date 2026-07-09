@@ -46,3 +46,9 @@ export const Disabled = () => <>
   {renderDisabledCheckboxes('light', 1.6)}
   {renderDisabledCheckboxes('light', 2)}
 </>
+
+export const WithTooltip = () => <CheckboxGroup>
+  <Checkbox tooltipText="Tooltip text for checkbox goes here">Checkbox label</Checkbox>
+  <Checkbox disabled tooltipText="This option is unavailable">Disabled label with tooltip</Checkbox>
+  <Checkbox disabled defaultChecked tooltipText="This option is unavailable">Disabled checked label with tooltip</Checkbox>
+</CheckboxGroup>;
