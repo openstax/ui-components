@@ -6,6 +6,7 @@ import { useLabelTooltip } from '../Tooltip';
 
 const StyledLabel = styled.label<{ bold: boolean; variant: CheckboxVariant; isDisabled?: boolean; }>`
   ${checkboxLabelStyles}
+  position: relative;
 `;
 
 // https://moderncss.dev/pure-css-custom-checkbox-style/
@@ -15,7 +16,6 @@ const StyledInput = styled.input<{ variant: CheckboxVariant; checkboxSize: Check
 
 const LabelWithTooltipWrapper = styled.div`
   display: inline-block;
-  position: relative;
 `;
 
 type CheckboxProps = PropsWithChildren<
