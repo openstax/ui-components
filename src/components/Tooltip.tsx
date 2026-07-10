@@ -1,8 +1,10 @@
+import { useRef } from 'react';
 import styled from 'styled-components';
 import { colors } from '../theme';
 import { Button, OverlayArrow, Tooltip as AriaTooltip, TooltipTrigger } from 'react-aria-components';
 import { Info } from './svgs/Info';
-import {mergeProps, Placement, useTooltip} from 'react-aria';
+import { useTooltipTriggerState } from 'react-stately';
+import {mergeProps, Placement, useTooltip, useTooltipTrigger} from 'react-aria';
 
 const tooltipStyles = `
   box-shadow: 0 0.8rem 2rem rgba(0 0 0 / 0.1);
@@ -114,3 +116,19 @@ export const CustomTooltip = ({ state, ...props }: any) => {
     </StyledCustomTooltip>
   );
 }
+
+// Shared logic for showing a CustomTooltip on a label-wrapped input (Checkbox, Radio).
+export const useLabelTooltip = (tooltipText?: string, placement: Placement = 'right') => {
+  const state = useTooltipTriggerState({ delay: 0 });
+  const triggerRef = useRef(null);
+  const { triggerProps, tooltipProps } = useTooltipTrigger({ delay: 0 }, state, triggerRef);
+
+  return {
+    triggerRef,
+    triggerProps,
+    openTooltip: () => state.open(),
+    tooltip: tooltipText && state.isOpen
+      ? <CustomTooltip state={state} {...tooltipProps} placement={placement}>{tooltipText}</CustomTooltip>
+      : null,
+  };
+};

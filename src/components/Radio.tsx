@@ -1,11 +1,8 @@
-import React from 'react';
 import { PropsWithChildren } from "react";
 import { colors } from "../theme";
 import styled from "styled-components";
 import { InputHTMLAttributes } from "react";
-import {useTooltipTriggerState} from 'react-stately';
-import {useTooltipTrigger} from 'react-aria';
-import { CustomTooltip } from './Tooltip';
+import { useLabelTooltip } from './Tooltip';
 
 export const StyledLabel = styled.label<{isDisabled?: boolean}>`
   font-size: 1.6rem;
@@ -54,25 +51,19 @@ const LabelWithTooltipWrapper = styled.div`
 type RadioProps = PropsWithChildren<
   Omit<InputHTMLAttributes<HTMLInputElement>, 'type'>>;
 
-export const Radio = ({ children, disabled, labelAs, ...props }: RadioProps & {
+export const Radio = ({ children, disabled, labelAs, tooltipText, ...props }: RadioProps & {
   tooltipText?: string;
   labelAs?: string;
 }) => {
+  const { triggerRef, triggerProps, openTooltip, tooltip } = useLabelTooltip(tooltipText);
 
-  const state = useTooltipTriggerState({delay: 0});
-  const ref = React.useRef(null);
-
-  const { triggerProps, tooltipProps } = useTooltipTrigger({delay: 0}, state, ref);
-
-  return props.tooltipText
+  return tooltipText
     ? <div>
         <LabelWithTooltipWrapper>
-          <StyledLabel ref={ref} as={labelAs as any} isDisabled={disabled} {...triggerProps}>
-            <StyledInput type="radio" onFocus={() => state.open()} isDisabled={disabled} disabled={disabled} {...props} />
+          <StyledLabel ref={triggerRef} as={labelAs as any} isDisabled={disabled} {...triggerProps}>
+            <StyledInput type="radio" onFocus={openTooltip} isDisabled={disabled} disabled={disabled} {...props} />
             {children}
-          {state.isOpen && (
-            <CustomTooltip state={state} {...tooltipProps} placement='right'>{props.tooltipText}</CustomTooltip>
-          )}
+          {tooltip}
           </StyledLabel>
         </LabelWithTooltipWrapper>
       </div>

@@ -1,10 +1,8 @@
-import React, { LabelHTMLAttributes, PropsWithChildren } from "react";
+import { LabelHTMLAttributes, PropsWithChildren } from "react";
 import {  checkboxLabelStyles, checkboxInputStyles, CheckboxVariant, CheckboxSize } from "./sharedCheckboxStyles";
 import styled from "styled-components";
 import { InputHTMLAttributes } from "react";
-import {useTooltipTriggerState} from 'react-stately';
-import {useTooltipTrigger} from 'react-aria';
-import { CustomTooltip } from '../Tooltip';
+import { useLabelTooltip } from '../Tooltip';
 
 const StyledLabel = styled.label<{ bold: boolean; variant: CheckboxVariant; isDisabled?: boolean; }>`
   ${checkboxLabelStyles}
@@ -30,19 +28,14 @@ type CheckboxProps = PropsWithChildren<
 }>;
 
 export const Checkbox = ({ children, disabled, variant = 'primary', bold = false, size = 1.6, labelProps, tooltipText, ...props }: CheckboxProps) => {
-  const state = useTooltipTriggerState({delay: 0});
-  const ref = React.useRef(null);
-
-  const { triggerProps, tooltipProps } = useTooltipTrigger({delay: 0}, state, ref);
+  const { triggerRef, triggerProps, openTooltip, tooltip } = useLabelTooltip(tooltipText);
 
   return tooltipText
     ? <LabelWithTooltipWrapper>
-        <StyledLabel ref={ref} bold={bold} variant={variant} isDisabled={disabled} {...triggerProps} {...labelProps}>
-          <StyledInput {...props} type="checkbox" onFocus={() => state.open()} variant={variant} checkboxSize={size} isDisabled={disabled} disabled={disabled} />
+        <StyledLabel ref={triggerRef} bold={bold} variant={variant} isDisabled={disabled} {...triggerProps} {...labelProps}>
+          <StyledInput {...props} type="checkbox" onFocus={openTooltip} variant={variant} checkboxSize={size} isDisabled={disabled} disabled={disabled} />
           {children}
-          {state.isOpen && (
-            <CustomTooltip state={state} {...tooltipProps} placement='right'>{tooltipText}</CustomTooltip>
-          )}
+          {tooltip}
         </StyledLabel>
       </LabelWithTooltipWrapper>
     : <StyledLabel bold={bold} variant={variant} isDisabled={disabled} {...labelProps}>
