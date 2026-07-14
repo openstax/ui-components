@@ -1,11 +1,8 @@
-import React from 'react';
 import { PropsWithChildren } from "react";
 import { colors } from "../theme";
 import styled from "styled-components";
 import { InputHTMLAttributes } from "react";
-import {useTooltipTriggerState} from 'react-stately';
-import {useTooltipTrigger} from 'react-aria';
-import { CustomTooltip } from './Tooltip';
+import { useLabelTooltip } from './Tooltip';
 
 export const StyledLabel = styled.label<{isDisabled?: boolean}>`
   font-size: 1.6rem;
@@ -49,31 +46,28 @@ export const StyledInput = styled.input<{isDisabled?: boolean}>`
 
 const LabelWithTooltipWrapper = styled.div`
   display: inline-block;
+  position: relative;
+  font-size: 1.6rem;
 `;
 
 type RadioProps = PropsWithChildren<
   Omit<InputHTMLAttributes<HTMLInputElement>, 'type'>>;
 
-export const Radio = ({ children, disabled, labelAs, ...props }: RadioProps & {
+export const Radio = ({ children, disabled, labelAs, tooltipText, ...props }: RadioProps & {
   tooltipText?: string;
   labelAs?: string;
 }) => {
+  const { triggerRef, triggerProps, labelDescription, tooltip } = useLabelTooltip(tooltipText);
 
-  const state = useTooltipTriggerState({delay: 0});
-  const ref = React.useRef(null);
-
-  const { triggerProps, tooltipProps } = useTooltipTrigger({delay: 0}, state, ref);
-
-  return props.tooltipText
+  return tooltipText
     ? <div>
         <LabelWithTooltipWrapper>
-          <StyledLabel ref={ref} as={labelAs as any} isDisabled={disabled} {...triggerProps}>
-            <StyledInput type="radio" onFocus={() => state.open()} isDisabled={disabled} disabled={disabled} {...props} />
+          <StyledLabel ref={triggerRef} as={labelAs as any} isDisabled={disabled} {...triggerProps}>
+            <StyledInput {...props} type="radio" isDisabled={disabled} disabled={disabled} />
             {children}
-          {state.isOpen && (
-            <CustomTooltip state={state} {...tooltipProps} placement='right'>{props.tooltipText}</CustomTooltip>
-          )}
+            {labelDescription}
           </StyledLabel>
+          {tooltip}
         </LabelWithTooltipWrapper>
       </div>
     : <StyledLabel isDisabled={disabled} as={labelAs as any}>

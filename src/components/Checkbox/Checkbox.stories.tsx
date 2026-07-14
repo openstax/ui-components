@@ -46,3 +46,31 @@ export const Disabled = () => <>
   {renderDisabledCheckboxes('light', 1.6)}
   {renderDisabledCheckboxes('light', 2)}
 </>
+
+const VerticalCheckboxGroup = styled.div`
+  text-transform: capitalize;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+  & + & {
+    margin-top: 3.2rem;
+  }
+`;
+
+export const WithTooltip = () => <>
+  <VerticalCheckboxGroup>
+    <h2>Primary</h2>
+    <Checkbox variant="primary" tooltipText="Tooltip text for checkbox goes here">Checkbox label</Checkbox>
+    <Checkbox variant="primary" defaultChecked tooltipText="Tooltip text for checkbox goes here">Checked label with tooltip</Checkbox>
+    <Checkbox variant="primary" disabled tooltipText="This option is unavailable">Disabled label with tooltip</Checkbox>
+    <Checkbox variant="primary" disabled defaultChecked tooltipText="This option is unavailable">Disabled checked label with tooltip</Checkbox>
+  </VerticalCheckboxGroup>
+  <VerticalCheckboxGroup>
+    <h2>Light</h2>
+    <Checkbox variant="light" tooltipText="Tooltip text for checkbox goes here">Checkbox label</Checkbox>
+    <Checkbox variant="light" defaultChecked tooltipText="Tooltip text for checkbox goes here">Checked label with tooltip</Checkbox>
+    <Checkbox variant="light" disabled tooltipText="This option is unavailable">Disabled label with tooltip</Checkbox>
+    <Checkbox variant="light" disabled defaultChecked tooltipText="This option is unavailable">Disabled checked label with tooltip</Checkbox>
+  </VerticalCheckboxGroup>
+</>;

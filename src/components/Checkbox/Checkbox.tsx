@@ -2,6 +2,8 @@ import { LabelHTMLAttributes, PropsWithChildren } from "react";
 import {  checkboxLabelStyles, checkboxInputStyles, CheckboxVariant, CheckboxSize } from "./sharedCheckboxStyles";
 import styled from "styled-components";
 import { InputHTMLAttributes } from "react";
+import { mergeProps } from 'react-aria';
+import { useLabelTooltip } from '../Tooltip';
 
 const StyledLabel = styled.label<{ bold: boolean; variant: CheckboxVariant; isDisabled?: boolean; }>`
   ${checkboxLabelStyles}
@@ -12,19 +14,35 @@ const StyledInput = styled.input<{ variant: CheckboxVariant; checkboxSize: Check
   ${checkboxInputStyles}
 `;
 
+const LabelWithTooltipWrapper = styled.div`
+  display: inline-block;
+  position: relative;
+  font-size: 1.6rem;
+`;
+
 type CheckboxProps = PropsWithChildren<
   Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> & {
   variant?: CheckboxVariant;
   size?: CheckboxSize;
   bold?: boolean;
   labelProps?: LabelHTMLAttributes<HTMLLabelElement>;
+  tooltipText?: string;
 }>;
 
-export const Checkbox = ({ children, disabled, variant = 'primary', bold = false, size = 1.6, labelProps, ...props }: CheckboxProps) => {
-  return (
-    <StyledLabel bold={bold} variant={variant} isDisabled={disabled} {...labelProps}>
-      <StyledInput {...props} type="checkbox" variant={variant} checkboxSize={size} isDisabled={disabled} disabled={disabled} />
-      {children}
-    </StyledLabel>
-  );
+export const Checkbox = ({ children, disabled, variant = 'primary', bold = false, size = 1.6, labelProps, tooltipText, ...props }: CheckboxProps) => {
+  const { triggerRef, triggerProps, labelDescription, tooltip } = useLabelTooltip(tooltipText);
+
+  return tooltipText
+    ? <LabelWithTooltipWrapper>
+        <StyledLabel ref={triggerRef} bold={bold} variant={variant} isDisabled={disabled} {...mergeProps(triggerProps, labelProps)}>
+          <StyledInput {...props} type="checkbox" variant={variant} checkboxSize={size} isDisabled={disabled} disabled={disabled} />
+          {children}
+          {labelDescription}
+        </StyledLabel>
+        {tooltip}
+      </LabelWithTooltipWrapper>
+    : <StyledLabel bold={bold} variant={variant} isDisabled={disabled} {...labelProps}>
+        <StyledInput {...props} type="checkbox" variant={variant} checkboxSize={size} isDisabled={disabled} disabled={disabled} />
+        {children}
+      </StyledLabel>;
 };
