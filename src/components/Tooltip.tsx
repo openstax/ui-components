@@ -4,7 +4,7 @@ import { colors } from '../theme';
 import { Button, OverlayArrow, Tooltip as AriaTooltip, TooltipTrigger } from 'react-aria-components';
 import { Info } from './svgs/Info';
 import { useTooltipTriggerState } from 'react-stately';
-import {mergeProps, Placement, useTooltip, useTooltipTrigger} from 'react-aria';
+import {mergeProps, Placement, useTooltip, useTooltipTrigger, VisuallyHidden} from 'react-aria';
 
 const tooltipStyles = `
   box-shadow: 0 0.8rem 2rem rgba(0 0 0 / 0.1);
@@ -122,14 +122,15 @@ export const useLabelTooltip = (tooltipText?: string, placement: Placement = 'ri
   const state = useTooltipTriggerState({ delay: 0 });
   const triggerRef = useRef(null);
   const { triggerProps, tooltipProps } = useTooltipTrigger({ delay: 0 }, state, triggerRef);
-  const { 'aria-describedby': describedBy, ...labelTriggerProps } = triggerProps;
+
+  const { 'aria-describedby': _unusedDescribedBy, ...labelTriggerProps } = triggerProps;
 
   return {
     triggerRef,
     triggerProps: labelTriggerProps,
-    inputProps: describedBy ? { 'aria-describedby': describedBy } : {},
+    labelDescription: tooltipText ? <VisuallyHidden>{tooltipText}</VisuallyHidden> : null,
     tooltip: tooltipText && state.isOpen
-      ? <CustomTooltip state={state} {...tooltipProps} placement={placement}>{tooltipText}</CustomTooltip>
+      ? <CustomTooltip state={state} {...tooltipProps} placement={placement} aria-hidden={true}>{tooltipText}</CustomTooltip>
       : null,
   };
 };

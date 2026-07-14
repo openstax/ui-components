@@ -57,14 +57,15 @@ export const Radio = ({ children, disabled, labelAs, tooltipText, ...props }: Ra
   tooltipText?: string;
   labelAs?: string;
 }) => {
-  const { triggerRef, triggerProps, inputProps, tooltip } = useLabelTooltip(tooltipText);
+  const { triggerRef, triggerProps, labelDescription, tooltip } = useLabelTooltip(tooltipText);
 
   return tooltipText
     ? <div>
         <LabelWithTooltipWrapper>
           <StyledLabel ref={triggerRef} as={labelAs as any} isDisabled={disabled} {...triggerProps}>
-            <StyledInput {...props} type="radio" {...inputProps} isDisabled={disabled} disabled={disabled} />
+            <StyledInput {...props} type="radio" isDisabled={disabled} disabled={disabled} />
             {children}
+            {labelDescription}
           </StyledLabel>
           {tooltip}
         </LabelWithTooltipWrapper>

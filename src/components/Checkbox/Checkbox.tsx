@@ -29,13 +29,14 @@ type CheckboxProps = PropsWithChildren<
 }>;
 
 export const Checkbox = ({ children, disabled, variant = 'primary', bold = false, size = 1.6, labelProps, tooltipText, ...props }: CheckboxProps) => {
-  const { triggerRef, triggerProps, inputProps, tooltip } = useLabelTooltip(tooltipText);
+  const { triggerRef, triggerProps, labelDescription, tooltip } = useLabelTooltip(tooltipText);
 
   return tooltipText
     ? <LabelWithTooltipWrapper>
         <StyledLabel ref={triggerRef} bold={bold} variant={variant} isDisabled={disabled} {...triggerProps} {...labelProps}>
-          <StyledInput {...props} type="checkbox" {...inputProps} variant={variant} checkboxSize={size} isDisabled={disabled} disabled={disabled} />
+          <StyledInput {...props} type="checkbox" variant={variant} checkboxSize={size} isDisabled={disabled} disabled={disabled} />
           {children}
+          {labelDescription}
         </StyledLabel>
         {tooltip}
       </LabelWithTooltipWrapper>
