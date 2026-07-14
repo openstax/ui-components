@@ -33,7 +33,7 @@ export const Checkbox = ({ children, disabled, variant = 'primary', bold = false
 
   return tooltipText
     ? <LabelWithTooltipWrapper>
-        <StyledLabel ref={triggerRef} bold={bold} variant={variant} isDisabled={disabled} {...triggerProps} {...labelProps}>
+        <StyledLabel ref={triggerRef} bold={bold} variant={variant} isDisabled={disabled} {...labelProps} {...triggerProps}>
           <StyledInput {...props} type="checkbox" variant={variant} checkboxSize={size} isDisabled={disabled} disabled={disabled} />
           {children}
           {labelDescription}
