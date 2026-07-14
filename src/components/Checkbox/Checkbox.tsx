@@ -2,6 +2,7 @@ import { LabelHTMLAttributes, PropsWithChildren } from "react";
 import {  checkboxLabelStyles, checkboxInputStyles, CheckboxVariant, CheckboxSize } from "./sharedCheckboxStyles";
 import styled from "styled-components";
 import { InputHTMLAttributes } from "react";
+import { mergeProps } from 'react-aria';
 import { useLabelTooltip } from '../Tooltip';
 
 const StyledLabel = styled.label<{ bold: boolean; variant: CheckboxVariant; isDisabled?: boolean; }>`
@@ -33,7 +34,7 @@ export const Checkbox = ({ children, disabled, variant = 'primary', bold = false
 
   return tooltipText
     ? <LabelWithTooltipWrapper>
-        <StyledLabel ref={triggerRef} bold={bold} variant={variant} isDisabled={disabled} {...labelProps} {...triggerProps}>
+        <StyledLabel ref={triggerRef} bold={bold} variant={variant} isDisabled={disabled} {...mergeProps(triggerProps, labelProps)}>
           <StyledInput {...props} type="checkbox" variant={variant} checkboxSize={size} isDisabled={disabled} disabled={disabled} />
           {children}
           {labelDescription}
