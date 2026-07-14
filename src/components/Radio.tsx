@@ -46,6 +46,8 @@ export const StyledInput = styled.input<{isDisabled?: boolean}>`
 
 const LabelWithTooltipWrapper = styled.div`
   display: inline-block;
+  position: relative;
+  font-size: 1.6rem;
 `;
 
 type RadioProps = PropsWithChildren<
@@ -55,16 +57,16 @@ export const Radio = ({ children, disabled, labelAs, tooltipText, ...props }: Ra
   tooltipText?: string;
   labelAs?: string;
 }) => {
-  const { triggerRef, triggerProps, openTooltip, tooltip } = useLabelTooltip(tooltipText);
+  const { triggerRef, triggerProps, inputProps, tooltip } = useLabelTooltip(tooltipText);
 
   return tooltipText
     ? <div>
         <LabelWithTooltipWrapper>
           <StyledLabel ref={triggerRef} as={labelAs as any} isDisabled={disabled} {...triggerProps}>
-            <StyledInput type="radio" onFocus={openTooltip} isDisabled={disabled} disabled={disabled} {...props} />
+            <StyledInput {...props} type="radio" {...inputProps} isDisabled={disabled} disabled={disabled} />
             {children}
-          {tooltip}
           </StyledLabel>
+          {tooltip}
         </LabelWithTooltipWrapper>
       </div>
     : <StyledLabel isDisabled={disabled} as={labelAs as any}>

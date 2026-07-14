@@ -122,11 +122,12 @@ export const useLabelTooltip = (tooltipText?: string, placement: Placement = 'ri
   const state = useTooltipTriggerState({ delay: 0 });
   const triggerRef = useRef(null);
   const { triggerProps, tooltipProps } = useTooltipTrigger({ delay: 0 }, state, triggerRef);
+  const { 'aria-describedby': describedBy, ...labelTriggerProps } = triggerProps;
 
   return {
     triggerRef,
-    triggerProps,
-    openTooltip: () => state.open(),
+    triggerProps: labelTriggerProps,
+    inputProps: describedBy ? { 'aria-describedby': describedBy } : {},
     tooltip: tooltipText && state.isOpen
       ? <CustomTooltip state={state} {...tooltipProps} placement={placement}>{tooltipText}</CustomTooltip>
       : null,
