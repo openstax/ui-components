@@ -8,13 +8,13 @@ export interface CloseModalButtonProps extends React.ButtonHTMLAttributes<HTMLBu
 }
 
 export const CloseModalButton = React.forwardRef<HTMLButtonElement, CloseModalButtonProps>(
-  ({ variant, className, ...props }, ref) => (
+  ({ variant, className, type: _type, 'aria-label': _ariaLabel, ...props }, ref) => (
     <button
+      {...props}
       ref={ref}
       type='button'
       aria-label='Close'
       className={classNames('close-modal-button', variant, className)}
-      {...props}
     >
       <Times aria-hidden='true' focusable='false' />
     </button>

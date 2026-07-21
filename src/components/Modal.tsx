@@ -4,7 +4,7 @@ import * as RAC from "react-aria-components";
 import React from "react";
 import './Modal.css';
 
-export const ModalCard = React.forwardRef<HTMLDivElement, RAC.DialogProps>(
+export const ModalCard = React.forwardRef<HTMLElement, RAC.DialogProps>(
   ({ className, ...props }, ref) => (
     <RAC.Dialog
       ref={ref}

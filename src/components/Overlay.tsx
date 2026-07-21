@@ -38,7 +38,7 @@ export const OverlayWrapper = React.forwardRef<HTMLDivElement, React.ComponentPr
 );
 OverlayWrapper.displayName = 'OverlayWrapper';
 
-export const OverlayBody = React.forwardRef<HTMLDivElement, RAC.DialogProps>(
+export const OverlayBody = React.forwardRef<HTMLElement, RAC.DialogProps>(
   ({ className, ...props }, ref) => (
     <RAC.Dialog
       ref={ref}
