@@ -119,7 +119,7 @@ Array [
         >
           <path
             d="M0 0 L4 4 L8 0"
-            stroke="#ccc"
+            stroke="var(--tooltip-border-color, #ccc)"
             strokeWidth="1"
           />
         </svg>
