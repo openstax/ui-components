@@ -49,8 +49,8 @@ export const CustomModalComposition = () => {
         <div className="card-wrapper">
           <ModalCard>
             <header className="modal-header">
-              <h2>Custom Modal using Subcomponents</h2>
-              <button onClick={() => setShow(false)}>✕</button>
+              <h2 slot="title">Custom Modal using Subcomponents</h2>
+              <button aria-label="Close" onClick={() => setShow(false)}>✕</button>
             </header>
             <ModalBody>
               <ModalBodyHeading>Custom Composition</ModalBodyHeading>
