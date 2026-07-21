@@ -33,7 +33,7 @@
 }
 
 /* Default tabs variant (horizontal with underline) */
-.tabs[data-orientation="horizontal"] [role="tablist"] {
+.tabs:not(.tabs-button-bar)[data-orientation="horizontal"] [role="tablist"] {
   border-bottom: 0.1rem solid var(--tabs-border-color, #d5d5d5);
 }
 

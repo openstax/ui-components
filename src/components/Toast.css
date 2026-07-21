@@ -19,7 +19,7 @@
 }
 
 .toast.toast-dismissable {
-  animation-duration: 500ms;
+  animation-duration: var(--toast-animation-duration, 500ms);
   animation-timing-function: ease;
   animation-iteration-count: 1;
   animation-direction: normal;

@@ -8,10 +8,11 @@ exports[`BodyPortalToastContainer matches snapshot 1`] = `
   <div
     class="toast-container"
     data-portal-slot="toast"
+    style="--toast-container-z-index: 40;"
   >
     <div
       class="toast"
-      style="--toast-success-title-color: #4e7226; --toast-success-bg: #e0edd3; --toast-neutral-title-color: #424242; --toast-neutral-bg: #f1f1f1; --toast-failure-title-color: #c22032; --toast-failure-bg: #FBE7EA; --toast-failure-icon-color: #5f6163;"
+      style="--toast-animation-duration: 500ms; --toast-success-title-color: #4e7226; --toast-success-bg: #e0edd3; --toast-neutral-title-color: #424242; --toast-neutral-bg: #f1f1f1; --toast-failure-title-color: #c22032; --toast-failure-bg: #FBE7EA; --toast-failure-icon-color: #5f6163;"
     >
       <div
         class="neutral"
@@ -30,7 +31,7 @@ exports[`BodyPortalToastContainer matches snapshot 1`] = `
     </div>
     <div
       class="toast toast-dismissable"
-      style="--toast-success-title-color: #4e7226; --toast-success-bg: #e0edd3; --toast-neutral-title-color: #424242; --toast-neutral-bg: #f1f1f1; --toast-failure-title-color: #c22032; --toast-failure-bg: #FBE7EA; --toast-failure-icon-color: #5f6163; animation-delay: 3500ms;"
+      style="--toast-animation-duration: 500ms; --toast-success-title-color: #4e7226; --toast-success-bg: #e0edd3; --toast-neutral-title-color: #424242; --toast-neutral-bg: #f1f1f1; --toast-failure-title-color: #c22032; --toast-failure-bg: #FBE7EA; --toast-failure-icon-color: #5f6163; animation-delay: 3500ms;"
     >
       <div
         class="failure"
@@ -49,7 +50,7 @@ exports[`BodyPortalToastContainer matches snapshot 1`] = `
     </div>
     <div
       class="toast toast-dismissable"
-      style="--toast-success-title-color: #4e7226; --toast-success-bg: #e0edd3; --toast-neutral-title-color: #424242; --toast-neutral-bg: #f1f1f1; --toast-failure-title-color: #c22032; --toast-failure-bg: #FBE7EA; --toast-failure-icon-color: #5f6163; animation-delay: 1500ms;"
+      style="--toast-animation-duration: 500ms; --toast-success-title-color: #4e7226; --toast-success-bg: #e0edd3; --toast-neutral-title-color: #424242; --toast-neutral-bg: #f1f1f1; --toast-failure-title-color: #c22032; --toast-failure-bg: #FBE7EA; --toast-failure-icon-color: #5f6163; animation-delay: 1500ms;"
     >
       <div
         class="success"
@@ -78,10 +79,11 @@ exports[`BodyPortalToastContainer uses inline prop 1`] = `
   <div
     class="toast-container toast-container-inline"
     data-portal-slot="toast"
+    style="--toast-container-z-index: 40;"
   >
     <div
       class="toast toast-inline"
-      style="--toast-success-title-color: #4e7226; --toast-success-bg: #e0edd3; --toast-neutral-title-color: #424242; --toast-neutral-bg: #f1f1f1; --toast-failure-title-color: #c22032; --toast-failure-bg: #FBE7EA; --toast-failure-icon-color: #5f6163;"
+      style="--toast-animation-duration: 500ms; --toast-success-title-color: #4e7226; --toast-success-bg: #e0edd3; --toast-neutral-title-color: #424242; --toast-neutral-bg: #f1f1f1; --toast-failure-title-color: #c22032; --toast-failure-bg: #FBE7EA; --toast-failure-icon-color: #5f6163;"
     >
       <div
         class="neutral"
@@ -100,7 +102,7 @@ exports[`BodyPortalToastContainer uses inline prop 1`] = `
     </div>
     <div
       class="toast toast-inline toast-dismissable"
-      style="--toast-success-title-color: #4e7226; --toast-success-bg: #e0edd3; --toast-neutral-title-color: #424242; --toast-neutral-bg: #f1f1f1; --toast-failure-title-color: #c22032; --toast-failure-bg: #FBE7EA; --toast-failure-icon-color: #5f6163; animation-delay: 3500ms;"
+      style="--toast-animation-duration: 500ms; --toast-success-title-color: #4e7226; --toast-success-bg: #e0edd3; --toast-neutral-title-color: #424242; --toast-neutral-bg: #f1f1f1; --toast-failure-title-color: #c22032; --toast-failure-bg: #FBE7EA; --toast-failure-icon-color: #5f6163; animation-delay: 3500ms;"
     >
       <div
         class="failure"
@@ -119,7 +121,7 @@ exports[`BodyPortalToastContainer uses inline prop 1`] = `
     </div>
     <div
       class="toast toast-inline toast-dismissable"
-      style="--toast-success-title-color: #4e7226; --toast-success-bg: #e0edd3; --toast-neutral-title-color: #424242; --toast-neutral-bg: #f1f1f1; --toast-failure-title-color: #c22032; --toast-failure-bg: #FBE7EA; --toast-failure-icon-color: #5f6163; animation-delay: 1500ms;"
+      style="--toast-animation-duration: 500ms; --toast-success-title-color: #4e7226; --toast-success-bg: #e0edd3; --toast-neutral-title-color: #424242; --toast-neutral-bg: #f1f1f1; --toast-failure-title-color: #c22032; --toast-failure-bg: #FBE7EA; --toast-failure-icon-color: #5f6163; animation-delay: 1500ms;"
     >
       <div
         class="success"
@@ -150,7 +152,7 @@ exports[`ToastContainer matches snapshot 1`] = `
     >
       <div
         class="toast"
-        style="--toast-success-title-color: #4e7226; --toast-success-bg: #e0edd3; --toast-neutral-title-color: #424242; --toast-neutral-bg: #f1f1f1; --toast-failure-title-color: #c22032; --toast-failure-bg: #FBE7EA; --toast-failure-icon-color: #5f6163;"
+        style="--toast-animation-duration: 500ms; --toast-success-title-color: #4e7226; --toast-success-bg: #e0edd3; --toast-neutral-title-color: #424242; --toast-neutral-bg: #f1f1f1; --toast-failure-title-color: #c22032; --toast-failure-bg: #FBE7EA; --toast-failure-icon-color: #5f6163;"
       >
         <div
           class="neutral"
@@ -169,7 +171,7 @@ exports[`ToastContainer matches snapshot 1`] = `
       </div>
       <div
         class="toast toast-dismissable"
-        style="--toast-success-title-color: #4e7226; --toast-success-bg: #e0edd3; --toast-neutral-title-color: #424242; --toast-neutral-bg: #f1f1f1; --toast-failure-title-color: #c22032; --toast-failure-bg: #FBE7EA; --toast-failure-icon-color: #5f6163; animation-delay: 3500ms;"
+        style="--toast-animation-duration: 500ms; --toast-success-title-color: #4e7226; --toast-success-bg: #e0edd3; --toast-neutral-title-color: #424242; --toast-neutral-bg: #f1f1f1; --toast-failure-title-color: #c22032; --toast-failure-bg: #FBE7EA; --toast-failure-icon-color: #5f6163; animation-delay: 3500ms;"
       >
         <div
           class="failure"
@@ -188,7 +190,7 @@ exports[`ToastContainer matches snapshot 1`] = `
       </div>
       <div
         class="toast toast-dismissable"
-        style="--toast-success-title-color: #4e7226; --toast-success-bg: #e0edd3; --toast-neutral-title-color: #424242; --toast-neutral-bg: #f1f1f1; --toast-failure-title-color: #c22032; --toast-failure-bg: #FBE7EA; --toast-failure-icon-color: #5f6163; animation-delay: 1500ms;"
+        style="--toast-animation-duration: 500ms; --toast-success-title-color: #4e7226; --toast-success-bg: #e0edd3; --toast-neutral-title-color: #424242; --toast-neutral-bg: #f1f1f1; --toast-failure-title-color: #c22032; --toast-failure-bg: #FBE7EA; --toast-failure-icon-color: #5f6163; animation-delay: 1500ms;"
       >
         <div
           class="success"
@@ -220,7 +222,7 @@ exports[`ToastContainer uses inline prop 1`] = `
     >
       <div
         class="toast toast-inline"
-        style="--toast-success-title-color: #4e7226; --toast-success-bg: #e0edd3; --toast-neutral-title-color: #424242; --toast-neutral-bg: #f1f1f1; --toast-failure-title-color: #c22032; --toast-failure-bg: #FBE7EA; --toast-failure-icon-color: #5f6163;"
+        style="--toast-animation-duration: 500ms; --toast-success-title-color: #4e7226; --toast-success-bg: #e0edd3; --toast-neutral-title-color: #424242; --toast-neutral-bg: #f1f1f1; --toast-failure-title-color: #c22032; --toast-failure-bg: #FBE7EA; --toast-failure-icon-color: #5f6163;"
       >
         <div
           class="neutral"
@@ -239,7 +241,7 @@ exports[`ToastContainer uses inline prop 1`] = `
       </div>
       <div
         class="toast toast-inline toast-dismissable"
-        style="--toast-success-title-color: #4e7226; --toast-success-bg: #e0edd3; --toast-neutral-title-color: #424242; --toast-neutral-bg: #f1f1f1; --toast-failure-title-color: #c22032; --toast-failure-bg: #FBE7EA; --toast-failure-icon-color: #5f6163; animation-delay: 3500ms;"
+        style="--toast-animation-duration: 500ms; --toast-success-title-color: #4e7226; --toast-success-bg: #e0edd3; --toast-neutral-title-color: #424242; --toast-neutral-bg: #f1f1f1; --toast-failure-title-color: #c22032; --toast-failure-bg: #FBE7EA; --toast-failure-icon-color: #5f6163; animation-delay: 3500ms;"
       >
         <div
           class="failure"
@@ -258,7 +260,7 @@ exports[`ToastContainer uses inline prop 1`] = `
       </div>
       <div
         class="toast toast-inline toast-dismissable"
-        style="--toast-success-title-color: #4e7226; --toast-success-bg: #e0edd3; --toast-neutral-title-color: #424242; --toast-neutral-bg: #f1f1f1; --toast-failure-title-color: #c22032; --toast-failure-bg: #FBE7EA; --toast-failure-icon-color: #5f6163; animation-delay: 1500ms;"
+        style="--toast-animation-duration: 500ms; --toast-success-title-color: #4e7226; --toast-success-bg: #e0edd3; --toast-neutral-title-color: #424242; --toast-neutral-bg: #f1f1f1; --toast-failure-title-color: #c22032; --toast-failure-bg: #FBE7EA; --toast-failure-icon-color: #5f6163; animation-delay: 1500ms;"
       >
         <div
           class="success"

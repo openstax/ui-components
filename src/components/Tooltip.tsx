@@ -1,3 +1,4 @@
+import React from 'react';
 import { Button, OverlayArrow, Tooltip as AriaTooltip, TooltipTrigger } from 'react-aria-components';
 import { Info } from './svgs/Info';
 import {mergeProps, Placement, useTooltip} from 'react-aria';
@@ -11,7 +12,7 @@ type TooltipProps = {
   ariaLabel?: string;
 };
 
-export const Tooltip = ({children, placement, icon, ...props}: React.PropsWithChildren<TooltipProps>) => {
+export const Tooltip = ({children, placement, icon, ariaLabel, ...props}: React.PropsWithChildren<TooltipProps>) => {
   const style = {
     '--tooltip-bg': palette.white,
     '--tooltip-color': palette.neutralThin,

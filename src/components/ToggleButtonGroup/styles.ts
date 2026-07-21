@@ -3,7 +3,7 @@ import { ToggleButtonGroup, ToggleButton } from "react-aria-components";
 import { colors } from "../../theme";
 
 export const StyledToggleButtonGroup = styled(ToggleButtonGroup)`
-  // formerly {tabListBaseCss}
+  /* formerly tabListBaseCss */
   overflow-x: auto;
   overscroll-behavior: contain;
   display: flex;

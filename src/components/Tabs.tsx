@@ -9,6 +9,7 @@ export type TabsProps = {
   size?: "large" | "medium" | "small";
   className?: string;
   children?: React.ReactNode;
+  style?: React.CSSProperties;
 } & RAC.TabsProps;
 
 export const Tabs = ({
@@ -16,6 +17,7 @@ export const Tabs = ({
   size = "medium",
   className,
   children,
+  style,
   ...restProps
 }: TabsProps) => {
   const tabsClass = classNames('tabs', {
@@ -25,7 +27,7 @@ export const Tabs = ({
     'tabs-large': size === 'large',
   }, className);
 
-  const style = {
+  const additionalStyle = {
     '--tabs-border-color': palette.pale,
     '--tabs-active-border-color': palette.darkGreen,
     '--tabs-button-selected-bg': palette.neutralLight,
@@ -35,7 +37,7 @@ export const Tabs = ({
   return (
     <RAC.Tabs
       className={tabsClass}
-      style={style}
+      style={{...additionalStyle, ...style}}
       {...restProps}
     >
       {children}

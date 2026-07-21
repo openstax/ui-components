@@ -5,6 +5,7 @@ exports[`Toast has variants and inlines 1`] = `
   className="toast"
   style={
     Object {
+      "--toast-animation-duration": "500ms",
       "--toast-failure-bg": "#FBE7EA",
       "--toast-failure-icon-color": "#5f6163",
       "--toast-failure-title-color": "#c22032",
@@ -37,6 +38,7 @@ exports[`Toast has variants and inlines 2`] = `
   className="toast"
   style={
     Object {
+      "--toast-animation-duration": "500ms",
       "--toast-failure-bg": "#FBE7EA",
       "--toast-failure-icon-color": "#5f6163",
       "--toast-failure-title-color": "#c22032",
@@ -69,6 +71,7 @@ exports[`Toast has variants and inlines 3`] = `
   className="toast toast-inline"
   style={
     Object {
+      "--toast-animation-duration": "500ms",
       "--toast-failure-bg": "#FBE7EA",
       "--toast-failure-icon-color": "#5f6163",
       "--toast-failure-title-color": "#c22032",
@@ -101,6 +104,7 @@ exports[`Toast matches snapshot 1`] = `
   className="toast"
   style={
     Object {
+      "--toast-animation-duration": "500ms",
       "--toast-failure-bg": "#FBE7EA",
       "--toast-failure-icon-color": "#5f6163",
       "--toast-failure-title-color": "#c22032",
