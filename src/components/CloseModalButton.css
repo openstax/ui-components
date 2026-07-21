@@ -1,0 +1,44 @@
+/* Base close modal button styles */
+.close-modal-button {
+  padding: 0;
+  cursor: pointer;
+  margin-right: 0;
+  background: transparent;
+  height: 2.4rem;
+  width: 2.4rem;
+  border: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* Default variant colors using CSS custom properties with fallbacks */
+  color: var(--close-button-color, #a0a0a0);
+}
+
+.close-modal-button:hover {
+  color: var(--close-button-hover-color, #5f6163);
+}
+
+/* Error variant */
+.close-modal-button.error {
+  --close-button-color: #c22032;
+  --close-button-hover-color: #c22032;
+}
+
+/* Inverted circle variant */
+.close-modal-button.inverted-circle {
+  color: #ffffff;
+  border: 0.1rem solid #ffffff;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.close-modal-button.inverted-circle:hover,
+.close-modal-button.inverted-circle:focus {
+  color: #000000;
+  background-color: #ffffff;
+  border-color: #ffffff;
+}

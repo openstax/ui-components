@@ -1,36 +1,53 @@
-import styled from "styled-components";
+import classNames from "classnames";
 import { CloseModalButton } from "./CloseModalButton";
 import { Mask, ModalWrapper } from "./Modal";
 import * as RAC from "react-aria-components";
 import React from "react";
+import './Overlay.css';
 
-export const OverlayMask = styled(Mask)`
-  background-color: rgba(0, 0, 0, 0.89);
-`;
+export const OverlayMask = React.forwardRef<HTMLDivElement, RAC.ModalOverlayProps>(
+  ({ className, ...props }, ref) => (
+    <Mask
+      ref={ref}
+      className={classNames('overlay-mask', className)}
+      {...props}
+    />
+  )
+);
+OverlayMask.displayName = 'OverlayMask';
 
-export const OverlayCloseButton = styled(CloseModalButton)`
-  height: 4rem;
-  width: 4rem;
-  position: absolute;
-  right: 2em;
-  top: 2em;
-`;
+export const OverlayCloseButton = React.forwardRef<HTMLButtonElement, React.ComponentProps<typeof CloseModalButton>>(
+  ({ className, ...props }, ref) => (
+    <CloseModalButton
+      ref={ref}
+      className={classNames('overlay-close-button', className)}
+      {...props}
+    />
+  )
+);
+OverlayCloseButton.displayName = 'OverlayCloseButton';
 
-export const OverlayWrapper = styled(ModalWrapper)`
-  color: #fff;
-`;
+export const OverlayWrapper = React.forwardRef<HTMLDivElement, React.ComponentProps<typeof ModalWrapper>>(
+  ({ className, ...props }, ref) => (
+    <ModalWrapper
+      ref={ref}
+      className={classNames('overlay-wrapper', className)}
+      {...props}
+    />
+  )
+);
+OverlayWrapper.displayName = 'OverlayWrapper';
 
-export const OverlayBody = styled(RAC.Dialog)`
-  position: relative;
-  flex-grow: 1;
-  height: 100%;
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  outline: none;
-`;
+export const OverlayBody = React.forwardRef<HTMLDivElement, RAC.DialogProps>(
+  ({ className, ...props }, ref) => (
+    <RAC.Dialog
+      ref={ref}
+      className={classNames('overlay-body', className)}
+      {...props}
+    />
+  )
+);
+OverlayBody.displayName = 'OverlayBody';
 
 export const Overlay = ({
   className,
