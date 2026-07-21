@@ -225,18 +225,24 @@ describe('ErrorBoundary', () => {
 
     expect(initSpy).toHaveBeenCalledWith(config);
   });
-  it('throws if Sentry init is called twice', () => {
+  it('is idempotent when the init effect re-runs (does not throw or re-init)', () => {
+    const initSpy = jest.spyOn(Sentry, 'init');
     const config = {
       dsn: 'https://examplePublicKey@o0.ingest.sentry.io/0',
       enabled: false,
       transport: sentryTransport
     };
 
-    const instance = renderer.create(
-      <ErrorBoundary
-        sentryInit={config}
-      />
-    );
+    let instance: ReactTestRenderer;
+    act(() => {
+      instance = renderer.create(
+        <ErrorBoundary
+          sentryInit={config}
+        />
+      );
+    });
+
+    expect(initSpy).toHaveBeenCalledTimes(1);
 
     let caught;
     const saveError = console.error;
@@ -246,8 +252,9 @@ describe('ErrorBoundary', () => {
     } catch (e) {
       caught = e;
     }
-
-    expect(caught).toBe('Sentry.init was already called');
     console.error = saveError;
+
+    expect(caught).toBeUndefined();
+    expect(initSpy).toHaveBeenCalledTimes(1);
   });
 });

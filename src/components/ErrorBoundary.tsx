@@ -60,8 +60,9 @@ export const ErrorBoundary = ({
     if (!sentryDsn && !sentryInit) {
       return;
     }
+    // init once; re-runs (StrictMode double-invoke, prop change) are a no-op
     if (initCalled.current) {
-      throw 'Sentry.init was already called';
+      return;
     }
 
     initCalled.current = true;
