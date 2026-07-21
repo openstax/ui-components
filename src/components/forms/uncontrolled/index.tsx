@@ -1,6 +1,6 @@
 import React from 'react';
-import styled from 'styled-components';
 import { stateHasError, FetchState } from "@openstax/ts-utils/fetch";
+import './formComponents.css';
 
 export * from './inputs';
 
@@ -8,35 +8,30 @@ export * from './inputs';
  * form element
  */
 type FormProps = React.ComponentPropsWithoutRef<'form'>;
-export const Form = styled(({children, ...props}: FormProps) => <form {...props}>
-  {children}
-</form>)`
-  margin: 5px;
-  > *:not(:first-child) {
-    margin-top: 2rem;
-  }
+export const Form = ({children, className, style, ...props}: FormProps) => {
+  const formStyle = {
+    '--form-border-color': '#ccc',
+    ...style
+  } as React.CSSProperties;
 
-  h3 {
-    border-bottom: 1px solid #ccc;
-  }
-`;
+  return (
+    <form className={`form ${className || ''}`} style={formStyle} {...props}>
+      {children}
+    </form>
+  );
+};
 
-export const FormSection = styled.div`
-  > *:not(:first-child) {
-    margin-top: 2rem;
-  }
-`;
+export const FormSection = ({className, ...props}: React.ComponentPropsWithoutRef<'div'>) => (
+  <div className={`form-section ${className || ''}`} {...props} />
+);
 
 type MessagesProps = {
   state: FetchState<any, string>;
   className?: string;
 };
-export const Messages = styled(({state}: MessagesProps) => stateHasError(state)
-  ? <div>{state.error}</div>
-  : null
-)`
-  font-weight: bold;
-`;
+export const Messages = ({state, className}: MessagesProps) => stateHasError(state)
+  ? <div className={`messages ${className || ''}`}>{state.error}</div>
+  : null;
 
 /*
  * form buttons
@@ -46,26 +41,18 @@ type ButtonsProps = {
   onCancel?: () => void;
   className?: string;
 };
-export const Buttons = styled((props: ButtonsProps) => <div className={props.className}>
-  {'onCancel' in props ? <Cancel onClick={props.onCancel}>Cancel</Cancel> : null}
-  <Submit />
-</div>)`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  && {
-    margin-top: 3rem;
-  }
-`;
+export const Buttons = (props: ButtonsProps) => (
+  <div className={`buttons ${props.className || ''}`}>
+    {'onCancel' in props ? <Cancel onClick={props.onCancel}>Cancel</Cancel> : null}
+    <Submit />
+  </div>
+);
 
 // submit button
 type SubmitButtonProps = React.ComponentPropsWithoutRef<'input'>;
-export const Submit = styled(({...props}: SubmitButtonProps) =>
-  <input type="submit" value="Submit" {...props} />
-)`
-`;
+export const Submit = ({...props}: SubmitButtonProps) =>
+  <input type="submit" value="Submit" {...props} />;
 
 // cancel button
 type CancelButtonProps = React.ComponentPropsWithoutRef<'button'>;
-export const Cancel = styled(({...props}: CancelButtonProps) => <button type="button" {...props} />)`
-`;
+export const Cancel = ({...props}: CancelButtonProps) => <button type="button" {...props} />;

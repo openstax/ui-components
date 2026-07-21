@@ -1,18 +1,17 @@
 import React from 'react';
-import styled from 'styled-components';
+import './inputDecorations.css';
 
-export const FormInputWrapper = styled.label`
-  display: flex;
-  flex-direction: column;
-  flex: 0;
-  justify-content: stretch;
-`;
+export const FormInputWrapper = React.forwardRef<
+  HTMLLabelElement,
+  React.ComponentPropsWithoutRef<'label'>
+>(({className, ...props}, ref) => (
+  <label ref={ref} className={`form-input-wrapper ${className || ''}`} {...props} />
+));
+FormInputWrapper.displayName = 'FormInputWrapper';
 
-export const FormLabelText = styled.span`
-  white-space: nowrap;
-  font-weight: bold;
-  display: block;
-`;
+export const FormLabelText = ({className, ...props}: React.ComponentPropsWithoutRef<'span'>) => (
+  <span className={`form-label-text ${className || ''}`} {...props} />
+);
 
 export type InputProps = {
   label: string;
@@ -22,16 +21,11 @@ export type InputProps = {
 /*
  * help text
  */
-const HelpTextElement = styled.p`
-  font-style: italic;
-  margin: 0;
-  padding: 0;
-`;
 type HelpTextProps = React.ComponentPropsWithoutRef<'p'> & {
   value: string | undefined | React.ReactNode;
 };
-export const HelpText = ({value, ...props}: HelpTextProps) => value
-  ? <HelpTextElement {...props}>{value}</HelpTextElement>
+export const HelpText = ({value, className, ...props}: HelpTextProps) => value
+  ? <p className={`help-text ${className || ''}`} {...props}>{value}</p>
   : null;
 
 export const RequiredIndicator = (props: {show: boolean | undefined}) => props.show ? <>*</> : null;
