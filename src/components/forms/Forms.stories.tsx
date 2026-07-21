@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import {Controlled as Forms, Uncontrolled} from '.';
-import { fetchSuccess } from "@openstax/ts-utils/fetch";
+import { fetchSuccess, fetchError } from "@openstax/ts-utils/fetch";
 
 export const BasicControlledForm = () => {
   const data = {
@@ -118,4 +118,60 @@ export const DataReferencesInNamespaces = () => {
       </Forms.GetFormValue>
     </>}</Forms.GetFormData>
   </Forms.Form>
+};
+
+export const UncontrolledForm = () => {
+  const [submitted, setSubmitted] = React.useState<Record<string, any>>({});
+  const state = fetchSuccess({});
+
+  return <>
+    <h2>Basic Uncontrolled Form</h2>
+    <Uncontrolled.Form onSubmit={(e) => {
+      e.preventDefault();
+      const formData = new FormData(e.currentTarget);
+      const data = Object.fromEntries(formData.entries());
+      setSubmitted(data);
+    }}>
+      <Uncontrolled.FormSection>
+        <Uncontrolled.TextInput label="Name" name="name" help="Enter your full name" />
+        <Uncontrolled.TextInput label="Email" name="email" required help="We'll never share your email" />
+      </Uncontrolled.FormSection>
+      <Uncontrolled.Buttons state={state} />
+    </Uncontrolled.Form>
+    <pre>{JSON.stringify(submitted, null, 2)}</pre>
+  </>;
+};
+
+export const UncontrolledFormWithError = () => {
+  const errorState = fetchError('There was an error submitting the form');
+
+  return <>
+    <h2>Form with Error Message</h2>
+    <Uncontrolled.Form>
+      <Uncontrolled.Messages state={errorState} />
+      <Uncontrolled.TextInput label="Name" name="name" />
+      <Uncontrolled.Buttons state={errorState} onCancel={() => console.log('Cancelled')} />
+    </Uncontrolled.Form>
+  </>;
+};
+
+export const UncontrolledFormSections = () => {
+  const state = fetchSuccess({});
+
+  return <>
+    <h2>Form with Multiple Sections</h2>
+    <Uncontrolled.Form>
+      <Uncontrolled.FormSection>
+        <h3>Personal Information</h3>
+        <Uncontrolled.TextInput label="First Name" name="firstName" />
+        <Uncontrolled.TextInput label="Last Name" name="lastName" />
+      </Uncontrolled.FormSection>
+      <Uncontrolled.FormSection>
+        <h3>Contact Information</h3>
+        <Uncontrolled.TextInput label="Email" name="email" />
+        <Uncontrolled.TextInput label="Phone" name="phone" />
+      </Uncontrolled.FormSection>
+      <Uncontrolled.Buttons state={state} />
+    </Uncontrolled.Form>
+  </>;
 };
