@@ -22,7 +22,7 @@ export const Tooltip = ({children, placement, icon, ...props}: React.PropsWithCh
     <AriaTooltip {...props} placement={placement} className="tooltip" style={style}>
       <OverlayArrow>
         <svg width={8} height={8} viewBox="0 0 8 8">
-          <path d="M0 0 L4 4 L8 0" stroke="#ccc" strokeWidth="1" />
+          <path d="M0 0 L4 4 L8 0" stroke="var(--tooltip-border-color, #ccc)" strokeWidth="1" />
         </svg>
       </OverlayArrow>
       {children}
@@ -60,7 +60,7 @@ export const CustomTooltip = ({ state, ...props }: any) => {
       {props.children}
       <OverlayArrow {...props}>
         <svg width={8} height={8} viewBox="0 0 8 8">
-          <path d="M0 0 L4 4 L8 0" stroke="#ccc" strokeWidth="1" />
+          <path d="M0 0 L4 4 L8 0" stroke="var(--tooltip-border-color, #ccc)" strokeWidth="1" />
         </svg>
       </OverlayArrow>
     </div>
