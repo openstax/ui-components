@@ -1,52 +1,45 @@
 /* Input element styles */
-.input-element {
+.uncontrolled-input-element {
   flex: 1;
   justify-content: stretch;
 }
 
 /* Flex row container */
-.flex-row {
+.uncontrolled-flex-row {
   flex-direction: row;
   display: flex;
 }
 
 /* Radio line styles */
-.radio-line {
+.uncontrolled-radio-line {
   flex-direction: row;
   display: flex;
   align-items: center;
 }
 
 /* Radio form label text (with normal white-space) */
-.radio-form-label-text {
+.uncontrolled-radio-form-label-text {
   white-space: normal;
 }
 
 /* Checkbox line styles */
-.checkbox-line {
+.uncontrolled-checkbox-line {
   flex-direction: row;
   display: flex;
   align-items: center;
 }
 
 /* Error message styles */
-.error-message {
-  color: var(--error-color, #C22032);
+.uncontrolled-error-message {
+  color: #C22032;
   font-size: 1.6rem;
   margin: 0;
   padding: 0;
   line-height: 2.5rem;
 }
 
-/* Range input wrapper styles (extends form-input-wrapper) */
-.range-input-wrapper {
-  display: flex;
-  flex-direction: column;
-  flex: 0;
-  justify-content: stretch;
-}
-
-.range-input-wrapper datalist {
+/* Range input wrapper styles (extends form-input-wrapper via FormInputWrapper component) */
+.uncontrolled-range-input-wrapper datalist {
   display: flex;
   justify-content: space-between;
   writing-mode: unset;
@@ -54,7 +47,7 @@
   padding: 0 1em;
 }
 
-.range-input-wrapper datalist option {
+.uncontrolled-range-input-wrapper datalist option {
   width: 0;
   text-align: center;
   display: flex;

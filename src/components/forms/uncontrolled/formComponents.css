@@ -1,33 +1,30 @@
 /* Form element styles */
-.form {
+.uncontrolled-form {
   margin: 5px;
 }
 
-.form > *:not(:first-child) {
+.uncontrolled-form > *:not(:first-child) {
   margin-top: 2rem;
 }
 
-.form h3 {
-  border-bottom: 1px solid var(--form-border-color, #ccc);
+.uncontrolled-form h3 {
+  border-bottom: 1px solid #ccc;
 }
 
 /* Form section styles */
-.form-section > *:not(:first-child) {
+.uncontrolled-form-section > *:not(:first-child) {
   margin-top: 2rem;
 }
 
 /* Messages styles */
-.messages {
+.uncontrolled-messages {
   font-weight: bold;
 }
 
 /* Buttons container styles */
-.buttons {
+.uncontrolled-buttons {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-}
-
-.buttons {
   margin-top: 3rem;
 }

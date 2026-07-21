@@ -7,13 +7,6 @@ const BannerContainer = styled.div`
   position: relative;
   padding-right: 2.5rem;
   width: 42rem;
-
-  svg {
-    position: absolute;
-    top: 1.7rem;
-    right: 1rem;
-    cursor: pointer;
-  }
 `;
 
 export const Error = () => (

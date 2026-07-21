@@ -4,6 +4,7 @@ import { AbstractFormData } from "../controlled/hooks";
 import { partitionSequence } from "@openstax/ts-utils/misc/partitionSequence";
 import { Radio as StyledRadio } from "../../Radio";
 import { Checkbox as StyledCheckbox } from "../../Checkbox/Checkbox";
+import classNames from 'classnames';
 import './inputTypes.css';
 type TextInputProps = React.ComponentPropsWithoutRef<'input'> & InputProps & {
   wrapperProps?: React.ComponentPropsWithoutRef<'label'>;
@@ -13,12 +14,12 @@ type TextInputProps = React.ComponentPropsWithoutRef<'input'> & InputProps & {
   pattern?: string;
 };
 export const TextInput = ({
-  label, addon, help, transformValue, wrapperProps, onChangeValue, ...props
+  label, addon, help, transformValue, wrapperProps, onChangeValue, className, ...props
 }: TextInputProps) =>
   <FormInputWrapper {...wrapperProps}>
     <FormLabelText><RequiredIndicator show={props.required} />{label}:</FormLabelText>
-    <div className="flex-row">
-      <input className="input-element" type="text" {...props} onChange={e => {
+    <div className="uncontrolled-flex-row">
+      <input type="text" {...props} className={classNames("uncontrolled-input-element", className)} onChange={e => {
         onChangeValue?.(transformValue ? transformValue(e.target.value) : e.target.value);
         props.onChange?.(e);
       }} />
@@ -161,14 +162,14 @@ export const Radio = ({
   ...props
 }: RadioProps) => {
   return <FormInputWrapper {...wrapperProps}>
-    <div className="radio-line">
+    <div className="uncontrolled-radio-line">
       <StyledRadio {...props} labelAs="div" onChange={e => {
         if (e.target.checked) {
           onChangeValue?.(e.target.value);
         }
         props.onChange?.(e);
       }}>
-        <FormLabelText className="radio-form-label-text"><RequiredIndicator show={props.required} />{label}</FormLabelText>
+        <FormLabelText className="uncontrolled-radio-form-label-text"><RequiredIndicator show={props.required} />{label}</FormLabelText>
       </StyledRadio>
     </div>
     <HelpText value={help} />
@@ -192,12 +193,8 @@ export const Checkbox = ({
   onChangeValue,
   ...props
 }: CheckboxProps) => {
-  const errorStyle = {
-    '--error-color': '#C22032'
-  } as React.CSSProperties;
-
   return <FormInputWrapper {...wrapperProps}>
-    <div className="checkbox-line">
+    <div className="uncontrolled-checkbox-line">
       <StyledCheckbox {...props} onChange={e => {
         onChangeValue?.(!!e.target.checked);
         props.onChange?.(e);
@@ -210,7 +207,7 @@ export const Checkbox = ({
     {error !== undefined && (
         <>
           {error.map((msg, i) => (
-            <p key={i} className="error-message" style={errorStyle}>{msg}</p>
+            <p key={i} className="uncontrolled-error-message">{msg}</p>
           ))}
         </>
       )}
@@ -254,7 +251,7 @@ type RangeProps = React.ComponentPropsWithoutRef<'input'> & InputProps & {
 export const RangeInput = ({label, help, wrapperProps, onChangeValue, labels, ...props}: RangeProps) => {
   const datalistId = React.useMemo(() => `datalist-${Math.random().toString(36).substring(2, 15)}`, []);
 
-  return <label {...wrapperProps} className={`range-input-wrapper ${wrapperProps?.className || ''}`}>
+  return <FormInputWrapper {...wrapperProps} className={`uncontrolled-range-input-wrapper ${wrapperProps?.className || ''}`}>
     <FormLabelText><RequiredIndicator show={props.required} />{label}:</FormLabelText>
     <input type="range" {...props}
       list={labels && labels.length > 0 ? datalistId : undefined}
@@ -272,5 +269,5 @@ export const RangeInput = ({label, help, wrapperProps, onChangeValue, labels, ..
       </datalist>
     )}
     <HelpText value={help} />
-  </label>;
+  </FormInputWrapper>;
 }

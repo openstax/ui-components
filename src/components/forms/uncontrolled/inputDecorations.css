@@ -1,5 +1,5 @@
 /* Form input wrapper label styles */
-.form-input-wrapper {
+.uncontrolled-form-input-wrapper {
   display: flex;
   flex-direction: column;
   flex: 0;
@@ -7,14 +7,14 @@
 }
 
 /* Form label text styles */
-.form-label-text {
+.uncontrolled-form-label-text {
   white-space: nowrap;
   font-weight: bold;
   display: block;
 }
 
 /* Help text styles */
-.help-text {
+.uncontrolled-help-text {
   font-style: italic;
   margin: 0;
   padding: 0;

@@ -9,20 +9,15 @@ export * from './inputs';
  */
 type FormProps = React.ComponentPropsWithoutRef<'form'>;
 export const Form = ({children, className, style, ...props}: FormProps) => {
-  const formStyle = {
-    '--form-border-color': '#ccc',
-    ...style
-  } as React.CSSProperties;
-
   return (
-    <form className={`form ${className || ''}`} style={formStyle} {...props}>
+    <form className={`uncontrolled-form ${className || ''}`} style={style} {...props}>
       {children}
     </form>
   );
 };
 
 export const FormSection = ({className, ...props}: React.ComponentPropsWithoutRef<'div'>) => (
-  <div className={`form-section ${className || ''}`} {...props} />
+  <div className={`uncontrolled-form-section ${className || ''}`} {...props} />
 );
 
 type MessagesProps = {
@@ -30,7 +25,7 @@ type MessagesProps = {
   className?: string;
 };
 export const Messages = ({state, className}: MessagesProps) => stateHasError(state)
-  ? <div className={`messages ${className || ''}`}>{state.error}</div>
+  ? <div className={`uncontrolled-messages ${className || ''}`}>{state.error}</div>
   : null;
 
 /*
@@ -42,7 +37,7 @@ type ButtonsProps = {
   className?: string;
 };
 export const Buttons = (props: ButtonsProps) => (
-  <div className={`buttons ${props.className || ''}`}>
+  <div className={`uncontrolled-buttons ${props.className || ''}`}>
     {'onCancel' in props ? <Cancel onClick={props.onCancel}>Cancel</Cancel> : null}
     <Submit />
   </div>
