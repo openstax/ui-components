@@ -3,7 +3,7 @@
 exports[`Tooltip hides 1`] = `
 <button
   aria-label="More information"
-  className="sc-dkzDqf dcHEnX"
+  className="tooltip-trigger"
   data-rac=""
   data-react-aria-pressable={true}
   id="react-aria-5"
@@ -44,7 +44,7 @@ exports[`Tooltip matches snapshot 1`] = `
 Array [
   <button
     aria-label="More information"
-    className="sc-dkzDqf dcHEnX"
+    className="tooltip-trigger"
     data-rac=""
     data-react-aria-pressable={true}
     id="react-aria-2"
@@ -83,7 +83,7 @@ Array [
     data-overlay-container={true}
   >
     <div
-      className="sc-bczRLJ dvhbKn"
+      className="tooltip"
       data-rac=""
       id="react-aria-1"
       onMouseEnter={[Function]}
@@ -92,6 +92,9 @@ Array [
       role="tooltip"
       style={
         Object {
+          "--tooltip-bg": "#ffffff",
+          "--tooltip-border-color": "#ccc",
+          "--tooltip-color": "#6f6f6f",
           "maxHeight": "100vh",
           "position": "absolute",
           "zIndex": 100000,
@@ -130,7 +133,7 @@ Array [
 exports[`Tooltip uses icon 1`] = `
 <button
   aria-label="More information"
-  className="sc-dkzDqf dcHEnX"
+  className="tooltip-trigger"
   data-rac=""
   data-react-aria-pressable={true}
   id="react-aria-8"
