@@ -99,19 +99,24 @@ export const BodyPortal = React.forwardRef<HTMLElement, BodyPortalProps>((
     // Apply styles
     Object.entries(style).forEach(([key, value]) => {
       if (value == null) return;
-      const cssKey = key.startsWith('--') ? key : key.replace(/([A-Z])/g, '-$1').toLowerCase();
-      element.style.setProperty(cssKey, String(value));
-    });
+      if (key.startsWith('--')) {
+        element.style.setProperty(key, String(value));
+      } else {
+        // Use camelCased style keys (e.g. cssFloat) directly instead of converting to kebab-case.
+        (element.style as any)[key] = value as any;
+      }    });
 
     // Cleanup: remove styles on unmount or when style prop changes
     return () => {
-      Object.keys(style).forEach(key => {
-        // Convert camelCase to kebab-case for CSS property names
-        const cssKey = key.startsWith('--') ? key : key.replace(/([A-Z])/g, '-$1').toLowerCase();
-        element.style.removeProperty(cssKey);
+      Object.keys(style).forEach((key) => {
+        if (key.startsWith('--')) {
+          element.style.removeProperty(key);
+        } else {
+          (element.style as any)[key] = '';
+        }
       });
     };
-  }, [style]);
+  }, [style, tag]);
 
   if (!internalRef.current) { return null; }
 
