@@ -1,0 +1,39 @@
+/* NavBar wrapper - portals to 'nav' slot */
+.navbar-wrapper {
+  overflow: visible;
+  z-index: var(--navbar-z-index, 10);
+  background: #ffffff;
+  position: relative;
+  padding: 0 var(--navbar-padding-mobile, 1.6rem);
+  box-shadow: 0 0.2rem 0.2rem 0 rgba(0, 0, 0, 0.1);
+  min-width: 0;
+}
+
+@media screen and (min-width: 75.0625em) {
+  .navbar-wrapper {
+    padding: 0 var(--navbar-padding-desktop, 3.2rem);
+  }
+}
+
+/* NavBar inner container */
+.navbar-bar {
+  overflow: visible;
+  display: flex;
+  justify-content: var(--navbar-justify-content, space-between);
+  align-items: center;
+  height: var(--navbar-height-mobile, 4rem);
+  max-width: var(--navbar-max-width);
+  margin: 0 auto;
+}
+
+@media screen and (min-width: 75.0625em) {
+  .navbar-bar {
+    height: var(--navbar-height-desktop, 4rem);
+  }
+}
+
+@media print {
+  .navbar-bar {
+    display: none;
+  }
+}

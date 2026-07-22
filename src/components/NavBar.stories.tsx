@@ -1,58 +1,58 @@
+import React from "react";
 import { colors } from "../theme";
-import styled from "styled-components";
 import { NavBar } from "./NavBar";
 import { NavBarButton } from "./NavBarButton";
 import { PopoverContainer, NavBarPopoverButton, NavBarMenuButton, NavBarMenuItem } from "./NavBarMenuButtons";
 import { Info } from "./svgs/Info";
 import { Tab, Tabs, TabList, TabPanel } from "./Tabs";
+import "./NavBar.stories.css";
 
 const dotsBase64 = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAiIGhlaWdodD0iNTYiIHZpZXdCb3g9IjAgMCAxMCA1NiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8Y2lyY2xlIGN4PSI1IiBjeT0iNSIgcj0iNSIgZmlsbD0iIzAwMCIvPgogIDxjaXJjbGUgY3g9IjUiIGN5PSIyOCIgcj0iNSIgZmlsbD0iIzAwMCIvPgogIDxjaXJjbGUgY3g9IjUiIGN5PSI1MSIgcj0iNSIgZmlsbD0iIzAwMCIvPgo8L3N2Zz4K";
 
-const InfoMenuButton = styled(NavBarPopoverButton)`
-  &:hover {
-    svg path {
-      fill: ${colors.palette.lightBlue};
-    }
-  }
-`;
+const InfoMenuButton = ({ children, ...props }: React.ComponentProps<typeof NavBarPopoverButton>) => {
+  const [isHovered, setIsHovered] = React.useState(false);
 
-const DotsMenuButton = styled(NavBarMenuButton)`
-  padding: 1rem;
-`;
+  return (
+    <div
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      style={{ height: '100%' }}
+    >
+      <NavBarPopoverButton
+        {...props}
+        style={{
+          '--info-icon-fill': isHovered ? colors.palette.lightBlue : undefined,
+          ...props.style
+        } as React.CSSProperties}
+        className="info-menu-button"
+      >
+        {children}
+      </NavBarPopoverButton>
+    </div>
+  );
+};
 
-const StyledNavBarMenuItem = styled(NavBarMenuItem)`
-  color: ${colors.palette.orange};
-`;
+const DotsMenuButton = (props: React.ComponentProps<typeof NavBarMenuButton>) => (
+  <NavBarMenuButton {...props} style={{ padding: '1rem', ...props.style }} />
+);
 
-const StyledWrapper = styled.div`
-  display: flex;
-  height: 100%
-`;
-
-const StyledNavBar = styled(NavBar)`
-  position: fixed;
-  left: 2rem;
-  top: 2rem;
-  width: calc(100% - 36rem);
-`;
-
-export const Plain = () => <StyledNavBar>NavBar</StyledNavBar>;
-export const LogoAndChildren = () => <StyledNavBar logo>Menu</StyledNavBar>;
-export const AltTextLinkedLogo = () => <StyledNavBar logo={{alt: 'custom alt', href: '/'}} />;
-export const AltTextNoLinkedLogo = () => <StyledNavBar logo={{alt: 'custom alt unlinked'}} />;
-export const OverrideJustifyContent = () => <StyledNavBar justifyContent='center'>
+export const Plain = () => <NavBar className="story-navbar">NavBar</NavBar>;
+export const LogoAndChildren = () => <NavBar logo className="story-navbar">Menu</NavBar>;
+export const AltTextLinkedLogo = () => <NavBar logo={{alt: 'custom alt', href: '/'}} className="story-navbar" />;
+export const AltTextNoLinkedLogo = () => <NavBar logo={{alt: 'custom alt unlinked'}} className="story-navbar" />;
+export const OverrideJustifyContent = () => <NavBar justifyContent='center' className="story-navbar">
   <strong>Centered Menu</strong>
-</StyledNavBar>;
+</NavBar>;
 
 export const Controls_NavBarButton = () =>
-  <StyledNavBar>
+  <NavBar className="story-navbar">
     <NavBarButton label="Help" />
     <NavBarButton label="Info" icon={<Info />} />
-    <NavBarButton style={{ padding: '1rem' }} icon="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAiIGhlaWdodD0iNTYiIHZpZXdCb3g9IjAgMCAxMCA1NiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8Y2lyY2xlIGN4PSI1IiBjeT0iNSIgcj0iNSIgZmlsbD0iIzAwMCIvPgogIDxjaXJjbGUgY3g9IjUiIGN5PSIyOCIgcj0iNSIgZmlsbD0iIzAwMCIvPgogIDxjaXJjbGUgY3g9IjUiIGN5PSI1MSIgcj0iNSIgZmlsbD0iIzAwMCIvPgo8L3N2Zz4K" aria-label="Menu" />
-  </StyledNavBar>
+    <NavBarButton style={{ padding: '1rem' }} icon={dotsBase64} aria-label="Menu" />
+  </NavBar>
 
 export const PopoverAndMenu = () =>
-  <StyledNavBar>
+  <NavBar className="story-navbar">
     <InfoMenuButton label="Menu">
       <PopoverContainer>
         <button>Example button</button>
@@ -71,7 +71,7 @@ export const PopoverAndMenu = () =>
         <TabPanel id="three">Third</TabPanel>
       </Tabs>
     </InfoMenuButton>
-    <StyledWrapper>
+    <div className="story-wrapper">
       <NavBarMenuButton label="Help">
           <NavBarMenuItem>Open Guide</NavBarMenuItem>
           <NavBarMenuItem>Contact Support</NavBarMenuItem>
@@ -79,7 +79,7 @@ export const PopoverAndMenu = () =>
       <DotsMenuButton aria-label="Test menu" icon={dotsBase64}>
         <NavBarMenuItem>Cool menu item</NavBarMenuItem>
         <NavBarMenuItem>Really long menu item with a lot of text</NavBarMenuItem>
-        <StyledNavBarMenuItem>Styled menu item</StyledNavBarMenuItem>
+        <NavBarMenuItem className="story-styled-menu-item">Styled menu item</NavBarMenuItem>
       </DotsMenuButton>
-    </StyledWrapper>
-  </StyledNavBar>;
+    </div>
+  </NavBar>;
