@@ -29,10 +29,11 @@ export type BodyPortalProps = React.PropsWithChildren<{
   id?: string;
   'data-testid'?: string;
   ariaLabel?: string;
+  style?: React.CSSProperties;
 }>;
 
 export const BodyPortal = React.forwardRef<HTMLElement, BodyPortalProps>((
-  { children, className, role, slot, tagName, id, ariaLabel, ...props }, ref?: React.ForwardedRef<HTMLElement>
+  { children, className, role, slot, tagName, id, ariaLabel, style, ...props }, ref?: React.ForwardedRef<HTMLElement>
 ) => {
   const tag = tagName?.toUpperCase() ?? 'DIV';
   const internalRef = React.useRef<HTMLElement | null>(
@@ -52,6 +53,7 @@ export const BodyPortal = React.forwardRef<HTMLElement, BodyPortalProps>((
   const bodyPortalOrderedRefs = React.useContext(BodyPortalSlotsContext);
   const testId = props['data-testid'];
 
+  // Effect for creating/destroying the portal element and setting non-style props
   React.useLayoutEffect(() => {
     const element = internalRef.current;
     if (!element) { return; }
@@ -88,6 +90,28 @@ export const BodyPortal = React.forwardRef<HTMLElement, BodyPortalProps>((
       if (testId) { delete element.dataset.testid; }
     };
   }, [bodyPortalOrderedRefs, className, id, role, slot, ariaLabel, tag, testId]);
+
+  // Separate effect for updating styles without removing/reinserting the portal
+  React.useLayoutEffect(() => {
+    const element = internalRef.current;
+    if (!element || !style) { return; }
+
+    // Apply styles
+    Object.entries(style).forEach(([key, value]) => {
+      if (value == null) return;
+      const cssKey = key.startsWith('--') ? key : key.replace(/([A-Z])/g, '-$1').toLowerCase();
+      element.style.setProperty(cssKey, String(value));
+    });
+
+    // Cleanup: remove styles on unmount or when style prop changes
+    return () => {
+      Object.keys(style).forEach(key => {
+        // Convert camelCase to kebab-case for CSS property names
+        const cssKey = key.startsWith('--') ? key : key.replace(/([A-Z])/g, '-$1').toLowerCase();
+        element.style.removeProperty(cssKey);
+      });
+    };
+  }, [style]);
 
   if (!internalRef.current) { return null; }
 
