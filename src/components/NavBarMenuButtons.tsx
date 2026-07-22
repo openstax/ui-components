@@ -13,7 +13,10 @@ import { colors } from "../theme";
 import { NavBarButton, NavBarButtonProps } from "./NavBarButton";
 import "./NavBarMenuButtons.css";
 
-export const NavBarMenuItem = ({ className, style, ...props }: React.ComponentProps<typeof MenuItem>) => {
+export const NavBarMenuItem = React.forwardRef<
+  HTMLDivElement,
+  React.ComponentProps<typeof MenuItem>
+>(({ className, style, ...props }, ref) => {
   const menuItemStyle = {
     '--navbar-menu-item-hover-bg': colors.palette.neutralLighter,
     '--navbar-menu-item-border-color': colors.palette.neutralBright,
@@ -22,12 +25,14 @@ export const NavBarMenuItem = ({ className, style, ...props }: React.ComponentPr
 
   return (
     <MenuItem
+      ref={ref}
       className={classNames("navbar-menu-item", className)}
       style={menuItemStyle}
       {...props}
     />
   );
-};
+});
+NavBarMenuItem.displayName = "NavBarMenuItem";
 
 export const PopoverContainer = React.forwardRef<
   HTMLDivElement,
@@ -37,7 +42,10 @@ export const PopoverContainer = React.forwardRef<
 ));
 PopoverContainer.displayName = "PopoverContainer";
 
-export const NavBarPopover = ({ className, style, ...props }: PopoverProps) => {
+export const NavBarPopover = React.forwardRef<
+  HTMLDivElement,
+  PopoverProps
+>(({ className, style, ...props }, ref) => {
   const popoverStyle = {
     '--navbar-popover-border-color': colors.palette.darkGreen,
     ...style
@@ -45,12 +53,14 @@ export const NavBarPopover = ({ className, style, ...props }: PopoverProps) => {
 
   return (
     <Popover
+      ref={ref}
       className={classNames("navbar-popover", className)}
       style={popoverStyle}
       {...props}
     />
   );
-};
+});
+NavBarPopover.displayName = "NavBarPopover";
 
 export type NavBarBaseButtonProps = React.PropsWithChildren<{
   popoverProps?: PopoverProps;
