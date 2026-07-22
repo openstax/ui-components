@@ -18,7 +18,7 @@ export const NavBarMenuItem = ({ className, style, ...props }: React.ComponentPr
     '--navbar-menu-item-hover-bg': colors.palette.neutralLighter,
     '--navbar-menu-item-border-color': colors.palette.neutralBright,
     ...style
-  } as React.CSSProperties;
+  } as unknown as React.CSSProperties;
 
   return (
     <MenuItem
@@ -37,7 +37,7 @@ export const NavBarPopover = ({ className, style, ...props }: PopoverProps) => {
   const popoverStyle = {
     '--navbar-popover-border-color': colors.palette.darkGreen,
     ...style
-  } as React.CSSProperties;
+  } as unknown as React.CSSProperties;
 
   return (
     <Popover

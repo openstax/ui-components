@@ -4,11 +4,13 @@ exports[`HelpMenu matches snapshot 1`] = `
 <body>
   <nav
     aria-hidden="true"
-    class="sc-papXJ kjJxrB"
+    class="navbar-wrapper"
     data-portal-slot="nav"
+    style="--navbar-z-index: 10; --navbar-padding-mobile: 1.6rem; --navbar-padding-desktop: 3.2rem;"
   >
     <div
-      class="sc-jqUVSM exKmPA"
+      class="navbar-bar"
+      style="--navbar-height-mobile: 4rem; --navbar-height-desktop: 4rem;"
     >
       <svg
         class="navbar-logo"
@@ -55,7 +57,7 @@ exports[`HelpMenu matches snapshot 1`] = `
         aria-expanded="true"
         aria-haspopup="true"
         aria-label="Help menu"
-        class="sc-bczRLJ dKgZvy sc-eCYdqJ henMfs"
+        class="navbar-button sc-bczRLJ dPfzAH"
         data-focus-visible="true"
         data-focused="true"
         data-pressed="true"
@@ -93,13 +95,13 @@ exports[`HelpMenu matches snapshot 1`] = `
   >
     <div
       aria-labelledby="react-aria-1"
-      class="sc-hKMtZM fKsRUv"
+      class="navbar-popover"
       data-placement="bottom"
       data-rac=""
       data-trigger="MenuTrigger"
       dir="ltr"
       role="dialog"
-      style="position: absolute; z-index: 100000; max-height: -24px; left: 12px; top: 8px;"
+      style="position: absolute; z-index: 100000; max-height: -24px; --navbar-popover-border-color: #63a524; left: 12px; top: 8px;"
       tabindex="-1"
     >
       <div
@@ -129,7 +131,7 @@ exports[`HelpMenu matches snapshot 1`] = `
         tabindex="-1"
       >
         <div
-          class="sc-gsnTZi sc-jSMfEi  bPmhIj"
+          class="navbar-menu-item sc-gsnTZi zbLGs"
           data-collection="react-aria-5"
           data-focus-visible="true"
           data-focused="true"
@@ -138,18 +140,20 @@ exports[`HelpMenu matches snapshot 1`] = `
           data-react-aria-pressable="true"
           id="react-aria-10"
           role="menuitem"
+          style="--navbar-menu-item-hover-bg: #f1f1f1; --navbar-menu-item-border-color: #f5f5f5;"
           tabindex="0"
         >
           Report an issue
         </div>
         <div
-          class="sc-gsnTZi sc-jSMfEi  bPmhIj"
+          class="navbar-menu-item sc-gsnTZi zbLGs"
           data-collection="react-aria-5"
           data-key="react-aria-2"
           data-rac=""
           data-react-aria-pressable="true"
           id="react-aria-14"
           role="menuitem"
+          style="--navbar-menu-item-hover-bg: #f1f1f1; --navbar-menu-item-border-color: #f5f5f5;"
           tabindex="-1"
         >
           Test Callback
