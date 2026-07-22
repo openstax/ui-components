@@ -1,4 +1,5 @@
 import React from 'react';
+import { CSSPropertiesWithVariables } from '../types';
 import classNames from 'classnames';
 import * as Constants from '../constants';
 import theme from '../theme';
@@ -16,7 +17,7 @@ type NavBarProps = React.PropsWithChildren<{
   justifyContent?: string;
   ariaLabel?: string;
   className?: string;
-  style?: React.CSSProperties;
+  style?: CSSPropertiesWithVariables;
 }>
 
 export const NavBar = ({
@@ -35,19 +36,19 @@ export const NavBar = ({
   const {alt = 'OpenStax Logo', ...anchorProps} = logoIsObject ? logo : {};
   const logoComponent = logo ? <OpenstaxLogo alt={alt} /> : null;
 
-  const wrapperStyle = {
+  const wrapperStyle: CSSPropertiesWithVariables = {
     '--navbar-z-index': theme.zIndex.navbar,
     '--navbar-padding-mobile': `${theme.padding.navbar.mobile}rem`,
     '--navbar-padding-desktop': `${theme.padding.navbar.desktop}rem`,
     ...style
-  } as React.CSSProperties;
+  };
 
-  const barStyle = {
+  const barStyle: CSSPropertiesWithVariables = {
     '--navbar-max-width': maxWidth ? `${maxWidth}rem` : undefined,
     '--navbar-justify-content': justifyContent,
     '--navbar-height-mobile': `${navMobileHeight || Constants.navMobileHeight}rem`,
     '--navbar-height-desktop': `${navDesktopHeight || Constants.navDesktopHeight}rem`,
-  } as React.CSSProperties;
+  };
 
   return (
     <BodyPortal

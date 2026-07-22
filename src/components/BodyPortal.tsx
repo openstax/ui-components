@@ -1,6 +1,7 @@
 import React from 'react';
 import { createPortal } from 'react-dom';
 import { BodyPortalSlotsContext } from './BodyPortalSlotsContext';
+import { CSSPropertiesWithVariables } from '../types';
 
 const getInsertBeforeTarget = (bodyPortalSlots: string[], slot?: string) => {
   // Note: If the slot is not found in bodyPortalSlots, this code will append the tag instead,
@@ -29,7 +30,7 @@ export type BodyPortalProps = React.PropsWithChildren<{
   id?: string;
   'data-testid'?: string;
   ariaLabel?: string;
-  style?: React.CSSProperties;
+  style?: CSSPropertiesWithVariables;
 }>;
 
 export const BodyPortal = React.forwardRef<HTMLElement, BodyPortalProps>((

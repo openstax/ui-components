@@ -1,4 +1,5 @@
 import React from "react";
+import type { CSSPropertiesWithVariables } from "../types";
 import { colors } from "../theme";
 import { NavBar } from "./NavBar";
 import { NavBarButton } from "./NavBarButton";
@@ -16,7 +17,7 @@ const InfoMenuButton = ({ children, ...props }: React.ComponentProps<typeof NavB
       style={{
         '--info-icon-fill': colors.palette.lightBlue,
         ...props.style
-      } as React.CSSProperties}
+      } as CSSPropertiesWithVariables}
       className="info-menu-button"
     >
       {children}

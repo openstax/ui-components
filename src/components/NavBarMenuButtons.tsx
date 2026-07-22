@@ -11,17 +11,18 @@ import {
 } from "react-aria-components";
 import { colors } from "../theme";
 import { NavBarButton, NavBarButtonProps } from "./NavBarButton";
+import { CSSPropertiesWithVariables } from "../types";
 import "./NavBarMenuButtons.css";
 
 export const NavBarMenuItem = React.forwardRef<
   HTMLDivElement,
   React.ComponentProps<typeof MenuItem>
 >(({ className, style, ...props }, ref) => {
-  const menuItemStyle = {
+  const menuItemStyle: CSSPropertiesWithVariables = {
     '--navbar-menu-item-hover-bg': colors.palette.neutralLighter,
     '--navbar-menu-item-border-color': colors.palette.neutralBright,
     ...style
-  } as unknown as React.CSSProperties;
+  };
 
   return (
     <MenuItem
@@ -46,10 +47,10 @@ export const NavBarPopover = React.forwardRef<
   HTMLDivElement,
   PopoverProps
 >(({ className, style, ...props }, ref) => {
-  const popoverStyle = {
+  const popoverStyle: CSSPropertiesWithVariables = {
     '--navbar-popover-border-color': colors.palette.darkGreen,
     ...style
-  } as unknown as React.CSSProperties;
+  };
 
   return (
     <Popover

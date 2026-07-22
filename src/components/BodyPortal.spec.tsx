@@ -1,4 +1,5 @@
 import React from 'react';
+import type { CSSPropertiesWithVariables } from '../types';
 import { render } from '@testing-library/react';
 import { BodyPortal } from './BodyPortal';
 import { BodyPortalSlotsContext } from './BodyPortalSlotsContext';
@@ -266,7 +267,7 @@ describe('BodyPortal', () => {
     render(
       <BodyPortal
         slot='modal'
-        style={{ '--my-variable': 'red', '--another-var': '10px' } as React.CSSProperties}
+        style={{ '--my-variable': 'red', '--another-var': '10px' } as CSSPropertiesWithVariables}
       >
         Modal content
       </BodyPortal>,
@@ -300,7 +301,7 @@ describe('BodyPortal', () => {
     const TestComponent = ({ color }: { color: string }) => (
       <BodyPortal
         slot='modal'
-        style={{ '--color': color } as React.CSSProperties}
+        style={{ '--color': color } as CSSPropertiesWithVariables}
       >
         Modal content
       </BodyPortal>
@@ -326,7 +327,7 @@ describe('BodyPortal', () => {
     const { unmount } = render(
       <BodyPortal
         slot='modal'
-        style={{ '--my-variable': 'red', backgroundColor: 'blue' } as React.CSSProperties}
+        style={{ '--my-variable': 'red', backgroundColor: 'blue' } as CSSPropertiesWithVariables}
       >
         Modal content
       </BodyPortal>,
@@ -344,11 +345,11 @@ describe('BodyPortal', () => {
     expect(document.body.querySelector('[data-portal-slot="modal"]')).toBeNull();
   });
 
-  it('handles null and undefined style values gracefully', () => {
+  it('handles undefined style values gracefully', () => {
     render(
       <BodyPortal
         slot='modal'
-        style={{ '--defined': 'red', '--null': null, '--undefined': undefined } as React.CSSProperties}
+        style={{ '--defined': 'red', '--undefined': undefined } as CSSPropertiesWithVariables}
       >
         Modal content
       </BodyPortal>,
@@ -359,7 +360,6 @@ describe('BodyPortal', () => {
     expect(portal).toBeTruthy();
     expect(portal.style.getPropertyValue('--defined')).toBe('red');
     // null and undefined values should not be set
-    expect(portal.style.getPropertyValue('--null')).toBe('');
     expect(portal.style.getPropertyValue('--undefined')).toBe('');
   });
 });

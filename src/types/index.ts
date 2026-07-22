@@ -1,3 +1,5 @@
+import type { CSSProperties } from "react";
+
 export type ToastData = {
   id?: string;
   title: string;
@@ -14,4 +16,8 @@ export type SentryError = {
   componentStack?: string;
   eventId?: string;
   type?: string;
+};
+
+export type CSSPropertiesWithVariables = CSSProperties & {
+  [key: `--${string}`]: string | number | undefined;
 };
