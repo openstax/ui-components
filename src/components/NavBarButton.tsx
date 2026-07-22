@@ -10,20 +10,22 @@ export type NavBarButtonProps = Omit<ButtonProps, "aria-label"> & {
   "aria-label"?: string;
 } & ({ label: string } | { "aria-label": string });
 
-export const NavBarButton = ({
-  label,
-  icon,
-  className,
-  "aria-label": ariaLabel,
-  ...props
-}: NavBarButtonProps) => (
-  <Button className={classNames("navbar-button", className)} aria-label={ariaLabel} {...props}>
-    {icon &&
-      (typeof icon === "string" ? (
-        <img aria-hidden="true" src={icon} alt="" />
-      ) : (
-        icon
-      ))}
-    {label ? <span>{label}</span> : null}
-  </Button>
+export const NavBarButton = React.forwardRef<React.ElementRef<typeof Button>, NavBarButtonProps>(
+  ({ label, icon, className, "aria-label": ariaLabel, ...props }, ref) => (
+    <Button
+      ref={ref}
+      className={classNames("navbar-button", className)}
+      aria-label={ariaLabel}
+      {...props}
+    >
+      {icon &&
+        (typeof icon === "string" ? (
+          <img aria-hidden="true" src={icon} alt="" />
+        ) : (
+          icon
+        ))}
+      {label ? <span>{label}</span> : null}
+    </Button>
+  )
 );
+NavBarButton.displayName = "NavBarButton";

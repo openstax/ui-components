@@ -29,9 +29,13 @@ export const NavBarMenuItem = ({ className, style, ...props }: React.ComponentPr
   );
 };
 
-export const PopoverContainer = ({ className, ...props }: React.ComponentPropsWithoutRef<'div'>) => (
-  <div className={classNames("navbar-popover-container", className)} {...props} />
-);
+export const PopoverContainer = React.forwardRef<
+  HTMLDivElement,
+  React.ComponentPropsWithoutRef<"div">
+>(({ className, ...props }, ref) => (
+  <div ref={ref} className={classNames("navbar-popover-container", className)} {...props} />
+));
+PopoverContainer.displayName = "PopoverContainer";
 
 export const NavBarPopover = ({ className, style, ...props }: PopoverProps) => {
   const popoverStyle = {
