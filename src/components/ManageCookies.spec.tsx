@@ -315,4 +315,89 @@ describe('ManageCookies', () => {
       expect(mockDisconnect).not.toHaveBeenCalled();
     });
   });
+
+  describe('style injection', () => {
+    beforeAll(() => {
+      (window as any).getCkyConsent = jest.fn();
+    });
+
+    afterAll(() => {
+      delete (window as any).getCkyConsent;
+    });
+
+    beforeEach(() => {
+      // Clean up any existing style elements
+      const existingStyles = document.head.querySelectorAll('style');
+      existingStyles.forEach(style => {
+        if (style.textContent?.includes('.cky-btn-revisit')) {
+          style.remove();
+        }
+      });
+    });
+
+    afterEach(() => {
+      cleanup();
+    });
+
+    it('injects style element into document head on mount', () => {
+      // Verify no style exists before mounting
+      const beforeStyles = Array.from(document.head.querySelectorAll('style'))
+        .filter(style => style.textContent?.includes('.cky-btn-revisit'));
+      expect(beforeStyles.length).toBe(0);
+
+      // Mount component
+      render(<ManageCookiesLink />);
+
+      // Verify style element was added
+      const afterStyles = Array.from(document.head.querySelectorAll('style'))
+        .filter(style => style.textContent?.includes('.cky-btn-revisit'));
+      expect(afterStyles.length).toBe(1);
+      expect(afterStyles[0].textContent).toBe('.cky-btn-revisit { display: none; }');
+    });
+
+    it('removes style element from document head on unmount', () => {
+      // Mount component
+      const { unmount } = render(<ManageCookiesLink />);
+
+      // Verify style element exists
+      const mountedStyles = Array.from(document.head.querySelectorAll('style'))
+        .filter(style => style.textContent?.includes('.cky-btn-revisit'));
+      expect(mountedStyles.length).toBe(1);
+
+      // Unmount component
+      unmount();
+
+      // Verify style element was removed
+      const unmountedStyles = Array.from(document.head.querySelectorAll('style'))
+        .filter(style => style.textContent?.includes('.cky-btn-revisit'));
+      expect(unmountedStyles.length).toBe(0);
+    });
+
+    it('only creates one style element when component is rendered multiple times', () => {
+      // Mount first instance
+      const { unmount: unmount1 } = render(<ManageCookiesLink />);
+
+      // Verify one style element exists
+      let styles = Array.from(document.head.querySelectorAll('style'))
+        .filter(style => style.textContent?.includes('.cky-btn-revisit'));
+      expect(styles.length).toBe(1);
+
+      // Mount second instance (without unmounting first)
+      const { unmount: unmount2 } = render(<ManageCookiesLink />);
+
+      // Verify still only one style element (each instance has its own ref)
+      styles = Array.from(document.head.querySelectorAll('style'))
+        .filter(style => style.textContent?.includes('.cky-btn-revisit'));
+      expect(styles.length).toBe(2); // Each component instance adds its own style
+
+      // Cleanup
+      unmount1();
+      unmount2();
+
+      // Verify all style elements removed
+      styles = Array.from(document.head.querySelectorAll('style'))
+        .filter(style => style.textContent?.includes('.cky-btn-revisit'));
+      expect(styles.length).toBe(0);
+    });
+  });
 });
