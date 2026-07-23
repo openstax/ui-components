@@ -1,10 +1,6 @@
 import React from 'react';
 import { ButtonLink } from "./Button";
-import { createGlobalStyle } from "styled-components";
-
-const GlobalStyle = createGlobalStyle`
-  .cky-btn-revisit { display: none; }
-`;
+import './ManageCookies.css';
 
 type ManageCookiesLinkProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   wrapper?: (button: React.ReactElement) => React.ReactElement;
@@ -117,7 +113,7 @@ export const ManageCookiesLink = ({children, className, wrapper, ...props}: Mana
     }, 100); // Small delay to allow CookieYes to add the modal to DOM
   }, [inBrowser, onClick, clearInitTimeout, cleanupObserverAndTimeouts]);
 
-  if (!inBrowser) { return <><GlobalStyle /></>; }
+  if (!inBrowser) { return null; }
 
   const button = <ButtonLink
     ref={buttonRef}
@@ -126,13 +122,9 @@ export const ManageCookiesLink = ({children, className, wrapper, ...props}: Mana
     onClick={handleClick}
   >{children || 'Manage Cookies'}</ButtonLink>;
 
-  return <>
-    <GlobalStyle />
-    {cookieYesLoaded
-       ? typeof wrapper === 'function'
-         ? wrapper(button)
-         : button
-       : null
-    }
-  </>;
+  return cookieYesLoaded
+    ? typeof wrapper === 'function'
+      ? wrapper(button)
+      : button
+    : null;
 };
