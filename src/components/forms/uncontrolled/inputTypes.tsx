@@ -1,22 +1,11 @@
 import React from 'react';
-import styled from 'styled-components';
 import { FormInputWrapper, FormLabelText, HelpText, InputProps, RequiredIndicator } from "./inputDecorations";
 import { AbstractFormData } from "../controlled/hooks";
 import { partitionSequence } from "@openstax/ts-utils/misc/partitionSequence";
 import { Radio as StyledRadio } from "../../Radio";
-import { Checkbox as StyledCheckbox } from "../../Checkbox/Checkbox"
-
-/*
- * input element
- */
-const InputElement = styled.input`
-  flex: 1;
-  justify-content: stretch;
-`;
-const FlexRow = styled.div`
-  flex-direction: row;
-  display: flex;
-`;
+import { Checkbox as StyledCheckbox } from "../../Checkbox/Checkbox";
+import classNames from 'classnames';
+import './inputTypes.css';
 type TextInputProps = React.ComponentPropsWithoutRef<'input'> & InputProps & {
   wrapperProps?: React.ComponentPropsWithoutRef<'label'>;
   onChangeValue?: (value: any) => void;
@@ -25,17 +14,17 @@ type TextInputProps = React.ComponentPropsWithoutRef<'input'> & InputProps & {
   pattern?: string;
 };
 export const TextInput = ({
-  label, addon, help, transformValue, wrapperProps, onChangeValue, ...props
+  label, addon, help, transformValue, wrapperProps, onChangeValue, className, ...props
 }: TextInputProps) =>
   <FormInputWrapper {...wrapperProps}>
     <FormLabelText><RequiredIndicator show={props.required} />{label}:</FormLabelText>
-    <FlexRow>
-      <InputElement type="text" {...props} onChange={e => {
+    <div className="uncontrolled-flex-row">
+      <input type="text" {...props} className={classNames("uncontrolled-input-element", className)} onChange={e => {
         onChangeValue?.(transformValue ? transformValue(e.target.value) : e.target.value);
         props.onChange?.(e);
       }} />
       {addon}
-    </FlexRow>
+    </div>
     <HelpText value={help} />
   </FormInputWrapper>;
 
@@ -165,14 +154,6 @@ type RadioProps = React.ComponentPropsWithoutRef<'input'> & InputProps & {
   wrapperProps?: React.ComponentPropsWithoutRef<'label'>;
   tooltipText?: string;
 };
-const RadioLine = styled.div`
-  flex-direction: row;
-  display: flex;
-  align-items: center;
-`;
-const RadioFormLabelText = styled(FormLabelText)`
-  white-space: normal;
-`;
 export const Radio = ({
   label,
   help,
@@ -181,16 +162,16 @@ export const Radio = ({
   ...props
 }: RadioProps) => {
   return <FormInputWrapper {...wrapperProps}>
-    <RadioLine>
+    <div className="uncontrolled-radio-line">
       <StyledRadio {...props} labelAs="div" onChange={e => {
         if (e.target.checked) {
           onChangeValue?.(e.target.value);
         }
         props.onChange?.(e);
       }}>
-        <RadioFormLabelText><RequiredIndicator show={props.required} />{label}</RadioFormLabelText>
+        <FormLabelText className="uncontrolled-radio-form-label-text"><RequiredIndicator show={props.required} />{label}</FormLabelText>
       </StyledRadio>
-    </RadioLine>
+    </div>
     <HelpText value={help} />
   </FormInputWrapper>;
 };
@@ -204,18 +185,6 @@ Parameters<typeof StyledCheckbox>[0] & {
   wrapperProps?: React.ComponentPropsWithoutRef<'label'>;
   error?: string[];
 };
-const CheckboxLine = styled.div`
-  flex-direction: row;
-  display: flex;
-  align-items: center;
-`;
-const StyledErrorMessage = styled.p`
-  color: #C22032;
-  font-size: 1.6rem;
-  margin: 0;
-  padding: 0;
-  line-height: 2.5rem;
-`
 export const Checkbox = ({
   label,
   help,
@@ -225,7 +194,7 @@ export const Checkbox = ({
   ...props
 }: CheckboxProps) => {
   return <FormInputWrapper {...wrapperProps}>
-    <CheckboxLine>
+    <div className="uncontrolled-checkbox-line">
       <StyledCheckbox {...props} onChange={e => {
         onChangeValue?.(!!e.target.checked);
         props.onChange?.(e);
@@ -233,12 +202,12 @@ export const Checkbox = ({
       >
         <FormLabelText><RequiredIndicator show={props.required} />{label}</FormLabelText>
       </StyledCheckbox>
-    </CheckboxLine>
+    </div>
     <HelpText value={help} />
     {error !== undefined && (
         <>
           {error.map((msg, i) => (
-            <StyledErrorMessage key={i}>{msg}</StyledErrorMessage>
+            <p key={i} className="uncontrolled-error-message">{msg}</p>
           ))}
         </>
       )}
@@ -274,22 +243,6 @@ export const File = ({label, help, wrapperProps, onChangeValue, uploader, value,
   </FormInputWrapper>;
 };
 
-const RangeInputWrapper = styled(FormInputWrapper)`
-  datalist {
-    display: flex;
-    justify-content: space-between;
-    writing-mode:unset;
-    flex-direction: row;
-    padding: 0 1em;
-
-    option {
-      width: 0;
-      text-align: center;
-      display: flex;
-      justify-content: center;
-    }
-  }
-`;
 type RangeProps = React.ComponentPropsWithoutRef<'input'> & InputProps & {
   wrapperProps?: React.ComponentPropsWithoutRef<'label'>;
   onChangeValue?: (value: number | undefined) => void;
@@ -298,7 +251,7 @@ type RangeProps = React.ComponentPropsWithoutRef<'input'> & InputProps & {
 export const RangeInput = ({label, help, wrapperProps, onChangeValue, labels, ...props}: RangeProps) => {
   const datalistId = React.useMemo(() => `datalist-${Math.random().toString(36).substring(2, 15)}`, []);
 
-  return <RangeInputWrapper {...wrapperProps}>
+  return <FormInputWrapper {...wrapperProps} className={`uncontrolled-range-input-wrapper ${wrapperProps?.className || ''}`}>
     <FormLabelText><RequiredIndicator show={props.required} />{label}:</FormLabelText>
     <input type="range" {...props}
       list={labels && labels.length > 0 ? datalistId : undefined}
@@ -316,5 +269,5 @@ export const RangeInput = ({label, help, wrapperProps, onChangeValue, labels, ..
       </datalist>
     )}
     <HelpText value={help} />
-  </RangeInputWrapper>;
+  </FormInputWrapper>;
 }
