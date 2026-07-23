@@ -105,7 +105,8 @@ export const BodyPortal = React.forwardRef<HTMLElement, BodyPortalProps>((
       } else {
         // Use camelCased style keys (e.g. cssFloat) directly instead of converting to kebab-case.
         (element.style as any)[key] = value as any;
-      }    });
+      }
+    });
 
     // Cleanup: remove styles on unmount or when style prop changes
     return () => {
