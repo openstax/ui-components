@@ -16,21 +16,20 @@ export const ManageCookiesLink = ({children, className, wrapper, ...props}: Mana
   const styleElementRef = React.useRef<HTMLStyleElement | null>(null);
 
   // Inject global style to hide CookieYes revisit button when component mounts
-  React.useEffect(() => {
-    if (inBrowser && !styleElementRef.current) {
-      const style = document.createElement('style');
-      style.textContent = '.cky-btn-revisit { display: none; }';
-      document.head.appendChild(style);
-      styleElementRef.current = style;
+  const useIsomorphicLayoutEffect = inBrowser ? React.useLayoutEffect : React.useEffect;
 
-      return () => {
-        if (styleElementRef.current) {
-          document.head.removeChild(styleElementRef.current);
-          styleElementRef.current = null;
-        }
-      };
-    }
-    return;
+  useIsomorphicLayoutEffect(() => {
+    if (!inBrowser || styleElementRef.current) return;
+
+    const style = document.createElement('style');
+    style.textContent = '.cky-btn-revisit { display: none; }';
+    document.head.appendChild(style);
+    styleElementRef.current = style;
+
+    return () => {
+      style.remove();
+      styleElementRef.current = null;
+    };
   }, [inBrowser]);
 
   React.useEffect(() => {
