@@ -8,24 +8,27 @@ export * from './inputs';
  * form element
  */
 type FormProps = React.ComponentPropsWithoutRef<'form'>;
+export const formClassName = 'uncontrolled-form';
 export const Form = ({children, className, style, ...props}: FormProps) => {
   return (
-    <form className={`uncontrolled-form ${className || ''}`} style={style} {...props}>
+    <form className={[formClassName, className].join(' ').trim()} style={style} {...props}>
       {children}
     </form>
   );
 };
 
+export const formSectionClassName = 'uncontrolled-form-section';
 export const FormSection = ({className, ...props}: React.ComponentPropsWithoutRef<'div'>) => (
-  <div className={`uncontrolled-form-section ${className || ''}`} {...props} />
+  <div className={[formSectionClassName, className].join(' ').trim()} {...props} />
 );
 
 type MessagesProps = {
   state: FetchState<any, string>;
   className?: string;
 };
+export const messagesClassName = 'uncontrolled-messages';
 export const Messages = ({state, className}: MessagesProps) => stateHasError(state)
-  ? <div className={`uncontrolled-messages ${className || ''}`}>{state.error}</div>
+  ? <div className={[messagesClassName, className].join(' ').trim()}>{state.error}</div>
   : null;
 
 /*
@@ -36,8 +39,9 @@ type ButtonsProps = {
   onCancel?: () => void;
   className?: string;
 };
-export const Buttons = (props: ButtonsProps) => (
-  <div className={`uncontrolled-buttons ${props.className || ''}`}>
+export const buttonsClassName = 'uncontrolled-buttons';
+export const Buttons = ({className, ...props}: ButtonsProps) => (
+  <div className={[buttonsClassName, className].join(' ').trim()}>
     {'onCancel' in props ? <Cancel onClick={props.onCancel}>Cancel</Cancel> : null}
     <Submit />
   </div>
@@ -45,9 +49,12 @@ export const Buttons = (props: ButtonsProps) => (
 
 // submit button
 type SubmitButtonProps = React.ComponentPropsWithoutRef<'input'>;
-export const Submit = ({...props}: SubmitButtonProps) =>
-  <input type="submit" value="Submit" {...props} />;
+export const submitButtonClassName = 'uncontrolled-submit-button';
+export const Submit = ({className, ...props}: SubmitButtonProps) =>
+  <input className={[submitButtonClassName, className].join(' ').trim()} type="submit" value="Submit" {...props} />;
 
 // cancel button
 type CancelButtonProps = React.ComponentPropsWithoutRef<'button'>;
-export const Cancel = ({...props}: CancelButtonProps) => <button type="button" {...props} />;
+export const cancelButtonClassName = 'uncontrolled-cancel-button';
+export const Cancel = ({className, ...props}: CancelButtonProps) =>
+  <button className={[cancelButtonClassName, className].join(' ').trim()} type="button" {...props} />;

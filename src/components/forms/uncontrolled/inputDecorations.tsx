@@ -1,17 +1,18 @@
 import React from 'react';
-import classNames from 'classnames';
 import './inputDecorations.css';
 
+export const formInputWrapperClassName = 'uncontrolled-form-input-wrapper';
 export const FormInputWrapper = React.forwardRef<
-  HTMLLabelElement,
-  React.ComponentPropsWithoutRef<'label'>
->(({className, ...props}, ref) => (
-  <label ref={ref} className={classNames('uncontrolled-form-input-wrapper', className)} {...props} />
+  HTMLElement,
+  React.ComponentPropsWithoutRef<'label'> & { as?: string }
+>(({className, as: Element = 'label', ...props}, ref) => (
+  React.createElement(Element, {ref, className: [formInputWrapperClassName, className].join(' ').trim(), ...props})
 ));
 FormInputWrapper.displayName = 'FormInputWrapper';
 
-export const FormLabelText = ({className, ...props}: React.ComponentPropsWithoutRef<'span'>) => (
-  <span className={classNames('uncontrolled-form-label-text', className)} {...props} />
+export const formLabelTextClassName = 'uncontrolled-form-label-text';
+export const FormLabelText = ({className, as: Element = 'span', ...props}: React.ComponentPropsWithoutRef<'span'> & { as?: string }) => (
+  React.createElement(Element, {className: [formLabelTextClassName, className].join(' ').trim(), ...props})
 );
 
 export type InputProps = {
@@ -25,8 +26,9 @@ export type InputProps = {
 type HelpTextProps = React.ComponentPropsWithoutRef<'p'> & {
   value: string | undefined | React.ReactNode;
 };
-export const HelpText = ({value, className, ...props}: HelpTextProps) => value
-  ? <p className={classNames('uncontrolled-help-text', className)} {...props}>{value}</p>
+export const helpTextClassName = 'uncontrolled-help-text';
+export const HelpText = ({value, className, as: Element = 'p', ...props}: HelpTextProps & { as?: string }) => value
+  ? React.createElement(Element, {className: [helpTextClassName, className].join(' ').trim(), ...props}, value)
   : null;
 
 export const RequiredIndicator = (props: {show: boolean | undefined}) => props.show ? <>*</> : null;
