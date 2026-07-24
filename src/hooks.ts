@@ -21,7 +21,7 @@ export const useSetAppError = () => {
 }
 
 export const useMatchMediaQuery = (query: string) => {
-  const matchMedia = window.matchMedia(query);
+  const matchMedia = React.useMemo(() => window.matchMedia(query), [query]);
   const [matches, setMatches] = React.useState(matchMedia.matches);
 
   const listener = React.useCallback((e: MediaQueryListEvent) => {
