@@ -40,7 +40,7 @@ export const ErrorBoundary = ({
   children?: React.ReactNode;
 }) => {
   const parentContext = React.useContext(ErrorContext);
-  const [error, setThisError] = React.useState<SentryError | null>(null);
+  const [error, setThisError] = React.useState<(SentryError & {isInline?: boolean}) | null>(null);
   const errorFallbacks: { [_: string]: JSX.Element } = React.useMemo(() => ({
     ...(includeDefaultHandlers ? defaultErrorFallbacks : {}),
     ...props.errorFallbacks
@@ -91,11 +91,14 @@ export const ErrorBoundary = ({
     }
   }, [props.userUuid]);
 
-  const setError = React.useCallback((input: unknown, componentStack?: string) => {
+  const setError = React.useCallback((input: unknown, componentStack?: string, isInline?: boolean) => {
 
     if (input === null) {
       setThisError(null);
-      parentContext.setError(null);
+
+      if (parentContext.initialized) {
+        parentContext.setError(null);
+      }
       return;
     }
 
@@ -104,7 +107,7 @@ export const ErrorBoundary = ({
 
     if (type in errorFallbacks || !parentContext.initialized) {
       setThisError({
-        error, type, componentStack,
+        error, type, componentStack, isInline,
         eventId: Sentry.captureException(error, {
           level: errorLevels[type] ?? 'error'
         })
@@ -120,18 +123,20 @@ export const ErrorBoundary = ({
     initialized: true
   }), [error, setError]);
 
+  const errorDisplay = typedFallback || defaultErrorFallbacks.generic;
+
   // ErrorBoundary is not an actual ErrorBoundary becuase writing class components
   // is too annoying, we delegate just the catching part to RenderErrorCatcher
   return <ErrorContext.Provider value={contextValue}>
-    {error
-      ? (typedFallback || defaultErrorFallbacks.generic)
-      : <RenderErrorCatcher catch={setError}>{children}</RenderErrorCatcher>
+    {error && error.isInline
+      ? errorDisplay 
+      : <RenderErrorCatcher catch={setError}>{error ? errorDisplay : children}</RenderErrorCatcher>
     }
   </ErrorContext.Provider>;
 };
 
 type RenderErrorCatcherProps = {
-  catch: (error: unknown, componentStack: string) => void;
+  catch: (error: unknown, componentStack: string, isInline: boolean) => void;
   children?: React.ReactNode;
 };
 // according to https://react.dev/reference/react/Component#catching-rendering-errors-with-an-error-boundary
@@ -147,7 +152,7 @@ class RenderErrorCatcher extends React.Component<RenderErrorCatcherProps, { hasE
   }
 
   componentDidCatch(error: unknown, info: React.ErrorInfo) {
-    this.props.catch(error, info.componentStack);
+    this.props.catch(error, info.componentStack, true);
   }
 
   render() {
