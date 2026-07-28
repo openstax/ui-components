@@ -5,14 +5,16 @@ import * as Sentry from '@sentry/react';
 import { findByTestId } from '../test/utils';
 import { SessionExpiredError } from '@openstax/ts-utils/errors';
 
-// Sentry v8+ exposes its named exports as read-only getters, so they can no longer
-// be replaced with jest.spyOn directly. Mock the module to make lastEventId spyable
-// while keeping the real init/captureException so the testkit transport still works.
-jest.mock('@sentry/react', () => ({
-  __esModule: true,
-  ...jest.requireActual('@sentry/react'),
-  lastEventId: jest.fn(),
-}));
+// Sentry v8+ exposes named exports as read-only getters; mock init so it is
+// spyable while delegating to the real implementation for testkit transport setup.
+jest.mock('@sentry/react', () => {
+  const actual = jest.requireActual('@sentry/react');
+  return {
+    __esModule: true,
+    ...actual,
+    init: jest.fn(actual.init),
+  };
+});
 
 const { testkit, sentryTransport } = sentryTestkit();
 
@@ -24,8 +26,6 @@ describe('ErrorBoundary', () => {
       dsn: 'https://examplePublicKey@o0.ingest.sentry.io/0',
       transport: sentryTransport,
     });
-
-    jest.spyOn(Sentry, 'lastEventId').mockReturnValue('someuuid');
   });
 
   afterEach(() => {
@@ -49,36 +49,12 @@ describe('ErrorBoundary', () => {
     spy.mockImplementation(() => undefined);
 
     const render = renderer.create(
-      <ErrorBoundary renderFallback>
+      <ErrorBoundary>
         <ErrorComponent />
       </ErrorBoundary>
     );
 
     expect(findByTestId(render.root, 'error-fallback')).toBeTruthy();
-    expect(testkit.reports()).toHaveLength(1);
-
-    spy.mockRestore();
-  });
-
-  it('resets error', () => {
-    const spy = jest.spyOn(console, 'error')
-    spy.mockImplementation(() => undefined);
-
-    let render: ReactTestRenderer;
-    expect(() => {
-      render = renderer.create(
-        <ErrorBoundary
-          renderFallback
-          fallback={({ resetError }: {
-            resetError: () => void
-          }) => { resetError(); return <></> }}
-        >
-          <ErrorComponent />
-        </ErrorBoundary>
-      );
-    }).toThrow();
-
-    expect(() => findByTestId(render.root, 'error-fallback')).toThrow();
     expect(testkit.reports()).toHaveLength(1);
 
     spy.mockRestore();
@@ -97,14 +73,14 @@ describe('ErrorBoundary', () => {
 
     // Should create warning (reports[0])
     renderer.create(
-      <ErrorBoundary renderFallback>
+      <ErrorBoundary>
         <SessionExpiredComponent />
       </ErrorBoundary>
     );
 
     // Should create error (reports[1])
     renderer.create(
-      <ErrorBoundary renderFallback>
+      <ErrorBoundary>
         <ErrorComponent />
       </ErrorBoundary>
     );
@@ -132,7 +108,6 @@ describe('ErrorBoundary', () => {
     // Should create debug (reports[0])
     renderer.create(
       <ErrorBoundary
-        renderFallback
         errorLevels={{ SessionExpiredError: 'debug' }}
       >
         <SessionExpiredComponent />
@@ -141,7 +116,7 @@ describe('ErrorBoundary', () => {
 
     // Should create error (reports[1])
     renderer.create(
-      <ErrorBoundary renderFallback>
+      <ErrorBoundary>
         <ErrorComponent />
       </ErrorBoundary>
     );
@@ -158,7 +133,6 @@ describe('ErrorBoundary', () => {
 
     renderer.create(
       <ErrorBoundary
-        renderFallback
         errorLevels={{ SessionExpiredError: unsetLevel }}
       >
         <SessionExpiredComponent />
@@ -181,7 +155,6 @@ describe('ErrorBoundary', () => {
 
     const tree = renderer.create(
       <ErrorBoundary
-        renderFallback
         errorFallbacks={{
           'SessionExpiredError': <>You are signed out</>,
         }}
@@ -196,7 +169,8 @@ describe('ErrorBoundary', () => {
   });
 
   it('inits Sentry', () => {
-    const initSpy = jest.spyOn(Sentry, 'init');
+    const initMock = Sentry.init as jest.Mock;
+    initMock.mockClear();
 
     act(() => {
       renderer.create(
@@ -204,11 +178,12 @@ describe('ErrorBoundary', () => {
       );
     });
 
-    expect(initSpy).toHaveBeenCalled();
+    expect(initMock).toHaveBeenCalled();
   });
 
   it('can override Sentry init', () => {
-    const initSpy = jest.spyOn(Sentry, 'init');
+    const initMock = Sentry.init as jest.Mock;
+    initMock.mockClear();
     const config = {
       dsn: 'https://examplePublicKey@o0.ingest.sentry.io/0',
       enabled: false,
@@ -223,10 +198,12 @@ describe('ErrorBoundary', () => {
       );
     });
 
-    expect(initSpy).toHaveBeenCalledWith(config);
+    expect(initMock).toHaveBeenCalledWith(config);
   });
+
   it('is idempotent when the init effect re-runs (does not throw or re-init)', () => {
-    const initSpy = jest.spyOn(Sentry, 'init');
+    const initMock = Sentry.init as jest.Mock;
+    initMock.mockClear();
     const config = {
       dsn: 'https://examplePublicKey@o0.ingest.sentry.io/0',
       enabled: false,
@@ -242,7 +219,7 @@ describe('ErrorBoundary', () => {
       );
     });
 
-    expect(initSpy).toHaveBeenCalledTimes(1);
+    expect(initMock).toHaveBeenCalledTimes(1);
 
     let caught;
     const saveError = console.error;
@@ -255,6 +232,6 @@ describe('ErrorBoundary', () => {
     console.error = saveError;
 
     expect(caught).toBeUndefined();
-    expect(initSpy).toHaveBeenCalledTimes(1);
+    expect(initMock).toHaveBeenCalledTimes(1);
   });
 });

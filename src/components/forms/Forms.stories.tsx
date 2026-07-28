@@ -129,7 +129,7 @@ export const UncontrolledForm = () => {
     <Uncontrolled.Form onSubmit={(e) => {
       e.preventDefault();
       const formData = new FormData(e.currentTarget);
-      const data = Object.fromEntries(formData.entries());
+      const data = Object.fromEntries((formData as any).entries());
       setSubmitted(data);
     }}>
       <Uncontrolled.FormSection>

@@ -32,24 +32,10 @@ const AsyncTriggerErrorDisplayButton = () => {
   </button>;
 };
 
-export const InlineMessages = () => {
-  const [showError, setShowError] = React.useState(false);
-
-  return <ErrorBoundary>
-    <ErrorMessage />
-    <ErrorComponent
-      doThrow={showError}
-      setShowError={setShowError}
-    />
-    <button onClick={() => { setShowError(true) }}>Throw Error</button>
-    <AsyncTriggerErrorDisplayButton />
-  </ErrorBoundary>
-};
-
 export const Fallback_GenericError_Default = () => {
   const [showError, setShowError] = React.useState(false);
 
-  return <ErrorBoundary renderFallback sentryDsn="https://0@o0.ingest.sentry.io/0">
+  return <ErrorBoundary sentryDsn="https://0@o0.ingest.sentry.io/0">
     <ErrorComponent
       doThrow={showError}
       setShowError={setShowError}
@@ -62,15 +48,12 @@ export const Fallback_GenericError_Default = () => {
 export const Fallback_GenericError_Custom = () => {
   const [showError, setShowError] = React.useState(false);
 
-  return <ErrorBoundary
-    renderFallback
-    fallback={(props) => (
-      <>
+  return <ErrorBoundary errorFallbacks={{
+    'Error': <>
       <h2>This is a custom error fallback</h2>
-        <p>{props && String(props.error)}</p>
-        {props && props.resetError ? <button onClick={props && props.resetError}>Reset</button> : null}
-      </>
-    )}>
+      <ErrorMessage message="some message huh" />
+    </>
+  }}>
     <ErrorComponent
       doThrow={showError}
       setShowError={setShowError}
@@ -99,9 +82,7 @@ export const Fallback_SpecialError = () => {
   const [showError1, setShowError1] = React.useState(false);
   const [showError2, setShowError2] = React.useState(false);
 
-  return <ErrorBoundary
-    renderFallback
-  >
+  return <ErrorBoundary>
     <ErrorComponent
       doThrow={showError1}
       setShowError={setShowError1}

@@ -1,10 +1,6 @@
 import { act, render, screen } from "@testing-library/react";
 import { useSetAppError, useMatchMediaQuery } from "./hooks";
-import sentryTestkit from "sentry-testkit";
-import * as Sentry from "@sentry/react";
 import { ErrorContext } from "./contexts";
-
-const { testkit, sentryTransport } = sentryTestkit();
 
 const MediaComponent = ({ query }: { query: string }) => {
   const matches = useMatchMediaQuery(query);
@@ -17,32 +13,22 @@ describe("useSetAppError", () => {
   let setErrorMock: jest.Mock;
 
   beforeEach(() => {
-    Sentry.init({
-      dsn: "https://examplePublicKey@o0.ingest.sentry.io/0",
-      transport: sentryTransport,
-    });
     setErrorMock = jest.fn();
-    testkit.reset();
   });
 
-  it("should capture exception with Sentry and set error", () => {
+  it("should pass error to context setError", () => {
     const ErrorComponent = () => {
       useSetAppError()(new Error("test"));
       return null;
     };
 
     render(
-      <ErrorContext.Provider value={{ error: null, setError: setErrorMock }}>
+      <ErrorContext.Provider value={{ initialized: true, error: null, setError: setErrorMock }}>
         <ErrorComponent />
       </ErrorContext.Provider>,
     );
 
-    expect(testkit.reports()).toHaveLength(1);
-    expect(setErrorMock).toHaveBeenCalledWith({
-      error: new Error("test"),
-      type: "Error",
-      eventId: testkit.reports()[0].originalReport.event_id,
-    });
+    expect(setErrorMock).toHaveBeenCalledWith(new Error("test"));
   });
 
   it("should clear error when called with null", () => {
@@ -52,12 +38,11 @@ describe("useSetAppError", () => {
     };
 
     render(
-      <ErrorContext.Provider value={{ error: null, setError: setErrorMock }}>
+      <ErrorContext.Provider value={{ initialized: true, error: null, setError: setErrorMock }}>
         <ResetComponent />
       </ErrorContext.Provider>,
     );
 
-    expect(testkit.reports()).toHaveLength(0);
     expect(setErrorMock).toHaveBeenCalledWith(null);
   });
 });
