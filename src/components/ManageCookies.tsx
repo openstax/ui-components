@@ -130,7 +130,10 @@ export const ManageCookiesLink = ({children, className, wrapper, ...props}: Mana
     }, 100); // Small delay to allow CookieYes to add the modal to DOM
   }, [inBrowser, onClick, clearInitTimeout, cleanupObserverAndTimeouts]);
 
-  if (!inBrowser) { return null; }
+  // For SSR, render the style element inline to prevent flash of unstyled content
+  if (!inBrowser) {
+    return <style dangerouslySetInnerHTML={{ __html: '.cky-btn-revisit { display: none; }' }} />;
+  }
 
   const button = <ButtonLink
     ref={buttonRef}

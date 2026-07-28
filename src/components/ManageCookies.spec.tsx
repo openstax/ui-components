@@ -373,7 +373,7 @@ describe('ManageCookies', () => {
       expect(unmountedStyles.length).toBe(0);
     });
 
-    it('only creates one style element when component is rendered multiple times', () => {
+    it('creates a separate style element for each component instance', () => {
       // Mount first instance
       const { unmount: unmount1 } = render(<ManageCookiesLink />);
 
@@ -385,7 +385,7 @@ describe('ManageCookies', () => {
       // Mount second instance (without unmounting first)
       const { unmount: unmount2 } = render(<ManageCookiesLink />);
 
-      // Verify still only one style element (each instance has its own ref)
+      // Verify each instance creates its own style element
       styles = Array.from(document.head.querySelectorAll('style'))
         .filter(style => style.textContent?.includes('.cky-btn-revisit'));
       expect(styles.length).toBe(2); // Each component instance adds its own style

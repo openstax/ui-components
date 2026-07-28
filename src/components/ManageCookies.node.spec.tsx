@@ -5,7 +5,7 @@ import { ManageCookiesLink } from "./ManageCookies";
 
 // For prerendering
 describe('ManageCookies outside a browser', () => {
-  it('renders nothing', () => {
+  it('renders style element for SSR', () => {
     const tree = renderer.create(
       <ManageCookiesLink />
     ).toJSON();
