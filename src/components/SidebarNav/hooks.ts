@@ -116,8 +116,10 @@ export const useScrollRestoration = (
 ) => {
   const [scrollPosition, setScrollPosition] = React.useState(0);
 
-  // Restore scroll position after render
-  requestAnimationFrame(() => {
+  // useLayoutEffect without deps runs after every render, before paint,
+  // preventing the re-render loop that a bare requestAnimationFrame in the
+  // render body causes (each RAF fires a scroll event → state update → loop).
+  React.useLayoutEffect(() => {
     if (ref.current) {
       ref.current.scrollTop = scrollPosition;
     }
