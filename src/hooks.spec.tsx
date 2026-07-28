@@ -83,6 +83,14 @@ describe("useMatchMediaQuery", () => {
     expect(screen.getByTestId("result").textContent).toBe("Matches");
   });
 
+  test("it syncs matches when the query prop changes", () => {
+    const component = render(<MediaComponent query="(min-width: 600px)" />);
+    expect(screen.getByTestId("result").textContent).toBe("Matches");
+
+    component.rerender(<MediaComponent query="(min-width: 800px)" />);
+    expect(screen.getByTestId("result").textContent).toBe("Does not match");
+  });
+
   test("it attaches and detaches event listeners", () => {
     const mock = {
       addEventListener: jest.fn(),
