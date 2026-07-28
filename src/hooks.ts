@@ -33,6 +33,7 @@ export const useMatchMediaQuery = (query: string) => {
   }, []);
 
   React.useEffect(() => {
+    setMatches(matchMedia.matches);
     if (typeof matchMedia.addEventListener === "function") {
       matchMedia.addEventListener("change", listener);
     } else {
