@@ -4,7 +4,7 @@ exports[`NavBarMenuButton matches snapshot 1`] = `
 <button
   aria-expanded={false}
   aria-haspopup={true}
-  className="sc-bczRLJ dKgZvy"
+  className="navbar-button"
   data-rac=""
   data-react-aria-pressable={true}
   id="react-aria-7"
@@ -34,7 +34,7 @@ exports[`NavBarPopoverButton matches custom aria label snapshot 1`] = `
 <button
   aria-expanded={false}
   aria-label="Custom label"
-  className="sc-bczRLJ dKgZvy"
+  className="navbar-button"
   data-rac=""
   data-react-aria-pressable={true}
   id="react-aria-5"
@@ -63,7 +63,7 @@ exports[`NavBarPopoverButton matches custom aria label snapshot 1`] = `
 exports[`NavBarPopoverButton matches snapshot 1`] = `
 <button
   aria-expanded={false}
-  className="sc-bczRLJ dKgZvy"
+  className="navbar-button"
   data-rac=""
   data-react-aria-pressable={true}
   id="react-aria-2"

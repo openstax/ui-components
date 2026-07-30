@@ -8,3 +8,5 @@ if (typeof performance.getEntriesByType !== 'function') {
 if (typeof performance.getEntriesByName !== 'function') {
   performance.getEntriesByName = () => [];
 }
+
+export {}

@@ -1,40 +1,11 @@
-import styled from 'styled-components';
+import React from 'react';
+import { CSSPropertiesWithVariables } from '../types';
+import classNames from 'classnames';
 import * as Constants from '../constants';
 import theme from '../theme';
 import { BodyPortal } from './BodyPortal';
 import { NavBarLogo as OpenstaxLogo } from './NavBarLogo';
-
-const BarWrapper = styled(BodyPortal)`
-  overflow: visible;
-  z-index: ${theme.zIndex.navbar};
-  background: ${theme.colors.palette.white};
-  position: relative;
-  padding: 0 ${theme.padding.navbar.mobile}rem;
-  box-shadow: 0 0.2rem 0.2rem 0 rgba(0, 0, 0, 0.1);
-  @media screen and (min-width: ${theme.breakpoints.desktopBreak}em) {
-    padding: 0 ${theme.padding.navbar.desktop}rem;
-  }
-  min-width: 0;
-`;
-
-const StyledNavBar = styled.div<{
-  maxWidth?: number;
-  navDesktopHeight: number;
-  navMobileHeight: number;
-  justifyContent?: string;
-}>`
-  overflow: visible;
-  display: flex;
-  justify-content: ${props => props.justifyContent || 'space-between'};
-  align-items: center;
-  height: ${props => props.navMobileHeight}rem;
-  ${props => props.maxWidth ? `max-width: ${props.maxWidth}rem;` : null}
-  margin: 0 auto;
-  @media screen and (min-width: ${theme.breakpoints.desktopBreak}em) {
-    height: ${props => props.navDesktopHeight}rem;
-  }
-  @media print { display: none; }
-`;
+import './NavBar.css';
 
 type Logo = React.HTMLProps<HTMLAnchorElement> & { alt?: string };
 
@@ -45,23 +16,53 @@ type NavBarProps = React.PropsWithChildren<{
   logo?: boolean | Logo;
   justifyContent?: string;
   ariaLabel?: string;
+  className?: string;
+  style?: CSSPropertiesWithVariables;
 }>
 
-export const NavBar = ({ logo = false, maxWidth, navDesktopHeight, navMobileHeight, justifyContent, ariaLabel, ...props }: NavBarProps) => {
+export const NavBar = ({
+  logo = false,
+  maxWidth,
+  navDesktopHeight,
+  navMobileHeight,
+  justifyContent,
+  ariaLabel,
+  className,
+  style,
+  ...props
+}: NavBarProps) => {
   const logoIsObject = typeof logo === 'object';
   const renderAnchor = logoIsObject && 'href' in logo;
   const {alt = 'OpenStax Logo', ...anchorProps} = logoIsObject ? logo : {};
   const logoComponent = logo ? <OpenstaxLogo alt={alt} /> : null;
 
-  return <BarWrapper tagName='nav' ariaLabel={ariaLabel} slot='nav' {...props}>
-    <StyledNavBar
-      maxWidth={maxWidth}
-      navDesktopHeight={navDesktopHeight || Constants.navDesktopHeight}
-      navMobileHeight={navMobileHeight || Constants.navMobileHeight}
-      justifyContent={justifyContent}
+  const wrapperStyle: CSSPropertiesWithVariables = {
+    '--navbar-z-index': theme.zIndex.navbar,
+    '--navbar-padding-mobile': `${theme.padding.navbar.mobile}rem`,
+    '--navbar-padding-desktop': `${theme.padding.navbar.desktop}rem`,
+    ...style
+  };
+
+  const barStyle: CSSPropertiesWithVariables = {
+    '--navbar-max-width': maxWidth ? `${maxWidth}rem` : undefined,
+    '--navbar-justify-content': justifyContent,
+    '--navbar-height-mobile': `${navMobileHeight || Constants.navMobileHeight}rem`,
+    '--navbar-height-desktop': `${navDesktopHeight || Constants.navDesktopHeight}rem`,
+  };
+
+  return (
+    <BodyPortal
+      tagName='nav'
+      ariaLabel={ariaLabel}
+      slot='nav'
+      className={classNames('navbar-wrapper', className)}
+      style={wrapperStyle}
+      {...props}
     >
-      {renderAnchor ? <a {...anchorProps}>{logoComponent}</a> : logoComponent}
-      {props.children}
-    </StyledNavBar>
-  </BarWrapper>
+      <div className="navbar-bar" style={barStyle}>
+        {renderAnchor ? <a {...anchorProps}>{logoComponent}</a> : logoComponent}
+        {props.children}
+      </div>
+    </BodyPortal>
+  );
 };
