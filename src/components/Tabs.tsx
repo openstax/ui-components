@@ -63,6 +63,14 @@ export const buttonBarItemCss = css`
   &:hover:not([data-selected=true]) {
     background: ${colors.palette.neutralLighter};
   }
+
+  @media (forced-colors: active) {
+    &[data-selected=true] {
+      background: Highlight;
+      color: HighlightText;
+      forced-color-adjust: none;
+    }
+  }
 `;
 
 const buttonBarCss = css`
@@ -88,6 +96,12 @@ const tabsCss = css`
 
     &[data-selected=true], &:hover {
       border-color: ${palette.darkGreen};
+    }
+
+    @media (forced-colors: active) {
+      &[data-selected=true] {
+        border-color: Highlight;
+      }
     }
   }
 `;
