@@ -3,7 +3,7 @@
 exports[`ButtonBar renders 1`] = `
 <DocumentFragment>
   <div
-    class="sc-gsnTZi hYiJLm"
+    class="sc-gsnTZi ca-dGRo"
   >
     <a>
       One
@@ -18,7 +18,7 @@ exports[`ButtonBar renders 1`] = `
 exports[`ButtonBar renders large size 1`] = `
 <DocumentFragment>
   <div
-    class="sc-gsnTZi hZAvUF"
+    class="sc-gsnTZi duotqD"
   >
     <button>
       One
@@ -35,7 +35,7 @@ exports[`ButtonBar renders large size 1`] = `
 exports[`ButtonBar renders small size 1`] = `
 <DocumentFragment>
   <div
-    class="sc-gsnTZi gFPpQi"
+    class="sc-gsnTZi hqrQBU"
   >
     <button>
       One
