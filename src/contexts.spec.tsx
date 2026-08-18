@@ -31,7 +31,7 @@ describe('ErrorContext', () => {
     const mockSetError = jest.fn();
 
     render(
-      <ErrorContext.Provider value={{ error: null, setError: mockSetError }}>
+      <ErrorContext.Provider value={{ initialized: true, error: null, setError: mockSetError }}>
         <TestComponent />
       </ErrorContext.Provider>
     );

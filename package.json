@@ -1,7 +1,8 @@
 {
   "name": "@openstax/ui-components",
-  "version": "1.23.6",
+  "version": "1.23.7",
   "license": "MIT",
+  "os": [ "darwin", "linux" ],
   "repository": "https://github.com/openstax/ui-components.git",
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
