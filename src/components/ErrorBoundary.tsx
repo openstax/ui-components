@@ -108,14 +108,27 @@ export const ErrorBoundary = ({
     if (type in errorFallbacks || !parentContext.initialized) {
       setThisError({
         error, type, componentStack, isInline,
-        eventId: Sentry.captureException(error, {
-          level: errorLevels[type] ?? 'error'
+        // the level goes on the scope because sentry's capture hint disallows
+        // mixing scope fields with the mechanism below
+        eventId: Sentry.withScope((scope) => {
+          scope.setLevel(errorLevels[type] ?? 'error');
+
+          // captureReactException grafts the component stack onto the event as a
+          // synthetic cause error; Sentry.ErrorBoundary used to do this for us
+          return componentStack
+            ? Sentry.captureReactException(error, { componentStack }, {
+              mechanism: { handled: true, type: 'auto.function.react.error_boundary' }
+            })
+            : Sentry.captureException(error);
         })
       });
     } else {
-      parentContext.setError(input);
+      // isInline intentionally does not bubble; it only exists to skip a
+      // RenderErrorCatcher whose subtree react is tearing down, and the parent's
+      // catcher is intact because this boundary is the one that caught the error
+      parentContext.setError(input, componentStack);
     }
-  }, [errorFallbacks, parentContext]);
+  }, [errorFallbacks, errorLevels, parentContext]);
 
   const contextValue = React.useMemo(() => ({
     error,
