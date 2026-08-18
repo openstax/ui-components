@@ -1,4 +1,5 @@
 import React from 'react';
+import type { CSSPropertiesWithVariables } from '../types';
 import { render } from '@testing-library/react';
 import { BodyPortal } from './BodyPortal';
 import { BodyPortalSlotsContext } from './BodyPortalSlotsContext';
@@ -260,5 +261,105 @@ describe('BodyPortal', () => {
   />
 </body>
 `);
+  });
+
+  it('applies CSS variables from style prop', () => {
+    render(
+      <BodyPortal
+        slot='modal'
+        style={{ '--my-variable': 'red', '--another-var': '10px' } as CSSPropertiesWithVariables}
+      >
+        Modal content
+      </BodyPortal>,
+      { container: root }
+    );
+
+    const portal = document.body.querySelector('[data-portal-slot="modal"]') as HTMLElement;
+    expect(portal).toBeTruthy();
+    expect(portal.style.getPropertyValue('--my-variable')).toBe('red');
+    expect(portal.style.getPropertyValue('--another-var')).toBe('10px');
+  });
+
+  it('applies regular CSS properties from style prop', () => {
+    render(
+      <BodyPortal
+        slot='modal'
+        style={{ backgroundColor: 'blue', fontSize: '16px' }}
+      >
+        Modal content
+      </BodyPortal>,
+      { container: root }
+    );
+
+    const portal = document.body.querySelector('[data-portal-slot="modal"]') as HTMLElement;
+    expect(portal).toBeTruthy();
+    expect(portal.style.backgroundColor).toBe('blue');
+    expect(portal.style.fontSize).toBe('16px');
+  });
+
+  it('updates styles when style prop changes without removing portal element', () => {
+    const TestComponent = ({ color }: { color: string }) => (
+      <BodyPortal
+        slot='modal'
+        style={{ '--color': color } as CSSPropertiesWithVariables}
+      >
+        Modal content
+      </BodyPortal>
+    );
+
+    const { rerender } = render(<TestComponent color='red' />, { container: root });
+
+    const portal = document.body.querySelector('[data-portal-slot="modal"]') as HTMLElement;
+    expect(portal).toBeTruthy();
+    expect(portal.style.getPropertyValue('--color')).toBe('red');
+
+    // Store reference to verify it's the same element after update
+    const portalRef = portal;
+
+    rerender(<TestComponent color='blue' />);
+
+    const updatedPortal = document.body.querySelector('[data-portal-slot="modal"]') as HTMLElement;
+    expect(updatedPortal).toBe(portalRef); // Should be the same element
+    expect(updatedPortal.style.getPropertyValue('--color')).toBe('blue');
+  });
+
+  it('removes styles on unmount', () => {
+    const { unmount } = render(
+      <BodyPortal
+        slot='modal'
+        style={{ '--my-variable': 'red', backgroundColor: 'blue' } as CSSPropertiesWithVariables}
+      >
+        Modal content
+      </BodyPortal>,
+      { container: root }
+    );
+
+    const portal = document.body.querySelector('[data-portal-slot="modal"]') as HTMLElement;
+    expect(portal).toBeTruthy();
+    expect(portal.style.getPropertyValue('--my-variable')).toBe('red');
+    expect(portal.style.backgroundColor).toBe('blue');
+
+    unmount();
+
+    // Portal element should be removed from DOM
+    expect(document.body.querySelector('[data-portal-slot="modal"]')).toBeNull();
+  });
+
+  it('handles undefined style values gracefully', () => {
+    render(
+      <BodyPortal
+        slot='modal'
+        style={{ '--defined': 'red', '--undefined': undefined } as CSSPropertiesWithVariables}
+      >
+        Modal content
+      </BodyPortal>,
+      { container: root }
+    );
+
+    const portal = document.body.querySelector('[data-portal-slot="modal"]') as HTMLElement;
+    expect(portal).toBeTruthy();
+    expect(portal.style.getPropertyValue('--defined')).toBe('red');
+    // null and undefined values should not be set
+    expect(portal.style.getPropertyValue('--undefined')).toBe('');
   });
 });

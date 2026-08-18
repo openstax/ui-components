@@ -10,7 +10,7 @@ exports[`ProfileMenu matches snapshot with user initials 1`] = `
       aria-expanded="true"
       aria-haspopup="true"
       aria-label="Account actions"
-      class="sc-eCYdqJ izrTAJ"
+      class="sc-bczRLJ fSHaly"
       data-focus-visible="true"
       data-focused="true"
       data-pressed="true"
@@ -39,13 +39,13 @@ exports[`ProfileMenu matches snapshot with user initials 1`] = `
   >
     <div
       aria-labelledby="react-aria-1"
-      class="sc-hKMtZM sc-jSMfEi fKsRUv bCatnj"
+      class="navbar-popover sc-gsnTZi ldbTAg"
       data-placement="bottom"
       data-rac=""
       data-trigger="MenuTrigger"
       dir="ltr"
       role="dialog"
-      style="position: absolute; z-index: 100000; max-height: -24px; left: 12px; top: 8px;"
+      style="position: absolute; z-index: 100000; max-height: -24px; --navbar-popover-border-color: #63a524; left: 12px; top: 8px;"
       tabindex="-1"
     >
       <div
@@ -75,7 +75,7 @@ exports[`ProfileMenu matches snapshot with user initials 1`] = `
         tabindex="-1"
       >
         <div
-          class="sc-gsnTZi sc-gKXOVf  jjVNxD"
+          class="navbar-menu-item sc-dkzDqf jhxreu"
           data-collection="react-aria-5"
           data-focus-visible="true"
           data-focused="true"
@@ -84,18 +84,20 @@ exports[`ProfileMenu matches snapshot with user initials 1`] = `
           data-react-aria-pressable="true"
           id="react-aria-10"
           role="menuitem"
+          style="--navbar-menu-item-hover-bg: #f1f1f1; --navbar-menu-item-border-color: #f5f5f5;"
           tabindex="0"
         >
           Profile
         </div>
         <div
-          class="sc-gsnTZi sc-gKXOVf  jjVNxD"
+          class="navbar-menu-item sc-dkzDqf jhxreu"
           data-collection="react-aria-5"
           data-key="logout"
           data-rac=""
           data-react-aria-pressable="true"
           id="react-aria-14"
           role="menuitem"
+          style="--navbar-menu-item-hover-bg: #f1f1f1; --navbar-menu-item-border-color: #f5f5f5;"
           tabindex="-1"
         >
           Log out

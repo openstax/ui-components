@@ -6,11 +6,13 @@ exports[`NavBar matches snapshot 1`] = `
     id="root"
   />
   <nav
-    class="sc-bczRLJ czHLRx"
+    class="navbar-wrapper"
     data-portal-slot="nav"
+    style="--navbar-z-index: 10; --navbar-padding-mobile: 1.6rem; --navbar-padding-desktop: 3.2rem;"
   >
     <div
-      class="sc-gsnTZi kxMJGL"
+      class="navbar-bar"
+      style="--navbar-height-mobile: 4rem; --navbar-height-desktop: 4rem;"
     >
       NavBar content
     </div>
@@ -25,11 +27,13 @@ exports[`NavBar sets the ariaLabel 1`] = `
   />
   <nav
     aria-label="test"
-    class="sc-bczRLJ czHLRx"
+    class="navbar-wrapper"
     data-portal-slot="nav"
+    style="--navbar-z-index: 10; --navbar-padding-mobile: 1.6rem; --navbar-padding-desktop: 3.2rem;"
   >
     <div
-      class="sc-gsnTZi eXUcQI"
+      class="navbar-bar"
+      style="--navbar-max-width: 128rem; --navbar-height-mobile: 4rem; --navbar-height-desktop: 4rem;"
     >
       NavBar content
     </div>
@@ -43,11 +47,13 @@ exports[`NavBar sets the maxWidth 1`] = `
     id="root"
   />
   <nav
-    class="sc-bczRLJ czHLRx"
+    class="navbar-wrapper"
     data-portal-slot="nav"
+    style="--navbar-z-index: 10; --navbar-padding-mobile: 1.6rem; --navbar-padding-desktop: 3.2rem;"
   >
     <div
-      class="sc-gsnTZi eXUcQI"
+      class="navbar-bar"
+      style="--navbar-max-width: 128rem; --navbar-height-mobile: 4rem; --navbar-height-desktop: 4rem;"
     >
       NavBar content
     </div>
@@ -61,11 +67,13 @@ exports[`NavBar with a logo customizes the alt text 1`] = `
     id="root"
   />
   <nav
-    class="sc-bczRLJ czHLRx"
+    class="navbar-wrapper"
     data-portal-slot="nav"
+    style="--navbar-z-index: 10; --navbar-padding-mobile: 1.6rem; --navbar-padding-desktop: 3.2rem;"
   >
     <div
-      class="sc-gsnTZi kxMJGL"
+      class="navbar-bar"
+      style="--navbar-height-mobile: 4rem; --navbar-height-desktop: 4rem;"
     >
       <svg
         class="navbar-logo"
@@ -119,11 +127,13 @@ exports[`NavBar with a logo links the logo 1`] = `
     id="root"
   />
   <nav
-    class="sc-bczRLJ czHLRx"
+    class="navbar-wrapper"
     data-portal-slot="nav"
+    style="--navbar-z-index: 10; --navbar-padding-mobile: 1.6rem; --navbar-padding-desktop: 3.2rem;"
   >
     <div
-      class="sc-gsnTZi kxMJGL"
+      class="navbar-bar"
+      style="--navbar-height-mobile: 4rem; --navbar-height-desktop: 4rem;"
     >
       <a
         href="/"
@@ -181,11 +191,13 @@ exports[`NavBar with a logo matches snapshot 1`] = `
     id="root"
   />
   <nav
-    class="sc-bczRLJ czHLRx"
+    class="navbar-wrapper"
     data-portal-slot="nav"
+    style="--navbar-z-index: 10; --navbar-padding-mobile: 1.6rem; --navbar-padding-desktop: 3.2rem;"
   >
     <div
-      class="sc-gsnTZi kxMJGL"
+      class="navbar-bar"
+      style="--navbar-height-mobile: 4rem; --navbar-height-desktop: 4rem;"
     >
       <svg
         class="navbar-logo"

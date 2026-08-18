@@ -1,4 +1,5 @@
 import React from "react";
+import classNames from "classnames";
 import {
   Dialog,
   DialogTrigger,
@@ -8,50 +9,59 @@ import {
   Popover,
   PopoverProps,
 } from "react-aria-components";
-import styled from "styled-components";
-import { colors, defaultFocusOutline } from "../theme";
+import { colors } from "../theme";
 import { NavBarButton, NavBarButtonProps } from "./NavBarButton";
+import { CSSPropertiesWithVariables } from "../types";
+import "./NavBarMenuButtons.css";
 
-export const NavBarMenuItem = styled(MenuItem)``;
+export const NavBarMenuItem = React.forwardRef<
+  HTMLDivElement,
+  React.ComponentProps<typeof MenuItem>
+>(({ className, style, ...props }, ref) => {
+  const menuItemStyle: CSSPropertiesWithVariables = {
+    '--navbar-menu-item-hover-bg': colors.palette.neutralLighter,
+    '--navbar-menu-item-border-color': colors.palette.neutralBright,
+    ...style
+  };
 
-export const PopoverContainer = styled.div`
-  padding: 1.6rem;
-`;
+  return (
+    <MenuItem
+      ref={ref}
+      className={classNames("navbar-menu-item", className)}
+      style={menuItemStyle}
+      {...props}
+    />
+  );
+});
+NavBarMenuItem.displayName = "NavBarMenuItem";
 
-export const NavBarPopover = styled(Popover)`
-  margin-top: -1rem;
-  border-top: 0.4rem solid ${colors.palette.darkGreen};
-  box-shadow: 0 0.4rem 0.4rem 0 #00000033;
-  background: #fff;
+export const PopoverContainer = React.forwardRef<
+  HTMLDivElement,
+  React.ComponentPropsWithoutRef<"div">
+>(({ className, ...props }, ref) => (
+  <div ref={ref} className={classNames("navbar-popover-container", className)} {...props} />
+));
+PopoverContainer.displayName = "PopoverContainer";
 
-  ${NavBarMenuItem} {
-    font-size: 1.6rem;
-    min-height: 4rem;
-    padding: 0 1.6rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
+export const NavBarPopover = React.forwardRef<
+  HTMLDivElement,
+  PopoverProps
+>(({ className, style, ...props }, ref) => {
+  const popoverStyle: CSSPropertiesWithVariables = {
+    '--navbar-popover-border-color': colors.palette.darkGreen,
+    ...style
+  };
 
-    &:hover,
-    &[data-hovered],
-    &[data-focused] {
-      background: ${colors.palette.neutralLighter};
-    }
-
-    &:focus-visible {
-      ${defaultFocusOutline}
-      outline-offset: -0.2rem;
-    }
-
-    &:active {
-      font-weight: bold;
-    }
-
-    &:not(:last-child) {
-      border-bottom: 0.1rem solid ${colors.palette.neutralBright};
-    }
-  }
-`;
+  return (
+    <Popover
+      ref={ref}
+      className={classNames("navbar-popover", className)}
+      style={popoverStyle}
+      {...props}
+    />
+  );
+});
+NavBarPopover.displayName = "NavBarPopover";
 
 export type NavBarBaseButtonProps = React.PropsWithChildren<{
   popoverProps?: PopoverProps;
