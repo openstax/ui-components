@@ -1,10 +1,12 @@
 /* Overlay component styles */
 
-.overlay-mask {
+/* Compound selectors keep these ahead of the base .mask / .close-modal-button
+   rules regardless of the order the stylesheets are bundled in. */
+.mask.overlay-mask {
   background-color: rgba(0, 0, 0, 0.89);
 }
 
-.overlay-close-button {
+.close-modal-button.overlay-close-button {
   height: 4rem;
   width: 4rem;
   position: absolute;

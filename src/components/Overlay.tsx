@@ -16,7 +16,7 @@ export const OverlayMask = React.forwardRef<HTMLDivElement, RAC.ModalOverlayProp
 );
 OverlayMask.displayName = 'OverlayMask';
 
-export const OverlayCloseButton = React.forwardRef<HTMLButtonElement, React.ComponentProps<typeof CloseModalButton>>(
+export const OverlayCloseButton = React.forwardRef<HTMLButtonElement, React.ComponentPropsWithoutRef<typeof CloseModalButton>>(
   ({ className, ...props }, ref) => (
     <CloseModalButton
       ref={ref}
@@ -27,7 +27,7 @@ export const OverlayCloseButton = React.forwardRef<HTMLButtonElement, React.Comp
 );
 OverlayCloseButton.displayName = 'OverlayCloseButton';
 
-export const OverlayWrapper = React.forwardRef<HTMLDivElement, React.ComponentProps<typeof ModalWrapper>>(
+export const OverlayWrapper = React.forwardRef<HTMLDivElement, React.ComponentPropsWithoutRef<typeof ModalWrapper>>(
   ({ className, ...props }, ref) => (
     <ModalWrapper
       ref={ref}

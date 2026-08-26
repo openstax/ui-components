@@ -3,12 +3,13 @@ import classNames from 'classnames';
 import { Times } from "./svgs/Times";
 import './CloseModalButton.css';
 
-export interface CloseModalButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+export interface CloseModalButtonProps
+  extends Omit<React.ComponentPropsWithoutRef<'button'>, 'type' | 'aria-label'> {
   variant?: 'default' | 'error' | 'inverted-circle';
 }
 
 export const CloseModalButton = React.forwardRef<HTMLButtonElement, CloseModalButtonProps>(
-  ({ variant, className, type: _type, 'aria-label': _ariaLabel, ...props }, ref) => (
+  ({ variant, className, ...props }, ref) => (
     <button
       {...props}
       ref={ref}
