@@ -1,12 +1,15 @@
 import React from "react";
-import { Button, ButtonProps } from "react-aria-components";
+import { Button, ButtonProps, composeRenderProps } from "react-aria-components";
 import classNames from "classnames";
 import "./NavBarButton.css";
 
+// className is deliberately not re-declared here: ButtonProps types it as
+// `string | ((values: ButtonRenderProps) => string)`, and re-declaring it as `string`
+// would intersect away the render-callback form that RAC supports for state-based
+// styling (isPressed, isFocusVisible, ...).
 export type NavBarButtonProps = Omit<ButtonProps, "aria-label"> & {
   label?: string;
   icon?: string | React.ReactNode;
-  className?: string;
   "aria-label"?: string;
 } & ({ label: string } | { "aria-label": string });
 
@@ -14,7 +17,7 @@ export const NavBarButton = React.forwardRef<React.ElementRef<typeof Button>, Na
   ({ label, icon, className, "aria-label": ariaLabel, ...props }, ref) => (
     <Button
       ref={ref}
-      className={classNames("navbar-button", className)}
+      className={composeRenderProps(className, (resolved) => classNames("navbar-button", resolved))}
       aria-label={ariaLabel}
       {...props}
     >

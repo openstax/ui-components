@@ -1,3 +1,4 @@
+import { render } from '@testing-library/react';
 import { TreeCheckbox } from './TreeCheckbox';
 import renderer from 'react-test-renderer';
 
@@ -35,5 +36,29 @@ describe('TreeCheckbox', () => {
       <TreeCheckbox slot="selection">Click Me</TreeCheckbox>
     ).toJSON();
     expect(tree).toMatchSnapshot();
+  });
+
+  it('composes a render-callback className', () => {
+    render(<TreeCheckbox className={() => 'caller-class'}>Click Me</TreeCheckbox>);
+
+    const label = document.querySelector('.checkbox-label');
+    expect(label?.className).toContain('checkbox-label');
+    expect(label?.className).toContain('caller-class');
+  });
+
+  it('composes a render-callback className with the disabled modifier', () => {
+    render(<TreeCheckbox isDisabled className={() => 'caller-class'}>Click Me</TreeCheckbox>);
+
+    const label = document.querySelector('.checkbox-label');
+    expect(label?.className).toContain('checkbox-label--disabled');
+    expect(label?.className).toContain('caller-class');
+  });
+
+  it('keeps composing a string className', () => {
+    render(<TreeCheckbox className='caller-class'>Click Me</TreeCheckbox>);
+
+    const label = document.querySelector('.checkbox-label');
+    expect(label?.className).toContain('checkbox-label');
+    expect(label?.className).toContain('caller-class');
   });
 });

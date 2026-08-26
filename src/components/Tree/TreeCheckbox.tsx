@@ -1,6 +1,7 @@
 import {
   Checkbox as RACCheckbox,
-  CheckboxProps as RACCheckboxProps
+  CheckboxProps as RACCheckboxProps,
+  composeRenderProps
 } from "react-aria-components";
 import { PropsWithChildren } from "react";
 import {
@@ -33,12 +34,13 @@ export const TreeCheckbox = ({
   // Get variant styles for CSS variables
   const variantStyles = isDisabled ? checkboxVariants.disabled : checkboxVariants[variant];
 
-  // Build className
-  const checkboxClassName = classNames(
+  // Build className. composeRenderProps normalises the string and render-callback
+  // forms of className so a caller-supplied callback is composed rather than dropped.
+  const checkboxClassName = composeRenderProps(className, (resolved) => classNames(
     'checkbox-label',
     { 'checkbox-label--disabled': isDisabled },
-    className
-  );
+    resolved
+  ));
 
   // Build style with CSS variables
   const checkboxStyle = {
