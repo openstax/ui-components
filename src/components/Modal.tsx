@@ -64,7 +64,7 @@ export const Mask = React.forwardRef<HTMLDivElement, RAC.ModalOverlayProps>(
     <RAC.ModalOverlay
       ref={ref}
       defaultOpen
-      className={classNames('mask', className)}
+      className={RAC.composeRenderProps(className, (resolved) => classNames('mask', resolved))}
       {...props}
     />
   )

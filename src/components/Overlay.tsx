@@ -9,7 +9,7 @@ export const OverlayMask = React.forwardRef<HTMLDivElement, RAC.ModalOverlayProp
   ({ className, ...props }, ref) => (
     <Mask
       ref={ref}
-      className={classNames('overlay-mask', className)}
+      className={RAC.composeRenderProps(className, (resolved) => classNames('overlay-mask', resolved))}
       {...props}
     />
   )
@@ -31,7 +31,7 @@ export const OverlayWrapper = React.forwardRef<HTMLDivElement, React.ComponentPr
   ({ className, ...props }, ref) => (
     <ModalWrapper
       ref={ref}
-      className={classNames('overlay-wrapper', className)}
+      className={RAC.composeRenderProps(className, (resolved) => classNames('overlay-wrapper', resolved))}
       {...props}
     />
   )

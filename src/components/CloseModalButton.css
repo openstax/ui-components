@@ -22,7 +22,6 @@
 /* Error variant */
 .close-modal-button.error {
   --close-button-color: #c22032;
-  --close-button-hover-color: #c22032;
 }
 
 /* Inverted circle variant */
