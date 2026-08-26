@@ -1,12 +1,34 @@
 import React from 'react';
-import { Button, OverlayArrow, Tooltip as AriaTooltip, TooltipTrigger } from 'react-aria-components';
+import {
+  Button,
+  ButtonProps as AriaButtonProps,
+  OverlayArrow,
+  Tooltip as AriaTooltip,
+  TooltipProps as AriaTooltipProps,
+  TooltipTrigger,
+} from 'react-aria-components';
 import { Info } from './svgs/Info';
 import {mergeProps, Placement, useTooltip} from 'react-aria';
 import { palette } from '../theme/palette';
 import { CSSPropertiesWithVariables } from '../types';
+import classNames from 'classnames';
 import './Tooltip.css';
 
-type TooltipProps = {
+const tooltipCssVariables: CSSPropertiesWithVariables = {
+  '--tooltip-bg': palette.white,
+  '--tooltip-color': palette.neutralThin,
+  '--tooltip-border-color': '#ccc',
+};
+
+// The styled-components versions of these accepted a plain className/style and merged
+// them, so the replacements narrow away the react-aria render-callback forms rather
+// than silently dropping a callback.
+type ClassNameAndStyle = {
+  className?: string;
+  style?: React.CSSProperties;
+};
+
+type TooltipProps = ClassNameAndStyle & {
   placement?: Placement;
   isOpen?: boolean;
 };
@@ -17,44 +39,47 @@ type TooltipGroupProps = TooltipProps & {
   ariaLabel?: string;
 };
 
-export const Tooltip = ({children, placement, ...props}: React.PropsWithChildren<TooltipProps>) => {
-  const style: CSSPropertiesWithVariables = {
-    '--tooltip-bg': palette.white,
-    '--tooltip-color': palette.neutralThin,
-    '--tooltip-border-color': '#ccc',
-  };
+/**
+ * @deprecated The styles now live in the `.tooltip` class in Tooltip.css. Prefer `Tooltip`;
+ * this remains so consumers that composed the old styled-component keep working.
+ */
+export const StyledTooltip = ({className, style, ...props}: Omit<AriaTooltipProps, 'className' | 'style'> & ClassNameAndStyle) =>
+  <AriaTooltip
+    {...props}
+    className={classNames('tooltip', className)}
+    style={{...tooltipCssVariables, ...style}}
+  />;
 
-  return (
-    <AriaTooltip {...props} placement={placement} className="tooltip" style={style}>
-      <OverlayArrow>
-        <svg width={8} height={8} viewBox="0 0 8 8">
-          <path d="M0 0 L4 4 L8 0" stroke="var(--tooltip-border-color, #ccc)" strokeWidth="1" />
-        </svg>
-      </OverlayArrow>
-      {children}
-    </AriaTooltip>
-  );
-};
+/**
+ * @deprecated The styles now live in the `.tooltip-trigger` class in Tooltip.css. Prefer
+ * `TooltipGroup`; this remains so consumers that composed the old styled-component keep working.
+ */
+export const StyledTrigger = ({className, style, ...props}: Omit<AriaButtonProps, 'className' | 'style'> & ClassNameAndStyle) =>
+  <Button {...props} className={classNames('tooltip-trigger', className)} style={style} />;
+
+export const Tooltip = ({children, placement, className, style, ...props}: React.PropsWithChildren<TooltipProps>) =>
+  <StyledTooltip {...props} placement={placement} className={className} style={style}>
+    <OverlayArrow>
+      <svg width={8} height={8} viewBox="0 0 8 8">
+        <path d="M0 0 L4 4 L8 0" stroke="var(--tooltip-border-color, #ccc)" strokeWidth="1" />
+      </svg>
+    </OverlayArrow>
+    {children}
+  </StyledTooltip>;
 
 export const TooltipGroup = ({icon, ariaLabel, ...props}: React.PropsWithChildren<TooltipGroupProps>) =>
   <TooltipTrigger delay={0}>
-    <Button aria-label={ariaLabel || 'More information'} className="tooltip-trigger">
+    <StyledTrigger aria-label={ariaLabel || 'More information'}>
       {icon
         ? <img src={icon} aria-hidden={true} alt='' />
         : <Info aria-hidden={true} />
       }
-    </Button>
+    </StyledTrigger>
     <Tooltip {...props} />
   </TooltipTrigger>;
 
 export const CustomTooltip = ({ state, ...props }: any) => {
   const { tooltipProps } = useTooltip(props, state);
-
-  const style: CSSPropertiesWithVariables = {
-    '--tooltip-bg': palette.white,
-    '--tooltip-color': palette.neutralThin,
-    '--tooltip-border-color': '#ccc',
-  };
 
   // mergeProps combines className with clsx, but style is last-wins, so merge it explicitly
   const mergedProps = mergeProps(props, tooltipProps, { className: 'tooltip' });
@@ -63,7 +88,7 @@ export const CustomTooltip = ({ state, ...props }: any) => {
     <div
       data-placement={props.placement}
       {...mergedProps}
-      style={{...style, ...mergedProps.style}}
+      style={{...tooltipCssVariables, ...mergedProps.style}}
     >
       {props.children}
       <OverlayArrow {...props}>

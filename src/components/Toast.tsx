@@ -64,7 +64,7 @@ export const Toast = ({
 
   const style: CSSPropertiesWithVariables = {
     '--toast-animation-duration': `${ANIMATION_TIME_MS}ms`,
-    '--toast-success-title-color': palette.darkerGreen.startsWith('#') ? palette.darkerGreen : `#${palette.darkerGreen}`,
+    '--toast-success-title-color': palette.darkerGreen,
     '--toast-success-bg': palette.paleGreen,
     '--toast-neutral-title-color': palette.neutralDarker,
     '--toast-neutral-bg': palette.neutralLighter,

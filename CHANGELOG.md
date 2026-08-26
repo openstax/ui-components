@@ -38,6 +38,28 @@ The Button component and its variants have been migrated from styled-components 
 - Visual appearance is identical to previous implementation
 - All variants (Button, LinkButton, PlainButton, ButtonLink) maintain the same React API
 
+#### Composite Component Migration (CORE-2003)
+
+Tooltip, Toast, ToastContainer, Tabs and ButtonBar have been migrated from styled-components to
+plain CSS with CSS custom properties. Props, behavior and visual appearance are unchanged, but the
+styling fragments that `Tabs` exported are gone:
+
+**Breaking Changes:**
+
+1. **`tabListBaseCss`, `tabBaseCss`, `buttonBarWrapperCss`, `buttonBarItemCss` exports removed from `Tabs`**
+   - **Old behavior**: styled-components `css` fragments (and plain strings) intended for interpolation into a consumer's own styled components
+   - **New behavior**: the equivalent rules live in `Tabs.css` / `ButtonBar.css` under the `.tabs` and `.button-bar` class names
+   - **Impact**: any styled-component interpolating these fragments will fail to compile. A search of the `openstax` org found no consumers outside this repo
+   - **Migration**: use the `Tabs` or `ButtonBar` components, or apply the `.tabs` / `.button-bar` classes and set the documented CSS custom properties
+
+**Non-Breaking Changes:**
+
+- `StyledTooltip` and `StyledTrigger` are still exported. They are no longer styled-components, but
+  they accept the same `className`/`style` props and merge them as before. Both are **deprecated** —
+  prefer `Tooltip` and `TooltipGroup`.
+- `Tabs` continues to accept the React Aria `className`/`style` render-callback forms; the component
+  merges its own variant classes and CSS custom properties into whatever the callback returns.
+
 ## [v1.10.7] - 2024-10-22
 
 - Create custom styled checkbox
