@@ -66,3 +66,11 @@
 .button-bar > *:hover:not([data-selected=true]) {
   background: var(--button-bar-hover-bg, #f1f1f1);
 }
+
+@media (forced-colors: active) {
+  .button-bar > *[data-selected=true] {
+    background: Highlight;
+    color: HighlightText;
+    forced-color-adjust: none;
+  }
+}
