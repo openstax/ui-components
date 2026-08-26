@@ -3,21 +3,26 @@ import { Button, OverlayArrow, Tooltip as AriaTooltip, TooltipTrigger } from 're
 import { Info } from './svgs/Info';
 import {mergeProps, Placement, useTooltip} from 'react-aria';
 import { palette } from '../theme/palette';
+import { CSSPropertiesWithVariables } from '../types';
 import './Tooltip.css';
 
 type TooltipProps = {
   placement?: Placement;
-  icon?: any;
   isOpen?: boolean;
+};
+
+// icon/ariaLabel configure the trigger button, so they are only accepted by TooltipGroup
+type TooltipGroupProps = TooltipProps & {
+  icon?: any;
   ariaLabel?: string;
 };
 
-export const Tooltip = ({children, placement, icon, ariaLabel, ...props}: React.PropsWithChildren<TooltipProps>) => {
-  const style = {
+export const Tooltip = ({children, placement, ...props}: React.PropsWithChildren<TooltipProps>) => {
+  const style: CSSPropertiesWithVariables = {
     '--tooltip-bg': palette.white,
     '--tooltip-color': palette.neutralThin,
     '--tooltip-border-color': '#ccc',
-  } as React.CSSProperties;
+  };
 
   return (
     <AriaTooltip {...props} placement={placement} className="tooltip" style={style}>
@@ -31,7 +36,7 @@ export const Tooltip = ({children, placement, icon, ariaLabel, ...props}: React.
   );
 };
 
-export const TooltipGroup = ({icon, ariaLabel, ...props}: React.PropsWithChildren<TooltipProps>) =>
+export const TooltipGroup = ({icon, ariaLabel, ...props}: React.PropsWithChildren<TooltipGroupProps>) =>
   <TooltipTrigger delay={0}>
     <Button aria-label={ariaLabel || 'More information'} className="tooltip-trigger">
       {icon
@@ -45,18 +50,20 @@ export const TooltipGroup = ({icon, ariaLabel, ...props}: React.PropsWithChildre
 export const CustomTooltip = ({ state, ...props }: any) => {
   const { tooltipProps } = useTooltip(props, state);
 
-  const style = {
+  const style: CSSPropertiesWithVariables = {
     '--tooltip-bg': palette.white,
     '--tooltip-color': palette.neutralThin,
     '--tooltip-border-color': '#ccc',
-  } as React.CSSProperties;
+  };
+
+  // mergeProps combines className with clsx, but style is last-wins, so merge it explicitly
+  const mergedProps = mergeProps(props, tooltipProps, { className: 'tooltip' });
 
   return (
     <div
       data-placement={props.placement}
-      className="tooltip"
-      style={style}
-      {...mergeProps(props, tooltipProps)}
+      {...mergedProps}
+      style={{...style, ...mergedProps.style}}
     >
       {props.children}
       <OverlayArrow {...props}>

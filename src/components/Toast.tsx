@@ -1,7 +1,7 @@
 import React from 'react';
 import { palette } from '../theme/palette';
 import classNames from 'classnames';
-import { ToastData } from '../types';
+import { CSSPropertiesWithVariables, ToastData } from '../types';
 import './Toast.css';
 
 const ANIMATION_TIME_MS = 500;
@@ -62,7 +62,7 @@ export const Toast = ({
     'toast-dismissable': dismissAfterMs,
   });
 
-  const style = {
+  const style: CSSPropertiesWithVariables = {
     '--toast-animation-duration': `${ANIMATION_TIME_MS}ms`,
     '--toast-success-title-color': palette.darkerGreen.startsWith('#') ? palette.darkerGreen : `#${palette.darkerGreen}`,
     '--toast-success-bg': palette.paleGreen,
@@ -71,8 +71,8 @@ export const Toast = ({
     '--toast-failure-title-color': palette.darkRed,
     '--toast-failure-bg': palette.paleRed,
     '--toast-failure-icon-color': palette.neutralDark,
-    ...(dismissAfterMs ? { 'animationDelay': `${dismissAfterMs - ANIMATION_TIME_MS}ms` } : {}),
-  } as React.CSSProperties;
+    ...(dismissAfterMs ? { animationDelay: `${dismissAfterMs - ANIMATION_TIME_MS}ms` } : {}),
+  };
 
   return (
     <div className={toastClass} style={style}>

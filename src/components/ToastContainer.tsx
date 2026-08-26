@@ -1,8 +1,7 @@
-import React from 'react';
 import { BodyPortal } from './BodyPortal';
 import { Toast } from './Toast';
 import { zIndex } from '../theme';
-import { ToastData } from '../types';
+import { CSSPropertiesWithVariables, ToastData } from '../types';
 import classNames from 'classnames';
 import './ToastContainer.css';
 
@@ -25,9 +24,9 @@ const makeToasts = (toasts: ToastData[], inline: boolean, onDismissToast?: (id: 
       >{toast.message}</Toast>
   )
 );
-const zIndexStyle = {
-    '--toast-container-z-index': zIndex.toasts,
-  } as React.CSSProperties;
+const zIndexStyle: CSSPropertiesWithVariables = {
+  '--toast-container-z-index': zIndex.toasts,
+};
 
 export const ToastContainer: ToastContainerComponent = ({ toasts, onDismissToast, inline = false, className }) => {
   const containerClass = classNames('toast-container', {

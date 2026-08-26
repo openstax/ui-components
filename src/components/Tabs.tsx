@@ -2,6 +2,7 @@ import React from "react";
 import * as RAC from "react-aria-components";
 import { palette } from "../theme/palette";
 import classNames from "classnames";
+import { CSSPropertiesWithVariables } from "../types";
 import './Tabs.css';
 
 export type TabsProps = {
@@ -27,12 +28,12 @@ export const Tabs = ({
     'tabs-large': size === 'large',
   }, className);
 
-  const additionalStyle = {
+  const additionalStyle: CSSPropertiesWithVariables = {
     '--tabs-border-color': palette.pale,
     '--tabs-active-border-color': palette.darkGreen,
     '--tabs-button-selected-bg': palette.neutralLight,
     '--tabs-button-hover-bg': palette.neutralLighter,
-  } as React.CSSProperties;
+  };
 
   return (
     <RAC.Tabs
