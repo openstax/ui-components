@@ -43,19 +43,35 @@ type TooltipGroupProps = TooltipProps & {
  * @deprecated The styles now live in the `.tooltip` class in Tooltip.css. Prefer `Tooltip`;
  * this remains so consumers that composed the old styled-component keep working.
  */
-export const StyledTooltip = ({className, style, ...props}: Omit<AriaTooltipProps, 'className' | 'style'> & ClassNameAndStyle) =>
+export const StyledTooltip = React.forwardRef<
+  React.ElementRef<typeof AriaTooltip>,
+  Omit<AriaTooltipProps, 'className' | 'style'> & ClassNameAndStyle
+>(({className, style, ...props}, ref) => (
   <AriaTooltip
-    {...props}
+    ref={ref}
     className={classNames('tooltip', className)}
     style={{...tooltipCssVariables, ...style}}
-  />;
+    {...props}
+  />
+));
+StyledTooltip.displayName = 'StyledTooltip';
 
 /**
  * @deprecated The styles now live in the `.tooltip-trigger` class in Tooltip.css. Prefer
  * `TooltipGroup`; this remains so consumers that composed the old styled-component keep working.
  */
-export const StyledTrigger = ({className, style, ...props}: Omit<AriaButtonProps, 'className' | 'style'> & ClassNameAndStyle) =>
-  <Button {...props} className={classNames('tooltip-trigger', className)} style={style} />;
+export const StyledTrigger = React.forwardRef<
+  React.ElementRef<typeof Button>,
+  Omit<AriaButtonProps, 'className' | 'style'> & ClassNameAndStyle
+>(({className, style, ...props}, ref) => (
+  <Button
+    ref={ref}
+    className={classNames('tooltip-trigger', className)}
+    style={style}
+    {...props}
+  />
+));
+StyledTrigger.displayName = 'StyledTrigger';
 
 export const Tooltip = ({children, placement, className, style, ...props}: React.PropsWithChildren<TooltipProps>) =>
   <StyledTooltip {...props} placement={placement} className={className} style={style}>

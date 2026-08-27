@@ -1,3 +1,4 @@
+import React from 'react';
 import renderer from 'react-test-renderer';
 import { render } from '@testing-library/react';
 import ReactDOM from 'react-dom';
@@ -62,6 +63,31 @@ describe('Tooltip', () => {
       expect(tooltip.classList.contains('tooltip')).toBe(true);
       expect(tooltip.classList.contains('generated-class')).toBe(true);
       expect(tooltip.style.getPropertyValue('--tooltip-bg')).toBe(palette.white);
+    });
+  });
+  describe('ref forwarding', () => {
+    // The styled-components these replaced forwarded refs to the wrapped react-aria
+    // component, so consumers holding a ref keep working.
+    it('StyledTrigger forwards its ref to the button element', () => {
+      const ref = React.createRef<HTMLButtonElement>();
+      render(<StyledTrigger ref={ref}>label</StyledTrigger>);
+
+      expect(ref.current).toBeInstanceOf(HTMLButtonElement);
+      expect(ref.current?.classList.contains('tooltip-trigger')).toBe(true);
+    });
+
+    it('StyledTooltip forwards its ref to the tooltip element', () => {
+      const ref = React.createRef<HTMLDivElement>();
+      render(
+        <TooltipTrigger isOpen={true}>
+          <StyledTrigger>trigger</StyledTrigger>
+          <StyledTooltip ref={ref}>content</StyledTooltip>
+        </TooltipTrigger>
+      );
+
+      expect(ref.current).toBeInstanceOf(HTMLDivElement);
+      expect(ref.current?.getAttribute('role')).toBe('tooltip');
+      expect(ref.current?.classList.contains('tooltip')).toBe(true);
     });
   });
 });
