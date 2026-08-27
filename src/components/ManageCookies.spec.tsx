@@ -5,21 +5,25 @@ import { ManageCookiesLink } from "./ManageCookies";
 
 // keep in sync with the id ManageCookies gives its injected style element
 const revisitStyleId = 'openstax-manage-cookies-style';
+// keep in sync with ManageCookies.node.spec.tsx, which snapshots the SSR render
+const serverMarkup = '<style>.cky-btn-revisit { display: none; }</style>';
 
 describe('ManageCookies', () => {
   describe('without cookieYes', () => {
 
-    it('renders nothing', () => {
+    it('renders the style rule inline, matching what the server renders', () => {
       const tree = renderer.create(
         <ManageCookiesLink />
       ).toJSON();
       expect(tree).toMatchSnapshot();
     });
 
-    it('renders nothing, even a wrapper', () => {
+    it('renders no button, so the wrapper is not called', () => {
+      const wrapper = jest.fn(button => <div>{button}</div>);
       const tree = renderer.create(
-        <ManageCookiesLink wrapper={button => <div>{button}</div>} />
+        <ManageCookiesLink wrapper={wrapper} />
       ).toJSON();
+      expect(wrapper).not.toHaveBeenCalled();
       expect(tree).toMatchSnapshot();
     });
   });
@@ -375,6 +379,62 @@ describe('ManageCookies', () => {
 
       unmount2();
       expect(document.head.querySelector(`#${revisitStyleId}`)).toBeNull();
+    });
+
+    it('recovers the count when the mount count attribute is unusable', () => {
+      const { unmount } = render(<ManageCookiesLink />);
+      const style = document.head.querySelector<HTMLStyleElement>(`#${revisitStyleId}`);
+
+      if (!style) { throw new Error('expected the style element to have been injected'); }
+
+      // Something outside the component mangled the count
+      style.dataset.mountCount = 'not a number';
+
+      // The next instance claims the element rather than writing NaN into it
+      const { unmount: unmount2 } = render(<ManageCookiesLink />);
+      expect(style.dataset.mountCount).toBe('1');
+
+      unmount();
+      expect(document.head.querySelector(`#${revisitStyleId}`)).toBeNull();
+
+      unmount2();
+    });
+
+    it('leaves the injected style alone when it is removed out from under it', () => {
+      const { unmount } = render(<ManageCookiesLink />);
+
+      document.head.querySelector(`#${revisitStyleId}`)?.remove();
+
+      expect(() => unmount()).not.toThrow();
+    });
+  });
+
+  describe('before CookieYes loads', () => {
+    afterEach(() => {
+      cleanup();
+      document.head.querySelector(`#${revisitStyleId}`)?.remove();
+    });
+
+    it('renders the style rule inline rather than nothing', () => {
+      const { container } = render(<ManageCookiesLink />);
+
+      expect(container.innerHTML).toBe(serverMarkup);
+    });
+
+    it('hydrates server markup without a mismatch warning', () => {
+      const container = document.createElement('div');
+      // what the component renders outside a browser; renderToString cannot be
+      // used to produce it here because jsdom makes this look like a browser
+      container.innerHTML = serverMarkup;
+      document.body.appendChild(container);
+
+      const consoleError = jest.spyOn(console, 'error').mockImplementation(() => undefined);
+
+      render(<ManageCookiesLink />, { container, hydrate: true });
+
+      expect(consoleError).not.toHaveBeenCalled();
+
+      consoleError.mockRestore();
     });
   });
 });
