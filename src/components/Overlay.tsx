@@ -49,18 +49,30 @@ export const OverlayBody = React.forwardRef<HTMLElement, RAC.DialogProps>(
 );
 OverlayBody.displayName = 'OverlayBody';
 
+/**
+ * The labelling half of react-aria's `AriaLabelingProps`. Picked off
+ * `DialogProps` rather than imported, since `react-aria-components` does not
+ * re-export the interface and `@react-types/shared` is not a direct dependency.
+ */
+type DialogLabelingProps = Pick<
+  RAC.DialogProps,
+  'aria-label' | 'aria-labelledby' | 'aria-describedby' | 'aria-details'
+>;
+
 export type OverlayProps = React.PropsWithChildren<{
   onClose: () => void;
   className?: string;
   show?: boolean;
 }>
   /**
-   * A dialog needs an accessible name. `Overlay` has no heading of its own, so
-   * unless the caller supplies a `<Heading slot='title'>` in `children`, these
-   * are the way to give it one. They go to `OverlayBody` (the dialog) rather
-   * than being spread onto `OverlayMask` with the rest of the props.
+   * A dialog needs an accessible name, and `Overlay` has no heading of its own,
+   * so unless the caller supplies a `<Heading slot='title'>` in `children` these
+   * are the way to describe it. All of them go to `OverlayBody` (the dialog)
+   * rather than being spread onto `OverlayMask` with the rest of the props —
+   * they are handled as a set so no single `aria-*` prop lands somewhere
+   * unexpected.
    */
-  & Pick<RAC.DialogProps, 'aria-label' | 'aria-labelledby'>
+  & DialogLabelingProps
   & RAC.ModalOverlayProps;
 
 export const Overlay = ({
@@ -70,6 +82,8 @@ export const Overlay = ({
   show,
   'aria-label': ariaLabel,
   'aria-labelledby': ariaLabelledby,
+  'aria-describedby': ariaDescribedby,
+  'aria-details': ariaDetails,
   ...props
 }: OverlayProps) => {
   if (!show) { return null; }
@@ -82,7 +96,12 @@ export const Overlay = ({
     >
       <OverlayWrapper defaultOpen={true}>
         <OverlayCloseButton onClick={onClose} variant={'inverted-circle'} />
-        <OverlayBody aria-label={ariaLabel} aria-labelledby={ariaLabelledby}>
+        <OverlayBody
+          aria-label={ariaLabel}
+          aria-labelledby={ariaLabelledby}
+          aria-describedby={ariaDescribedby}
+          aria-details={ariaDetails}
+        >
           { children }
         </OverlayBody>
       </OverlayWrapper>

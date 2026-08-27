@@ -46,30 +46,22 @@ describe('Overlay', () => {
     expect(wrapper?.className).toContain('caller-wrapper');
   });
 
-  it('forwards aria-label to the dialog rather than the mask', () => {
+  // All of AriaLabelingProps is forwarded as a set, so no single aria-* prop
+  // ends up on the mask instead of the dialog.
+  it.each([
+    ['aria-label', 'Overlay label'],
+    ['aria-labelledby', 'overlay-title'],
+    ['aria-describedby', 'overlay-description'],
+    ['aria-details', 'overlay-details'],
+  ])('forwards %s to the dialog rather than the mask', (prop, value) => {
     render(
-      <Overlay onClose={jest.fn()} show={true} aria-label='Overlay label'>
+      <Overlay onClose={jest.fn()} show={true} {...{ [prop]: value }}>
         Inner content
       </Overlay>, { container: root }
     );
 
-    const dialog = document.querySelector('[role="dialog"]');
-    expect(dialog?.getAttribute('aria-label')).toBe('Overlay label');
-    expect(document.querySelector('.mask')?.getAttribute('aria-label')).toBeNull();
-  });
-
-  it('forwards aria-labelledby to the dialog', () => {
-    render(
-      <>
-        <h1 id='overlay-title'>Overlay title</h1>
-        <Overlay onClose={jest.fn()} show={true} aria-labelledby='overlay-title'>
-          Inner content
-        </Overlay>
-      </>, { container: root }
-    );
-
-    const dialog = document.querySelector('[role="dialog"]');
-    expect(dialog?.getAttribute('aria-labelledby')).toBe('overlay-title');
+    expect(document.querySelector('[role="dialog"]')?.getAttribute(prop)).toBe(value);
+    expect(document.querySelector('.mask')?.getAttribute(prop)).toBeNull();
   });
 
   it('calls onClose when close button is clicked', async () => {
