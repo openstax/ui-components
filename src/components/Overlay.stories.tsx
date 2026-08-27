@@ -22,6 +22,13 @@ export const WithContent = () => {
   </Overlay>;
 };
 
+export const WithAriaLabel = () => {
+  const [show, setShow] = useState(true);
+  return <Overlay onClose={() => setShow(false)} show={show} aria-label='Overlay without a visible title'>
+    <p>When there is no visible heading to slot in as the title, pass aria-label (or aria-labelledby) and it is forwarded to the dialog.</p>
+  </Overlay>;
+};
+
 export const CustomOverlayComposition = () => {
   const [show, setShow] = useState(true);
   if (!show) return null;

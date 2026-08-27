@@ -46,6 +46,32 @@ describe('Overlay', () => {
     expect(wrapper?.className).toContain('caller-wrapper');
   });
 
+  it('forwards aria-label to the dialog rather than the mask', () => {
+    render(
+      <Overlay onClose={jest.fn()} show={true} aria-label='Overlay label'>
+        Inner content
+      </Overlay>, { container: root }
+    );
+
+    const dialog = document.querySelector('[role="dialog"]');
+    expect(dialog?.getAttribute('aria-label')).toBe('Overlay label');
+    expect(document.querySelector('.mask')?.getAttribute('aria-label')).toBeNull();
+  });
+
+  it('forwards aria-labelledby to the dialog', () => {
+    render(
+      <>
+        <h1 id='overlay-title'>Overlay title</h1>
+        <Overlay onClose={jest.fn()} show={true} aria-labelledby='overlay-title'>
+          Inner content
+        </Overlay>
+      </>, { container: root }
+    );
+
+    const dialog = document.querySelector('[role="dialog"]');
+    expect(dialog?.getAttribute('aria-labelledby')).toBe('overlay-title');
+  });
+
   it('calls onClose when close button is clicked', async () => {
     const onClose = jest.fn();
     const user = userEvent.setup();
