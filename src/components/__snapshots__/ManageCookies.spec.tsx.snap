@@ -109,6 +109,22 @@ exports[`ManageCookies with CookieYes already loaded renders button with content
 </button>
 `;
 
-exports[`ManageCookies without cookieYes renders nothing 1`] = `null`;
+exports[`ManageCookies without cookieYes renders no button, so the wrapper is not called 1`] = `
+<style
+  dangerouslySetInnerHTML={
+    Object {
+      "__html": ".cky-btn-revisit { display: none; }",
+    }
+  }
+/>
+`;
 
-exports[`ManageCookies without cookieYes renders nothing, even a wrapper 1`] = `null`;
+exports[`ManageCookies without cookieYes renders the style rule inline, matching what the server renders 1`] = `
+<style
+  dangerouslySetInnerHTML={
+    Object {
+      "__html": ".cky-btn-revisit { display: none; }",
+    }
+  }
+/>
+`;

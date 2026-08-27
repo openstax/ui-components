@@ -1,3 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`ManageCookies outside a browser renders nothing 1`] = `null`;
+exports[`ManageCookies outside a browser renders style element for SSR 1`] = `
+<style
+  dangerouslySetInnerHTML={
+    Object {
+      "__html": ".cky-btn-revisit { display: none; }",
+    }
+  }
+/>
+`;

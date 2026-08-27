@@ -1,10 +1,50 @@
 import React from 'react';
 import { ButtonLink } from "./Button";
-import { createGlobalStyle } from "styled-components";
 
-const GlobalStyle = createGlobalStyle`
-  .cky-btn-revisit { display: none; }
-`;
+const revisitStyleId = 'openstax-manage-cookies-style';
+const revisitStyleCss = '.cky-btn-revisit { display: none; }';
+
+// Every mounted ManageCookiesLink shares one style element. How many of them
+// are relying on it is tracked on the element itself rather than in a module
+// variable so the count can never disagree with what is in the document.
+const getRevisitStyle = () =>
+  document.head.querySelector<HTMLStyleElement>(`#${revisitStyleId}`);
+
+// The attribute is the only record of the count, so treat anything that isn't a
+// positive integer as no claims rather than letting NaN propagate through it.
+const getMountCount = (style: HTMLStyleElement) => {
+  const count = Number(style.dataset.mountCount);
+  return Number.isInteger(count) && count > 0 ? count : 0;
+};
+
+const claimRevisitStyle = () => {
+  const existing = getRevisitStyle();
+
+  if (existing) {
+    existing.dataset.mountCount = String(getMountCount(existing) + 1);
+    return;
+  }
+
+  const style = document.createElement('style');
+  style.id = revisitStyleId;
+  style.textContent = revisitStyleCss;
+  style.dataset.mountCount = '1';
+  document.head.appendChild(style);
+};
+
+const releaseRevisitStyle = () => {
+  const style = getRevisitStyle();
+
+  if (!style) { return; }
+
+  const remaining = getMountCount(style) - 1;
+
+  if (remaining > 0) {
+    style.dataset.mountCount = String(remaining);
+  } else {
+    style.remove();
+  }
+};
 
 type ManageCookiesLinkProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   wrapper?: (button: React.ReactElement) => React.ReactElement;
@@ -18,6 +58,18 @@ export const ManageCookiesLink = ({children, className, wrapper, ...props}: Mana
   const observerRef = React.useRef<MutationObserver | null>(null);
   const timeoutIdRef = React.useRef<number | null>(null);
   const observerTimeoutIdRef = React.useRef<number | null>(null);
+
+  // Inject global style to hide CookieYes revisit button when component mounts.
+  // Layout effect in the browser so the rule applies before the first paint.
+  const useIsomorphicLayoutEffect = inBrowser ? React.useLayoutEffect : React.useEffect;
+
+  useIsomorphicLayoutEffect(() => {
+    if (!inBrowser) return;
+
+    claimRevisitStyle();
+
+    return releaseRevisitStyle;
+  }, [inBrowser]);
 
   React.useEffect(() => {
     if (inBrowser && !cookieYesLoaded) {
@@ -117,7 +169,15 @@ export const ManageCookiesLink = ({children, className, wrapper, ...props}: Mana
     }, 100); // Small delay to allow CookieYes to add the modal to DOM
   }, [inBrowser, onClick, clearInitTimeout, cleanupObserverAndTimeouts]);
 
-  if (!inBrowser) { return <><GlobalStyle /></>; }
+  // Until CookieYes loads there is no button to render, so render the rule
+  // inline instead. Prerendered pages then hide the revisit button without
+  // waiting for JS, and because the first client render matches the server's
+  // there is nothing for hydration to reconcile. The effect above owns the rule
+  // from mount onwards, so dropping this element for the button is safe.
+  // Using dangerouslySetInnerHTML to avoid embedded whitespace
+  if (!cookieYesLoaded) {
+    return <style dangerouslySetInnerHTML={{ __html: revisitStyleCss }} />;
+  }
 
   const button = <ButtonLink
     ref={buttonRef}
@@ -126,13 +186,7 @@ export const ManageCookiesLink = ({children, className, wrapper, ...props}: Mana
     onClick={handleClick}
   >{children || 'Manage Cookies'}</ButtonLink>;
 
-  return <>
-    <GlobalStyle />
-    {cookieYesLoaded
-       ? typeof wrapper === 'function'
-         ? wrapper(button)
-         : button
-       : null
-    }
-  </>;
+  return typeof wrapper === 'function'
+    ? wrapper(button)
+    : button;
 };
