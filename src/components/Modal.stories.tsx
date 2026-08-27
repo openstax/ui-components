@@ -1,3 +1,4 @@
+import { Heading } from 'react-aria-components';
 import { ModalBody, Modal, ModalBodyHeading, ModalFooter, ModalCard, Mask, ModalWrapper } from './Modal';
 import { ErrorModal } from './ErrorModal';
 import { useState } from 'react';
@@ -49,7 +50,7 @@ export const CustomModalComposition = () => {
         <div className="card-wrapper">
           <ModalCard>
             <header className="modal-header">
-              <h2 slot="title">Custom Modal using Subcomponents</h2>
+              <Heading slot="title">Custom Modal using Subcomponents</Heading>
               <button aria-label="Close" onClick={() => setShow(false)}>✕</button>
             </header>
             <ModalBody>

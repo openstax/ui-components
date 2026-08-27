@@ -15,7 +15,7 @@ export const CloseModalButton = React.forwardRef<HTMLButtonElement, CloseModalBu
       ref={ref}
       type='button'
       aria-label='Close'
-      className={classNames('close-modal-button', variant, className)}
+      className={classNames('close-modal-button', variant !== 'default' && variant, className)}
     >
       <Times aria-hidden='true' focusable='false' />
     </button>

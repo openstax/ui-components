@@ -19,7 +19,7 @@ const Header = React.forwardRef<HTMLElement, React.HTMLAttributes<HTMLElement> &
   ({ className, variant, ...props }, ref) => (
     <header
       ref={ref}
-      className={classNames('modal-header', variant, className)}
+      className={classNames('modal-header', variant !== 'default' && variant, className)}
       {...props}
     />
   )

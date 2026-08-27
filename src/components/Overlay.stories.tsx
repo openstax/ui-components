@@ -1,17 +1,18 @@
 import { useState } from 'react';
+import { Heading } from 'react-aria-components';
 import { Overlay, OverlayMask, OverlayWrapper, OverlayCloseButton, OverlayBody } from './Overlay';
 
 export const Default = () => {
   const [show, setShow] = useState(true);
   return <Overlay onClose={() => setShow(false)} show={show}>
-    <h1>Overlay</h1>
+    <Heading slot='title' level={1}>Overlay</Heading>
   </Overlay>;
 };
 
 export const WithContent = () => {
   const [show, setShow] = useState(true);
   return <Overlay onClose={() => setShow(false)} show={show}>
-    <h1>Overlay Title</h1>
+    <Heading slot='title' level={1}>Overlay Title</Heading>
     <p>This overlay demonstrates more complex content with multiple elements.</p>
     <ul>
       <li>Item 1</li>
@@ -29,7 +30,7 @@ export const CustomOverlayComposition = () => {
     <OverlayMask isDismissable onOpenChange={(isOpen) => !isOpen && setShow(false)}>
       <OverlayWrapper defaultOpen={true}>
         <OverlayCloseButton onClick={() => setShow(false)} variant="inverted-circle" />
-        <OverlayBody>
+        <OverlayBody aria-label='Custom Overlay'>
           <h1>Custom Overlay</h1>
           <p>This demonstrates using the exported subcomponents (OverlayMask, OverlayWrapper, OverlayCloseButton, OverlayBody) to create a custom overlay.</p>
         </OverlayBody>
