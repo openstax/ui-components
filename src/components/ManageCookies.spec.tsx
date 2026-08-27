@@ -3,6 +3,9 @@ import renderer, { act } from 'react-test-renderer';
 import { render, cleanup } from '@testing-library/react';
 import { ManageCookiesLink } from "./ManageCookies";
 
+// keep in sync with the id ManageCookies gives its injected style element
+const revisitStyleId = 'openstax-manage-cookies-style';
+
 describe('ManageCookies', () => {
   describe('without cookieYes', () => {
 
@@ -326,13 +329,8 @@ describe('ManageCookies', () => {
     });
 
     beforeEach(() => {
-      // Clean up any existing style elements
-      const existingStyles = document.head.querySelectorAll('style');
-      existingStyles.forEach(style => {
-        if (style.textContent?.includes('.cky-btn-revisit')) {
-          style.remove();
-        }
-      });
+      // Clean up in case a previous test left the injected style behind
+      document.head.querySelector(`#${revisitStyleId}`)?.remove();
     });
 
     afterEach(() => {
@@ -340,64 +338,43 @@ describe('ManageCookies', () => {
     });
 
     it('injects style element into document head on mount', () => {
-      // Verify no style exists before mounting
-      const beforeStyles = Array.from(document.head.querySelectorAll('style'))
-        .filter(style => style.textContent?.includes('.cky-btn-revisit'));
-      expect(beforeStyles.length).toBe(0);
+      expect(document.head.querySelector(`#${revisitStyleId}`)).toBeNull();
 
-      // Mount component
       render(<ManageCookiesLink />);
 
-      // Verify style element was added
-      const afterStyles = Array.from(document.head.querySelectorAll('style'))
-        .filter(style => style.textContent?.includes('.cky-btn-revisit'));
-      expect(afterStyles.length).toBe(1);
-      expect(afterStyles[0].textContent).toBe('.cky-btn-revisit { display: none; }');
+      const style = document.head.querySelector(`#${revisitStyleId}`);
+      expect(style).not.toBeNull();
+      expect(style?.textContent).toBe('.cky-btn-revisit { display: none; }');
     });
 
     it('removes style element from document head on unmount', () => {
-      // Mount component
       const { unmount } = render(<ManageCookiesLink />);
 
-      // Verify style element exists
-      const mountedStyles = Array.from(document.head.querySelectorAll('style'))
-        .filter(style => style.textContent?.includes('.cky-btn-revisit'));
-      expect(mountedStyles.length).toBe(1);
+      expect(document.head.querySelector(`#${revisitStyleId}`)).not.toBeNull();
 
-      // Unmount component
       unmount();
 
-      // Verify style element was removed
-      const unmountedStyles = Array.from(document.head.querySelectorAll('style'))
-        .filter(style => style.textContent?.includes('.cky-btn-revisit'));
-      expect(unmountedStyles.length).toBe(0);
+      expect(document.head.querySelector(`#${revisitStyleId}`)).toBeNull();
     });
 
-    it('creates a separate style element for each component instance', () => {
-      // Mount first instance
+    it('shares one style element between instances, removing it with the last one', () => {
       const { unmount: unmount1 } = render(<ManageCookiesLink />);
+      const style = document.head.querySelector(`#${revisitStyleId}`);
+      expect(style).not.toBeNull();
 
-      // Verify one style element exists
-      let styles = Array.from(document.head.querySelectorAll('style'))
-        .filter(style => style.textContent?.includes('.cky-btn-revisit'));
-      expect(styles.length).toBe(1);
-
-      // Mount second instance (without unmounting first)
+      // Mount a second instance without unmounting the first
       const { unmount: unmount2 } = render(<ManageCookiesLink />);
 
-      // Verify each instance creates its own style element
-      styles = Array.from(document.head.querySelectorAll('style'))
-        .filter(style => style.textContent?.includes('.cky-btn-revisit'));
-      expect(styles.length).toBe(2); // Each component instance adds its own style
+      // Both instances share the element originally injected
+      expect(document.head.querySelectorAll(`#${revisitStyleId}`).length).toBe(1);
+      expect(document.head.querySelector(`#${revisitStyleId}`)).toBe(style);
 
-      // Cleanup
+      // The style stays while an instance is still mounted
       unmount1();
-      unmount2();
+      expect(document.head.querySelector(`#${revisitStyleId}`)).toBe(style);
 
-      // Verify all style elements removed
-      styles = Array.from(document.head.querySelectorAll('style'))
-        .filter(style => style.textContent?.includes('.cky-btn-revisit'));
-      expect(styles.length).toBe(0);
+      unmount2();
+      expect(document.head.querySelector(`#${revisitStyleId}`)).toBeNull();
     });
   });
 });

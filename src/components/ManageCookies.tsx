@@ -1,6 +1,44 @@
 import React from 'react';
 import { ButtonLink } from "./Button";
 
+const revisitStyleId = 'openstax-manage-cookies-style';
+const revisitStyleCss = '.cky-btn-revisit { display: none; }';
+
+// Every mounted ManageCookiesLink shares one style element. How many of them
+// are relying on it is tracked on the element itself rather than in a module
+// variable so the count can never disagree with what is in the document.
+const getRevisitStyle = () =>
+  document.head.querySelector<HTMLStyleElement>(`#${revisitStyleId}`);
+
+const claimRevisitStyle = () => {
+  const existing = getRevisitStyle();
+
+  if (existing) {
+    existing.dataset.mountCount = String(Number(existing.dataset.mountCount) + 1);
+    return;
+  }
+
+  const style = document.createElement('style');
+  style.id = revisitStyleId;
+  style.textContent = revisitStyleCss;
+  style.dataset.mountCount = '1';
+  document.head.appendChild(style);
+};
+
+const releaseRevisitStyle = () => {
+  const style = getRevisitStyle();
+
+  if (!style) { return; }
+
+  const remaining = Number(style.dataset.mountCount) - 1;
+
+  if (remaining > 0) {
+    style.dataset.mountCount = String(remaining);
+  } else {
+    style.remove();
+  }
+};
+
 type ManageCookiesLinkProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   wrapper?: (button: React.ReactElement) => React.ReactElement;
 };
@@ -13,23 +51,17 @@ export const ManageCookiesLink = ({children, className, wrapper, ...props}: Mana
   const observerRef = React.useRef<MutationObserver | null>(null);
   const timeoutIdRef = React.useRef<number | null>(null);
   const observerTimeoutIdRef = React.useRef<number | null>(null);
-  const styleElementRef = React.useRef<HTMLStyleElement | null>(null);
 
-  // Inject global style to hide CookieYes revisit button when component mounts
+  // Inject global style to hide CookieYes revisit button when component mounts.
+  // Layout effect in the browser so the rule applies before the first paint.
   const useIsomorphicLayoutEffect = inBrowser ? React.useLayoutEffect : React.useEffect;
 
   useIsomorphicLayoutEffect(() => {
-    if (!inBrowser || styleElementRef.current) return;
+    if (!inBrowser) return;
 
-    const style = document.createElement('style');
-    style.textContent = '.cky-btn-revisit { display: none; }';
-    document.head.appendChild(style);
-    styleElementRef.current = style;
+    claimRevisitStyle();
 
-    return () => {
-      style.remove();
-      styleElementRef.current = null;
-    };
+    return releaseRevisitStyle;
   }, [inBrowser]);
 
   React.useEffect(() => {
@@ -132,7 +164,7 @@ export const ManageCookiesLink = ({children, className, wrapper, ...props}: Mana
 
   // For SSR, render the style element inline to prevent flash of unstyled content
   if (!inBrowser) {
-    return <style dangerouslySetInnerHTML={{ __html: '.cky-btn-revisit { display: none; }' }} />;
+    return <style dangerouslySetInnerHTML={{ __html: revisitStyleCss }} />;
   }
 
   const button = <ButtonLink
