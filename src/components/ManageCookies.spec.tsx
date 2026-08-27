@@ -430,11 +430,14 @@ describe('ManageCookies', () => {
 
       const consoleError = jest.spyOn(console, 'error').mockImplementation(() => undefined);
 
-      render(<ManageCookiesLink />, { container, hydrate: true });
+      try {
+        render(<ManageCookiesLink />, { container, hydrate: true });
 
-      expect(consoleError).not.toHaveBeenCalled();
-
-      consoleError.mockRestore();
+        expect(consoleError).not.toHaveBeenCalled();
+      } finally {
+        consoleError.mockRestore();
+        document.body.removeChild(container);
+      }
     });
   });
 });
