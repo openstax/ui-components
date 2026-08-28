@@ -7,7 +7,13 @@ import {
   cleanup,
 } from "@testing-library/react";
 import userEvent, { UserEvent } from "@testing-library/user-event";
-import { BodyPortalSidebarNav, SidebarNav, SidebarNavBase } from "./SidebarNav";
+import { createRef } from "react";
+import {
+  BodyPortalSidebarNav,
+  SidebarNav,
+  SidebarNavBase,
+  SidebarNavStyles,
+} from "./SidebarNav";
 import "@testing-library/jest-dom";
 import { BodyPortalSlotsContext } from "./BodyPortalSlotsContext";
 
@@ -341,5 +347,28 @@ describe("SidebarNav", () => {
     await waitFor(() => {
       expect(navBody.scrollTop).toBe(100);
     });
+  });
+
+  // These are public through SidebarNavStyles and used to be styled-components,
+  // which forwarded refs for free.
+  it("forwards refs from the exported sub-components", () => {
+    const headerRef = createRef<HTMLElement>();
+    const bodyRef = createRef<HTMLDivElement>();
+    const footerRef = createRef<HTMLElement>();
+    const toggleRef = createRef<HTMLButtonElement>();
+
+    render(
+      <div>
+        <SidebarNavStyles.NavHeader ref={headerRef} />
+        <SidebarNavStyles.NavBody ref={bodyRef} />
+        <SidebarNavStyles.NavFooter ref={footerRef} />
+        <SidebarNavStyles.ToggleButton ref={toggleRef} />
+      </div>,
+    );
+
+    expect(headerRef.current).toBeInstanceOf(HTMLElement);
+    expect(bodyRef.current).toBeInstanceOf(HTMLDivElement);
+    expect(footerRef.current).toBeInstanceOf(HTMLElement);
+    expect(toggleRef.current).toBeInstanceOf(HTMLButtonElement);
   });
 });
