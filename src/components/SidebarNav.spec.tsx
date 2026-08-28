@@ -232,9 +232,10 @@ describe("SidebarNav", () => {
       expect(document.body).toMatchInlineSnapshot(`
 <body>
   <nav
-    class="sc-jSMfEi cTSawD"
+    class="sidebar-nav"
     data-portal-slot="sidebar"
     data-testid="sidebarnav"
+    style="--sidebar-nav-background: #f5f5f5; --sidebar-nav-color: #6f6f6f; --sidebar-nav-z-index: 9; --sidebar-nav-open-z-index: 20;"
   >
     <span
       data-focus-scope-start="true"
@@ -243,7 +244,7 @@ describe("SidebarNav", () => {
     <button
       aria-expanded="true"
       aria-label="Collapse navigation"
-      class="sc-hKMtZM brWRpF"
+      class="sidebar-nav-toggle"
       data-testid="sidebarnav-toggle"
     >
       <svg
@@ -260,7 +261,7 @@ describe("SidebarNav", () => {
       </svg>
     </button>
     <div
-      class="sc-gsnTZi hSiqlK"
+      class="sidebar-nav-body"
       data-testid="nav-body"
     >
       Sidebar Nav
