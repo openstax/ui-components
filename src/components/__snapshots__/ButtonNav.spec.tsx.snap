@@ -2,11 +2,16 @@
 
 exports[`ButtonNav matches snapshot 1`] = `
 <div
-  className="sc-bczRLJ caOXAc"
+  className="button-nav"
+  style={
+    Object {
+      "--button-nav-arrow-hover-border-color": "#d5d5d5",
+    }
+  }
 >
   <button
     aria-label="move to previous item"
-    className="sc-hKMtZM cmnSuZ left-arrow"
+    className="button-nav-arrow left-arrow"
     disabled={false}
     onClick={[MockFunction]}
   >
@@ -24,38 +29,38 @@ exports[`ButtonNav matches snapshot 1`] = `
     </svg>
   </button>
   <div
-    className="sc-gsnTZi hTCAIx"
+    className="button-nav-wrapper"
   >
     <div
-      className="sc-dkzDqf Deoej"
+      className="button-nav-group"
     >
       <button>
         Slide 1
       </button>
     </div>
     <div
-      className="sc-dkzDqf Deoej"
+      className="button-nav-group"
     >
       <button>
         Slide 2
       </button>
     </div>
     <div
-      className="sc-dkzDqf Deoej"
+      className="button-nav-group"
     >
       <button>
         Slide 3
       </button>
     </div>
     <div
-      className="sc-dkzDqf Deoej"
+      className="button-nav-group"
     >
       <button>
         Slide 4
       </button>
     </div>
     <div
-      className="sc-dkzDqf Deoej"
+      className="button-nav-group"
     >
       <button>
         Slide 5
@@ -64,7 +69,7 @@ exports[`ButtonNav matches snapshot 1`] = `
   </div>
   <button
     aria-label="move to next item"
-    className="sc-hKMtZM cmnSuZ right-arrow"
+    className="button-nav-arrow right-arrow"
     disabled={false}
     onClick={[MockFunction]}
   >
@@ -86,11 +91,16 @@ exports[`ButtonNav matches snapshot 1`] = `
 
 exports[`ButtonNav matches snapshot when arrows are disabled 1`] = `
 <div
-  className="sc-bczRLJ caOXAc"
+  className="button-nav"
+  style={
+    Object {
+      "--button-nav-arrow-hover-border-color": "#d5d5d5",
+    }
+  }
 >
   <button
     aria-label="move to previous item"
-    className="sc-hKMtZM iaVZSc left-arrow"
+    className="button-nav-arrow left-arrow"
     disabled={true}
     onClick={[MockFunction]}
   >
@@ -108,38 +118,38 @@ exports[`ButtonNav matches snapshot when arrows are disabled 1`] = `
     </svg>
   </button>
   <div
-    className="sc-gsnTZi hTCAIx"
+    className="button-nav-wrapper"
   >
     <div
-      className="sc-dkzDqf Deoej"
+      className="button-nav-group"
     >
       <button>
         Slide 1
       </button>
     </div>
     <div
-      className="sc-dkzDqf Deoej"
+      className="button-nav-group"
     >
       <button>
         Slide 2
       </button>
     </div>
     <div
-      className="sc-dkzDqf Deoej"
+      className="button-nav-group"
     >
       <button>
         Slide 3
       </button>
     </div>
     <div
-      className="sc-dkzDqf Deoej"
+      className="button-nav-group"
     >
       <button>
         Slide 4
       </button>
     </div>
     <div
-      className="sc-dkzDqf Deoej"
+      className="button-nav-group"
     >
       <button>
         Slide 5
@@ -148,7 +158,7 @@ exports[`ButtonNav matches snapshot when arrows are disabled 1`] = `
   </div>
   <button
     aria-label="move to next item"
-    className="sc-hKMtZM iaVZSc right-arrow"
+    className="button-nav-arrow right-arrow"
     disabled={true}
     onClick={[MockFunction]}
   >
