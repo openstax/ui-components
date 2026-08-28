@@ -72,9 +72,9 @@ describe('Pagination', () => {
     expect(document.body).toMatchSnapshot();
   });
 
-  // usePaginationRanges used to be called after the `totalPages <= 1` early
-  // return, so going from many pages to one page changed the number of hooks
-  // React saw and blew up with "rendered fewer hooks than expected".
+  // usePaginationRanges used to be called after the `totalPages <= 1` early return.
+  // That violates the Rules of Hooks; React may not always warn if no hooks run on
+  // the short render, so this test guards against future hook-order regressions.
   it('survives totalPages changing to 1 and back', () => {
     const consoleError = jest.spyOn(console, 'error').mockImplementation(() => undefined);
 
