@@ -22,10 +22,11 @@ const tooltipCssVariables: CSSPropertiesWithVariables = {
 
 // The styled-components versions of these accepted a plain className/style and merged
 // them, so the replacements narrow away the react-aria render-callback forms rather
-// than silently dropping a callback.
+// than silently dropping a callback. style is widened to CSSPropertiesWithVariables so
+// callers can override the documented --tooltip-* custom properties without casting.
 type ClassNameAndStyle = {
   className?: string;
-  style?: React.CSSProperties;
+  style?: CSSPropertiesWithVariables;
 };
 
 type TooltipProps = ClassNameAndStyle & {

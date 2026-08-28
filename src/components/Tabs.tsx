@@ -1,13 +1,20 @@
+import type { CSSProperties } from "react";
 import * as RAC from "react-aria-components";
 import { palette } from "../theme/palette";
 import classNames from "classnames";
 import { CSSPropertiesWithVariables } from "../types";
 import './Tabs.css';
 
+// style is widened to CSSPropertiesWithVariables so callers can override the documented
+// --tabs-* custom properties without casting. Note the Omit: intersecting a narrower
+// style over RAC.TabsProps would collapse its `T | ((values) => T)` union and break the
+// render-callback form, so the original has to be removed before the wider one is added.
 export type TabsProps = {
   variant?: "button-bar";
   size?: "large" | "medium" | "small";
-} & RAC.TabsProps;
+  style?: CSSPropertiesWithVariables
+    | ((values: RAC.TabsRenderProps & { defaultStyle: CSSProperties }) => CSSPropertiesWithVariables | undefined);
+} & Omit<RAC.TabsProps, 'style'>;
 
 export const Tabs = ({
   variant,

@@ -1,6 +1,7 @@
 import { render } from "@testing-library/react";
 import { Tabs, Tab, TabList, TabPanel } from "./Tabs";
 import { palette } from "../theme/palette";
+import type { ComponentProps } from "react";
 
 describe("Tabs component", () => {
   describe("normal styling", () => {
@@ -103,7 +104,7 @@ describe("Tabs component", () => {
     });
   });
   describe("caller className and style", () => {
-    const tabs = (props: Partial<React.ComponentProps<typeof Tabs>>) => render(
+    const tabs = (props: Partial<ComponentProps<typeof Tabs>>) => render(
       <Tabs {...props}>
         <TabList aria-label="Items">
           <Tab id="one">First Item</Tab>
@@ -121,6 +122,28 @@ describe("Tabs component", () => {
       expect(el.classList.contains("custom")).toBe(true);
       expect(el.style.color).toBe("red");
       expect(el.style.getPropertyValue("--tabs-border-color")).toBe(palette.pale);
+    });
+
+    // No `as CSSPropertiesWithVariables` cast below: the point of these is that the
+    // exported prop type accepts custom properties directly.
+    it("lets a caller override a documented css variable without a cast", () => {
+      const { container } = tabs({ style: { "--tabs-border-color": "hotpink" } });
+      const el = container.querySelector('[data-orientation]') as HTMLElement;
+
+      expect(el.style.getPropertyValue("--tabs-border-color")).toBe("hotpink");
+      // the variables the caller did not override are still bound
+      expect(el.style.getPropertyValue("--tabs-active-border-color")).toBe(palette.darkGreen);
+    });
+
+    it("lets a style render callback return css variables without a cast", () => {
+      const { container } = tabs({
+        style: ({ orientation }) => ({
+          "--tabs-border-color": orientation === "horizontal" ? "hotpink" : "rebeccapurple",
+        }),
+      });
+      const el = container.querySelector('[data-orientation]') as HTMLElement;
+
+      expect(el.style.getPropertyValue("--tabs-border-color")).toBe("hotpink");
     });
 
     it("supports render callbacks for className and style", () => {

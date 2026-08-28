@@ -7,7 +7,10 @@ import './ButtonBar.css';
 type ButtonBarProps = {
   size?: "large" | "medium" | "small";
   children?: React.ReactNode;
-} & React.HTMLAttributes<HTMLDivElement>;
+  // widened from React.CSSProperties so callers can override the documented
+  // --button-bar-* custom properties without casting
+  style?: CSSPropertiesWithVariables;
+} & Omit<React.HTMLAttributes<HTMLDivElement>, 'style'>;
 
 export const ButtonBar = ({
   size = "medium",

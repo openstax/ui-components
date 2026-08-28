@@ -90,4 +90,20 @@ describe('Tooltip', () => {
       expect(ref.current?.classList.contains('tooltip')).toBe(true);
     });
   });
+  describe('css variable overrides', () => {
+    // No cast: the exported prop type accepts custom properties directly.
+    it('lets a caller override a documented css variable without a cast', () => {
+      render(
+        <TooltipTrigger isOpen={true}>
+          <StyledTrigger>trigger</StyledTrigger>
+          <StyledTooltip style={{ '--tooltip-bg': 'hotpink' }}>content</StyledTooltip>
+        </TooltipTrigger>
+      );
+
+      const tooltip = document.body.querySelector('[role="tooltip"]') as HTMLElement;
+      expect(tooltip.style.getPropertyValue('--tooltip-bg')).toBe('hotpink');
+      // the variables the caller did not override are still bound
+      expect(tooltip.style.getPropertyValue('--tooltip-color')).toBe(palette.neutralThin);
+    });
+  });
 });

@@ -59,6 +59,11 @@ styling fragments that `Tabs` exported are gone:
   prefer `Tooltip` and `TooltipGroup`.
 - `Tabs` continues to accept the React Aria `className`/`style` render-callback forms; the component
   merges its own variant classes and CSS custom properties into whatever the callback returns.
+- The `style` prop on `Tabs`, `ButtonBar`, `Tooltip`, `StyledTooltip` and `StyledTrigger` is widened
+  from `React.CSSProperties` to `CSSPropertiesWithVariables`. Since CSS custom properties are how
+  these components are now themed, callers can override the documented `--tabs-*`, `--button-bar-*`
+  and `--tooltip-*` variables without casting. This is a widening, so existing `style` usage is
+  unaffected.
 
 ## [v1.10.7] - 2024-10-22
 
