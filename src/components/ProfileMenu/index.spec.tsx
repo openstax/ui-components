@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { ProfileMenu, ProfileMenuItem, UserIcon } from '.';
 
 describe('ProfileMenu', () => {
@@ -9,13 +9,10 @@ describe('ProfileMenu', () => {
     } as any;
   });
 
-  it('matches snapshot with user initials', async () => {
-    const onAction = jest.fn();
-
+  it('wires the trigger to the menu for assistive tech', async () => {
     render(
       <ProfileMenu
         user={{ firstName: 'John', lastName: 'Doe' }}
-        onAction={onAction}
         data-testid="profile-menu"
       >
         <ProfileMenuItem id="profile">Profile</ProfileMenuItem>
@@ -24,12 +21,72 @@ describe('ProfileMenu', () => {
     );
 
     const button = screen.getByTestId('profile-menu');
-    expect(button.textContent).toBe('JD');
+    expect(button.getAttribute('aria-haspopup')).toBe('true');
+    expect(button.getAttribute('aria-expanded')).toBe('false');
 
     fireEvent.click(button);
+    const menu = await screen.findByRole('menu');
+
+    expect(button.getAttribute('aria-expanded')).toBe('true');
+    expect(button.getAttribute('aria-controls')).toBe(menu.id);
+    expect(menu.getAttribute('aria-labelledby')).toBe(button.id);
+  });
+
+  it('moves focus into the menu when it opens', async () => {
+    render(
+      <ProfileMenu
+        user={{ firstName: 'John', lastName: 'Doe' }}
+        data-testid="profile-menu"
+      >
+        <ProfileMenuItem id="profile">Profile</ProfileMenuItem>
+        <ProfileMenuItem id="logout">Log out</ProfileMenuItem>
+      </ProfileMenu>
+    );
+
+    fireEvent.click(screen.getByTestId('profile-menu'));
+    const menu = await screen.findByRole('menu');
+
+    // react-aria defers the trigger -> menu focus move to an animation frame when
+    // the click is a virtual one (fireEvent.click looks like a screen reader click),
+    // so wait for it to land rather than asserting on the frame we happen to be in.
+    await waitFor(() => expect(document.activeElement).toBe(menu));
+  });
+
+  it('renders items in order with a roving tabindex', async () => {
+    render(
+      <ProfileMenu
+        user={{ firstName: 'John', lastName: 'Doe' }}
+        data-testid="profile-menu"
+      >
+        <ProfileMenuItem id="profile">Profile</ProfileMenuItem>
+        <ProfileMenuItem id="logout">Log out</ProfileMenuItem>
+      </ProfileMenu>
+    );
+
+    fireEvent.click(screen.getByTestId('profile-menu'));
     await screen.findByRole('menu');
 
-    expect(document.body).toMatchSnapshot();
+    const items = screen.getAllByRole('menuitem');
+    expect(items.map((item) => item.textContent)).toEqual(['Profile', 'Log out']);
+    expect(items.map((item) => item.getAttribute('data-key'))).toEqual(['profile', 'logout']);
+    expect(items.map((item) => item.getAttribute('tabindex'))).toEqual(['0', '-1']);
+  });
+
+  it('positions the popover below the trigger', async () => {
+    render(
+      <ProfileMenu
+        user={{ firstName: 'John', lastName: 'Doe' }}
+        data-testid="profile-menu"
+      >
+        <ProfileMenuItem id="profile">Profile</ProfileMenuItem>
+      </ProfileMenu>
+    );
+
+    fireEvent.click(screen.getByTestId('profile-menu'));
+    await screen.findByRole('menu');
+
+    const popover = screen.getByRole('dialog');
+    expect(popover.getAttribute('data-placement')).toBe('bottom');
   });
 
   it('renders with user initials', () => {
