@@ -1,10 +1,18 @@
 import React from 'react';
-import styled from 'styled-components';
+import classNames from 'classnames';
 import { palette } from "../../theme/palette";
+import { CSSPropertiesWithVariables } from '../../types';
 import { usePaginationRanges } from './hooks';
 import { range } from './utils';
+import './Pagination.css';
 
-export const LinkForPage = styled(({ page, current, href, onClick, className }: {
+// Bound on the root; every rule that uses them targets a descendant.
+const paginationStyle: CSSPropertiesWithVariables = {
+  '--pagination-border-color': palette.neutralLight,
+  '--pagination-active-background': palette.neutralLighter,
+};
+
+export const LinkForPage = ({ page, current, href, onClick, className }: {
   page: number;
   current?: boolean;
   href: string;
@@ -15,7 +23,7 @@ export const LinkForPage = styled(({ page, current, href, onClick, className }: 
 
   return (
     <a
-      className={className}
+      className={classNames('pagination-link', className)}
       aria-label={`Page ${page}`}
       aria-current={currentValue}
       href={href || '#'}
@@ -24,8 +32,7 @@ export const LinkForPage = styled(({ page, current, href, onClick, className }: 
       {page}
     </a>
   );
-})`
-`;
+};
 
 const Ellipsis: React.FC = () => (
   <li className="disabled">
@@ -86,8 +93,9 @@ const PaginationInfo: React.FC<PaginationInfoProps> = ({ currentPage, pageSize, 
  *
  * Typical output: [1 2 3] ... [4 5 6] ... [98 99 100]
  */
-export const Pagination = styled((props: {
+export const Pagination = (props: {
   className?: string;
+  style?: CSSPropertiesWithVariables;
   Page: (props: {page: number; current: boolean}) => React.ReactElement;
   currentPage: number;
   totalPages: number;
@@ -102,15 +110,14 @@ export const Pagination = styled((props: {
     pageSize,
     totalItems,
     className,
+    style,
     currentPage,
     totalPages,
     Page,
   } = props;
 
-  if (totalPages === 0 || totalPages === 1) {
-    return null;
-  }
-
+  // Called before the early return below: hooks must run in the same order on
+  // every render, and totalPages can change between renders.
   const { startRange, middleRange, endRange, showFirstEllipsis, showSecondEllipsis } =
     usePaginationRanges({
       currentPage,
@@ -119,8 +126,12 @@ export const Pagination = styled((props: {
       showFromCurrent,
     });
 
+  if (totalPages === 0 || totalPages === 1) {
+    return null;
+  }
+
   return (
-    <div className={className}>
+    <div className={classNames('pagination', className)} style={{ ...paginationStyle, ...style }}>
       <nav aria-label="pagination links">
         <ul>
           <PageRangeComponent
@@ -156,47 +167,4 @@ export const Pagination = styled((props: {
       )}
     </div>
   );
-})`
-  text-align: center;
-
-  > nav > ul {
-    list-style: none;
-    padding: 0;
-    border: thin solid ${palette.neutralLight};
-    border-radius: 0.5rem;
-    display: inline-block;
-    margin: 0 auto;
-
-    > li {
-      margin: 0;
-      min-width: 4rem;
-      text-align: center;
-      display: inline-block;
-
-      &:not(:last-child) {
-        border-right: thin solid ${palette.neutralLight};
-      }
-
-      &.active,
-      &:focus-within:not(.disabled),
-      &:hover:not(.disabled) {
-        background-color: ${palette.neutralLighter};
-      }
-
-      > ${LinkForPage},span {
-        padding: 1rem;
-        display: block;
-        text-decoration: none;
-        font-size: 1.6rem;
-        line-height: 1.3rem;
-        margin: 0;
-        color: inherit;
-      }
-    }
-  }
-
-  .pagination-info {
-    margin-top: 0.5rem;
-    font-size: 1.6rem;
-  }
-`;
+};
