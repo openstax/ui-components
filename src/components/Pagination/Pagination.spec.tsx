@@ -100,12 +100,16 @@ describe('Pagination', () => {
 
     rerender(<Pagination currentPage={1} totalPages={0} Page={Page} />);
     expect(root.innerHTML).toBe('');
+
+    // A negative count is nonsense input, but rendering nothing beats rendering
+    // a nav built from a negative range.
+    rerender(<Pagination currentPage={1} totalPages={-1} Page={Page} />);
+    expect(root.innerHTML).toBe('');
   });
 
-  // usePaginationRanges is called unconditionally, above the `totalPages <= 1`
-  // early return. React only reports a hook-order mismatch once at least one hook
-  // has run on the update, so calling it below the return went unnoticed -- but it
-  // would have become a real crash as soon as another hook was added above.
+  // Pagination gatekeeps on totalPages and PaginationPages holds the hooks, so
+  // dropping to a single page unmounts the hooks rather than skipping them. This
+  // guards the transition either way round.
   it('survives totalPages changing to 1 and back', () => {
     const consoleError = jest.spyOn(console, 'error').mockImplementation(() => undefined);
 
