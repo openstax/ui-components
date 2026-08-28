@@ -87,7 +87,7 @@ const sidebarStyles = css`
     padding: 0;
   }
 
-  ${SidebarNavStyles.ToggleButton} {
+  .sidebar-nav-toggle {
     margin-top: 3.2rem;
   }
 `;
