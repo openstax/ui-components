@@ -57,6 +57,7 @@ styling fragments that `Tabs` exported are gone:
 - `StyledTooltip` and `StyledTrigger` are still exported. They are no longer styled-components, but
   they accept the same `className`/`style` props and merge them as before. Both are **deprecated** —
   prefer `Tooltip` and `TooltipGroup`.
+- `Tooltip` no longer accepts the trigger-only `icon` / `ariaLabel` props; use `TooltipGroup` for a trigger + tooltip pair.
 - `Tabs` continues to accept the React Aria `className`/`style` render-callback forms; the component
   merges its own variant classes and CSS custom properties into whatever the callback returns.
 - The `style` prop on `Tabs`, `ButtonBar`, `Tooltip`, `StyledTooltip` and `StyledTrigger` is widened

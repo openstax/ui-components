@@ -8,7 +8,7 @@ import {
   TooltipTrigger,
 } from 'react-aria-components';
 import { Info } from './svgs/Info';
-import {mergeProps, Placement, useTooltip} from 'react-aria';
+import { mergeProps, Placement, useTooltip } from 'react-aria';
 import { palette } from '../theme/palette';
 import { CSSPropertiesWithVariables } from '../types';
 import classNames from 'classnames';
