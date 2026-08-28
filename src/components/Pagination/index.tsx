@@ -116,8 +116,10 @@ export const Pagination = (props: {
     Page,
   } = props;
 
-  // Called before the early return below: hooks must run in the same order on
-  // every render, and totalPages can change between renders.
+  // Must stay above the `totalPages <= 1` early return so the hook runs on every
+  // render. React only reports a hook-order mismatch once at least one hook has
+  // run, so the previous ordering happened to be survivable -- but it made this
+  // component a landmine for the next hook added above the return.
   const { startRange, middleRange, endRange, showFirstEllipsis, showSecondEllipsis } =
     usePaginationRanges({
       currentPage,

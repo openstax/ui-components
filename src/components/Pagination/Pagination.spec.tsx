@@ -72,6 +72,31 @@ describe('Pagination', () => {
     expect(document.body).toMatchSnapshot();
   });
 
+  // usePaginationRanges used to be called after the `totalPages <= 1` early
+  // return, so going from many pages to one page changed the number of hooks
+  // React saw and blew up with "rendered fewer hooks than expected".
+  it('survives totalPages changing to 1 and back', () => {
+    const consoleError = jest.spyOn(console, 'error').mockImplementation(() => undefined);
+
+    const Page = ({ page, current }: { page: number; current: boolean }) =>
+      <LinkForPage page={page} current={current} href="#" />;
+
+    const { rerender } = render(
+      <Pagination currentPage={1} totalPages={10} Page={Page} />,
+      {container: root}
+    );
+    expect(root.querySelector('.pagination')).not.toBeNull();
+
+    rerender(<Pagination currentPage={1} totalPages={1} Page={Page} />);
+    expect(root.innerHTML).toBe('');
+
+    rerender(<Pagination currentPage={1} totalPages={10} Page={Page} />);
+    expect(root.querySelector('.pagination')).not.toBeNull();
+
+    expect(consoleError).not.toHaveBeenCalled();
+    consoleError.mockRestore();
+  });
+
   // This is a special case in adjustRangesToMeetMinimum
   it('expands middle range to the left', () => {
     render(<Pagination
