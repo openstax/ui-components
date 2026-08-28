@@ -1,6 +1,10 @@
 import { render } from '@testing-library/react';
 import { Pagination, LinkForPage } from ".";
-import { range } from './utils';
+import { calculatePaginationRanges, range } from './utils';
+import { palette } from "../../theme/palette";
+
+const Page = ({ page, current }: { page: number; current: boolean }) =>
+  <LinkForPage page={page} current={current} href="#" />;
 
 describe('Pagination', () => {
   let root: HTMLElement;
@@ -11,105 +15,151 @@ describe('Pagination', () => {
     document.body.append(root);
   });
 
-  it('matches snapshot; default href is "#"', () => {
+  afterEach(() => {
+    root.remove();
+  });
+
+  // The rendered entries in order, with the current page starred, eg:
+  // ['1', '...', '4', '5*', '6', '...', '10']
+  const pageSequence = () =>
+    Array.from(root.querySelectorAll('li')).map((li) =>
+      `${li.textContent}${li.classList.contains('active') ? '*' : ''}`);
+
+  it('renders every page when they all fit', () => {
+    render(<Pagination currentPage={1} totalPages={10} Page={Page} />, {container: root});
+    expect(pageSequence()).toEqual(['1*', '2', '3', '4', '5', '6', '7', '8', '9', '10']);
+  });
+
+  it('elides the gaps on either side of the current page', () => {
+    render(<Pagination
+      currentPage={5} totalPages={10} showFromEnd={1} showFromCurrent={1} Page={Page}
+    />, {container: root});
+    expect(pageSequence()).toEqual(['1', '...', '4', '5*', '6', '...', '10']);
+  });
+
+  // The nav holds a steady width, so when the current page is near an edge the
+  // middle range grows into the space the missing ellipsis would have taken.
+  it('grows the middle range when the current page is at the start', () => {
+    render(<Pagination
+      currentPage={1} totalPages={10} showFromEnd={1} showFromCurrent={1} Page={Page}
+    />, {container: root});
+    expect(pageSequence()).toEqual(['1*', '2', '3', '4', '5', '...', '10']);
+  });
+
+  it('grows the middle range when the current page is at the end', () => {
+    render(<Pagination
+      currentPage={10} totalPages={10} showFromEnd={1} showFromCurrent={1} Page={Page}
+    />, {container: root});
+    expect(pageSequence()).toEqual(['1', '...', '6', '7', '8', '9', '10*']);
+  });
+
+  it('renders ellipses as non-interactive entries', () => {
+    render(<Pagination
+      currentPage={5} totalPages={10} showFromEnd={1} showFromCurrent={1} Page={Page}
+    />, {container: root});
+    expect(Array.from(root.querySelectorAll('li.disabled'), (li) => li.textContent))
+      .toEqual(['...', '...']);
+    expect(root.querySelectorAll('li.disabled a')).toHaveLength(0);
+  });
+
+  it('marks only the current page for assistive tech', () => {
+    render(<Pagination
+      currentPage={5} totalPages={10} showFromEnd={1} showFromCurrent={1} Page={Page}
+    />, {container: root});
+
+    const current = root.querySelectorAll('[aria-current="page"]');
+    expect(current).toHaveLength(1);
+    expect(current[0].textContent).toBe('5');
+    expect(current[0].getAttribute('aria-label')).toBe('Page 5');
+    expect(root.querySelector('nav')?.getAttribute('aria-label')).toBe('pagination links');
+  });
+
+  it('falls back to "#" when the page href is empty', () => {
     render(<Pagination
       currentPage={1} totalPages={10}
-      Page={({ page, current }) =>
-        <LinkForPage page={page} current={current} href="" />
-      }
+      Page={({ page, current }) => <LinkForPage page={page} current={current} href="" />}
     />, {container: root});
-    expect(document.body).toMatchSnapshot();
+
+    const hrefs = Array.from(root.querySelectorAll('a'), (a) => a.getAttribute('href'));
+    expect(hrefs).toHaveLength(10);
+    expect(hrefs.every((href) => href === '#')).toBe(true);
   });
 
-  it('matches snapshot with dividers', () => {
-    render(<Pagination
-      currentPage={5} totalPages={10} showFromEnd={1} showFromCurrent={1}
-      Page={({ page, current }) =>
-        <LinkForPage page={page} current={current} href="#" />
-      }
-    />, {container: root});
-    expect(document.body).toMatchSnapshot();
+  it('binds the theme colours it needs as custom properties', () => {
+    render(<Pagination currentPage={1} totalPages={10} Page={Page} />, {container: root});
+
+    const { style } = root.querySelector('.pagination') as HTMLElement;
+    expect(style.getPropertyValue('--pagination-border-color')).toBe(palette.neutralLight);
+    expect(style.getPropertyValue('--pagination-active-background')).toBe(palette.neutralLighter);
   });
 
-  it('Shows paginationinfo', () => {
-    render(<Pagination
-      currentPage={5} totalPages={15} showFromEnd={1} showFromCurrent={1}
-      pageSize={5} totalItems={75}
-      Page={({ page, current }) =>
-        <LinkForPage page={page} current={current} href="#" />
-      }
-    />, {container: root});
-    expect(document.querySelector('.pagination-info')?.textContent).toBe('21-25 of 75');
+  it('renders nothing when there is nothing to paginate', () => {
+    const { rerender } = render(
+      <Pagination currentPage={1} totalPages={1} Page={Page} />, {container: root});
+    expect(root.innerHTML).toBe('');
+
+    rerender(<Pagination currentPage={1} totalPages={0} Page={Page} />);
+    expect(root.innerHTML).toBe('');
   });
 
-  it('grows to min size', () => {
-    render(<Pagination
-      currentPage={1} totalPages={10} showFromEnd={1} showFromCurrent={1}
-      Page={({ page, current }) =>
-        <LinkForPage page={page} current={current} href="#" />
-      }
-    />, {container: root});
-    expect(document.body).toMatchSnapshot();
-  });
-
-  it('grows to min size from back', () => {
-    render(<Pagination
-      currentPage={10} totalPages={10} showFromEnd={1} showFromCurrent={1}
-      Page={({ page, current }) =>
-        <LinkForPage page={page} current={current} href="#" />
-      }
-    />, {container: root});
-    expect(document.body).toMatchSnapshot();
-  });
-
-  it('noops', () => {
-    render(<Pagination
-      currentPage={1} totalPages={1}
-      Page={({ page, current }) =>
-        <LinkForPage page={page} current={current} href="#" />
-      }
-    />, {container: root});
-    expect(document.body).toMatchSnapshot();
-  });
-
-  // usePaginationRanges used to be called after the `totalPages <= 1` early return.
-  // That violates the Rules of Hooks; React may not always warn if no hooks run on
-  // the short render, so this test guards against future hook-order regressions.
+  // usePaginationRanges is called unconditionally, above the `totalPages <= 1`
+  // early return. React only reports a hook-order mismatch once at least one hook
+  // has run on the update, so calling it below the return went unnoticed -- but it
+  // would have become a real crash as soon as another hook was added above.
   it('survives totalPages changing to 1 and back', () => {
     const consoleError = jest.spyOn(console, 'error').mockImplementation(() => undefined);
 
-    const Page = ({ page, current }: { page: number; current: boolean }) =>
-      <LinkForPage page={page} current={current} href="#" />;
-
     const { rerender } = render(
-      <Pagination currentPage={1} totalPages={10} Page={Page} />,
-      {container: root}
-    );
-    expect(root.querySelector('.pagination')).not.toBeNull();
+      <Pagination currentPage={1} totalPages={10} Page={Page} />, {container: root});
+    expect(pageSequence()).toHaveLength(10);
 
     rerender(<Pagination currentPage={1} totalPages={1} Page={Page} />);
     expect(root.innerHTML).toBe('');
 
     rerender(<Pagination currentPage={1} totalPages={10} Page={Page} />);
-    expect(root.querySelector('.pagination')).not.toBeNull();
+    expect(pageSequence()).toHaveLength(10);
 
     expect(consoleError).not.toHaveBeenCalled();
     consoleError.mockRestore();
   });
 
-  // This is a special case in adjustRangesToMeetMinimum
-  it('expands middle range to the left', () => {
+  it('shows the range of items on the current page', () => {
     render(<Pagination
-      currentPage={4} totalPages={10}
-      Page={({ page, current }) =>
-        <LinkForPage page={page} current={current} href="#" />
-      }
+      currentPage={5} totalPages={15} showFromEnd={1} showFromCurrent={1}
+      pageSize={5} totalItems={75} Page={Page}
     />, {container: root});
+    expect(root.querySelector('.pagination-info')?.textContent).toBe('21-25 of 75');
+  });
+
+  it('omits the item range unless both pageSize and totalItems are given', () => {
+    const { rerender } = render(
+      <Pagination currentPage={5} totalPages={15} pageSize={5} Page={Page} />, {container: root});
+    expect(root.querySelector('.pagination-info')).toBeNull();
+
+    rerender(<Pagination currentPage={5} totalPages={15} totalItems={75} Page={Page} />);
+    expect(root.querySelector('.pagination-info')).toBeNull();
   });
 });
 
 describe('Pagination/utils', () => {
   it('bounds-checks range', () => {
     expect(range(10, 5)).toEqual([]);
+  });
+
+  // Exercises the `secondGap < remaining - delta` branch of adjustRangesToMeetMinimum:
+  // the right-hand gap is too small to absorb the shortfall on its own, so the
+  // expansion spills leftwards. Here firstGap is already 0, so the middle range only
+  // grows right -- the visible output is all ten pages, which is why this needs
+  // asserting at the range level rather than against the DOM.
+  it('expands the middle range to the left when the right gap is too small', () => {
+    expect(calculatePaginationRanges({
+      currentPage: 4, totalPages: 10, showFromEnd: 3, showFromCurrent: 2,
+    })).toEqual({
+      startRange: [1, 2],
+      middleRange: [2, 8],
+      endRange: [8, 11],
+      showFirstEllipsis: false,
+      showSecondEllipsis: false,
+    });
   });
 });
