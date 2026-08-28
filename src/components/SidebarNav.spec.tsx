@@ -16,6 +16,7 @@ import {
 } from "./SidebarNav";
 import "@testing-library/jest-dom";
 import { BodyPortalSlotsContext } from "./BodyPortalSlotsContext";
+import { colors, zIndex } from "../theme";
 
 jest.useFakeTimers();
 
@@ -81,31 +82,65 @@ describe("SidebarNav", () => {
       };
     });
 
-    const component = render(<SidebarNav>Content</SidebarNav>);
-    expect(component.asFragment()).toMatchSnapshot();
+    render(<SidebarNav>Content</SidebarNav>);
 
-    expect(screen.getByRole("navigation")).not.toHaveClass("collapsed");
-    expect(screen.getByTestId("sidebarnav-toggle")).toHaveAttribute(
-      "aria-expanded",
-      "true",
-    );
+    const nav = screen.getByRole("navigation");
+    const toggle = screen.getByTestId("sidebarnav-toggle");
 
-    act(() => {
-      fireEvent.click(screen.getByTestId("sidebarnav-toggle"));
-    });
-
-    expect(screen.getByRole("navigation")).toHaveClass("collapsed");
-    expect(screen.getByTestId("sidebarnav-toggle")).toHaveAttribute(
-      "aria-expanded",
-      "false",
-    );
-    expect(component.asFragment()).toMatchSnapshot();
+    expect(nav).not.toHaveClass("collapsed");
+    expect(toggle).not.toHaveClass("collapsed");
+    expect(toggle).toHaveAttribute("aria-expanded", "true");
+    expect(toggle).toHaveAccessibleName("Collapse navigation");
 
     act(() => {
-      fireEvent.click(screen.getByTestId("sidebarnav-toggle"));
+      fireEvent.click(toggle);
     });
 
-    expect(screen.getByRole("navigation")).not.toHaveClass("collapsed");
+    expect(nav).toHaveClass("collapsed", "collapsing");
+    expect(toggle).toHaveClass("collapsed");
+    expect(toggle).toHaveAttribute("aria-expanded", "false");
+    expect(toggle).toHaveAccessibleName("Expand navigation");
+
+    act(() => {
+      fireEvent.click(toggle);
+    });
+
+    expect(nav).not.toHaveClass("collapsed");
+    expect(nav).toHaveClass("expanding");
+    expect(toggle).toHaveAttribute("aria-expanded", "true");
+  });
+
+  it("binds the theme values it needs as custom properties", () => {
+    render(<SidebarNav>Content</SidebarNav>);
+
+    const { style } = screen.getByRole("navigation");
+    expect(style.getPropertyValue("--sidebar-nav-background")).toBe(
+      colors.palette.neutralBright,
+    );
+    expect(style.getPropertyValue("--sidebar-nav-color")).toBe(
+      colors.palette.neutralThin,
+    );
+    expect(style.getPropertyValue("--sidebar-nav-z-index")).toBe(
+      String(zIndex.navbar - 1),
+    );
+    expect(style.getPropertyValue("--sidebar-nav-open-z-index")).toBe(
+      String(zIndex.sidebar),
+    );
+  });
+
+  it("keeps consumer className and style alongside its own", () => {
+    render(
+      <SidebarNav className="consumer-class" style={{ top: "4rem" }}>
+        Content
+      </SidebarNav>,
+    );
+
+    const nav = screen.getByRole("navigation");
+    expect(nav).toHaveClass("sidebar-nav", "consumer-class");
+    expect(nav.style.top).toBe("4rem");
+    expect(nav.style.getPropertyValue("--sidebar-nav-background")).toBe(
+      colors.palette.neutralBright,
+    );
   });
 
   it("is dismissable on mobile", async () => {
@@ -235,55 +270,20 @@ describe("SidebarNav", () => {
         { container: root },
       );
 
-      expect(document.body).toMatchInlineSnapshot(`
-<body>
-  <nav
-    class="sidebar-nav"
-    data-portal-slot="sidebar"
-    data-testid="sidebarnav"
-    style="--sidebar-nav-background: #f5f5f5; --sidebar-nav-color: #6f6f6f; --sidebar-nav-z-index: 9; --sidebar-nav-open-z-index: 20;"
-  >
-    <span
-      data-focus-scope-start="true"
-      hidden=""
-    />
-    <button
-      aria-expanded="true"
-      aria-label="Collapse navigation"
-      class="sidebar-nav-toggle"
-      data-testid="sidebarnav-toggle"
-    >
-      <svg
-        fill="none"
-        height="10"
-        viewBox="0 0 8 10"
-        width="8"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M1.1266 5.38862L5.57702 9.83902C5.79166 10.0537 6.13964 10.0537 6.35426 9.83902L6.87333 9.31995C7.0876 9.10568 7.08801 8.75841 6.87424 8.54363L3.34721 4.99999L6.87424 1.45637C7.08801 1.24159 7.0876 0.89432 6.87333 0.680047L6.35426 0.160979C6.13962 -0.0536598 5.79164 -0.0536598 5.57702 0.160979L1.12662 4.61138C0.911981 4.826 0.911981 5.17398 1.1266 5.38862Z"
-          fill="#959595"
-        />
-      </svg>
-    </button>
-    <div
-      class="sidebar-nav-body"
-      data-testid="nav-body"
-    >
-      Sidebar Nav
-    </div>
-    <span
-      data-focus-scope-end="true"
-      hidden=""
-    />
-  </nav>
-  <main
-    id="root"
-  >
-    Main
-  </main>
-</body>
-`);
+      const nav = screen.getByRole("navigation");
+
+      // The whole point of the portal: the nav escapes the render container and
+      // is mounted directly on <body>, ahead of #root because "sidebar" comes
+      // before "root" in the slot list.
+      expect(root).not.toContainElement(nav);
+      expect(nav.parentElement).toBe(document.body);
+      expect(nav.nextElementSibling).toBe(root);
+      expect(nav).toHaveAttribute("data-portal-slot", "sidebar");
+
+      // ...and it still renders the nav's own content and classes.
+      expect(nav).toHaveClass("sidebar-nav");
+      expect(screen.getByTestId("nav-body")).toHaveTextContent("Sidebar Nav");
+      expect(root).toHaveTextContent("Main");
     });
 
     it("adds animation classes when opening and closing", () => {
