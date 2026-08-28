@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { BodyPortalSlotsContext } from '../BodyPortalSlotsContext';
 import { HelpMenu, HelpMenuItem, HelpMenuProps, NewTabIcon } from '.';
 import { NavBar } from '../NavBar';
@@ -22,24 +22,66 @@ describe('HelpMenu', () => {
     document.body.append(root);
   });
 
-  it('matches snapshot', async () => {
-    render(
-      <BodyPortalSlotsContext.Provider value={['nav', 'root']}>
-        <NavBar logo>
-          <HelpMenu contactFormParams={[{key: 'userId', value: 'test'}]}>
-            <HelpMenuItem onAction={() => window.alert('Ran HelpMenu callback function')}>
-              Test Callback
-            </HelpMenuItem>
-          </HelpMenu>
-        </NavBar>
-      </BodyPortalSlotsContext.Provider>
-    );
+  const renderHelpMenu = () => render(
+    <BodyPortalSlotsContext.Provider value={['nav', 'root']}>
+      <NavBar logo>
+        <HelpMenu contactFormParams={[{key: 'userId', value: 'test'}]}>
+          <HelpMenuItem onAction={() => window.alert('Ran HelpMenu callback function')}>
+            Test Callback
+          </HelpMenuItem>
+        </HelpMenu>
+      </NavBar>
+    </BodyPortalSlotsContext.Provider>
+  );
 
-    // Reveal the default button in the help menu
+  it('wires the trigger to the menu for assistive tech', async () => {
+    renderHelpMenu();
+
+    const button = await screen.findByRole('button', { name: 'Help menu' });
+    expect(button.getAttribute('aria-haspopup')).toBe('true');
+    expect(button.getAttribute('aria-expanded')).toBe('false');
+
+    fireEvent.click(button);
+    const menu = await screen.findByRole('menu');
+
+    expect(button.getAttribute('aria-expanded')).toBe('true');
+    expect(button.getAttribute('aria-controls')).toBe(menu.id);
+    expect(menu.getAttribute('aria-labelledby')).toBe(button.id);
+  });
+
+  it('moves focus into the menu when it opens', async () => {
+    renderHelpMenu();
+
+    const button = await screen.findByRole('button', { name: 'Help menu' });
+    fireEvent.click(button);
+    const menu = await screen.findByRole('menu');
+
+    // react-aria defers the trigger -> menu focus move to an animation frame when the
+    // click looks like a virtual (screen reader) one, which fireEvent.click does. Wait
+    // for it to land rather than asserting on the intermediate frame where the trigger
+    // still holds focus; waitFor drives the suite's fake timers for us.
+    await waitFor(() => expect(document.activeElement).toBe(menu));
+    expect(button.hasAttribute('data-focused')).toBe(false);
+  });
+
+  it('renders items in order with a roving tabindex', async () => {
+    renderHelpMenu();
+
     fireEvent.click(await screen.findByText('Help'));
-    screen.getByText(/Report an issue/i);
+    await screen.findByRole('menu');
 
-    expect(document.body).toMatchSnapshot();
+    const items = screen.getAllByRole('menuitem');
+    expect(items.map((item) => item.textContent)).toEqual(['Report an issue', 'Test Callback']);
+    expect(items.map((item) => item.getAttribute('tabindex'))).toEqual(['0', '-1']);
+  });
+
+  it('positions the popover below the trigger', async () => {
+    renderHelpMenu();
+
+    fireEvent.click(await screen.findByText('Help'));
+    await screen.findByRole('menu');
+
+    expect(screen.getByRole('dialog').getAttribute('data-placement')).toBe('bottom');
   });
 
   it('errors if the service is unavailable', async () => {
