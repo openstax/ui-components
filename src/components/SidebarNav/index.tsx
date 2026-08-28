@@ -18,12 +18,16 @@ import {
 } from "./hooks";
 import "./SidebarNav.css";
 
-const NavHeader = ({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLElement>) => (
-  <header className={classNames("sidebar-nav-header", className)} {...props} />
+const NavHeader = React.forwardRef<HTMLElement, React.HTMLAttributes<HTMLElement>>(
+  ({ className, ...props }, ref) => (
+    <header
+      ref={ref}
+      className={classNames("sidebar-nav-header", className)}
+      {...props}
+    />
+  ),
 );
+NavHeader.displayName = "NavHeader";
 
 const NavBody = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
@@ -36,12 +40,16 @@ const NavBody = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivEle
 );
 NavBody.displayName = "NavBody";
 
-const NavFooter = ({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLElement>) => (
-  <footer className={classNames("sidebar-nav-footer", className)} {...props} />
+const NavFooter = React.forwardRef<HTMLElement, React.HTMLAttributes<HTMLElement>>(
+  ({ className, ...props }, ref) => (
+    <footer
+      ref={ref}
+      className={classNames("sidebar-nav-footer", className)}
+      {...props}
+    />
+  ),
 );
+NavFooter.displayName = "NavFooter";
 
 const ToggleButton = React.forwardRef<
   HTMLButtonElement,
