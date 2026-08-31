@@ -2,10 +2,10 @@ import React from 'react';
 import { CSSPropertiesWithVariables } from '../types';
 import classNames from 'classnames';
 import * as Constants from '../constants';
-import theme from '../theme';
 import { BodyPortal } from './BodyPortal';
 import { NavBarLogo as OpenstaxLogo } from './NavBarLogo';
 import './NavBar.css';
+import '../theme/theme.css';
 
 type Logo = React.HTMLProps<HTMLAnchorElement> & { alt?: string };
 
@@ -36,13 +36,6 @@ export const NavBar = ({
   const {alt = 'OpenStax Logo', ...anchorProps} = logoIsObject ? logo : {};
   const logoComponent = logo ? <OpenstaxLogo alt={alt} /> : null;
 
-  const wrapperStyle: CSSPropertiesWithVariables = {
-    '--navbar-z-index': theme.zIndex.navbar,
-    '--navbar-padding-mobile': `${theme.padding.navbar.mobile}rem`,
-    '--navbar-padding-desktop': `${theme.padding.navbar.desktop}rem`,
-    ...style
-  };
-
   const barStyle: CSSPropertiesWithVariables = {
     '--navbar-max-width': maxWidth ? `${maxWidth}rem` : undefined,
     '--navbar-justify-content': justifyContent,
@@ -56,7 +49,7 @@ export const NavBar = ({
       ariaLabel={ariaLabel}
       slot='nav'
       className={classNames('navbar-wrapper', className)}
-      style={wrapperStyle}
+      style={style}
       {...props}
     >
       <div className="navbar-bar" style={barStyle}>

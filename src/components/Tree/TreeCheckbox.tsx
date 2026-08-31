@@ -10,9 +10,9 @@ import {
   CheckboxVariant
 } from "../Checkbox/sharedCheckboxStyles";
 import { checkedMixIcon } from "../svgs/checkmarksvgs";
-import { colors } from '../../theme';
 import classNames from "classnames";
 import "../Checkbox/Checkbox.css";
+import '../../theme/theme.css';
 
 export interface TreeCheckboxProps
   extends PropsWithChildren<Omit<RACCheckboxProps, "children">> {
@@ -46,17 +46,13 @@ export const TreeCheckbox = ({
   const checkboxStyle = {
     '--checkbox-font-weight': bold ? 700 : 400,
     '--checkbox-color': variantStyles.color,
-    '--checkbox-disabled-color': colors.palette.neutralLight,
     '--checkbox-size': `${size}rem`,
-    '--checkbox-bg-unchecked': colors.palette.white,
     '--checkbox-bg': variantStyles.backgroundColor,
     '--checkbox-border-unchecked': variantStyles.unCheckedBorder,
     '--checkbox-border-checked': variantStyles.checkedBorder,
     '--checkbox-checkmark': variantStyles.backgroundImage === 'none' ? 'none' : `url('${variantStyles.backgroundImage}')`,
     '--checkbox-opacity': isDisabled ? '0.4' : '1',
     '--checkbox-checked-opacity': isDisabled ? '0' : '1',
-    '--checkbox-disabled-border': `1px solid ${colors.palette.pale}`,
-    '--checkbox-indeterminate-bg': colors.palette.mediumBlue,
     '--checkbox-indeterminate-icon': `url('${checkedMixIcon}')`,
     ...style,
   } as unknown as RACCheckboxProps['style']; // --vars are not in the type

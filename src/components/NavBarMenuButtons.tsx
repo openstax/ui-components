@@ -10,30 +10,20 @@ import {
   Popover,
   PopoverProps,
 } from "react-aria-components";
-import { colors } from "../theme";
 import { NavBarButton, NavBarButtonProps } from "./NavBarButton";
-import { CSSPropertiesWithVariables } from "../types";
 import "./NavBarMenuButtons.css";
+import "../theme/theme.css";
 
 export const NavBarMenuItem = React.forwardRef<
   HTMLDivElement,
   React.ComponentProps<typeof MenuItem>
->(({ className, style, ...props }, ref) => {
-  const menuItemStyle: CSSPropertiesWithVariables = {
-    '--navbar-menu-item-hover-bg': colors.palette.neutralLighter,
-    '--navbar-menu-item-border-color': colors.palette.neutralBright,
-    ...style
-  };
-
-  return (
-    <MenuItem
-      ref={ref}
-      className={composeRenderProps(className, (resolved) => classNames("navbar-menu-item", resolved))}
-      style={menuItemStyle}
-      {...props}
-    />
-  );
-});
+>(({ className, ...props }, ref) => (
+  <MenuItem
+    ref={ref}
+    className={composeRenderProps(className, (resolved) => classNames("navbar-menu-item", resolved))}
+    {...props}
+  />
+));
 NavBarMenuItem.displayName = "NavBarMenuItem";
 
 export const PopoverContainer = React.forwardRef<
@@ -47,21 +37,13 @@ PopoverContainer.displayName = "PopoverContainer";
 export const NavBarPopover = React.forwardRef<
   HTMLDivElement,
   PopoverProps
->(({ className, style, ...props }, ref) => {
-  const popoverStyle: CSSPropertiesWithVariables = {
-    '--navbar-popover-border-color': colors.palette.darkGreen,
-    ...style
-  };
-
-  return (
-    <Popover
-      ref={ref}
-      className={composeRenderProps(className, (resolved) => classNames("navbar-popover", resolved))}
-      style={popoverStyle}
-      {...props}
-    />
-  );
-});
+>(({ className, ...props }, ref) => (
+  <Popover
+    ref={ref}
+    className={composeRenderProps(className, (resolved) => classNames("navbar-popover", resolved))}
+    {...props}
+  />
+));
 NavBarPopover.displayName = "NavBarPopover";
 
 export type NavBarBaseButtonProps = React.PropsWithChildren<{

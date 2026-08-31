@@ -31,7 +31,7 @@
 
 /* Error message styles */
 .uncontrolled-error-message {
-  color: #C22032;
+  color: var(--ox-color-dark-red);
   font-size: 1.6rem;
   margin: 0;
   padding: 0;
