@@ -86,8 +86,6 @@ interface Color {
   alpha: number;
   /** Canonical key for the allowlist. */
   key: string;
-  /** True when the literal is built out of var(), so it is already token-based. */
-  tokenised?: boolean;
 }
 
 const expandHex = (body: string) =>
@@ -254,13 +252,27 @@ const walk = (dir: string, out: string[] = []): string[] => {
 
 const here = path.basename(__filename);
 
+/** Every colour the theme defines, as token name -> the value written in the JS theme. */
+const themeColors: ReadonlyArray<readonly [string, string]> = [
+  ...Object.entries(palette).map(([key, value]) => [`--ox-color-${kebab(key)}`, value] as const),
+  ['--ox-color-link-hover', colors.link.hover] as const,
+];
+
+/**
+ * Theme colours describeColor cannot reduce to channels. Asserted empty below rather than
+ * cast away: such an entry would drop out of themeValues, and the colour would then read as
+ * off-palette everywhere it is used — a confusing failure a long way from its cause.
+ */
+const unresolvableThemeColors = themeColors
+  .filter(([, value]) => describeColor(value).hex === null)
+  .map(([token, value]) => `${token}: ${value}`);
+
 /** Every theme colour, by opaque channels, so a literal can be traced back to its token. */
-const themeValues = new Map([
-  ...Object.entries(palette).map(
-    ([key, value]) => [describeColor(value).hex as string, `--ox-color-${kebab(key)}`] as const
-  ),
-  [describeColor(colors.link.hover).hex as string, '--ox-color-link-hover'],
-]);
+const themeValues = new Map(
+  themeColors
+    .map(([token, value]) => [describeColor(value).hex, token] as const)
+    .filter((entry): entry is readonly [string, string] => entry[0] !== null)
+);
 
 /** Everything wrong with the colours in one stylesheet. Empty means the file is clean. */
 const colorProblems = (css: string): string[] => {
@@ -268,9 +280,9 @@ const colorProblems = (css: string): string[] => {
 
   for (const value of declarationValues(css)) {
     for (const literal of colorLiterals(value)) {
-      const { hex, alpha, key, tokenised } = describeColor(literal);
+      const { hex, alpha, key } = describeColor(literal);
 
-      if (tokenised || KNOWN_OFF_PALETTE.has(key)) { continue; }
+      if (KNOWN_OFF_PALETTE.has(key)) { continue; }
 
       if (hex === null) {
         problems.push(
@@ -349,6 +361,9 @@ describe('the colour check itself', () => {
     ['oklch', 'color: oklch(70% 0.1 200);'],
     ['color()', 'color: color(display-p3 1 0 0);'],
     ['translucent off-palette colour', 'background: rgba(1, 2, 3, 0.5);'],
+    // rgb() may legally hold var() channels, but then we cannot tell what colour it is;
+    // flagging beats skipping, which would let an off-palette value through unchecked.
+    ['rgb() with var() channels', 'background: rgba(var(--channels), 0.2);'],
   ])('flags an untokenised %s', (_case, declaration) => {
     expect(rule(declaration)).toHaveLength(1);
   });
@@ -377,6 +392,12 @@ describe('the colour check itself', () => {
   it('checks declarations nested in at-rules', () => {
     const css = '@media screen and (min-width: 75em) { .x { color: #d5d5d5; } }';
     expect(colorProblems(css)).toEqual([expect.stringContaining('use var(--ox-color-pale)')]);
+  });
+
+  it('can reduce every theme colour to channels', () => {
+    // Guards the themeValues map: see unresolvableThemeColors above for why a silent drop
+    // would be worse than a failure here.
+    expect(unresolvableThemeColors).toEqual([]);
   });
 
   it('flags a reference to a token that does not exist', () => {
