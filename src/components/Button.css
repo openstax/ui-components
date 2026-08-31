@@ -37,11 +37,11 @@
 }
 
 .button-base:not([disabled]):hover {
-  background: var(--button-bg-hover, var(--ox-color-dark-orange));
+  background: var(--button-bg-hover, var(--ox-color-orange-hover));
 }
 
 .button-base:not([disabled]):active {
-  background: var(--button-bg-active, var(--ox-color-darker-orange));
+  background: var(--button-bg-active, var(--ox-color-orange-active));
 }
 
 .button-base:focus {

@@ -34,11 +34,11 @@
 }
 
 .dropdown-menu-button:not([disabled]):hover {
-  background: var(--button-bg-hover, var(--ox-color-dark-orange));
+  background: var(--button-bg-hover, var(--ox-color-orange-hover));
 }
 
 .dropdown-menu-button:not([disabled]):active {
-  background: var(--button-bg-active, var(--ox-color-darker-orange));
+  background: var(--button-bg-active, var(--ox-color-orange-active));
 }
 
 .dropdown-menu-button:focus {

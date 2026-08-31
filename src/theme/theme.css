@@ -36,9 +36,9 @@
   --ox-color-neutral-light-blue: #0dc0dc;
   --ox-color-tangerine: #ffbd3e;
   --ox-color-gray: #5e5e5e;
-  --ox-color-medium-gray: #646464;
   --ox-color-dark-gray: #757575;
-  --ox-color-darker-gray: #4c4c4c;
+  --ox-color-dark-gray-hover: #646464;
+  --ox-color-dark-gray-active: #4c4c4c;
   --ox-color-pale: #d5d5d5;
   --ox-color-light: #e4e4e4;
   --ox-color-white: #ffffff;
@@ -55,8 +55,8 @@
   --ox-color-neutral-darker: #424242;
   --ox-color-black: #000000;
   --ox-color-orange: #D4450C;
-  --ox-color-dark-orange: #be3c08;
-  --ox-color-darker-orange: #b03808;
+  --ox-color-orange-hover: #be3c08;
+  --ox-color-orange-active: #b03808;
 
   /* link colours — src/theme.ts */
   --ox-color-link: #026AA1;
