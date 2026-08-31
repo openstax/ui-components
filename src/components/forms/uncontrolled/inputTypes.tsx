@@ -6,6 +6,7 @@ import { Radio as StyledRadio } from "../../Radio";
 import { Checkbox as StyledCheckbox } from "../../Checkbox/Checkbox";
 import classNames from 'classnames';
 import './inputTypes.css';
+import '../../../theme/theme.css';
 type TextInputProps = React.ComponentPropsWithoutRef<'input'> & InputProps & {
   wrapperProps?: React.ComponentPropsWithoutRef<'label'>;
   onChangeValue?: (value: any) => void;
