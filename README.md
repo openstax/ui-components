@@ -59,11 +59,16 @@ Components are styled with plain CSS in a sibling `.css` file, imported for side
 
 Theme values are defined once, in JavaScript, and projected into CSS custom properties by
 `src/theme/theme.css`. That file is **generated** from `src/theme/palette.ts` and
-`src/theme.ts` — never edit it by hand. Change the JavaScript and run:
+`src/theme.ts` — never edit it by hand. `npm run build` regenerates it as its first step, so
+a published package can never ship a stale one. To refresh it without a full build:
 
 ```
 npm run generate:theme-css
 ```
+
+It is committed as well as generated, because jest and ladle read `src/` directly and never
+run the build — `src/theme/tokens.spec.ts` fails when the committed copy is stale, which is
+what makes CI (which runs lint and test, not build) catch it.
 
 **Never write a theme value as a literal in a component stylesheet** — reference the token
 instead:
@@ -113,7 +118,8 @@ callers can set these without a cast.
 
 `src/theme/tokens.spec.ts` fails the build if:
 
-- the committed `theme.css` is not what the generator produces from the JS theme
+- the committed `theme.css` is not what the generator produces from the JS theme (the build
+  regenerates it; this is what stops a stale copy reaching jest, ladle or a reviewer)
 - a component stylesheet writes a colour literal that duplicates a theme value
 - a component stylesheet introduces a colour that is not a theme value and not in the
   `KNOWN_OFF_PALETTE` allowlist
