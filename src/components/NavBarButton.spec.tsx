@@ -1,3 +1,4 @@
+import { render } from '@testing-library/react';
 import renderer from 'react-test-renderer';
 import { NavBarButton } from './NavBarButton';
 import { Info } from './svgs/Info';
@@ -29,5 +30,21 @@ describe('NavBarButton', () => {
       <NavBarButton label="Info" icon={<Info />} />
     ).toJSON();
     expect(tree).toMatchSnapshot();
+  });
+
+  it('composes a render-callback className', () => {
+    render(<NavBarButton label="button" className={() => 'caller-button'} />);
+
+    const button = document.querySelector('.navbar-button');
+    expect(button?.className).toContain('navbar-button');
+    expect(button?.className).toContain('caller-button');
+  });
+
+  it('keeps composing a string className', () => {
+    render(<NavBarButton label="button" className='caller-button' />);
+
+    const button = document.querySelector('.navbar-button');
+    expect(button?.className).toContain('navbar-button');
+    expect(button?.className).toContain('caller-button');
   });
 });

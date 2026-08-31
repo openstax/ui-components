@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Fixed
+
+#### Render-callback `className` support in react-aria-components wrappers (CORE-2708)
+
+`NavBarMenuItem`, `NavBarPopover`, `NavBarButton`, and `TreeCheckbox` passed the caller's
+`className` straight into `classnames`, which ignores functions. React-aria-components types
+`className` as `string | ((renderProps) => string)`, so a render-callback `className` was
+silently discarded and never reached the DOM. These wrappers now use RAC's
+`composeRenderProps`, matching the fix applied to `Mask`, `OverlayMask`, and `OverlayWrapper`.
+
+`NavBarButtonProps` no longer re-declares `className?: string`; the type now inherits the
+callback form from `ButtonProps`. This widens the accepted type, so string `className` values
+keep working unchanged.
+
 ### Changed - BREAKING CHANGES
 
 #### Button Component Migration (CORE-1999)
