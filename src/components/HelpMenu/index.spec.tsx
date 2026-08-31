@@ -1,8 +1,13 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { Menu } from 'react-aria-components';
 import { BodyPortalSlotsContext } from '../BodyPortalSlotsContext';
-import { HelpMenu, HelpMenuItem, HelpMenuProps, NewTabIcon } from '.';
+import { HelpMenu, HelpMenuButton, HelpMenuItem, HelpMenuProps, NewTabIcon } from '.';
 import { NavBar } from '../NavBar';
 import { ChatConfiguration } from './hooks';
+import type { CSSPropertiesWithVariables } from '../../types';
+
+type HelpMenuButtonProps = React.ComponentProps<typeof HelpMenuButton>;
+type HelpMenuItemProps = React.ComponentProps<typeof HelpMenuItem>;
 
 describe('HelpMenu', () => {
   let root: HTMLElement;
@@ -325,5 +330,70 @@ describe('HelpMenu', () => {
     // Open menu and verify fallback to Report an issue
     fireEvent.click(await screen.findByText('Help'));
     await screen.findByRole('menuitem', { name: /report an issue/i });
+  });
+});
+
+describe('HelpMenu style composition', () => {
+  beforeAll(() => {
+    global.CSS = {
+      supports: () => true,
+      escape: jest.fn(),
+    } as any;
+  });
+
+  const renderButton = (style: HelpMenuButtonProps['style']) => {
+    render(<HelpMenuButton label='Help' style={style} />);
+    return document.querySelector('.help-menu-button') as HTMLElement;
+  };
+
+  const renderMenuItem = (style: HelpMenuItemProps['style']) => {
+    render(
+      <Menu aria-label='Test menu'>
+        <HelpMenuItem style={style}>Report an issue</HelpMenuItem>
+      </Menu>
+    );
+    return document.querySelector('.help-menu-item') as HTMLElement;
+  };
+
+  describe('HelpMenuButton', () => {
+    it('merges a render-callback style', () => {
+      const button = renderButton(() => ({ color: 'rgb(255, 0, 0)' }));
+
+      expect(button.style.color).toBe('rgb(255, 0, 0)');
+      expect(button.style.getPropertyValue('--help-menu-button-color')).toBeTruthy();
+    });
+
+    it('lets a render-callback style override the wrapper variables', () => {
+      const button = renderButton(() => ({
+        '--help-menu-button-color': 'rebeccapurple'
+      }) as CSSPropertiesWithVariables);
+
+      expect(button.style.getPropertyValue('--help-menu-button-color')).toBe('rebeccapurple');
+    });
+
+    it('keeps merging an object style, caller last', () => {
+      const button = renderButton({
+        color: 'rgb(0, 0, 255)',
+        '--help-menu-button-color': 'rebeccapurple'
+      } as CSSPropertiesWithVariables);
+
+      expect(button.style.color).toBe('rgb(0, 0, 255)');
+      expect(button.style.getPropertyValue('--help-menu-button-color')).toBe('rebeccapurple');
+    });
+  });
+
+  // No render-callback cases here: HelpMenuItem passes style to NavBarMenuItem, which
+  // spreads it, so the callback form cannot reach the DOM until CORE-2710 (#137) is on main.
+  describe('HelpMenuItem', () => {
+    it('merges an object style, caller last', () => {
+      const item = renderMenuItem({
+        color: 'rgb(0, 0, 255)',
+        '--help-menu-item-color': 'rebeccapurple'
+      } as CSSPropertiesWithVariables);
+
+      expect(item.style.color).toBe('rgb(0, 0, 255)');
+      expect(item.style.getPropertyValue('--help-menu-item-color')).toBe('rebeccapurple');
+      expect(item.style.getPropertyValue('--navbar-menu-item-hover-bg')).toBeTruthy();
+    });
   });
 });
