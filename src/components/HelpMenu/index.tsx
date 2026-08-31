@@ -1,5 +1,6 @@
 import React from 'react';
 import classNames from 'classnames';
+import { composeRenderProps } from 'react-aria-components';
 import { NavBarBaseButtonProps, NavBarMenuButton, NavBarMenuItem } from '../NavBarMenuButtons';
 import { colors } from '../../theme';
 import { BodyPortal } from '../BodyPortal';
@@ -8,10 +9,16 @@ import { ChatConfiguration, getPreChatFields, useChatController, useHoursRange }
 import './HelpMenu.css';
 
 export const HelpMenuButton = ({ className, style, ...props }: NavBarBaseButtonProps) => {
-  const buttonStyle: CSSPropertiesWithVariables = {
-    '--help-menu-button-color': colors.palette.gray,
-    ...style
-  };
+  // composeRenderProps normalises the object and render-callback forms of style so a
+  // caller-supplied callback is merged rather than dropped. The caller still spreads last
+  // and can override the CSS variables set here.
+  const buttonStyle = composeRenderProps(
+    style,
+    (resolvedStyle): CSSPropertiesWithVariables => ({
+      '--help-menu-button-color': colors.palette.gray,
+      ...resolvedStyle
+    })
+  );
 
   return (
     <NavBarMenuButton
@@ -26,6 +33,9 @@ export const HelpMenuItem = React.forwardRef<
   HTMLDivElement,
   React.ComponentProps<typeof NavBarMenuItem>
 >(({ className, style, ...props }, ref) => {
+  // Deliberately a spread rather than composeRenderProps: see the note on
+  // ProfileMenuItem. NavBarMenuItem spreads style as well, so composing only here would
+  // lose these variables; both need composing together once CORE-2710 (#137) is on main.
   const menuItemStyle: CSSPropertiesWithVariables = {
     '--help-menu-item-color': colors.palette.neutralDarker,
     '--help-menu-item-focus-bg': colors.palette.neutralLighter,
