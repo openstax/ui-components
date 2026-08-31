@@ -1,81 +1,68 @@
 import React from 'react';
-import { NavBarMenuButton, NavBarMenuItem } from '../NavBarMenuButtons';
+import classNames from 'classnames';
+import { NavBarBaseButtonProps, NavBarMenuButton, NavBarMenuItem } from '../NavBarMenuButtons';
 import { colors } from '../../theme';
-import styled from 'styled-components';
 import { BodyPortal } from '../BodyPortal';
+import { CSSPropertiesWithVariables } from '../../types';
 import { ChatConfiguration, getPreChatFields, useChatController, useHoursRange } from './hooks';
+import './HelpMenu.css';
 
-export const HelpMenuButton = styled(NavBarMenuButton)`
-  color: ${colors.palette.gray};
-  font-size: 1.4rem;
-`;
+export const HelpMenuButton = ({ className, style, ...props }: NavBarBaseButtonProps) => {
+  const buttonStyle: CSSPropertiesWithVariables = {
+    '--help-menu-button-color': colors.palette.gray,
+    ...style
+  };
 
-export const HelpMenuItem = styled(NavBarMenuItem)`
-  color: ${colors.palette.neutralDarker};
-  text-decoration: none;
+  return (
+    <NavBarMenuButton
+      className={classNames('help-menu-button', className)}
+      style={buttonStyle}
+      {...props}
+    />
+  );
+};
 
-  :focus-visible {
-    outline: 0;
-    background: ${colors.palette.neutralLighter};
-  }
-  :hover {
-    color: ${colors.palette.neutralDarker};
-    text-decoration: none;
-  }
-`;
+export const HelpMenuItem = React.forwardRef<
+  HTMLDivElement,
+  React.ComponentProps<typeof NavBarMenuItem>
+>(({ className, style, ...props }, ref) => {
+  const menuItemStyle: CSSPropertiesWithVariables = {
+    '--help-menu-item-color': colors.palette.neutralDarker,
+    '--help-menu-item-focus-bg': colors.palette.neutralLighter,
+    ...style
+  };
 
-const IframeWrapper = styled(BodyPortal)`
-  background-color: ${colors.palette.neutralBright};
-  position: absolute;
-  width: 100%;
-  top: 4rem;
-  left: 0;
-  bottom: 0;
-  z-index: 20;
-`;
+  return (
+    <NavBarMenuItem
+      ref={ref}
+      className={classNames('help-menu-item', className)}
+      style={menuItemStyle}
+      {...props}
+    />
+  );
+});
+HelpMenuItem.displayName = 'HelpMenuItem';
 
-const Iframe = styled.iframe`
-  border: 0;
-  width: 100%;
-  height: calc(100% - 5rem);
-`;
+const iframeWrapperStyle: CSSPropertiesWithVariables = {
+  '--help-menu-iframe-wrapper-bg': colors.palette.neutralBright,
+};
+
+const putAwayStyle: CSSPropertiesWithVariables = {
+  '--help-menu-put-away-border-color': colors.palette.pale,
+  '--help-menu-put-away-bg': colors.palette.neutralBright,
+  '--help-menu-put-away-button-bg': colors.palette.white,
+  '--help-menu-put-away-button-border-color': colors.palette.pale,
+};
 
 function PutAway({onClick, className}: {onClick: () => void; className?: string}) {
   return (
-    <div className={className}>
+    <div className={classNames('help-menu-put-away', className)} style={putAwayStyle}>
       <button type='button' onClick={onClick} aria-label='close form'>
           Back
       </button>
     </div>
   );
 }
-
-const StyledPutAway = styled(PutAway)`
-  border-top: 0.1rem solid ${colors.palette.pale};
-  width: 100%;
-  height: 5.6rem;
-  display: flex;
-  align-items: center;
-  background-color: ${colors.palette.neutralBright};
-  padding-left: 1.5rem;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  z-index: 20;
-
-  @media(min-width: 56em) {
-    padding: 0 calc(50vw - 43rem);
-  }
-
-  button {
-    height: 3rem;
-    background-color: ${colors.palette.white};
-    border: 1px solid ${colors.palette.pale};
-    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
-    width: 9rem;
-    border-radius: 0.5rem;
-  }
-`;
 
 /**
  * SVG icon representing a "new tab" indicator
@@ -162,10 +149,10 @@ export const HelpMenu: React.FC<HelpMenuProps> = ({ contactFormParams, chatConfi
       </HelpMenuButton>
 
       {showIframe && (
-        <IframeWrapper>
-          <Iframe title='Contact form' src={showIframe} />
-          <StyledPutAway onClick={() => setShowIframe(undefined)} />
-        </IframeWrapper>
+        <BodyPortal className='help-menu-iframe-wrapper' style={iframeWrapperStyle}>
+          <iframe className='help-menu-iframe' title='Contact form' src={showIframe} />
+          <PutAway onClick={() => setShowIframe(undefined)} />
+        </BodyPortal>
       )}
     </>
   );
