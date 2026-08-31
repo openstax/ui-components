@@ -1,27 +1,9 @@
-import styled, { css, ThemedStyledFunction } from 'styled-components';
 import { BodyPortal } from './BodyPortal';
 import { Toast } from './Toast';
 import { zIndex } from '../theme';
-import { ToastData } from '../types';
-import { ComponentType } from 'react';
-
-const makeStyledToastContainer = <T extends keyof JSX.IntrinsicElements | ComponentType<any>>(
-  func: ThemedStyledFunction<T, object>
-) => func`
-  ${(props: {inline: boolean}) => !props.inline && css`
-    position: fixed;
-    right: 2rem;
-  `}
-  z-index: ${zIndex.toasts};
-  display: grid;
-  justify-items: center;
-  justify-content: center;
-  gap: 1vh;
-`;
-
-const StyledToastContainer = makeStyledToastContainer(styled.div);
-
-const StyledBodyPortalToastContainer = makeStyledToastContainer(styled(BodyPortal));
+import { CSSPropertiesWithVariables, ToastData } from '../types';
+import classNames from 'classnames';
+import './ToastContainer.css';
 
 export type ToastContainerParams = {
   toasts: ToastData[];
@@ -42,15 +24,30 @@ const makeToasts = (toasts: ToastData[], inline: boolean, onDismissToast?: (id: 
       >{toast.message}</Toast>
   )
 );
+const zIndexStyle: CSSPropertiesWithVariables = {
+  '--toast-container-z-index': zIndex.toasts,
+};
 
-export const ToastContainer: ToastContainerComponent = ({ toasts, onDismissToast, inline = false, className }) => (
-  <StyledToastContainer inline={inline} aria-live='polite' className={className}>
-    {makeToasts(toasts, inline, onDismissToast)}
-  </StyledToastContainer>
-);
+export const ToastContainer: ToastContainerComponent = ({ toasts, onDismissToast, inline = false, className }) => {
+  const containerClass = classNames('toast-container', {
+    'toast-container-inline': inline,
+  }, className);
 
-export const BodyPortalToastContainer: ToastContainerComponent = ({ toasts, onDismissToast, inline = false, className }) => (
-  <StyledBodyPortalToastContainer inline={inline} aria-live='polite' slot='toast' className={className}>
-    {makeToasts(toasts, inline, onDismissToast)}
-  </StyledBodyPortalToastContainer>
-);
+  return (
+    <div className={containerClass} aria-live='polite' style={zIndexStyle}>
+      {makeToasts(toasts, inline, onDismissToast)}
+    </div>
+  );
+};
+
+export const BodyPortalToastContainer: ToastContainerComponent = ({ toasts, onDismissToast, inline = false, className }) => {
+  const containerClass = classNames('toast-container', {
+    'toast-container-inline': inline,
+  }, className);
+
+  return (
+    <BodyPortal className={containerClass} aria-live='polite' slot='toast' style={zIndexStyle}>
+      {makeToasts(toasts, inline, onDismissToast)}
+    </BodyPortal>
+  );
+};
