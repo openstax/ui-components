@@ -131,8 +131,8 @@ const describeColor = (literal: string): Color => {
   if (call) {
     const name = call[1].toLowerCase();
     const args = call[2].split(/[\s,/]+/).filter(Boolean);
-    // Anything with a var() in it is already token-based; leave it alone.
-    if (/\bvar\(/.test(call[2])) { return { hex: null, alpha: 1, key, tokenised: true }; }
+    // rgb()/rgba() can legally contain var() arguments; treat unresolvable ones as errors
+    // rather than skipping the check entirely (which would allow off-palette colours through).
     if (name === 'rgb' || name === 'rgba') { return parseRgb(args, key); }
     return { hex: null, alpha: 1, key };
   }
