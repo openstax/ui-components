@@ -6,9 +6,10 @@ exports[`Tabs component button-bar styling renders 1`] = `
     data-react-aria-hidden="true"
   />
   <div
-    class="sc-bczRLJ fzvaaJ"
+    class="tabs tabs-button-bar tabs-medium"
     data-orientation="horizontal"
     data-rac=""
+    style="--tabs-border-color: #d5d5d5; --tabs-active-border-color: #63a524; --tabs-button-selected-bg: #e5e5e5; --tabs-button-hover-bg: #f1f1f1;"
   >
     <div
       aria-label="Items"
@@ -82,9 +83,10 @@ exports[`Tabs component button-bar styling renders large size 1`] = `
     data-react-aria-hidden="true"
   />
   <div
-    class="sc-bczRLJ bgaRra"
+    class="tabs tabs-button-bar tabs-large"
     data-orientation="horizontal"
     data-rac=""
+    style="--tabs-border-color: #d5d5d5; --tabs-active-border-color: #63a524; --tabs-button-selected-bg: #e5e5e5; --tabs-button-hover-bg: #f1f1f1;"
   >
     <div
       aria-label="Items"
@@ -158,9 +160,10 @@ exports[`Tabs component button-bar styling renders small size 1`] = `
     data-react-aria-hidden="true"
   />
   <div
-    class="sc-bczRLJ jpvZEB"
+    class="tabs tabs-button-bar tabs-small"
     data-orientation="horizontal"
     data-rac=""
+    style="--tabs-border-color: #d5d5d5; --tabs-active-border-color: #63a524; --tabs-button-selected-bg: #e5e5e5; --tabs-button-hover-bg: #f1f1f1;"
   >
     <div
       aria-label="Items"
@@ -234,9 +237,10 @@ exports[`Tabs component normal styling renders 1`] = `
     data-react-aria-hidden="true"
   />
   <div
-    class="sc-bczRLJ ftqHhz"
+    class="tabs tabs-medium"
     data-orientation="horizontal"
     data-rac=""
+    style="--tabs-border-color: #d5d5d5; --tabs-active-border-color: #63a524; --tabs-button-selected-bg: #e5e5e5; --tabs-button-hover-bg: #f1f1f1;"
   >
     <div
       aria-label="Items"
@@ -310,9 +314,10 @@ exports[`Tabs component normal styling renders large size 1`] = `
     data-react-aria-hidden="true"
   />
   <div
-    class="sc-bczRLJ jtRGjg"
+    class="tabs tabs-large"
     data-orientation="horizontal"
     data-rac=""
+    style="--tabs-border-color: #d5d5d5; --tabs-active-border-color: #63a524; --tabs-button-selected-bg: #e5e5e5; --tabs-button-hover-bg: #f1f1f1;"
   >
     <div
       aria-label="Items"
@@ -386,9 +391,10 @@ exports[`Tabs component normal styling renders small size 1`] = `
     data-react-aria-hidden="true"
   />
   <div
-    class="sc-bczRLJ gkjtCC"
+    class="tabs tabs-small"
     data-orientation="horizontal"
     data-rac=""
+    style="--tabs-border-color: #d5d5d5; --tabs-active-border-color: #63a524; --tabs-button-selected-bg: #e5e5e5; --tabs-button-hover-bg: #f1f1f1;"
   >
     <div
       aria-label="Items"

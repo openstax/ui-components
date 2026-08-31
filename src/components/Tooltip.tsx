@@ -1,95 +1,90 @@
-import styled from 'styled-components';
-import { colors } from '../theme';
-import { Button, OverlayArrow, Tooltip as AriaTooltip, TooltipTrigger } from 'react-aria-components';
+import React from 'react';
+import {
+  Button,
+  ButtonProps as AriaButtonProps,
+  OverlayArrow,
+  Tooltip as AriaTooltip,
+  TooltipProps as AriaTooltipProps,
+  TooltipTrigger,
+} from 'react-aria-components';
 import { Info } from './svgs/Info';
-import {mergeProps, Placement, useTooltip} from 'react-aria';
+import { mergeProps, Placement, useTooltip } from 'react-aria';
+import { palette } from '../theme/palette';
+import { CSSPropertiesWithVariables } from '../types';
+import classNames from 'classnames';
+import './Tooltip.css';
 
-const tooltipStyles = `
-  box-shadow: 0 0.8rem 2rem rgba(0 0 0 / 0.1);
-  border-radius: 0.3rem;
-  border: 1px solid #ccc;
-  background: ${colors.palette.white};
-  color: ${colors.palette.neutralThin};
-  outline: none;
-  padding: 1rem;
-  /* fixes FF gap */
-  transform: translate3d(0, 0, 0);
-  position: absolute;
-  min-width: 24rem;
-  z-index: 1000;
+const tooltipCssVariables: CSSPropertiesWithVariables = {
+  '--tooltip-bg': palette.white,
+  '--tooltip-color': palette.neutralThin,
+  '--tooltip-border-color': '#ccc',
+};
 
-  &[data-placement=top] {
-    margin-bottom: 0.8rem;
-    --origin: translateY(0.4rem);
-  }
+// The styled-components versions of these accepted a plain className/style and merged
+// them, so the replacements narrow away the react-aria render-callback forms rather
+// than silently dropping a callback. style is widened to CSSPropertiesWithVariables so
+// callers can override the documented --tooltip-* custom properties without casting.
+type ClassNameAndStyle = {
+  className?: string;
+  style?: CSSPropertiesWithVariables;
+};
 
-  &[data-placement=bottom] {
-    margin-top: 0.8rem;
-    top: 50%;
-    --origin: translateY(-0.4rem);
-    & .react-aria-OverlayArrow svg {
-      transform: rotate(180deg);
-    }
-  }
-
-  &[data-placement=right] {
-    left: 100%;
-    margin-left: 0.8rem;
-    --origin: translateX(-0.4rem);
-    & .react-aria-OverlayArrow {
-      top: 50%;
-      svg {
-        transform: rotate(90deg);
-      }
-    }
-  }
-
-  &[data-placement=left] {
-    margin-right: 0.8rem;
-    --origin: translateX(0.4rem);
-    & .react-aria-OverlayArrow svg {
-      transform: rotate(-90deg);
-    }
-  }
-
-  & .react-aria-OverlayArrow svg {
-    display: block;
-    fill: ${colors.palette.white};
-  }
-`;
-
-export const StyledTooltip = styled(AriaTooltip)`${tooltipStyles}`;
-
-const StyledCustomTooltip = styled.div`
-  ${tooltipStyles}  
-`;
-
-export const StyledTrigger = styled(Button)`
-  border: none;
-  padding: 0;
-  margin-left: 0.4rem;
-  display: flex;
-  background-color: inherit;
-`;
-
-type TooltipProps = {
+type TooltipProps = ClassNameAndStyle & {
   placement?: Placement;
-  icon?: any;
   isOpen?: boolean;
+};
+
+// icon/ariaLabel configure the trigger button, so they are only accepted by TooltipGroup
+type TooltipGroupProps = TooltipProps & {
+  icon?: any;
   ariaLabel?: string;
 };
 
-export const Tooltip = ({children, placement, icon, ...props}: React.PropsWithChildren<TooltipProps>) => 
-  <StyledTooltip {...props} placement={placement}>
-  <OverlayArrow>
-    <svg width={8} height={8} viewBox="0 0 8 8">
-      <path d="M0 0 L4 4 L8 0" stroke="#ccc" strokeWidth="1" />
-    </svg>
-  </OverlayArrow>
-  {children}
-</StyledTooltip>;
+/**
+ * @deprecated The styles now live in the `.tooltip` class in Tooltip.css. Prefer `Tooltip`;
+ * this remains so consumers that composed the old styled-component keep working.
+ */
+export const StyledTooltip = React.forwardRef<
+  React.ElementRef<typeof AriaTooltip>,
+  Omit<AriaTooltipProps, 'className' | 'style'> & ClassNameAndStyle
+>(({className, style, ...props}, ref) => (
+  <AriaTooltip
+    ref={ref}
+    className={classNames('tooltip', className)}
+    style={{...tooltipCssVariables, ...style}}
+    {...props}
+  />
+));
+StyledTooltip.displayName = 'StyledTooltip';
 
-export const TooltipGroup = ({icon, ariaLabel, ...props}: React.PropsWithChildren<TooltipProps>) =>
+/**
+ * @deprecated The styles now live in the `.tooltip-trigger` class in Tooltip.css. Prefer
+ * `TooltipGroup`; this remains so consumers that composed the old styled-component keep working.
+ */
+export const StyledTrigger = React.forwardRef<
+  React.ElementRef<typeof Button>,
+  Omit<AriaButtonProps, 'className' | 'style'> & ClassNameAndStyle
+>(({className, style, ...props}, ref) => (
+  <Button
+    ref={ref}
+    className={classNames('tooltip-trigger', className)}
+    style={style}
+    {...props}
+  />
+));
+StyledTrigger.displayName = 'StyledTrigger';
+
+export const Tooltip = ({children, placement, className, style, ...props}: React.PropsWithChildren<TooltipProps>) =>
+  <StyledTooltip {...props} placement={placement} className={className} style={style}>
+    <OverlayArrow>
+      <svg width={8} height={8} viewBox="0 0 8 8">
+        <path d="M0 0 L4 4 L8 0" stroke="var(--tooltip-border-color, #ccc)" strokeWidth="1" />
+      </svg>
+    </OverlayArrow>
+    {children}
+  </StyledTooltip>;
+
+export const TooltipGroup = ({icon, ariaLabel, ...props}: React.PropsWithChildren<TooltipGroupProps>) =>
   <TooltipTrigger delay={0}>
     <StyledTrigger aria-label={ariaLabel || 'More information'}>
       {icon
@@ -103,14 +98,21 @@ export const TooltipGroup = ({icon, ariaLabel, ...props}: React.PropsWithChildre
 export const CustomTooltip = ({ state, ...props }: any) => {
   const { tooltipProps } = useTooltip(props, state);
 
+  // mergeProps combines className with clsx, but style is last-wins, so merge it explicitly
+  const mergedProps = mergeProps(props, tooltipProps, { className: 'tooltip' });
+
   return (
-    <StyledCustomTooltip data-placement={props.placement} {...mergeProps(props, tooltipProps)}>
+    <div
+      data-placement={props.placement}
+      {...mergedProps}
+      style={{...tooltipCssVariables, ...mergedProps.style}}
+    >
       {props.children}
       <OverlayArrow {...props}>
         <svg width={8} height={8} viewBox="0 0 8 8">
-          <path d="M0 0 L4 4 L8 0" stroke="#ccc" strokeWidth="1" />
+          <path d="M0 0 L4 4 L8 0" stroke="var(--tooltip-border-color, #ccc)" strokeWidth="1" />
         </svg>
       </OverlayArrow>
-    </StyledCustomTooltip>
+    </div>
   );
 }

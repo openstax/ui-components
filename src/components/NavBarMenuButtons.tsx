@@ -1,6 +1,7 @@
 import React from "react";
 import classNames from "classnames";
 import {
+  composeRenderProps,
   Dialog,
   DialogTrigger,
   Menu,
@@ -27,7 +28,7 @@ export const NavBarMenuItem = React.forwardRef<
   return (
     <MenuItem
       ref={ref}
-      className={classNames("navbar-menu-item", className)}
+      className={composeRenderProps(className, (resolved) => classNames("navbar-menu-item", resolved))}
       style={menuItemStyle}
       {...props}
     />
@@ -55,7 +56,7 @@ export const NavBarPopover = React.forwardRef<
   return (
     <Popover
       ref={ref}
-      className={classNames("navbar-popover", className)}
+      className={composeRenderProps(className, (resolved) => classNames("navbar-popover", resolved))}
       style={popoverStyle}
       {...props}
     />
