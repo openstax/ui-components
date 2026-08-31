@@ -12,7 +12,7 @@ exports[`Modal matches snapshot 1`] = `
     hidden=""
   />
   <div
-    class="sc-gKXOVf fbFzda"
+    class="mask"
     data-rac=""
     style="--visual-viewport-height: 768px;"
   >
@@ -31,20 +31,20 @@ exports[`Modal matches snapshot 1`] = `
         />
       </div>
       <div
-        class="sc-iBkjds mgorR"
+        class="card-wrapper"
       >
         <section
           aria-labelledby="react-aria-2"
-          class="sc-gsnTZi gQTek"
+          class="modal-card"
           data-rac=""
           role="dialog"
           tabindex="-1"
         >
           <header
-            class="sc-dkzDqf gXnWMX"
+            class="modal-header error"
           >
             <h2
-              class="sc-hKMtZM gKFAwv"
+              class="modal-heading"
               id="react-aria-2"
               slot="title"
             >
@@ -52,7 +52,7 @@ exports[`Modal matches snapshot 1`] = `
             </h2>
             <button
               aria-label="Close"
-              class="sc-bczRLJ elXiRy"
+              class="close-modal-button error"
               type="button"
             >
               <svg
@@ -86,11 +86,11 @@ exports[`Modal matches snapshot 1`] = `
             </button>
           </header>
           <div
-            class="sc-kDDrLX jaUAqV"
+            class="sc-dkzDqf iJAkzW"
             data-testid="error"
           >
             <h3
-              class="sc-jqUVSM iTXlJL"
+              class="sc-gsnTZi jDaiGk"
             >
               Uh-oh, there's been a glitch
             </h3>
@@ -103,12 +103,12 @@ exports[`Modal matches snapshot 1`] = `
             </a>
             .
             <div
-              class="sc-iqcoie hdouAN"
+              class="sc-hKMtZM bkppVE"
               data-testid="event-id"
             />
           </div>
           <div
-            class="sc-ftvSup dVGJds"
+            class="modal-footer"
           >
             <button
               class="button-base"
@@ -141,7 +141,7 @@ exports[`Modal matches snapshot when heading and children are set 1`] = `
     hidden=""
   />
   <div
-    class="sc-gKXOVf fbFzda"
+    class="mask"
     data-rac=""
     style="--visual-viewport-height: 768px;"
   >
@@ -160,20 +160,20 @@ exports[`Modal matches snapshot when heading and children are set 1`] = `
         />
       </div>
       <div
-        class="sc-iBkjds mgorR"
+        class="card-wrapper"
       >
         <section
           aria-labelledby="react-aria-4"
-          class="sc-gsnTZi gQTek"
+          class="modal-card"
           data-rac=""
           role="dialog"
           tabindex="-1"
         >
           <header
-            class="sc-dkzDqf gXnWMX"
+            class="modal-header error"
           >
             <h2
-              class="sc-hKMtZM gKFAwv"
+              class="modal-heading"
               id="react-aria-4"
               slot="title"
             >
@@ -181,7 +181,7 @@ exports[`Modal matches snapshot when heading and children are set 1`] = `
             </h2>
             <button
               aria-label="Close"
-              class="sc-bczRLJ elXiRy"
+              class="close-modal-button error"
               type="button"
             >
               <svg
@@ -215,11 +215,11 @@ exports[`Modal matches snapshot when heading and children are set 1`] = `
             </button>
           </header>
           <div
-            class="sc-kDDrLX jaUAqV"
+            class="sc-dkzDqf iJAkzW"
             data-testid="error"
           >
             <h3
-              class="sc-jqUVSM iTXlJL"
+              class="sc-gsnTZi jDaiGk"
             >
               Scores not sent
             </h3>
@@ -233,12 +233,12 @@ exports[`Modal matches snapshot when heading and children are set 1`] = `
             </a>
             .
             <div
-              class="sc-iqcoie hdouAN"
+              class="sc-hKMtZM bkppVE"
               data-testid="event-id"
             />
           </div>
           <div
-            class="sc-ftvSup dVGJds"
+            class="modal-footer"
           >
             <button
               class="button-base"

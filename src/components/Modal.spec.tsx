@@ -1,5 +1,5 @@
 import { act, render } from '@testing-library/react';
-import { Modal, ModalBody } from './Modal';
+import { Mask, Modal, ModalBody, ModalCard, ModalWrapper } from './Modal';
 import userEvent from '@testing-library/user-event';
 
 describe('Modal', () => {
@@ -27,6 +27,18 @@ describe('Modal', () => {
       </Modal>, { container: root }
     );
     expect(document.body).toMatchSnapshot();
+  });
+
+  it('composes a render-callback className on the mask', () => {
+    render(
+      <Mask className={() => 'caller-class'}>
+        <ModalWrapper>
+          <ModalCard aria-label='Dialog'>Modal Body</ModalCard>
+        </ModalWrapper>
+      </Mask>, { container: root }
+    );
+
+    expect(document.querySelector('.mask')?.className).toContain('caller-class');
   });
 
   it('calls onClose when close button is clicked', async () => {

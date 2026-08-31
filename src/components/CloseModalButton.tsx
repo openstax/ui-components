@@ -1,46 +1,25 @@
-import styled, { css } from "styled-components";
+import React from 'react';
+import classNames from 'classnames';
 import { Times } from "./svgs/Times";
-import { colors } from "../theme";
+import './CloseModalButton.css';
 
-/* eslint-disable-next-line @typescript-eslint/no-unused-vars */
-export const CloseModalButton = styled(({variant, ...props}) => (
-  <button {...props} type='button' aria-label='Close'>
-    <Times aria-hidden='true' focusable='false' />
-  </button>
-))`
-  padding: 0;
-  cursor: pointer;
-  margin-right: 0;
-  background: transparent;
-  color: ${colors.palette.neutralMedium};
-  height: 2.4rem;
-  width: 2.4rem;
-  border: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+export interface CloseModalButtonProps
+  extends Omit<React.ComponentPropsWithoutRef<'button'>, 'type' | 'aria-label'> {
+  variant?: 'default' | 'error' | 'inverted-circle';
+}
 
-  :hover {
-    color: ${colors.palette.neutralDark};
-  }
+export const CloseModalButton = React.forwardRef<HTMLButtonElement, CloseModalButtonProps>(
+  ({ variant, className, ...props }, ref) => (
+    <button
+      {...props}
+      ref={ref}
+      type='button'
+      aria-label='Close'
+      className={classNames('close-modal-button', variant !== 'default' && variant, className)}
+    >
+      <Times aria-hidden='true' focusable='false' />
+    </button>
+  )
+);
 
-  ${(props: { variant?: string }) => props.variant === 'error' && css`
-    color: ${colors.palette.darkRed};
-  `}
-
-  ${(props: { variant?: string }) => props.variant === 'inverted-circle' && css`
-    color: ${colors.palette.white};
-    border: 0.1rem solid ${colors.palette.white};
-    padding: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-
-    &:hover, &:focus {
-      color: ${colors.palette.black};
-      background-color: ${colors.palette.white};
-      border-color: ${colors.palette.white};
-    }
-  `}
-`;
+CloseModalButton.displayName = 'CloseModalButton';

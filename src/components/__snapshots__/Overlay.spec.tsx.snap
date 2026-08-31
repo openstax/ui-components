@@ -20,12 +20,12 @@ exports[`Overlay matches snapshot 1`] = `
     hidden=""
   />
   <div
-    class="sc-gKXOVf sc-papXJ fbFzda iQrgxx"
+    class="mask overlay-mask"
     data-rac=""
     style="--visual-viewport-height: 768px;"
   >
     <div
-      class="sc-kDDrLX cNjBYx"
+      class="overlay-wrapper"
       data-rac=""
     >
       <div
@@ -40,7 +40,7 @@ exports[`Overlay matches snapshot 1`] = `
       </div>
       <button
         aria-label="Close"
-        class="sc-bczRLJ sc-jqUVSM jrboUT fvgMNu"
+        class="close-modal-button inverted-circle overlay-close-button"
         type="button"
       >
         <svg
@@ -73,7 +73,7 @@ exports[`Overlay matches snapshot 1`] = `
         </svg>
       </button>
       <section
-        class="sc-iqcoie elTIlC"
+        class="overlay-body"
         data-rac=""
         role="dialog"
         tabindex="-1"

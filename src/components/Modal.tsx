@@ -1,91 +1,99 @@
-import styled, { css } from "styled-components";
-import { colors, zIndex } from "../theme";
+import classNames from "classnames";
 import { CloseModalButton } from "./CloseModalButton";
 import * as RAC from "react-aria-components";
 import React from "react";
+import './Modal.css';
 
-
-const modalPadding = 3;
-
-export const ModalCard = styled(RAC.Dialog)`
-  display: flex;
-  flex-direction: column;
-  margin: auto;
-  overflow: hidden;
-  width: 40rem;
-  background-color: white;
-  box-shadow: 0 0 2rem rgba(0, 0, 0, 0.05), 0 0 4rem rgba(0, 0, 0, 0.08);
-  color: ${colors.palette.neutralDarker};
-  font-size: 1.6rem;
-  line-height: 2.5rem;
-  outline: none;
-`;
-
-const Header = styled.header`
-  display: flex;
-  align-items: center;
-  margin-bottom: ${modalPadding * 0.5}rem;
-  padding: ${modalPadding * 0.5}rem ${modalPadding}rem;
-  background: ${colors.palette.neutralLighter};
-  border-bottom: solid 0.1rem #ddd;
-  justify-content: space-between;
-  ${(props: { variant?: string }) => props.variant === 'error' && css`
-    background: ${colors.palette.paleRed};
-    color: ${colors.palette.darkRed};
-  `}
-`;
-
-const Heading = styled(RAC.Heading)`
-  display: flex;
-  align-items: center;
-  margin: 0;
-  padding: ${modalPadding * 0.5}rem 0;
-  font-size: 1.8rem;
-`;
-
-export const ModalBodyHeading = styled.h3`
-  font-weight: 400;
-  font-size: 2.2rem;
-  margin-top: 0;
-`;
-
-export const ModalBody = styled.div`
-  font-size: 1.6rem;
-  padding: ${modalPadding}rem;
-`;
-
-export const Mask = styled(
-  (props: RAC.ModalOverlayProps & React.RefAttributes<HTMLDivElement>) => (
-    <RAC.ModalOverlay defaultOpen {...props}/>
+export const ModalCard = React.forwardRef<HTMLElement, RAC.DialogProps>(
+  ({ className, ...props }, ref) => (
+    <RAC.Dialog
+      ref={ref}
+      className={classNames('modal-card', className)}
+      {...props}
+    />
   )
-)`
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  position: fixed;
-  background-color: rgba(0, 0, 0, 0.3);
-  justify-content: center;
-  align-items: center;
-  z-index: ${zIndex.modals};
-`;
+);
+ModalCard.displayName = 'ModalCard';
+
+const Header = React.forwardRef<HTMLElement, React.HTMLAttributes<HTMLElement> & { variant?: string }>(
+  ({ className, variant, ...props }, ref) => (
+    <header
+      ref={ref}
+      className={classNames('modal-header', variant !== 'default' && variant, className)}
+      {...props}
+    />
+  )
+);
+Header.displayName = 'Header';
+
+const Heading = React.forwardRef<HTMLHeadingElement, RAC.HeadingProps>(
+  ({ className, ...props }, ref) => (
+    <RAC.Heading
+      ref={ref}
+      className={classNames('modal-heading', className)}
+      {...props}
+    />
+  )
+);
+Heading.displayName = 'Heading';
+
+export const ModalBodyHeading = React.forwardRef<HTMLHeadingElement, React.HTMLAttributes<HTMLHeadingElement>>(
+  ({ className, ...props }, ref) => (
+    <h3
+      ref={ref}
+      className={classNames('modal-body-heading', className)}
+      {...props}
+    />
+  )
+);
+ModalBodyHeading.displayName = 'ModalBodyHeading';
+
+export const ModalBody = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => (
+    <div
+      ref={ref}
+      className={classNames('modal-body', className)}
+      {...props}
+    />
+  )
+);
+ModalBody.displayName = 'ModalBody';
+
+export const Mask = React.forwardRef<HTMLDivElement, RAC.ModalOverlayProps>(
+  ({ className, ...props }, ref) => (
+    <RAC.ModalOverlay
+      ref={ref}
+      defaultOpen
+      className={RAC.composeRenderProps(className, (resolved) => classNames('mask', resolved))}
+      {...props}
+    />
+  )
+);
+Mask.displayName = 'Mask';
 
 export const ModalWrapper = RAC.Modal;
 
-const CardWrapper = styled.div`
-  z-index: 1;
-`;
+const CardWrapper = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => (
+    <div
+      ref={ref}
+      className={classNames('card-wrapper', className)}
+      {...props}
+    />
+  )
+);
+CardWrapper.displayName = 'CardWrapper';
 
-export const ModalFooter = styled.div`
-  display: flex;
-  justify-content: space-between;
-  padding: ${modalPadding}rem;
-
-  button {
-    min-width: 12rem;
-  }
-`;
+export const ModalFooter = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => (
+    <div
+      ref={ref}
+      className={classNames('modal-footer', className)}
+      {...props}
+    />
+  )
+);
+ModalFooter.displayName = 'ModalFooter';
 
 export interface ModalPropTypes {
   onModalClose: () => void;

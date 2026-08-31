@@ -20,7 +20,7 @@ exports[`Modal matches snapshot 1`] = `
     hidden=""
   />
   <div
-    class="sc-gKXOVf fbFzda"
+    class="mask"
     data-rac=""
     style="--visual-viewport-height: 768px;"
   >
@@ -39,20 +39,20 @@ exports[`Modal matches snapshot 1`] = `
         />
       </div>
       <div
-        class="sc-iBkjds mgorR"
+        class="card-wrapper"
       >
         <section
           aria-labelledby="react-aria-2"
-          class="sc-gsnTZi gQTek"
+          class="modal-card"
           data-rac=""
           role="dialog"
           tabindex="-1"
         >
           <header
-            class="sc-dkzDqf hlAehe"
+            class="modal-header"
           >
             <h2
-              class="sc-hKMtZM gKFAwv"
+              class="modal-heading"
               id="react-aria-2"
               slot="title"
             >
@@ -60,7 +60,7 @@ exports[`Modal matches snapshot 1`] = `
             </h2>
             <button
               aria-label="Close"
-              class="sc-bczRLJ esYXKz"
+              class="close-modal-button"
               type="button"
             >
               <svg
@@ -94,7 +94,7 @@ exports[`Modal matches snapshot 1`] = `
             </button>
           </header>
           <div
-            class="sc-jSMfEi cWLUhq"
+            class="modal-body"
           >
             Modal Body
           </div>
