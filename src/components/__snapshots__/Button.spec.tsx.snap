@@ -99,12 +99,6 @@ exports[`Button renders as a tag variant 1`] = `
 exports[`Button renders button that looks like a link 1`] = `
 <button
   className="button-link"
-  style={
-    Object {
-      "--link-color": "#026AA1",
-      "--link-hover-color": "#005481",
-    }
-  }
 >
   Click Me
 </button>

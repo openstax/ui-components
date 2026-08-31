@@ -51,6 +51,72 @@ npm run lint       # Check code rules
 npm run dist       # Build distribution files
 ```
 
+## Styling
+
+Components are styled with plain CSS in a sibling `.css` file, imported for side effects.
+
+### Theme tokens
+
+Theme values are defined once, in JavaScript, and projected into CSS custom properties by
+`src/theme/theme.css`. **Never write a theme value as a literal in a component stylesheet** —
+reference the token instead:
+
+```css
+/* no */
+.thing { border-color: #d5d5d5; }
+
+/* yes */
+.thing { border-color: var(--ox-color-pale); }
+```
+
+Tokens are `--ox-`-prefixed, so they will not collide with a consuming app's own variables.
+Colour tokens are the kebab-case form of the `src/theme/palette.ts` key
+(`palette.neutralLighter` → `--ox-color-neutral-lighter`); there are also `--ox-color-link`,
+`--ox-color-link-hover`, `--ox-z-index-*` and `--ox-padding-navbar-*`.
+
+Any component whose CSS uses a token must import the token file alongside its own stylesheet:
+
+```ts
+import './MyComponent.css';
+import '../theme/theme.css';
+```
+
+Consumers need do nothing — bundlers deduplicate the import, and `sideEffects` in
+`package.json` keeps it from being tree-shaken.
+
+### Component override hooks and when to bind in JS
+
+A component may expose its own `--component-*` custom property so consumers can restyle it.
+Declare the **default in the stylesheet** with the token as the fallback, and do not bind it
+from JavaScript:
+
+```css
+.tabs [role="tab"] { border-color: var(--tabs-active-border-color, var(--ox-color-dark-green)); }
+```
+
+Bind a custom property from JavaScript only when its value genuinely varies at runtime — a
+variant lookup, a numeric prop, a disabled state. A static colour pushed through an inline
+style is duplication with extra steps, and it wins over the cascade in ways callers do not
+expect.
+
+Widen the component's `style` prop to `CSSPropertiesWithVariables` (from `src/types`) so
+callers can set these without a cast.
+
+### What CI enforces
+
+`src/theme/tokens.spec.ts` fails the build if:
+
+- `theme.css` and the JS theme disagree on any value, or either has a token the other lacks
+- a component stylesheet writes a colour literal that duplicates a theme value
+- a component stylesheet introduces a colour that is not a theme value and not in the
+  `KNOWN_OFF_PALETTE` allowlist
+
+Adding a genuinely new colour is therefore a deliberate act: put it in `palette.ts` if it is
+part of the design, or in the allowlist with a reason if it is a one-off we are keeping.
+
+Breakpoints are the known gap — `@media (min-width: var(--x))` is not valid CSS, so
+breakpoint values are still repeated in media queries and are not covered by the tests.
+
 ## Testing Across Projects
 
 To test changes before tagging:

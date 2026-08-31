@@ -4,7 +4,7 @@
   overscroll-behavior: contain;
   display: flex;
   flex-direction: row;
-  border: 0.1rem solid var(--button-bar-border-color, #d5d5d5);
+  border: 0.1rem solid var(--button-bar-border-color, var(--ox-color-pale));
   border-radius: 0.5rem;
 }
 
@@ -17,8 +17,8 @@
   outline-offset: -0.1rem;
   white-space: nowrap;
   padding: 0 1.6rem;
-  background: #fff;
-  border-right: 0.1rem solid var(--button-bar-border-color, #d5d5d5);
+  background: var(--ox-color-white);
+  border-right: 0.1rem solid var(--button-bar-border-color, var(--ox-color-pale));
 }
 
 .button-bar > *:hover {
@@ -59,12 +59,12 @@
 }
 
 .button-bar > *[data-selected=true] {
-  background: var(--button-bar-selected-bg, #e5e5e5);
-  box-shadow: inset 0 0 0 0.1rem var(--button-bar-border-color, #d5d5d5);
+  background: var(--button-bar-selected-bg, var(--ox-color-neutral-light));
+  box-shadow: inset 0 0 0 0.1rem var(--button-bar-border-color, var(--ox-color-pale));
 }
 
 .button-bar > *:hover:not([data-selected=true]) {
-  background: var(--button-bar-hover-bg, #f1f1f1);
+  background: var(--button-bar-hover-bg, var(--ox-color-neutral-lighter));
 }
 
 @media (forced-colors: active) {

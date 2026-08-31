@@ -10,36 +10,25 @@ import {
   Popover,
   PopoverProps,
 } from "react-aria-components";
-import { colors } from "../theme";
 import { NavBarButton, NavBarButtonProps } from "./NavBarButton";
-import { CSSPropertiesWithVariables } from "../types";
 import "./NavBarMenuButtons.css";
+import "../theme/theme.css";
 
 export const NavBarMenuItem = React.forwardRef<
   HTMLDivElement,
   React.ComponentProps<typeof MenuItem>
->(({ className, style, ...props }, ref) => {
-  // composeRenderProps normalises the object and render-callback forms of style so a
-  // caller-supplied callback is merged rather than dropped. The caller still spreads last
-  // and can override the CSS variables set here.
-  const menuItemStyle = composeRenderProps(
-    style,
-    (resolvedStyle): CSSPropertiesWithVariables => ({
-      '--navbar-menu-item-hover-bg': colors.palette.neutralLighter,
-      '--navbar-menu-item-border-color': colors.palette.neutralBright,
-      ...resolvedStyle
-    })
-  );
-
-  return (
-    <MenuItem
-      ref={ref}
-      className={composeRenderProps(className, (resolved) => classNames("navbar-menu-item", resolved))}
-      style={menuItemStyle}
-      {...props}
-    />
-  );
-});
+>(({ className, ...props }, ref) => (
+  // style is deliberately not destructured: with the theme defaults moved into
+  // NavBarMenuButtons.css there is nothing left to merge it with, so it passes straight
+  // through in ...props and react-aria handles both the object and render-callback forms.
+  // That is why this needs no composeRenderProps for style (cf. CORE-2710) — the bug that
+  // one guards against was us overwriting the caller's style, which we no longer do.
+  <MenuItem
+    ref={ref}
+    className={composeRenderProps(className, (resolved) => classNames("navbar-menu-item", resolved))}
+    {...props}
+  />
+));
 NavBarMenuItem.displayName = "NavBarMenuItem";
 
 export const PopoverContainer = React.forwardRef<
@@ -53,24 +42,14 @@ PopoverContainer.displayName = "PopoverContainer";
 export const NavBarPopover = React.forwardRef<
   HTMLDivElement,
   PopoverProps
->(({ className, style, ...props }, ref) => {
-  const popoverStyle = composeRenderProps(
-    style,
-    (resolvedStyle): CSSPropertiesWithVariables => ({
-      '--navbar-popover-border-color': colors.palette.darkGreen,
-      ...resolvedStyle
-    })
-  );
-
-  return (
-    <Popover
-      ref={ref}
-      className={composeRenderProps(className, (resolved) => classNames("navbar-popover", resolved))}
-      style={popoverStyle}
-      {...props}
-    />
-  );
-});
+>(({ className, ...props }, ref) => (
+  // style passes through in ...props — see the note on NavBarMenuItem above.
+  <Popover
+    ref={ref}
+    className={composeRenderProps(className, (resolved) => classNames("navbar-popover", resolved))}
+    {...props}
+  />
+));
 NavBarPopover.displayName = "NavBarPopover";
 
 export type NavBarBaseButtonProps = React.PropsWithChildren<{
