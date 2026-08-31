@@ -16,7 +16,7 @@ export const ButtonBar = ({
   size = "medium",
   children,
   className,
-  style: customStyle,
+  style,
   ...restProps
 }: ButtonBarProps) => {
   const buttonBarClass = classNames('button-bar', {
@@ -26,7 +26,7 @@ export const ButtonBar = ({
   }, className);
 
   return (
-    <div className={buttonBarClass} style={customStyle} {...restProps}>
+    <div className={buttonBarClass} style={style} {...restProps}>
       {children}
     </div>
   );
