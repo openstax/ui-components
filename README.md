@@ -58,8 +58,15 @@ Components are styled with plain CSS in a sibling `.css` file, imported for side
 ### Theme tokens
 
 Theme values are defined once, in JavaScript, and projected into CSS custom properties by
-`src/theme/theme.css`. **Never write a theme value as a literal in a component stylesheet** —
-reference the token instead:
+`src/theme/theme.css`. That file is **generated** from `src/theme/palette.ts` and
+`src/theme.ts` — never edit it by hand. Change the JavaScript and run:
+
+```
+npm run generate:theme-css
+```
+
+**Never write a theme value as a literal in a component stylesheet** — reference the token
+instead:
 
 ```css
 /* no */
@@ -106,10 +113,21 @@ callers can set these without a cast.
 
 `src/theme/tokens.spec.ts` fails the build if:
 
-- `theme.css` and the JS theme disagree on any value, or either has a token the other lacks
+- the committed `theme.css` is not what the generator produces from the JS theme
 - a component stylesheet writes a colour literal that duplicates a theme value
 - a component stylesheet introduces a colour that is not a theme value and not in the
   `KNOWN_OFF_PALETTE` allowlist
+- a component stylesheet reads an `--ox-*` token that does not exist
+
+The colour check parses declarations, so it covers every syntax a colour can be written in —
+hex, `rgb()`/`hsl()`/`oklch()`/`color()`, and bare named colours wherever they appear,
+including inside shorthands and gradient stops. Functions that merely *contain* colours
+(`var()`, `color-mix()`, the gradients) are descended into rather than treated as literals,
+so building a value out of tokens stays clean. A translucent colour is accepted when its
+opaque channels are a theme value — `rgba(0, 0, 0, 0.2)` is black at 20% and there is no
+token form for it — which still refuses a new hue smuggled in through `rgba()`.
+
+The check has its own tests, so the guarantee is a tested one rather than an asserted one.
 
 Adding a genuinely new colour is therefore a deliberate act: put it in `palette.ts` if it is
 part of the design, or in the allowlist with a reason if it is a one-off we are keeping.
