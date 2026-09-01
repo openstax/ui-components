@@ -353,7 +353,7 @@ describe('UserIcon', () => {
   });
 });
 
-describe('ProfileMenu style composition', () => {
+describe('ProfileMenu style passthrough', () => {
   beforeAll(() => {
     global.CSS = {
       supports: () => true,
@@ -361,6 +361,9 @@ describe('ProfileMenu style composition', () => {
     } as any;
   });
 
+  // These components no longer set --profile-menu-* inline; those are defaults in
+  // ProfileMenu.css, guarded by src/theme/tokens.spec.ts. What matters here is that the
+  // caller's style reaches the element in both forms, and that the override hook works.
   const renderButton = (style: ProfileMenuButtonProps['style']) => {
     render(<ProfileMenuButton style={style}>JD</ProfileMenuButton>);
     return document.querySelector('.profile-menu-button') as HTMLElement;
@@ -376,45 +379,46 @@ describe('ProfileMenu style composition', () => {
   };
 
   describe('ProfileMenuButton', () => {
-    it('merges a render-callback style', () => {
+    it('passes a render-callback style through', () => {
       const button = renderButton(() => ({ color: 'rgb(255, 0, 0)' }));
 
       expect(button.style.color).toBe('rgb(255, 0, 0)');
-      expect(button.style.getPropertyValue('--profile-menu-button-bg')).toBeTruthy();
     });
 
-    it('lets a render-callback style override the wrapper variables', () => {
-      const button = renderButton(() => ({
-        '--profile-menu-button-bg': 'rebeccapurple'
-      }) as CSSPropertiesWithVariables);
+    it('passes an object style through', () => {
+      const button = renderButton({ color: 'rgb(0, 0, 255)' });
 
-      expect(button.style.getPropertyValue('--profile-menu-button-bg')).toBe('rebeccapurple');
+      expect(button.style.color).toBe('rgb(0, 0, 255)');
     });
 
-    it('keeps merging an object style, caller last', () => {
+    it('lets the caller override the CSS variables', () => {
       const button = renderButton({
-        color: 'rgb(0, 0, 255)',
         '--profile-menu-button-bg': 'rebeccapurple'
       } as CSSPropertiesWithVariables);
 
-      expect(button.style.color).toBe('rgb(0, 0, 255)');
       expect(button.style.getPropertyValue('--profile-menu-button-bg')).toBe('rebeccapurple');
-      expect(button.style.getPropertyValue('--profile-menu-button-color')).toBeTruthy();
     });
   });
 
-  // No render-callback cases here: ProfileMenuItem passes style to NavBarMenuItem, which
-  // spreads it, so the callback form cannot reach the DOM until CORE-2710 (#137) is on main.
   describe('ProfileMenuItem', () => {
-    it('merges an object style, caller last', () => {
+    it('passes a render-callback style through', () => {
+      const item = renderMenuItem(() => ({ color: 'rgb(255, 0, 0)' }));
+
+      expect(item.style.color).toBe('rgb(255, 0, 0)');
+    });
+
+    it('passes an object style through', () => {
+      const item = renderMenuItem({ color: 'rgb(0, 0, 255)' });
+
+      expect(item.style.color).toBe('rgb(0, 0, 255)');
+    });
+
+    it('lets the caller override the CSS variables', () => {
       const item = renderMenuItem({
-        color: 'rgb(0, 0, 255)',
         '--profile-menu-item-color': 'rebeccapurple'
       } as CSSPropertiesWithVariables);
 
-      expect(item.style.color).toBe('rgb(0, 0, 255)');
       expect(item.style.getPropertyValue('--profile-menu-item-color')).toBe('rebeccapurple');
-      expect(item.style.getPropertyValue('--navbar-menu-item-hover-bg')).toBeTruthy();
     });
   });
 });
