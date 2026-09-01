@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { Menu } from 'react-aria-components';
-import { ProfileMenu, ProfileMenuButton, ProfileMenuItem, UserIcon } from '.';
+import { Menu, MenuTrigger } from 'react-aria-components';
+import { ProfileMenu, ProfileMenuButton, ProfileMenuItem, ProfileMenuPopover, UserIcon } from '.';
 import type { CSSPropertiesWithVariables } from '../../types';
 
 type ProfileMenuButtonProps = React.ComponentProps<typeof ProfileMenuButton>;
@@ -416,5 +416,62 @@ describe('ProfileMenu style composition', () => {
       expect(item.style.getPropertyValue('--profile-menu-item-color')).toBe('rebeccapurple');
       expect(item.style.getPropertyValue('--navbar-menu-item-hover-bg')).toBeTruthy();
     });
+  });
+});
+
+describe('ProfileMenu className composition', () => {
+  beforeAll(() => {
+    global.CSS = {
+      supports: () => true,
+      escape: jest.fn(),
+    } as any;
+  });
+
+  const renderOpenMenu = (
+    popoverClassName: React.ComponentProps<typeof ProfileMenuPopover>['className']
+  ) => {
+    render(
+      <MenuTrigger defaultOpen>
+        <ProfileMenuButton className={() => 'caller-button'}>JD</ProfileMenuButton>
+        <ProfileMenuPopover className={popoverClassName}>
+          <Menu aria-label='Test menu'>
+            <ProfileMenuItem className={() => 'caller-item'}>Profile</ProfileMenuItem>
+          </Menu>
+        </ProfileMenuPopover>
+      </MenuTrigger>
+    );
+  };
+
+  it('composes a render-callback className on each wrapper', () => {
+    renderOpenMenu(() => 'caller-popover');
+
+    const button = document.querySelector('.profile-menu-button');
+    expect(button?.className).toContain('profile-menu-button');
+    expect(button?.className).toContain('caller-button');
+
+    const popover = document.querySelector('.profile-menu-popover');
+    expect(popover?.className).toContain('navbar-popover');
+    expect(popover?.className).toContain('caller-popover');
+
+    const item = document.querySelector('.profile-menu-item');
+    expect(item?.className).toContain('navbar-menu-item');
+    expect(item?.className).toContain('caller-item');
+  });
+
+  it('keeps composing a string className', () => {
+    render(
+      <MenuTrigger defaultOpen>
+        <ProfileMenuButton className='caller-button'>JD</ProfileMenuButton>
+        <ProfileMenuPopover className='caller-popover'>
+          <Menu aria-label='Test menu'>
+            <ProfileMenuItem className='caller-item'>Profile</ProfileMenuItem>
+          </Menu>
+        </ProfileMenuPopover>
+      </MenuTrigger>
+    );
+
+    expect(document.querySelector('.profile-menu-button')?.className).toContain('caller-button');
+    expect(document.querySelector('.profile-menu-popover')?.className).toContain('caller-popover');
+    expect(document.querySelector('.profile-menu-item')?.className).toContain('caller-item');
   });
 });

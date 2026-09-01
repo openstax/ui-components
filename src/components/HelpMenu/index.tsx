@@ -22,7 +22,7 @@ export const HelpMenuButton = ({ className, style, ...props }: NavBarBaseButtonP
 
   return (
     <NavBarMenuButton
-      className={classNames('help-menu-button', className)}
+      className={composeRenderProps(className, (resolved) => classNames('help-menu-button', resolved))}
       style={buttonStyle}
       {...props}
     />
@@ -45,7 +45,7 @@ export const HelpMenuItem = React.forwardRef<
   return (
     <NavBarMenuItem
       ref={ref}
-      className={classNames('help-menu-item', className)}
+      className={composeRenderProps(className, (resolved) => classNames('help-menu-item', resolved))}
       style={menuItemStyle}
       {...props}
     />

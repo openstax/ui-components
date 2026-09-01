@@ -26,7 +26,7 @@ export const ProfileMenuButton = React.forwardRef<
   return (
     <Button
       ref={ref}
-      className={classNames('profile-menu-button', className)}
+      className={composeRenderProps(className, (resolved) => classNames('profile-menu-button', resolved))}
       style={buttonStyle}
       {...props}
     />
@@ -40,7 +40,7 @@ export const ProfileMenuPopover = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <NavBarPopover
     ref={ref}
-    className={classNames('profile-menu-popover', className)}
+    className={composeRenderProps(className, (resolved) => classNames('profile-menu-popover', resolved))}
     {...props}
   />
 ));
@@ -62,7 +62,7 @@ export const ProfileMenuItem = React.forwardRef<
   return (
     <NavBarMenuItem
       ref={ref}
-      className={classNames('profile-menu-item', className)}
+      className={composeRenderProps(className, (resolved) => classNames('profile-menu-item', resolved))}
       style={menuItemStyle}
       {...props}
     />
