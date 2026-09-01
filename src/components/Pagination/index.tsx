@@ -1,16 +1,10 @@
 import React from 'react';
 import classNames from 'classnames';
-import { palette } from "../../theme/palette";
 import { CSSPropertiesWithVariables } from '../../types';
 import { usePaginationRanges } from './hooks';
 import { range } from './utils';
 import './Pagination.css';
-
-// Bound on the root; every rule that uses them targets a descendant.
-const paginationStyle: CSSPropertiesWithVariables = {
-  '--pagination-border-color': palette.neutralLight,
-  '--pagination-active-background': palette.neutralLighter,
-};
+import '../../theme/theme.css';
 
 export const LinkForPage = ({ page, current, href, onClick, className }: {
   page: number;
@@ -104,7 +98,7 @@ const PaginationPages = ({
     });
 
   return (
-    <div className={classNames('pagination', className)} style={{ ...paginationStyle, ...style }}>
+    <div className={classNames('pagination', className)} style={style}>
       <nav aria-label="pagination links">
         <ul>
           <PageRangeComponent

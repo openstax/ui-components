@@ -16,7 +16,6 @@ import {
 } from "./SidebarNav";
 import "@testing-library/jest-dom";
 import { BodyPortalSlotsContext } from "./BodyPortalSlotsContext";
-import { colors, zIndex } from "../theme";
 
 jest.useFakeTimers();
 
@@ -110,27 +109,15 @@ describe("SidebarNav", () => {
     expect(toggle).toHaveAttribute("aria-expanded", "true");
   });
 
-  it("binds the theme values it needs as custom properties", () => {
-    render(<SidebarNav>Content</SidebarNav>);
-
-    const { style } = screen.getByRole("navigation");
-    expect(style.getPropertyValue("--sidebar-nav-background")).toBe(
-      colors.palette.neutralBright,
-    );
-    expect(style.getPropertyValue("--sidebar-nav-color")).toBe(
-      colors.palette.neutralThin,
-    );
-    expect(style.getPropertyValue("--sidebar-nav-z-index")).toBe(
-      String(zIndex.navbar - 1),
-    );
-    expect(style.getPropertyValue("--sidebar-nav-open-z-index")).toBe(
-      String(zIndex.sidebar),
-    );
-  });
-
+  // The theme defaults now come from src/theme/theme.css and are checked centrally by
+  // src/theme/tokens.spec.ts; what is still this component's business is that consumer
+  // className and style -- including the documented --sidebar-nav-* hooks -- get through.
   it("keeps consumer className and style alongside its own", () => {
     render(
-      <SidebarNav className="consumer-class" style={{ top: "4rem" }}>
+      <SidebarNav
+        className="consumer-class"
+        style={{ top: "4rem", "--sidebar-nav-background": "rebeccapurple" }}
+      >
         Content
       </SidebarNav>,
     );
@@ -139,7 +126,7 @@ describe("SidebarNav", () => {
     expect(nav).toHaveClass("sidebar-nav", "consumer-class");
     expect(nav.style.top).toBe("4rem");
     expect(nav.style.getPropertyValue("--sidebar-nav-background")).toBe(
-      colors.palette.neutralBright,
+      "rebeccapurple",
     );
   });
 

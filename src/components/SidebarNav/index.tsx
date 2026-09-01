@@ -4,7 +4,6 @@ import { LeftArrow } from "../svgs/LeftArrow";
 import { RightArrow } from "../svgs/RightArrow";
 import { FocusScope } from "react-aria";
 import { BodyPortal } from "../BodyPortal";
-import { colors, zIndex } from "../../theme";
 import { CSSPropertiesWithVariables } from "../../types";
 
 import { collapsedWidth, expandedWidth } from "./constants";
@@ -17,6 +16,7 @@ import {
   useNavCollapseHandler,
 } from "./hooks";
 import "./SidebarNav.css";
+import "../../theme/theme.css";
 
 const NavHeader = React.forwardRef<HTMLElement, React.HTMLAttributes<HTMLElement>>(
   ({ className, ...props }, ref) => (
@@ -62,15 +62,6 @@ const ToggleButton = React.forwardRef<
   />
 ));
 ToggleButton.displayName = "ToggleButton";
-
-// Bound on the nav element itself. The backdrop rules in SidebarNav.css target
-// siblings of the nav, which can't inherit these, so those values stay literal.
-const navVariables: CSSPropertiesWithVariables = {
-  "--sidebar-nav-background": colors.palette.neutralBright,
-  "--sidebar-nav-color": colors.palette.neutralThin,
-  "--sidebar-nav-z-index": zIndex.navbar - 1,
-  "--sidebar-nav-open-z-index": zIndex.sidebar,
-};
 
 type FunctionRender = (_: {
   navIsCollapsed: boolean;
@@ -210,7 +201,7 @@ export const SidebarNav = ({
       ref={sidebarNavRef}
       data-testid="sidebarnav"
       aria-label={ariaLabel}
-      style={{ ...navVariables, ...style }}
+      style={style}
       className={classNames("sidebar-nav", className, {
         collapsed: navIsCollapsed,
         mobile: isMobile,
@@ -260,7 +251,7 @@ export const BodyPortalSidebarNav = ({
       slot="sidebar"
       data-testid="sidebarnav"
       ariaLabel={ariaLabel}
-      style={{ ...navVariables, ...style }}
+      style={style}
       className={classNames("sidebar-nav", className, {
         collapsed: navIsCollapsed,
         mobile: isMobile,
