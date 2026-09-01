@@ -333,7 +333,7 @@ describe('HelpMenu', () => {
   });
 });
 
-describe('HelpMenu style composition', () => {
+describe('HelpMenu style passthrough', () => {
   beforeAll(() => {
     global.CSS = {
       supports: () => true,
@@ -341,6 +341,8 @@ describe('HelpMenu style composition', () => {
     } as any;
   });
 
+  // The components no longer set --help-menu-* inline; those are defaults in HelpMenu.css,
+  // guarded by src/theme/tokens.spec.ts. See the note in ProfileMenu's spec.
   const renderButton = (style: HelpMenuButtonProps['style']) => {
     render(<HelpMenuButton label='Help' style={style} />);
     return document.querySelector('.help-menu-button') as HTMLElement;
@@ -356,44 +358,46 @@ describe('HelpMenu style composition', () => {
   };
 
   describe('HelpMenuButton', () => {
-    it('merges a render-callback style', () => {
+    it('passes a render-callback style through', () => {
       const button = renderButton(() => ({ color: 'rgb(255, 0, 0)' }));
 
       expect(button.style.color).toBe('rgb(255, 0, 0)');
-      expect(button.style.getPropertyValue('--help-menu-button-color')).toBeTruthy();
     });
 
-    it('lets a render-callback style override the wrapper variables', () => {
-      const button = renderButton(() => ({
-        '--help-menu-button-color': 'rebeccapurple'
-      }) as CSSPropertiesWithVariables);
+    it('passes an object style through', () => {
+      const button = renderButton({ color: 'rgb(0, 0, 255)' });
 
-      expect(button.style.getPropertyValue('--help-menu-button-color')).toBe('rebeccapurple');
+      expect(button.style.color).toBe('rgb(0, 0, 255)');
     });
 
-    it('keeps merging an object style, caller last', () => {
+    it('lets the caller override the CSS variables', () => {
       const button = renderButton({
-        color: 'rgb(0, 0, 255)',
         '--help-menu-button-color': 'rebeccapurple'
       } as CSSPropertiesWithVariables);
 
-      expect(button.style.color).toBe('rgb(0, 0, 255)');
       expect(button.style.getPropertyValue('--help-menu-button-color')).toBe('rebeccapurple');
     });
   });
 
-  // No render-callback cases here: HelpMenuItem passes style to NavBarMenuItem, which
-  // spreads it, so the callback form cannot reach the DOM until CORE-2710 (#137) is on main.
   describe('HelpMenuItem', () => {
-    it('merges an object style, caller last', () => {
-      const item = renderMenuItem({
-        color: 'rgb(0, 0, 255)',
-        '--help-menu-item-color': 'rebeccapurple'
-      } as CSSPropertiesWithVariables);
+    it('passes a render-callback style through', () => {
+      const item = renderMenuItem(() => ({ color: 'rgb(255, 0, 0)' }));
+
+      expect(item.style.color).toBe('rgb(255, 0, 0)');
+    });
+
+    it('passes an object style through', () => {
+      const item = renderMenuItem({ color: 'rgb(0, 0, 255)' });
 
       expect(item.style.color).toBe('rgb(0, 0, 255)');
-      expect(item.style.getPropertyValue('--help-menu-item-color')).toBe('rebeccapurple');
-      expect(item.style.getPropertyValue('--navbar-menu-item-hover-bg')).toBeTruthy();
+    });
+
+    it('lets the caller override the CSS variables', () => {
+      const item = renderMenuItem({
+        '--help-menu-item-focus-bg': 'rebeccapurple'
+      } as CSSPropertiesWithVariables);
+
+      expect(item.style.getPropertyValue('--help-menu-item-focus-bg')).toBe('rebeccapurple');
     });
   });
 });

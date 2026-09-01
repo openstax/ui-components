@@ -1,37 +1,24 @@
 import React from 'react';
 import classNames from 'classnames';
 import { Button, ButtonProps, composeRenderProps, Menu, MenuTrigger, PopoverProps, Key } from 'react-aria-components';
-import { colors } from '../../theme';
 import { NavBarPopover, NavBarMenuItem } from '../NavBarMenuButtons';
-import { CSSPropertiesWithVariables } from '../../types';
 import { UserIcon } from './UserIcon';
 import './ProfileMenu.css';
+import '../../theme/theme.css';
 
 export const ProfileMenuButton = React.forwardRef<
   React.ElementRef<typeof Button>,
   ButtonProps
->(({ className, style, ...props }, ref) => {
-  // composeRenderProps normalises the object and render-callback forms of style so a
-  // caller-supplied callback is merged rather than dropped. The caller still spreads last
-  // and can override the CSS variables set here.
-  const buttonStyle = composeRenderProps(
-    style,
-    (resolvedStyle): CSSPropertiesWithVariables => ({
-      '--profile-menu-button-color': colors.palette.white,
-      '--profile-menu-button-bg': colors.palette.darkTeal,
-      ...resolvedStyle
-    })
-  );
-
-  return (
-    <Button
-      ref={ref}
-      className={composeRenderProps(className, (resolved) => classNames('profile-menu-button', resolved))}
-      style={buttonStyle}
-      {...props}
-    />
-  );
-});
+>(({ className, ...props }, ref) => (
+  // style is deliberately not destructured: with the theme defaults moved into
+  // ProfileMenu.css there is nothing left to merge it with, so it passes straight through
+  // in ...props and react-aria handles both the object and render-callback forms.
+  <Button
+    ref={ref}
+    className={composeRenderProps(className, (resolved) => classNames('profile-menu-button', resolved))}
+    {...props}
+  />
+));
 ProfileMenuButton.displayName = 'ProfileMenuButton';
 
 export const ProfileMenuPopover = React.forwardRef<
@@ -49,25 +36,14 @@ ProfileMenuPopover.displayName = 'ProfileMenuPopover';
 export const ProfileMenuItem = React.forwardRef<
   HTMLDivElement,
   React.ComponentProps<typeof NavBarMenuItem>
->(({ className, style, ...props }, ref) => {
-  // Deliberately a spread rather than composeRenderProps: this wrapper hands style to
-  // NavBarMenuItem, which spreads it too, so a composed function would be dropped there
-  // along with this variable. Both need composing together once CORE-2710 (#137) is on
-  // main; a render-callback style is discarded here until then, as it is on main today.
-  const menuItemStyle: CSSPropertiesWithVariables = {
-    '--profile-menu-item-color': colors.palette.neutralDarker,
-    ...style
-  };
-
-  return (
-    <NavBarMenuItem
-      ref={ref}
-      className={composeRenderProps(className, (resolved) => classNames('profile-menu-item', resolved))}
-      style={menuItemStyle}
-      {...props}
-    />
-  );
-});
+>(({ className, ...props }, ref) => (
+  // style passes through in ...props — see the note on ProfileMenuButton above.
+  <NavBarMenuItem
+    ref={ref}
+    className={composeRenderProps(className, (resolved) => classNames('profile-menu-item', resolved))}
+    {...props}
+  />
+));
 ProfileMenuItem.displayName = 'ProfileMenuItem';
 
 function getInitials(

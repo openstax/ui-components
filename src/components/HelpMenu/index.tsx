@@ -4,69 +4,36 @@ import { composeRenderProps } from 'react-aria-components';
 import { NavBarBaseButtonProps, NavBarMenuButton, NavBarMenuItem } from '../NavBarMenuButtons';
 import { colors } from '../../theme';
 import { BodyPortal } from '../BodyPortal';
-import { CSSPropertiesWithVariables } from '../../types';
 import { ChatConfiguration, getPreChatFields, useChatController, useHoursRange } from './hooks';
 import './HelpMenu.css';
+import '../../theme/theme.css';
 
-export const HelpMenuButton = ({ className, style, ...props }: NavBarBaseButtonProps) => {
-  // composeRenderProps normalises the object and render-callback forms of style so a
-  // caller-supplied callback is merged rather than dropped. The caller still spreads last
-  // and can override the CSS variables set here.
-  const buttonStyle = composeRenderProps(
-    style,
-    (resolvedStyle): CSSPropertiesWithVariables => ({
-      '--help-menu-button-color': colors.palette.gray,
-      ...resolvedStyle
-    })
-  );
-
-  return (
-    <NavBarMenuButton
-      className={composeRenderProps(className, (resolved) => classNames('help-menu-button', resolved))}
-      style={buttonStyle}
-      {...props}
-    />
-  );
-};
+export const HelpMenuButton = ({ className, ...props }: NavBarBaseButtonProps) => (
+  // style is deliberately not destructured: with the theme defaults moved into
+  // HelpMenu.css there is nothing left to merge it with, so it passes straight through in
+  // ...props and react-aria handles both the object and render-callback forms.
+  <NavBarMenuButton
+    className={composeRenderProps(className, (resolved) => classNames('help-menu-button', resolved))}
+    {...props}
+  />
+);
 
 export const HelpMenuItem = React.forwardRef<
   HTMLDivElement,
   React.ComponentProps<typeof NavBarMenuItem>
->(({ className, style, ...props }, ref) => {
-  // Deliberately a spread rather than composeRenderProps: see the note on
-  // ProfileMenuItem. NavBarMenuItem spreads style as well, so composing only here would
-  // lose these variables; both need composing together once CORE-2710 (#137) is on main.
-  const menuItemStyle: CSSPropertiesWithVariables = {
-    '--help-menu-item-color': colors.palette.neutralDarker,
-    '--help-menu-item-focus-bg': colors.palette.neutralLighter,
-    ...style
-  };
-
-  return (
-    <NavBarMenuItem
-      ref={ref}
-      className={composeRenderProps(className, (resolved) => classNames('help-menu-item', resolved))}
-      style={menuItemStyle}
-      {...props}
-    />
-  );
-});
+>(({ className, ...props }, ref) => (
+  // style passes through in ...props — see the note on HelpMenuButton above.
+  <NavBarMenuItem
+    ref={ref}
+    className={composeRenderProps(className, (resolved) => classNames('help-menu-item', resolved))}
+    {...props}
+  />
+));
 HelpMenuItem.displayName = 'HelpMenuItem';
-
-const iframeWrapperStyle: CSSPropertiesWithVariables = {
-  '--help-menu-iframe-wrapper-bg': colors.palette.neutralBright,
-};
-
-const putAwayStyle: CSSPropertiesWithVariables = {
-  '--help-menu-put-away-border-color': colors.palette.pale,
-  '--help-menu-put-away-bg': colors.palette.neutralBright,
-  '--help-menu-put-away-button-bg': colors.palette.white,
-  '--help-menu-put-away-button-border-color': colors.palette.pale,
-};
 
 function PutAway({onClick, className}: {onClick: () => void; className?: string}) {
   return (
-    <div className={classNames('help-menu-put-away', className)} style={putAwayStyle}>
+    <div className={classNames('help-menu-put-away', className)}>
       <button type='button' onClick={onClick} aria-label='close form'>
           Back
       </button>
@@ -159,7 +126,7 @@ export const HelpMenu: React.FC<HelpMenuProps> = ({ contactFormParams, chatConfi
       </HelpMenuButton>
 
       {showIframe && (
-        <BodyPortal className='help-menu-iframe-wrapper' style={iframeWrapperStyle}>
+        <BodyPortal className='help-menu-iframe-wrapper'>
           <iframe className='help-menu-iframe' title='Contact form' src={showIframe} />
           <PutAway onClick={() => setShowIframe(undefined)} />
         </BodyPortal>

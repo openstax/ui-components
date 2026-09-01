@@ -9,8 +9,8 @@
   border: none;
   line-height: 1.6rem;
   font-size: 1.4rem;
-  color: var(--profile-menu-button-color, #ffffff);
-  background-color: var(--profile-menu-button-bg, #007297);
+  color: var(--profile-menu-button-color, var(--ox-color-white));
+  background-color: var(--profile-menu-button-bg, var(--ox-color-dark-teal));
   cursor: pointer;
 }
 
@@ -39,6 +39,6 @@
 
 /* ProfileMenu menu item */
 .profile-menu-item {
-  color: var(--profile-menu-item-color, #424242);
+  color: var(--profile-menu-item-color, var(--ox-color-neutral-darker));
   text-decoration: none;
 }
