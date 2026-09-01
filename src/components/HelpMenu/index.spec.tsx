@@ -397,3 +397,46 @@ describe('HelpMenu style composition', () => {
     });
   });
 });
+
+describe('HelpMenu className composition', () => {
+  beforeAll(() => {
+    global.CSS = {
+      supports: () => true,
+      escape: jest.fn(),
+    } as any;
+  });
+
+  it('composes a render-callback className on each wrapper', () => {
+    render(
+      <HelpMenuButton label='Help' className={() => 'caller-button'}>
+        <HelpMenuItem className={() => 'caller-item'}>Report an issue</HelpMenuItem>
+      </HelpMenuButton>
+    );
+
+    const button = document.querySelector('.help-menu-button');
+    expect(button?.className).toContain('navbar-button');
+    expect(button?.className).toContain('caller-button');
+
+    render(
+      <Menu aria-label='Test menu'>
+        <HelpMenuItem className={() => 'caller-item'}>Report an issue</HelpMenuItem>
+      </Menu>
+    );
+
+    const item = document.querySelector('.help-menu-item');
+    expect(item?.className).toContain('navbar-menu-item');
+    expect(item?.className).toContain('caller-item');
+  });
+
+  it('keeps composing a string className', () => {
+    render(<HelpMenuButton label='Help' className='caller-button' />);
+    expect(document.querySelector('.help-menu-button')?.className).toContain('caller-button');
+
+    render(
+      <Menu aria-label='Test menu'>
+        <HelpMenuItem className='caller-item'>Report an issue</HelpMenuItem>
+      </Menu>
+    );
+    expect(document.querySelector('.help-menu-item')?.className).toContain('caller-item');
+  });
+});
