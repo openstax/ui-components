@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { BodyPortalSlotsContext } from '../BodyPortalSlotsContext';
 import { HelpMenu, HelpMenuItem, HelpMenuProps, NewTabIcon } from '.';
 import { NavBar } from '../NavBar';
@@ -22,24 +22,86 @@ describe('HelpMenu', () => {
     document.body.append(root);
   });
 
-  it('matches snapshot', async () => {
-    render(
-      <BodyPortalSlotsContext.Provider value={['nav', 'root']}>
-        <NavBar logo>
-          <HelpMenu contactFormParams={[{key: 'userId', value: 'test'}]}>
-            <HelpMenuItem onAction={() => window.alert('Ran HelpMenu callback function')}>
-              Test Callback
-            </HelpMenuItem>
-          </HelpMenu>
-        </NavBar>
-      </BodyPortalSlotsContext.Provider>
-    );
+  const defaultChildren = (
+    <HelpMenuItem onAction={() => window.alert('Ran HelpMenu callback function')}>
+      Test Callback
+    </HelpMenuItem>
+  );
 
-    // Reveal the default button in the help menu
+  // Pass `children: null` for cases that need the menu without the default custom item.
+  const helpMenu = ({
+    contactFormParams = [{key: 'userId', value: 'test'}],
+    children = defaultChildren,
+    ...props
+  }: Partial<HelpMenuProps> = {}) => (
+    <BodyPortalSlotsContext.Provider value={['nav', 'root']}>
+      <NavBar logo>
+        <HelpMenu contactFormParams={contactFormParams} {...props}>
+          {children}
+        </HelpMenu>
+      </NavBar>
+    </BodyPortalSlotsContext.Provider>
+  );
+
+  const renderHelpMenu = (props?: Partial<HelpMenuProps>) => render(helpMenu(props));
+
+  const businessHoursNow = (): ChatConfiguration['businessHours'] => ({
+    businessHoursInfo: {
+      businessHours: [
+        { startTime: Date.now() - 60_000, endTime: Date.now() + 1_440_000 }
+      ]
+    },
+    timestamp: Date.now(),
+  });
+
+  it('wires the trigger to the menu for assistive tech', async () => {
+    renderHelpMenu();
+
+    const button = await screen.findByRole('button', { name: 'Help menu' });
+    expect(button.getAttribute('aria-haspopup')).toBe('true');
+    expect(button.getAttribute('aria-expanded')).toBe('false');
+
+    fireEvent.click(button);
+    const menu = await screen.findByRole('menu');
+
+    expect(button.getAttribute('aria-expanded')).toBe('true');
+    expect(button.getAttribute('aria-controls')).toBe(menu.id);
+    expect(menu.getAttribute('aria-labelledby')).toBe(button.id);
+  });
+
+  it('moves focus into the menu when it opens', async () => {
+    renderHelpMenu();
+
+    const button = await screen.findByRole('button', { name: 'Help menu' });
+    fireEvent.click(button);
+    const menu = await screen.findByRole('menu');
+
+    // react-aria defers the trigger -> menu focus move to an animation frame when the
+    // click looks like a virtual (screen reader) one, which fireEvent.click does. Wait
+    // for it to land rather than asserting on the intermediate frame where the trigger
+    // still holds focus; waitFor drives the suite's fake timers for us.
+    await waitFor(() => expect(document.activeElement).toBe(menu));
+    expect(button.hasAttribute('data-focused')).toBe(false);
+  });
+
+  it('renders items in order with a roving tabindex', async () => {
+    renderHelpMenu();
+
     fireEvent.click(await screen.findByText('Help'));
-    screen.getByText(/Report an issue/i);
+    await screen.findByRole('menu');
 
-    expect(document.body).toMatchSnapshot();
+    const items = screen.getAllByRole('menuitem');
+    expect(items.map((item) => item.textContent)).toEqual(['Report an issue', 'Test Callback']);
+    expect(items.map((item) => item.getAttribute('tabindex'))).toEqual(['0', '-1']);
+  });
+
+  it('positions the popover below the trigger', async () => {
+    renderHelpMenu();
+
+    fireEvent.click(await screen.findByText('Help'));
+    await screen.findByRole('menu');
+
+    expect(screen.getByRole('dialog').getAttribute('data-placement')).toBe('bottom');
   });
 
   it('errors if the service is unavailable', async () => {
@@ -53,59 +115,29 @@ describe('HelpMenu', () => {
     const chatEmbedPath = 'https://example.com/';
     const chatEmbedParams: HelpMenuProps['chatConfig'] = {chatEmbedPath, err: errorResponse};
 
-    render(
-      <BodyPortalSlotsContext.Provider value={['nav', 'root']}>
-        <NavBar logo>
-          <HelpMenu chatConfig={chatEmbedParams} contactFormParams={[{key: 'userId', value: 'test'}, {key: 'other', value: 'param'}]}>
-            <HelpMenuItem onAction={() => window.alert('Ran HelpMenu callback function')}>
-              Test Callback
-            </HelpMenuItem>
-          </HelpMenu>
-        </NavBar>
-      </BodyPortalSlotsContext.Provider>
-    );
+    renderHelpMenu({
+      chatConfig: chatEmbedParams,
+      contactFormParams: [{key: 'userId', value: 'test'}, {key: 'other', value: 'param'}],
+    });
     fireEvent.click(await screen.findByText('Help'));
     expect(consoleSpy).toHaveBeenCalledTimes(1);
   });
 
   it('replaces button within hours', async () => {
-    const happyHoursResponse: ChatConfiguration['businessHours'] = {
-      businessHoursInfo: {
-        businessHours: [
-          { startTime: Date.now() - 60_000, endTime: Date.now() + 1_440_000 }
-        ]
-      },
-      timestamp: Date.now(),
-    };
     const chatEmbedPath = 'https://example.com/';
-    const chatEmbedParams: HelpMenuProps['chatConfig'] = {chatEmbedPath, businessHours: happyHoursResponse};
+    const chatEmbedParams: HelpMenuProps['chatConfig'] = {chatEmbedPath, businessHours: businessHoursNow()};
 
-    render(
-      <BodyPortalSlotsContext.Provider value={['nav', 'root']}>
-        <NavBar logo>
-          <HelpMenu chatConfig={chatEmbedParams} contactFormParams={[{key: 'userId', value: 'test'}, {key: 'other', value: 'param'}]}>
-            <HelpMenuItem onAction={() => window.alert('Ran HelpMenu callback function')}>
-              Test Callback
-            </HelpMenuItem>
-          </HelpMenu>
-        </NavBar>
-      </BodyPortalSlotsContext.Provider>
-    );
+    renderHelpMenu({
+      chatConfig: chatEmbedParams,
+      contactFormParams: [{key: 'userId', value: 'test'}, {key: 'other', value: 'param'}],
+    });
     fireEvent.click(await screen.findByText('Help'));
     await screen.findByRole('menuitem', { name: /chat with us/i });
   });
 
   it('calls openChat when Chat With Us is clicked', async () => {
-    const happyHoursResponse: ChatConfiguration['businessHours'] = {
-      businessHoursInfo: {
-        businessHours: [
-          { startTime: Date.now() - 60_000, endTime: Date.now() + 1_440_000 }
-        ]
-      },
-      timestamp: Date.now(),
-    };
     const chatEmbedPath = 'https://example.com/chat';
-    const chatEmbedParams: HelpMenuProps['chatConfig'] = {chatEmbedPath, businessHours: happyHoursResponse};
+    const chatEmbedParams: HelpMenuProps['chatConfig'] = {chatEmbedPath, businessHours: businessHoursNow()};
 
     // Mock window.open to verify it's called by openChat
     const mockWindowOpen = jest.spyOn(window, 'open').mockReturnValue({
@@ -113,13 +145,7 @@ describe('HelpMenu', () => {
       postMessage: jest.fn(),
     } as any);
 
-    render(
-      <BodyPortalSlotsContext.Provider value={['nav', 'root']}>
-        <NavBar logo>
-          <HelpMenu chatConfig={chatEmbedParams} contactFormParams={[{key: 'userId', value: 'test'}]} />
-        </NavBar>
-      </BodyPortalSlotsContext.Provider>
-    );
+    renderHelpMenu({chatConfig: chatEmbedParams, children: null});
 
     // Open menu
     fireEvent.click(await screen.findByText('Help'));
@@ -139,17 +165,9 @@ describe('HelpMenu', () => {
   });
 
   it('shows and hides iframe when Report an issue is clicked', async () => {
-    render(
-      <BodyPortalSlotsContext.Provider value={['nav', 'root']}>
-        <NavBar logo>
-          <HelpMenu contactFormParams={[{key: 'userId', value: 'test123'}, {key: 'email', value: 'user@example.com'}]}>
-            <HelpMenuItem onAction={() => window.alert('Ran HelpMenu callback function')}>
-              Test Callback
-            </HelpMenuItem>
-          </HelpMenu>
-        </NavBar>
-      </BodyPortalSlotsContext.Provider>
-    );
+    renderHelpMenu({
+      contactFormParams: [{key: 'userId', value: 'test123'}, {key: 'email', value: 'user@example.com'}],
+    });
 
     // Open the menu
     fireEvent.click(await screen.findByText('Help'));
@@ -179,17 +197,7 @@ describe('HelpMenu', () => {
     const addEventListenerSpy = jest.spyOn(window, 'addEventListener');
     const removeEventListenerSpy = jest.spyOn(window, 'removeEventListener');
 
-    const {unmount} = render(
-      <BodyPortalSlotsContext.Provider value={['nav', 'root']}>
-        <NavBar logo>
-          <HelpMenu contactFormParams={[{key: 'userId', value: 'test'}]}>
-            <HelpMenuItem onAction={() => window.alert('Ran HelpMenu callback function')}>
-              Test Callback
-            </HelpMenuItem>
-          </HelpMenu>
-        </NavBar>
-      </BodyPortalSlotsContext.Provider>
-    );
+    const {unmount} = renderHelpMenu();
 
     // Verify the message event listener was registered
     expect(addEventListenerSpy).toHaveBeenCalledWith(
@@ -217,17 +225,7 @@ describe('HelpMenu', () => {
       {key: 'special', value: 'a+b c/d'},
     ];
 
-    render(
-      <BodyPortalSlotsContext.Provider value={['nav', 'root']}>
-        <NavBar logo>
-          <HelpMenu contactFormParams={paramsWithSpecialChars}>
-            <HelpMenuItem onAction={() => window.alert('Ran HelpMenu callback function')}>
-              Test Callback
-            </HelpMenuItem>
-          </HelpMenu>
-        </NavBar>
-      </BodyPortalSlotsContext.Provider>
-    );
+    renderHelpMenu({contactFormParams: paramsWithSpecialChars});
 
     // Open the menu and click Report an issue
     fireEvent.click(await screen.findByText('Help'));
@@ -265,17 +263,7 @@ describe('HelpMenu', () => {
   });
 
   it('closes iframe when CONTACT_FORM_SUBMITTED message is received', async () => {
-    render(
-      <BodyPortalSlotsContext.Provider value={['nav', 'root']}>
-        <NavBar logo>
-          <HelpMenu contactFormParams={[{key: 'userId', value: 'test'}]}>
-            <HelpMenuItem onAction={() => window.alert('Ran HelpMenu callback function')}>
-              Test Callback
-            </HelpMenuItem>
-          </HelpMenu>
-        </NavBar>
-      </BodyPortalSlotsContext.Provider>
-    );
+    renderHelpMenu();
 
     // Open the menu and show iframe
     fireEvent.click(await screen.findByText('Help'));
@@ -298,17 +286,9 @@ describe('HelpMenu', () => {
   it('renders custom children in the help menu', async () => {
     const customAction = jest.fn();
 
-    render(
-      <BodyPortalSlotsContext.Provider value={['nav', 'root']}>
-        <NavBar logo>
-          <HelpMenu contactFormParams={[{key: 'userId', value: 'test'}]}>
-            <HelpMenuItem onAction={customAction}>
-              Custom Action Item
-            </HelpMenuItem>
-          </HelpMenu>
-        </NavBar>
-      </BodyPortalSlotsContext.Provider>
-    );
+    renderHelpMenu({
+      children: <HelpMenuItem onAction={customAction}>Custom Action Item</HelpMenuItem>,
+    });
 
     // Open the menu
     fireEvent.click(await screen.findByText('Help'));
@@ -324,58 +304,23 @@ describe('HelpMenu', () => {
 
   it('memoizes chatConfig correctly', async () => {
     const chatEmbedPath = 'https://example.com/';
-    const businessHours: ChatConfiguration['businessHours'] = {
-      businessHoursInfo: {
-        businessHours: [
-          { startTime: Date.now() - 60_000, endTime: Date.now() + 1_440_000 }
-        ]
-      },
-      timestamp: Date.now(),
-    };
-    const chatConfig: HelpMenuProps['chatConfig'] = { chatEmbedPath, businessHours };
+    const chatConfig: HelpMenuProps['chatConfig'] = { chatEmbedPath, businessHours: businessHoursNow() };
 
-    const { rerender } = render(
-      <BodyPortalSlotsContext.Provider value={['nav', 'root']}>
-        <NavBar logo>
-          <HelpMenu
-            chatConfig={chatConfig}
-            contactFormParams={[{key: 'userId', value: 'test'}]}
-          />
-        </NavBar>
-      </BodyPortalSlotsContext.Provider>
-    );
+    const { rerender } = renderHelpMenu({chatConfig, children: null});
 
     // Open menu and verify chat option appears
     fireEvent.click(await screen.findByText('Help'));
     await screen.findByRole('menuitem', { name: /chat with us/i });
 
     // Rerender with same chatConfig object (should use memoized value)
-    rerender(
-      <BodyPortalSlotsContext.Provider value={['nav', 'root']}>
-        <NavBar logo>
-          <HelpMenu
-            chatConfig={chatConfig}
-            contactFormParams={[{key: 'userId', value: 'test'}]}
-          />
-        </NavBar>
-      </BodyPortalSlotsContext.Provider>
-    );
+    rerender(helpMenu({chatConfig, children: null}));
 
     // Verify chat option still appears
     await screen.findByRole('menuitem', { name: /chat with us/i });
   });
 
   it('handles undefined chatConfig gracefully', async () => {
-    render(
-      <BodyPortalSlotsContext.Provider value={['nav', 'root']}>
-        <NavBar logo>
-          <HelpMenu
-            chatConfig={undefined}
-            contactFormParams={[{key: 'userId', value: 'test'}]}
-          />
-        </NavBar>
-      </BodyPortalSlotsContext.Provider>
-    );
+    renderHelpMenu({chatConfig: undefined, children: null});
 
     // Open menu and verify fallback to Report an issue
     fireEvent.click(await screen.findByText('Help'));
