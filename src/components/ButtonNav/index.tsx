@@ -1,9 +1,8 @@
 import React from "react";
 import { LeftArrow } from "../svgs/LeftArrow";
 import { RightArrow } from "../svgs/RightArrow";
-import { palette } from "../../theme/palette";
-import { CSSPropertiesWithVariables } from "../../types";
 import "./ButtonNav.css";
+import "../../theme/theme.css";
 
 export interface ButtonNavProps {
   children: React.ReactNode[];
@@ -12,11 +11,6 @@ export interface ButtonNavProps {
   isPrevArrowDisabled?: boolean;
   isNextArrowDisabled?: boolean;
 }
-
-// Bound on the container; the arrows are children, so they inherit it.
-const containerStyle: CSSPropertiesWithVariables = {
-  '--button-nav-arrow-hover-border-color': palette.pale,
-};
 
 export const ButtonNav = (
   {
@@ -29,7 +23,7 @@ export const ButtonNav = (
   const wrapperRef = React.useRef<HTMLDivElement>(null);
 
   return (
-    <div className="button-nav" style={containerStyle}>
+    <div className="button-nav">
       <button
         onClick={handlePrevArrow}
         className="button-nav-arrow left-arrow"

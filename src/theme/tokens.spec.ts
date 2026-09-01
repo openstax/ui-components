@@ -26,6 +26,7 @@ const themeCssPath = path.join(__dirname, 'theme.css');
 const KNOWN_OFF_PALETTE = new Map([
   ['#cccccc', 'Tooltip border and the uncontrolled-form h3 rule. Predates the palette; nearest entry is pale (#d5d5d5).'],
   ['#dddddd', 'Modal header bottom rule. Predates the palette; nearest entry is pale (#d5d5d5).'],
+  ['#959595', 'SidebarNav toggle button border. Carried over verbatim from the styled-components original; nearest entry is neutralMedium (#a0a0a0).'],
 ]);
 
 /**
