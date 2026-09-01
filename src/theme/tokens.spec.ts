@@ -91,9 +91,18 @@ interface Color {
 const expandHex = (body: string) =>
   body.length <= 4 ? body.split('').map((c) => c + c).join('') : body;
 
+/**
+ * The four legal hex-colour lengths, digits included. Checking the *expanded* length is not
+ * enough: `#ggg` expands to six characters and would sail through as a colour, which would
+ * defeat unresolvableThemeColors — the one guard that stops a malformed palette value from
+ * entering themeValues under a key nothing can match.
+ */
+const HEX_COLOR = /^#(?:[0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})$/;
+
 const parseHex = (literal: string): Color | null => {
-  const body = expandHex(literal.slice(1).toLowerCase());
-  if (body.length !== 6 && body.length !== 8) { return null; }
+  const lowered = literal.toLowerCase();
+  if (!HEX_COLOR.test(lowered)) { return null; }
+  const body = expandHex(lowered.slice(1));
   const hex = `#${body.slice(0, 6)}`;
   const alpha = body.length === 8 ? parseInt(body.slice(6, 8), 16) / 255 : 1;
   return { hex, alpha, key: alpha === 1 ? hex : `#${body}` };
@@ -150,20 +159,30 @@ const stripNoise = (css: string) => css
   .replace(/"(?:[^"\\]|\\.)*"/g, '""')
   .replace(/'(?:[^'\\]|\\.)*'/g, "''");
 
+interface Declaration {
+  /** Lower-cased property name. */
+  property: string;
+  value: string;
+}
+
 /**
- * Declaration values, at any nesting depth (so inside @media too). Only text that ends up
- * on the right of a `:` inside a block counts, which keeps selectors, at-rule preludes and
- * @keyframes percentages out of the colour scan.
+ * Declarations at any nesting depth (so inside @media too). Only text that ends up on the
+ * right of a `:` inside a block counts, which keeps selectors, at-rule preludes and
+ * @keyframes percentages out of the colour scan. The property comes back too, because
+ * whether a bare identifier means a colour depends on where it sits.
  */
-const declarationValues = (css: string): string[] => {
-  const values: string[] = [];
+const declarations = (css: string): Declaration[] => {
+  const found: Declaration[] = [];
   let depth = 0;
   let buffer = '';
 
   const flush = () => {
     const separator = buffer.indexOf(':');
     if (depth > 0 && separator > -1) {
-      values.push(buffer.slice(separator + 1).trim());
+      found.push({
+        property: buffer.slice(0, separator).trim().toLowerCase(),
+        value: buffer.slice(separator + 1).trim(),
+      });
     }
     buffer = '';
   };
@@ -175,7 +194,33 @@ const declarationValues = (css: string): string[] => {
     else { buffer += char; }
   }
 
-  return values;
+  return found;
+};
+
+/**
+ * Shorthands that can hold a colour without saying so in their name. Anything containing
+ * "color", the border family and custom properties are handled separately.
+ */
+const COLOR_SHORTHANDS = new Set([
+  'background', 'background-image', 'outline', 'box-shadow', 'text-shadow', 'text-decoration',
+  'text-emphasis', 'column-rule', 'list-style', 'fill', 'stroke', 'caret', 'mask', 'filter',
+  'backdrop-filter', 'scrollbar',
+]);
+
+/**
+ * Whether a bare identifier in this property's value could be a colour. Without this,
+ * `animation-name: red` reads as an off-palette colour and `font-family: white` as a
+ * duplicate of --ox-color-white, with a suggested fix that would break the declaration.
+ *
+ * Only bare identifiers need the gate. Hex and the colour functions are only ever colours,
+ * so they stay in scope for every property.
+ */
+const acceptsColor = (property: string) => {
+  const name = property.replace(/^-(?:webkit|moz|ms|o)-/, '');
+  return name.startsWith('--')
+    || name.includes('color')
+    || name.startsWith('border')
+    || COLOR_SHORTHANDS.has(name);
 };
 
 const closingParen = (text: string, open: number) => {
@@ -192,12 +237,12 @@ const closingParen = (text: string, open: number) => {
 
 /**
  * Every colour literal in a declaration value, in any syntax: hex, the functional
- * notations, and bare named colours wherever they appear — including inside shorthands
- * and gradient stops. Functions that merely *contain* colours (var, color-mix, the
+ * notations, and — when the property can hold one — bare named colours wherever they
+ * appear, including inside shorthands and gradient stops. Functions that merely *contain* colours (var, color-mix, the
  * gradients) are descended into rather than treated as literals themselves, so
  * `color-mix(in srgb, var(--ox-color-black) 20%, transparent)` is clean.
  */
-const colorLiterals = (value: string): string[] => {
+const colorLiterals = (value: string, namedColorsInScope: boolean): string[] => {
   const found: string[] = [];
   let i = 0;
 
@@ -227,7 +272,7 @@ const colorLiterals = (value: string): string[] => {
         continue;
       }
 
-      if (NAMED_COLORS.has(name)) { found.push(ident[0]); }
+      if (namedColorsInScope && NAMED_COLORS.has(name)) { found.push(ident[0]); }
       i = after;
       continue;
     }
@@ -278,8 +323,8 @@ const themeValues = new Map(
 const colorProblems = (css: string): string[] => {
   const problems: string[] = [];
 
-  for (const value of declarationValues(css)) {
-    for (const literal of colorLiterals(value)) {
+  for (const { property, value } of declarations(css)) {
+    for (const literal of colorLiterals(value, acceptsColor(property))) {
       const { hex, alpha, key } = describeColor(literal);
 
       if (KNOWN_OFF_PALETTE.has(key)) { continue; }
@@ -348,6 +393,10 @@ describe('the colour check itself', () => {
     ['space-separated rgb', 'color: rgb(213 213 213 / 100%);', '--ox-color-pale'],
     ['hex in a var() fallback', 'color: var(--thing, #d5d5d5);', '--ox-color-pale'],
     ['colour in a gradient stop', 'background: linear-gradient(to right, #d5d5d5, transparent);', '--ox-color-pale'],
+    ['named colour in a custom property', '--tabs-border-color: whitesmoke;', '--ox-color-neutral-bright'],
+    ['named colour in box-shadow', 'box-shadow: 0 0 0.2rem white;', '--ox-color-white'],
+    ['named colour in a vendor-prefixed property', '-webkit-text-fill-color: white;', '--ox-color-white'],
+    ['hex outside a colour property', 'animation-name: #d5d5d5;', '--ox-color-pale'],
   ])('flags a %s that duplicates a token', (_case, declaration, token) => {
     expect(rule(declaration)).toEqual([expect.stringContaining(`use var(${token})`)]);
   });
@@ -378,6 +427,9 @@ describe('the colour check itself', () => {
     ['an allowlisted colour', 'border-color: #ccc;'],
     ['alpha over a theme colour', 'box-shadow: 0 0 0.2rem rgba(0, 0, 0, 0.2);'],
     ['a keyword that merely contains a colour name', 'animation-name: moveblue;'],
+    ['an animation named after a colour', 'animation-name: red;'],
+    ['a font named after a colour', 'font-family: white;'],
+    ['a grid area named after a colour', 'grid-area: gold;'],
     ['a non-colour value', 'filter: grayscale(1);'],
   ])('stays quiet for %s', (_case, declaration) => {
     expect(rule(declaration)).toEqual([]);
@@ -392,6 +444,17 @@ describe('the colour check itself', () => {
   it('checks declarations nested in at-rules', () => {
     const css = '@media screen and (min-width: 75em) { .x { color: #d5d5d5; } }';
     expect(colorProblems(css)).toEqual([expect.stringContaining('use var(--ox-color-pale)')]);
+  });
+
+  it.each([
+    ['non-hex digits', '#ggg'],
+    ['five digits', '#12345'],
+    ['seven digits', '#1234567'],
+    ['nine digits', '#123456789'],
+  ])('treats a malformed hex (%s) as unresolvable', (_case, literal) => {
+    // Length alone is not enough: expandHex('#ggg') is six characters long and would
+    // otherwise sail through as a colour, defeating unresolvableThemeColors.
+    expect(describeColor(literal).hex).toBeNull();
   });
 
   it('can reduce every theme colour to channels', () => {
