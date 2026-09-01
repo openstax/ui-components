@@ -1,7 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { ButtonNav } from './ButtonNav/index';
-import { palette } from '../theme/palette';
 
 describe('ButtonNav', () => {
 
@@ -89,12 +88,5 @@ describe('ButtonNav', () => {
 
     fireEvent.click(arrows().prev);
     expect(handlePrev).not.toHaveBeenCalled();
-  });
-
-  it('binds the arrow hover colour from the theme', () => {
-    const { container } = renderNav();
-
-    expect((container.querySelector('.button-nav') as HTMLElement).style
-      .getPropertyValue('--button-nav-arrow-hover-border-color')).toBe(palette.pale);
   });
 });

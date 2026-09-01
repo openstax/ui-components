@@ -41,7 +41,7 @@
 }
 
 .button-nav-arrow:hover {
-  border: 0.1rem solid var(--button-nav-arrow-hover-border-color, #d5d5d5);
+  border: 0.1rem solid var(--button-nav-arrow-hover-border-color, var(--ox-color-pale));
 }
 
 .button-nav-arrow svg {

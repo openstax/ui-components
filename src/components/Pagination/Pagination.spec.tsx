@@ -1,7 +1,6 @@
 import { render } from '@testing-library/react';
 import { Pagination, LinkForPage } from ".";
 import { calculatePaginationRanges, range } from './utils';
-import { palette } from "../../theme/palette";
 
 const Page = ({ page, current }: { page: number; current: boolean }) =>
   <LinkForPage page={page} current={current} href="#" />;
@@ -85,12 +84,17 @@ describe('Pagination', () => {
     expect(hrefs.every((href) => href === '#')).toBe(true);
   });
 
-  it('binds the theme colours it needs as custom properties', () => {
-    render(<Pagination currentPage={1} totalPages={10} Page={Page} />, {container: root});
+  // The theme defaults now come from src/theme/theme.css and are checked centrally by
+  // src/theme/tokens.spec.ts; what is still this component's business is that a consumer
+  // can override them through the documented --pagination-* hooks.
+  it('passes consumer custom properties through to the root', () => {
+    render(<Pagination
+      currentPage={1} totalPages={10} Page={Page}
+      style={{ '--pagination-border-color': 'rebeccapurple' }}
+    />, {container: root});
 
-    const { style } = root.querySelector('.pagination') as HTMLElement;
-    expect(style.getPropertyValue('--pagination-border-color')).toBe(palette.neutralLight);
-    expect(style.getPropertyValue('--pagination-active-background')).toBe(palette.neutralLighter);
+    expect((root.querySelector('.pagination') as HTMLElement).style
+      .getPropertyValue('--pagination-border-color')).toBe('rebeccapurple');
   });
 
   it('renders nothing when there is nothing to paginate', () => {
