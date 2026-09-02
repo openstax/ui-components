@@ -1,8 +1,13 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { Menu } from 'react-aria-components';
 import { BodyPortalSlotsContext } from '../BodyPortalSlotsContext';
-import { HelpMenu, HelpMenuItem, HelpMenuProps, NewTabIcon } from '.';
+import { HelpMenu, HelpMenuButton, HelpMenuItem, HelpMenuProps, NewTabIcon } from '.';
 import { NavBar } from '../NavBar';
 import { ChatConfiguration } from './hooks';
+import type { CSSPropertiesWithVariables } from '../../types';
+
+type HelpMenuButtonProps = React.ComponentProps<typeof HelpMenuButton>;
+type HelpMenuItemProps = React.ComponentProps<typeof HelpMenuItem>;
 
 describe('HelpMenu', () => {
   let root: HTMLElement;
@@ -325,5 +330,117 @@ describe('HelpMenu', () => {
     // Open menu and verify fallback to Report an issue
     fireEvent.click(await screen.findByText('Help'));
     await screen.findByRole('menuitem', { name: /report an issue/i });
+  });
+});
+
+describe('HelpMenu style passthrough', () => {
+  beforeAll(() => {
+    global.CSS = {
+      supports: () => true,
+      escape: jest.fn(),
+    } as any;
+  });
+
+  // The components no longer set --help-menu-* inline; those are defaults in HelpMenu.css,
+  // guarded by src/theme/tokens.spec.ts. See the note in ProfileMenu's spec.
+  const renderButton = (style: HelpMenuButtonProps['style']) => {
+    render(<HelpMenuButton label='Help' style={style} />);
+    return document.querySelector('.help-menu-button') as HTMLElement;
+  };
+
+  const renderMenuItem = (style: HelpMenuItemProps['style']) => {
+    render(
+      <Menu aria-label='Test menu'>
+        <HelpMenuItem style={style}>Report an issue</HelpMenuItem>
+      </Menu>
+    );
+    return document.querySelector('.help-menu-item') as HTMLElement;
+  };
+
+  describe('HelpMenuButton', () => {
+    it('passes a render-callback style through', () => {
+      const button = renderButton(() => ({ color: 'rgb(255, 0, 0)' }));
+
+      expect(button.style.color).toBe('rgb(255, 0, 0)');
+    });
+
+    it('passes an object style through', () => {
+      const button = renderButton({ color: 'rgb(0, 0, 255)' });
+
+      expect(button.style.color).toBe('rgb(0, 0, 255)');
+    });
+
+    it('lets the caller override the CSS variables', () => {
+      const button = renderButton({
+        '--help-menu-button-color': 'rebeccapurple'
+      } as CSSPropertiesWithVariables);
+
+      expect(button.style.getPropertyValue('--help-menu-button-color')).toBe('rebeccapurple');
+    });
+  });
+
+  describe('HelpMenuItem', () => {
+    it('passes a render-callback style through', () => {
+      const item = renderMenuItem(() => ({ color: 'rgb(255, 0, 0)' }));
+
+      expect(item.style.color).toBe('rgb(255, 0, 0)');
+    });
+
+    it('passes an object style through', () => {
+      const item = renderMenuItem({ color: 'rgb(0, 0, 255)' });
+
+      expect(item.style.color).toBe('rgb(0, 0, 255)');
+    });
+
+    it('lets the caller override the CSS variables', () => {
+      const item = renderMenuItem({
+        '--help-menu-item-focus-bg': 'rebeccapurple'
+      } as CSSPropertiesWithVariables);
+
+      expect(item.style.getPropertyValue('--help-menu-item-focus-bg')).toBe('rebeccapurple');
+    });
+  });
+});
+
+describe('HelpMenu className composition', () => {
+  beforeAll(() => {
+    global.CSS = {
+      supports: () => true,
+      escape: jest.fn(),
+    } as any;
+  });
+
+  it('composes a render-callback className on each wrapper', () => {
+    render(
+      <HelpMenuButton label='Help' className={() => 'caller-button'}>
+        <HelpMenuItem className={() => 'caller-item'}>Report an issue</HelpMenuItem>
+      </HelpMenuButton>
+    );
+
+    const button = document.querySelector('.help-menu-button');
+    expect(button?.className).toContain('navbar-button');
+    expect(button?.className).toContain('caller-button');
+
+    render(
+      <Menu aria-label='Test menu'>
+        <HelpMenuItem className={() => 'caller-item'}>Report an issue</HelpMenuItem>
+      </Menu>
+    );
+
+    const item = document.querySelector('.help-menu-item');
+    expect(item?.className).toContain('navbar-menu-item');
+    expect(item?.className).toContain('caller-item');
+  });
+
+  it('keeps composing a string className', () => {
+    render(<HelpMenuButton label='Help' className='caller-button' />);
+    expect(document.querySelector('.help-menu-button')?.className).toContain('caller-button');
+
+    render(
+      <Menu aria-label='Test menu'>
+        <HelpMenuItem className='caller-item'>Report an issue</HelpMenuItem>
+      </Menu>
+    );
+    expect(document.querySelector('.help-menu-item')?.className).toContain('caller-item');
   });
 });

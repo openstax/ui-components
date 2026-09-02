@@ -1,5 +1,10 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { ProfileMenu, ProfileMenuItem, UserIcon } from '.';
+import { Menu, MenuTrigger } from 'react-aria-components';
+import { ProfileMenu, ProfileMenuButton, ProfileMenuItem, ProfileMenuPopover, UserIcon } from '.';
+import type { CSSPropertiesWithVariables } from '../../types';
+
+type ProfileMenuButtonProps = React.ComponentProps<typeof ProfileMenuButton>;
+type ProfileMenuItemProps = React.ComponentProps<typeof ProfileMenuItem>;
 
 describe('ProfileMenu', () => {
   beforeAll(() => {
@@ -345,5 +350,132 @@ describe('UserIcon', () => {
 
     const svg = container.querySelector('svg');
     expect(svg?.classList.contains('custom-class')).toBe(true);
+  });
+});
+
+describe('ProfileMenu style passthrough', () => {
+  beforeAll(() => {
+    global.CSS = {
+      supports: () => true,
+      escape: jest.fn(),
+    } as any;
+  });
+
+  // These components no longer set --profile-menu-* inline; those are defaults in
+  // ProfileMenu.css, guarded by src/theme/tokens.spec.ts. What matters here is that the
+  // caller's style reaches the element in both forms, and that the override hook works.
+  const renderButton = (style: ProfileMenuButtonProps['style']) => {
+    render(<ProfileMenuButton style={style}>JD</ProfileMenuButton>);
+    return document.querySelector('.profile-menu-button') as HTMLElement;
+  };
+
+  const renderMenuItem = (style: ProfileMenuItemProps['style']) => {
+    render(
+      <Menu aria-label='Test menu'>
+        <ProfileMenuItem style={style}>Profile</ProfileMenuItem>
+      </Menu>
+    );
+    return document.querySelector('.profile-menu-item') as HTMLElement;
+  };
+
+  describe('ProfileMenuButton', () => {
+    it('passes a render-callback style through', () => {
+      const button = renderButton(() => ({ color: 'rgb(255, 0, 0)' }));
+
+      expect(button.style.color).toBe('rgb(255, 0, 0)');
+    });
+
+    it('passes an object style through', () => {
+      const button = renderButton({ color: 'rgb(0, 0, 255)' });
+
+      expect(button.style.color).toBe('rgb(0, 0, 255)');
+    });
+
+    it('lets the caller override the CSS variables', () => {
+      const button = renderButton({
+        '--profile-menu-button-bg': 'rebeccapurple'
+      } as CSSPropertiesWithVariables);
+
+      expect(button.style.getPropertyValue('--profile-menu-button-bg')).toBe('rebeccapurple');
+    });
+  });
+
+  describe('ProfileMenuItem', () => {
+    it('passes a render-callback style through', () => {
+      const item = renderMenuItem(() => ({ color: 'rgb(255, 0, 0)' }));
+
+      expect(item.style.color).toBe('rgb(255, 0, 0)');
+    });
+
+    it('passes an object style through', () => {
+      const item = renderMenuItem({ color: 'rgb(0, 0, 255)' });
+
+      expect(item.style.color).toBe('rgb(0, 0, 255)');
+    });
+
+    it('lets the caller override the CSS variables', () => {
+      const item = renderMenuItem({
+        '--profile-menu-item-color': 'rebeccapurple'
+      } as CSSPropertiesWithVariables);
+
+      expect(item.style.getPropertyValue('--profile-menu-item-color')).toBe('rebeccapurple');
+    });
+  });
+});
+
+describe('ProfileMenu className composition', () => {
+  beforeAll(() => {
+    global.CSS = {
+      supports: () => true,
+      escape: jest.fn(),
+    } as any;
+  });
+
+  const renderOpenMenu = (
+    popoverClassName: React.ComponentProps<typeof ProfileMenuPopover>['className']
+  ) => {
+    render(
+      <MenuTrigger defaultOpen>
+        <ProfileMenuButton className={() => 'caller-button'}>JD</ProfileMenuButton>
+        <ProfileMenuPopover className={popoverClassName}>
+          <Menu aria-label='Test menu'>
+            <ProfileMenuItem className={() => 'caller-item'}>Profile</ProfileMenuItem>
+          </Menu>
+        </ProfileMenuPopover>
+      </MenuTrigger>
+    );
+  };
+
+  it('composes a render-callback className on each wrapper', () => {
+    renderOpenMenu(() => 'caller-popover');
+
+    const button = document.querySelector('.profile-menu-button');
+    expect(button?.className).toContain('profile-menu-button');
+    expect(button?.className).toContain('caller-button');
+
+    const popover = document.querySelector('.profile-menu-popover');
+    expect(popover?.className).toContain('navbar-popover');
+    expect(popover?.className).toContain('caller-popover');
+
+    const item = document.querySelector('.profile-menu-item');
+    expect(item?.className).toContain('navbar-menu-item');
+    expect(item?.className).toContain('caller-item');
+  });
+
+  it('keeps composing a string className', () => {
+    render(
+      <MenuTrigger defaultOpen>
+        <ProfileMenuButton className='caller-button'>JD</ProfileMenuButton>
+        <ProfileMenuPopover className='caller-popover'>
+          <Menu aria-label='Test menu'>
+            <ProfileMenuItem className='caller-item'>Profile</ProfileMenuItem>
+          </Menu>
+        </ProfileMenuPopover>
+      </MenuTrigger>
+    );
+
+    expect(document.querySelector('.profile-menu-button')?.className).toContain('caller-button');
+    expect(document.querySelector('.profile-menu-popover')?.className).toContain('caller-popover');
+    expect(document.querySelector('.profile-menu-item')?.className).toContain('caller-item');
   });
 });

@@ -1,81 +1,45 @@
 import React from 'react';
-import { NavBarMenuButton, NavBarMenuItem } from '../NavBarMenuButtons';
+import classNames from 'classnames';
+import { composeRenderProps } from 'react-aria-components';
+import { NavBarBaseButtonProps, NavBarMenuButton, NavBarMenuItem } from '../NavBarMenuButtons';
 import { colors } from '../../theme';
-import styled from 'styled-components';
 import { BodyPortal } from '../BodyPortal';
 import { ChatConfiguration, getPreChatFields, useChatController, useHoursRange } from './hooks';
+import './HelpMenu.css';
+import '../../theme/theme.css';
 
-export const HelpMenuButton = styled(NavBarMenuButton)`
-  color: ${colors.palette.gray};
-  font-size: 1.4rem;
-`;
+export const HelpMenuButton = ({ className, ...props }: NavBarBaseButtonProps) => (
+  // style is deliberately not destructured: with the theme defaults moved into
+  // HelpMenu.css there is nothing left to merge it with, so it passes straight through in
+  // ...props and react-aria handles both the object and render-callback forms.
+  <NavBarMenuButton
+    className={composeRenderProps(className, (resolved) => classNames('help-menu-button', resolved))}
+    {...props}
+  />
+);
 
-export const HelpMenuItem = styled(NavBarMenuItem)`
-  color: ${colors.palette.neutralDarker};
-  text-decoration: none;
-
-  :focus-visible {
-    outline: 0;
-    background: ${colors.palette.neutralLighter};
-  }
-  :hover {
-    color: ${colors.palette.neutralDarker};
-    text-decoration: none;
-  }
-`;
-
-const IframeWrapper = styled(BodyPortal)`
-  background-color: ${colors.palette.neutralBright};
-  position: absolute;
-  width: 100%;
-  top: 4rem;
-  left: 0;
-  bottom: 0;
-  z-index: 20;
-`;
-
-const Iframe = styled.iframe`
-  border: 0;
-  width: 100%;
-  height: calc(100% - 5rem);
-`;
+export const HelpMenuItem = React.forwardRef<
+  HTMLDivElement,
+  React.ComponentProps<typeof NavBarMenuItem>
+>(({ className, ...props }, ref) => (
+  // style passes through in ...props — see the note on HelpMenuButton above.
+  <NavBarMenuItem
+    ref={ref}
+    className={composeRenderProps(className, (resolved) => classNames('help-menu-item', resolved))}
+    {...props}
+  />
+));
+HelpMenuItem.displayName = 'HelpMenuItem';
 
 function PutAway({onClick, className}: {onClick: () => void; className?: string}) {
   return (
-    <div className={className}>
+    <div className={classNames('help-menu-put-away', className)}>
       <button type='button' onClick={onClick} aria-label='close form'>
           Back
       </button>
     </div>
   );
 }
-
-const StyledPutAway = styled(PutAway)`
-  border-top: 0.1rem solid ${colors.palette.pale};
-  width: 100%;
-  height: 5.6rem;
-  display: flex;
-  align-items: center;
-  background-color: ${colors.palette.neutralBright};
-  padding-left: 1.5rem;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  z-index: 20;
-
-  @media(min-width: 56em) {
-    padding: 0 calc(50vw - 43rem);
-  }
-
-  button {
-    height: 3rem;
-    background-color: ${colors.palette.white};
-    border: 1px solid ${colors.palette.pale};
-    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
-    width: 9rem;
-    border-radius: 0.5rem;
-  }
-`;
 
 /**
  * SVG icon representing a "new tab" indicator
@@ -162,10 +126,10 @@ export const HelpMenu: React.FC<HelpMenuProps> = ({ contactFormParams, chatConfi
       </HelpMenuButton>
 
       {showIframe && (
-        <IframeWrapper>
-          <Iframe title='Contact form' src={showIframe} />
-          <StyledPutAway onClick={() => setShowIframe(undefined)} />
-        </IframeWrapper>
+        <BodyPortal className='help-menu-iframe-wrapper'>
+          <iframe className='help-menu-iframe' title='Contact form' src={showIframe} />
+          <PutAway onClick={() => setShowIframe(undefined)} />
+        </BodyPortal>
       )}
     </>
   );
