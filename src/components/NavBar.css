@@ -1,17 +1,17 @@
 /* NavBar wrapper - portals to 'nav' slot */
 .navbar-wrapper {
   overflow: visible;
-  z-index: var(--navbar-z-index, 10);
-  background: #ffffff;
+  z-index: var(--navbar-z-index, var(--ox-z-index-navbar));
+  background: var(--ox-color-white);
   position: relative;
-  padding: 0 var(--navbar-padding-mobile, 1.6rem);
+  padding: 0 var(--navbar-padding-mobile, var(--ox-padding-navbar-mobile));
   box-shadow: 0 0.2rem 0.2rem 0 rgba(0, 0, 0, 0.1);
   min-width: 0;
 }
 
 @media screen and (min-width: 75.0625em) {
   .navbar-wrapper {
-    padding: 0 var(--navbar-padding-desktop, 3.2rem);
+    padding: 0 var(--navbar-padding-desktop, var(--ox-padding-navbar-desktop));
   }
 }
 

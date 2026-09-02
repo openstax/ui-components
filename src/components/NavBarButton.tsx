@@ -2,6 +2,7 @@ import React from "react";
 import { Button, ButtonProps, composeRenderProps } from "react-aria-components";
 import classNames from "classnames";
 import "./NavBarButton.css";
+import "../theme/theme.css";
 
 // className is deliberately not re-declared here: ButtonProps types it as
 // `string | ((values: ButtonRenderProps) => string)`, and re-declaring it as `string`

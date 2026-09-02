@@ -6,9 +6,9 @@
   margin: auto;
   overflow: hidden;
   width: 40rem;
-  background-color: white;
+  background-color: var(--ox-color-white);
   box-shadow: 0 0 2rem rgba(0, 0, 0, 0.05), 0 0 4rem rgba(0, 0, 0, 0.08);
-  color: var(--modal-text-color, #424242);
+  color: var(--modal-text-color, var(--ox-color-neutral-darker));
   font-size: 1.6rem;
   line-height: 2.5rem;
   outline: none;
@@ -19,15 +19,16 @@
   align-items: center;
   margin-bottom: 1.5rem;
   padding: 1.5rem 3rem;
-  background: var(--modal-header-bg, #f1f1f1);
+  background: var(--modal-header-bg, var(--ox-color-neutral-lighter));
+  /* #ddd is not a palette value; see KNOWN_OFF_PALETTE in src/theme/tokens.spec.ts */
   border-bottom: solid 0.1rem #ddd;
   justify-content: space-between;
   color: var(--modal-header-color, inherit);
 }
 
 .modal-header.error {
-  --modal-header-bg: #FBE7EA;
-  --modal-header-color: #c22032;
+  --modal-header-bg: var(--ox-color-pale-red);
+  --modal-header-color: var(--ox-color-dark-red);
 }
 
 .modal-heading {
@@ -59,7 +60,7 @@
   background-color: rgba(0, 0, 0, 0.3);
   justify-content: center;
   align-items: center;
-  z-index: var(--modal-z-index, 30);
+  z-index: var(--modal-z-index, var(--ox-z-index-modals));
 }
 
 .card-wrapper {

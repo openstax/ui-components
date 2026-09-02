@@ -1,6 +1,5 @@
 import { render } from "@testing-library/react";
 import { Tabs, Tab, TabList, TabPanel } from "./Tabs";
-import { palette } from "../theme/palette";
 import type { ComponentProps } from "react";
 
 describe("Tabs component", () => {
@@ -121,7 +120,6 @@ describe("Tabs component", () => {
       expect(el.classList.contains("tabs-medium")).toBe(true);
       expect(el.classList.contains("custom")).toBe(true);
       expect(el.style.color).toBe("red");
-      expect(el.style.getPropertyValue("--tabs-border-color")).toBe(palette.pale);
     });
 
     // No `as CSSPropertiesWithVariables` cast below: the point of these is that the
@@ -131,8 +129,10 @@ describe("Tabs component", () => {
       const el = container.querySelector('[data-orientation]') as HTMLElement;
 
       expect(el.style.getPropertyValue("--tabs-border-color")).toBe("hotpink");
-      // the variables the caller did not override are still bound
-      expect(el.style.getPropertyValue("--tabs-active-border-color")).toBe(palette.darkGreen);
+      // Defaults for the variables the caller did not override live in Tabs.css as
+      // var(--tabs-*, var(--ox-color-*)), so they are deliberately absent from the
+      // inline style. tokens.spec.ts is what keeps those defaults honest.
+      expect(el.style.getPropertyValue("--tabs-active-border-color")).toBe("");
     });
 
     it("lets a style render callback return css variables without a cast", () => {
@@ -156,7 +156,6 @@ describe("Tabs component", () => {
       expect(el.classList.contains("tabs")).toBe(true);
       expect(el.classList.contains("custom-horizontal")).toBe(true);
       expect(el.style.color).toBe("red");
-      expect(el.style.getPropertyValue("--tabs-active-border-color")).toBe(palette.darkGreen);
     });
   });
 });
