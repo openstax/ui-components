@@ -113,7 +113,7 @@ exports[`ManageCookies without cookieYes renders no button, so the wrapper is no
 <style
   dangerouslySetInnerHTML={
     Object {
-      "__html": ".cky-btn-revisit { display: none; }",
+      "__html": ".cky-btn-revisit-wrapper.cky-btn-revisit-wrapper, .cky-btn-revisit { display: none; }",
     }
   }
 />
@@ -123,7 +123,7 @@ exports[`ManageCookies without cookieYes renders the style rule inline, matching
 <style
   dangerouslySetInnerHTML={
     Object {
-      "__html": ".cky-btn-revisit { display: none; }",
+      "__html": ".cky-btn-revisit-wrapper.cky-btn-revisit-wrapper, .cky-btn-revisit { display: none; }",
     }
   }
 />

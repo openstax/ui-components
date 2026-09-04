@@ -4,7 +4,7 @@ exports[`ManageCookies outside a browser renders style element for SSR 1`] = `
 <style
   dangerouslySetInnerHTML={
     Object {
-      "__html": ".cky-btn-revisit { display: none; }",
+      "__html": ".cky-btn-revisit-wrapper.cky-btn-revisit-wrapper, .cky-btn-revisit { display: none; }",
     }
   }
 />

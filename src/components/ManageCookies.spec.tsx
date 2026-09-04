@@ -6,7 +6,7 @@ import { ManageCookiesLink } from "./ManageCookies";
 // keep in sync with the id ManageCookies gives its injected style element
 const revisitStyleId = 'openstax-manage-cookies-style';
 // keep in sync with ManageCookies.node.spec.tsx, which snapshots the SSR render
-const serverMarkup = '<style>.cky-btn-revisit { display: none; }</style>';
+const serverMarkup = '<style>.cky-btn-revisit-wrapper.cky-btn-revisit-wrapper, .cky-btn-revisit { display: none; }</style>';
 
 describe('ManageCookies', () => {
   describe('without cookieYes', () => {
@@ -348,7 +348,7 @@ describe('ManageCookies', () => {
 
       const style = document.head.querySelector(`#${revisitStyleId}`);
       expect(style).not.toBeNull();
-      expect(style?.textContent).toBe('.cky-btn-revisit { display: none; }');
+      expect(style?.textContent).toBe('.cky-btn-revisit-wrapper.cky-btn-revisit-wrapper, .cky-btn-revisit { display: none; }');
     });
 
     it('removes style element from document head on unmount', () => {
@@ -406,6 +406,39 @@ describe('ManageCookies', () => {
       document.head.querySelector(`#${revisitStyleId}`)?.remove();
 
       expect(() => unmount()).not.toThrow();
+    });
+
+    // The assertions above only compare the text we wrote against itself, so they
+    // cannot show the rule reaching anything. CookieYes puts the visible circle on
+    // .cky-btn-revisit-wrapper, which an earlier version of this rule never targeted
+    // at all - it styled only the inner button, and the badge stayed up. This renders
+    // CookieYes' markup and checks the circle itself goes away.
+    //
+    // Only the wrapper is asserted. jsdom resolves competing declarations by source
+    // order rather than specificity, so it is not a witness for the inner button,
+    // which a real browser keeps at `flex` under CookieYes'
+    // `.cky-btn-revisit-wrapper .cky-btn-revisit` and hides only via its ancestor.
+    it('hides the revisit badge CookieYes actually renders', () => {
+      const cookieYesStyle = document.createElement('style');
+      cookieYesStyle.textContent = '.cky-btn-revisit-wrapper { display: flex; }';
+      document.head.appendChild(cookieYesStyle);
+
+      const badge = document.createElement('div');
+      badge.className = 'cky-btn-revisit-wrapper';
+      badge.innerHTML = '<button class="cky-btn-revisit"></button>';
+      document.body.appendChild(badge);
+
+      expect(getComputedStyle(badge).display).toBe('flex');
+
+      const { unmount } = render(<ManageCookiesLink />);
+      expect(getComputedStyle(badge).display).toBe('none');
+
+      // and it comes back for anyone no longer offering the link in its place
+      unmount();
+      expect(getComputedStyle(badge).display).toBe('flex');
+
+      badge.remove();
+      cookieYesStyle.remove();
     });
   });
 

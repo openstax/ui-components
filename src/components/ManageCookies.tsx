@@ -2,7 +2,15 @@ import React from 'react';
 import { ButtonLink } from "./Button";
 
 const revisitStyleId = 'openstax-manage-cookies-style';
-const revisitStyleCss = '.cky-btn-revisit { display: none; }';
+// CookieYes renders the floating badge as a `.cky-btn-revisit-wrapper` circle around
+// a `.cky-btn-revisit` button, and styles the button as
+// `.cky-btn-revisit-wrapper .cky-btn-revisit`, so a lone `.cky-btn-revisit` rule is
+// outranked and the badge stays visible. Hiding the wrapper covers both, and its class
+// is repeated to outrank CookieYes' own `.cky-btn-revisit-wrapper` rule without
+// depending on which stylesheet was injected last. The bare `.cky-btn-revisit` stays
+// for any markup where the button has no wrapper around it.
+const revisitStyleCss =
+  '.cky-btn-revisit-wrapper.cky-btn-revisit-wrapper, .cky-btn-revisit { display: none; }';
 
 // Every mounted ManageCookiesLink shares one style element. How many of them
 // are relying on it is tracked on the element itself rather than in a module
