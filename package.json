@@ -1,6 +1,6 @@
 {
   "name": "@openstax/ui-components",
-  "version": "1.23.7",
+  "version": "1.23.8",
   "license": "MIT",
   "os": [ "darwin", "linux" ],
   "repository": "https://github.com/openstax/ui-components.git",
