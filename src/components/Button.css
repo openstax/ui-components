@@ -60,6 +60,7 @@
 
 /* Button that looks like a link */
 .button-link {
+  font-size: inherit;
   cursor: pointer;
   border: none;
   margin: 0;
