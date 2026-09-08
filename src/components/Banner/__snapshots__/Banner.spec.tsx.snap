@@ -2,7 +2,7 @@
 
 exports[`Banner matches snapshot (error, with dismiss) 1`] = `
 <div
-  className="sc-gsnTZi bbCSY"
+  className="banner banner-error"
 >
   <div>
     <span
@@ -15,20 +15,8 @@ exports[`Banner matches snapshot (error, with dismiss) 1`] = `
   </div>
   <button
     aria-label="dismiss"
-    className="button-base sc-dkzDqf dzRdnV"
+    className="banner-close-button banner-error"
     onClick={[Function]}
-    severity="error"
-    style={
-      Object {
-        "--button-bg": "#D4450C",
-        "--button-bg-active": "#b03808",
-        "--button-bg-hover": "#be3c08",
-        "--button-color": "#ffffff",
-        "--button-font-weight": 700,
-        "--button-outline": "#ffffff",
-        "--button-shadow": "#000000",
-      }
-    }
   >
     <svg
       aria-hidden="true"
@@ -64,11 +52,11 @@ exports[`Banner matches snapshot (error, with dismiss) 1`] = `
 
 exports[`Banner matches snapshot (multiple messages, with dismiss) 1`] = `
 <div
-  className="sc-gsnTZi iNpbIt"
+  className="banner banner-warning"
 >
   <div>
     <span
-      className="sc-bczRLJ jqtwgx"
+      className="banner-severity"
     >
       Warning: 
     </span>
@@ -89,20 +77,8 @@ exports[`Banner matches snapshot (multiple messages, with dismiss) 1`] = `
   </div>
   <button
     aria-label="dismiss"
-    className="button-base sc-dkzDqf cLwIlc"
+    className="banner-close-button banner-warning"
     onClick={[Function]}
-    severity="warning"
-    style={
-      Object {
-        "--button-bg": "#D4450C",
-        "--button-bg-active": "#b03808",
-        "--button-bg-hover": "#be3c08",
-        "--button-color": "#ffffff",
-        "--button-font-weight": 700,
-        "--button-outline": "#ffffff",
-        "--button-shadow": "#000000",
-      }
-    }
   >
     <svg
       aria-hidden="true"
@@ -138,11 +114,11 @@ exports[`Banner matches snapshot (multiple messages, with dismiss) 1`] = `
 
 exports[`Banner matches snapshot (single message, no dismiss) 1`] = `
 <div
-  className="sc-gsnTZi iNpbIt"
+  className="banner banner-note"
 >
   <div>
     <span
-      className="sc-bczRLJ jqtwgx"
+      className="banner-severity"
     >
       Note: 
     </span>

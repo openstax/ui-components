@@ -1,59 +1,37 @@
+import React from "react";
+import classNames from "classnames";
 import { DismissIcon } from "../svgs/DismissIcon";
 import { Html } from "../Html";
-import styled from 'styled-components';
-import { Button } from '../Button';
-import { colors } from '../../theme';
+import { CSSPropertiesWithVariables } from "../../types";
+import './Banner.css';
+import '../../theme/theme.css';
 
 export type BannerSeverity = 'note' | 'warning' | 'error';
 
-export const Severity = styled.span`
-  font-weight: bold;
-  text-transform: uppercase;
-`;
+// style is widened to CSSPropertiesWithVariables so callers can set the documented
+// --banner-* custom properties without casting.
+type WithVariableStyle<E extends keyof JSX.IntrinsicElements> =
+  Omit<React.ComponentPropsWithoutRef<E>, 'style'> & { style?: CSSPropertiesWithVariables };
 
-export const StyledBanner = styled.div<{severity: BannerSeverity}>`
-  position: relative;
-  background: ${({severity}) => severity === 'error' ? '#F8E8EA' : '#fff5e0'};
-  color: ${({severity}) => severity === 'error' ? colors.palette.darkRed : '#976502'};
-  border: ${({severity}) => severity === 'error' ? `1px solid ${colors.palette.lightRed}` : '1px solid #fdbd3e'};
-  padding: .6rem 1.6rem;
-  margin: 0 0 1.6rem 0;
-  line-height: 2rem;
-  display: flex;
-  align-items: center;
+export const Severity = ({ className, ...props }: WithVariableStyle<'span'>) => (
+  <span {...props} className={classNames('banner-severity', className)} />
+);
 
-  a {
-    text-decoration: none;
-    color: ${colors.palette.mediumBlue};
-  
-    &:hover {
-      text-decoration: underline;
-      color: ${colors.link.hover}
-    }
-  }
+export interface StyledBannerProps extends WithVariableStyle<'div'> {
+  severity: BannerSeverity;
+}
 
-  .button-link {
-    font-size: 1.6rem;
-  }
-`;
+export const StyledBanner = ({ severity, className, ...props }: StyledBannerProps) => (
+  <div {...props} className={classNames('banner', `banner-${severity}`, className)} />
+);
 
-export const CloseButton = styled(Button)<{severity: BannerSeverity}>`
-  color: ${({severity}) => severity === 'error' ? colors.palette.darkRed : '#976502'};
-  overflow: visible;
-  background: none;
-	border: none;
-	padding: 0;
-	font: inherit;
-	cursor: pointer;
-	outline: inherit;
-  box-shadow: none;
-  margin-left: 2.4rem;
+export interface CloseButtonProps extends WithVariableStyle<'button'> {
+  severity: BannerSeverity;
+}
 
-  &:not([disabled]):hover,
-  &:not([disabled]):active {
-    background: none;
-  }
-`;
+export const CloseButton = ({ severity, className, ...props }: CloseButtonProps) => (
+  <button {...props} className={classNames('banner-close-button', `banner-${severity}`, className)} />
+);
 
 export const Banner = (props: {messages: string[]; severity: BannerSeverity; onDismiss?: () => void}) => {
   const numWarnings = props.messages.length;

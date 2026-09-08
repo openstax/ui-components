@@ -1,0 +1,70 @@
+/*
+ * Banner styles.
+ *
+ * The severity tone lives in the `banner-note` / `banner-warning` / `banner-error`
+ * classes, which set the three --banner-* custom properties. Both the banner and its
+ * close button carry the tone class, so the button keeps its severity colour even when a
+ * consumer renders it outside a StyledBanner.
+ */
+.banner-note,
+.banner-warning {
+  --banner-bg: #fff5e0;
+  --banner-color: #976502;
+  --banner-border-color: #fdbd3e;
+}
+
+.banner-error {
+  --banner-bg: #F8E8EA;
+  --banner-color: var(--ox-color-dark-red);
+  --banner-border-color: var(--ox-color-light-red);
+}
+
+.banner {
+  position: relative;
+  background: var(--banner-bg);
+  color: var(--banner-color);
+  border: 1px solid var(--banner-border-color);
+  padding: .6rem 1.6rem;
+  margin: 0 0 1.6rem 0;
+  line-height: 2rem;
+  display: flex;
+  align-items: center;
+}
+
+.banner a {
+  text-decoration: none;
+  color: var(--banner-link-color, var(--ox-color-medium-blue));
+}
+
+.banner a:hover {
+  text-decoration: underline;
+  color: var(--banner-link-hover-color, var(--ox-color-link-hover));
+}
+
+.banner .button-link {
+  font-size: 1.6rem;
+}
+
+.banner-severity {
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+/*
+ * Self-contained rather than layered over .button-base: the styled-components original
+ * wrapped Button and then unset everything Button gave it, which only worked because
+ * styled-components injected its sheet last. Plain CSS has no such guarantee, and the two
+ * class selectors would have equal specificity.
+ */
+.banner-close-button {
+  color: var(--banner-color);
+  overflow: visible;
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  outline: inherit;
+  box-shadow: none;
+  margin-left: 2.4rem;
+}
