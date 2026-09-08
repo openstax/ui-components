@@ -10,7 +10,7 @@ exports[`Tree matches snapshot 1`] = `
     hidden=""
   />
   <div
-    class="sc-bczRLJ hWiIYF"
+    class="tree"
     data-collection="react-aria-1"
     data-rac=""
     id="react-aria-2"
@@ -23,7 +23,7 @@ exports[`Tree matches snapshot 1`] = `
       aria-level="1"
       aria-posinset="1"
       aria-setsize="1"
-      class="sc-gsnTZi gVKDeu"
+      class="tree-item"
       data-collection="react-aria-1"
       data-has-child-items="true"
       data-key="1"
@@ -54,12 +54,12 @@ exports[`Tree matches snapshot 1`] = `
           First
         </label>
         <div
-          class="sc-hKMtZM gDQLFf"
+          class="tree-chevron"
         >
           <button
             aria-label="expand/collapse"
             aria-labelledby="react-aria-5 react-aria-2-1"
-            class="sc-eCYdqJ fIxumb"
+            class="tree-chevron-button"
             data-rac=""
             data-react-aria-pressable="true"
             data-react-aria-prevent-focus="true"
