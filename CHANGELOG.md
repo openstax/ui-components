@@ -30,6 +30,55 @@ ability to override the wrapper's CSS variables.
 
 ### Changed - BREAKING CHANGES
 
+#### Feature Component Migration (CORE-2008)
+
+`MessageBox`, `Banner`, `Tree` and `ToggleButtonGroup` have been migrated from styled-components
+to plain CSS bound to the `--ox-*` theme tokens. Props, behaviour and visual appearance are
+unchanged, but the exported pieces are no longer styled-components:
+
+**Breaking Changes:**
+
+1. **`BoxWrapper` (and `BoxHeading`, `BoxBody`, `BoxEventId`) are no longer styled-components**
+   - **Old behavior**: styled-components, usable as component selectors inside another styled
+     component's template — `${BoxWrapper} { ... }`
+   - **New behavior**: plain function components rendering `.message-box`, `.message-box-heading`,
+     `.message-box-body` and `.message-box-event-id`
+   - **Impact**: `${BoxWrapper}` in a styled-components template no longer resolves to a selector.
+     `openstax/assessments` does this in
+     `packages/frontend/src/assessments/screens/Preview/styled.tsx`
+   - **Migration**: target the `.message-box` class instead
+
+2. **`CloseButton` no longer wraps `Button`**
+   - **Old behavior**: `styled(Button)` that unset every style `Button` applied, and forwarded the
+     `severity` prop through to the rendered `<button>` element
+   - **New behavior**: a self-contained `<button class="banner-close-button">`. The old layering
+     only worked because styled-components injects its sheet last; in plain CSS the two class
+     selectors have equal specificity and the winner would depend on module evaluation order
+   - **Impact**: `variant` and `isWaiting` are no longer accepted (no consumer passes them), and the
+     rendered element no longer carries a `severity` attribute or the `button-base` class
+   - **Migration**: none needed for the `severity` / `onClick` / `aria-label` usage in the wild
+
+**Non-Breaking Changes:**
+
+- `StyledBanner`, `Severity`, `Tree`, `TreeItem`, `TreeItemContent`, `TreeChevron`, `MessageBox`
+  and `ToggleButtonGroup` keep their props and rendered structure.
+- Banner severity is now a tone class — `.banner-note`, `.banner-warning`, `.banner-error` — which
+  sets `--banner-bg`, `--banner-color` and `--banner-border-color`. The tone class is applied to
+  the close button as well as the banner, so `CloseButton` keeps its colour when rendered outside
+  a `StyledBanner`.
+- The react-aria wrappers (`Tree`, `TreeItem`, `StyledToggleButtonGroup`, `StyledToggleButton`)
+  compose `className` with `composeRenderProps`, so both the string and render-callback forms
+  survive. `styled(UI.ToggleButtonGroup)` in consuming projects keeps working.
+- `TreeItemContent` is re-exported straight from react-aria-components. It renders no DOM node, so
+  the empty `styled()` wrapper it used to carry was a no-op.
+- The `style` prop on the `MessageBox` and `Banner` exports is widened from `React.CSSProperties`
+  to `CSSPropertiesWithVariables`, so callers can set the documented `--message-box-*` and
+  `--banner-*` variables without casting. This is a widening, so existing usage is unaffected.
+- Four Banner colours (`#fff5e0`, `#976502`, `#fdbd3e`, `#f8e8ea`) are recorded in
+  `KNOWN_OFF_PALETTE` rather than snapped to the nearest palette entry, which would have been a
+  visual change.
+
+
 #### Button Component Migration (CORE-1999)
 
 The Button component and its variants have been migrated from styled-components to standard CSS with CSS custom properties. While the components maintain the same visual appearance and React API, there are **breaking changes** for certain exports:

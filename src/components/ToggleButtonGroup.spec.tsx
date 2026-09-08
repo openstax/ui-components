@@ -1,3 +1,4 @@
+import { render } from "@testing-library/react";
 import { ToggleButtonGroup } from "./ToggleButtonGroup/index";
 import renderer from "react-test-renderer";
 
@@ -40,4 +41,33 @@ describe('ToggleButtonGroup', () => {
         ).toJSON();
         expect(tree).toMatchSnapshot();
     });
+
+  it("applies the toggle button classes", () => {
+    render(
+      <ToggleButtonGroup
+        selectionMode='single'
+        selectedItems={new Set(['red'])}
+        items={childrenListWithKeys}
+      />
+    );
+
+    expect(document.querySelector('.toggle-button-group')).not.toBeNull();
+    expect(document.querySelectorAll('.toggle-button')).toHaveLength(childrenListWithKeys.length);
+  });
+
+  it("composes a caller className rather than replacing it", () => {
+    // assignments wraps this component with styled(UI.ToggleButtonGroup), which supplies
+    // a plain string className that has to survive.
+    render(
+      <ToggleButtonGroup
+        className='caller-group'
+        selectionMode='single'
+        selectedItems={new Set(['red'])}
+        items={childrenListWithKeys}
+      />
+    );
+
+    const group = document.querySelector('.toggle-button-group');
+    expect(group?.className).toContain('caller-group');
+  });
 });
