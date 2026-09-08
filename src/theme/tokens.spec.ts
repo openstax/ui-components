@@ -1,13 +1,9 @@
 import fs from 'fs';
 import path from 'path';
-import { palette } from './palette';
-import { colors } from '../theme';
 import { renderThemeCss, themeTokens } from './themeCss';
 
 const srcDir = path.join(__dirname, '..');
 const themeCssPath = path.join(__dirname, 'theme.css');
-
-const kebab = (key: string) => key.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
 
 /**
  * Colours that appear in component CSS but are deliberately not theme values. Anything
@@ -297,11 +293,17 @@ const walk = (dir: string, out: string[] = []): string[] => {
 
 const here = path.basename(__filename);
 
-/** Every colour the theme defines, as token name -> the value written in the JS theme. */
-const themeColors: ReadonlyArray<readonly [string, string]> = [
-  ...Object.entries(palette).map(([key, value]) => [`--ox-color-${kebab(key)}`, value] as const),
-  ['--ox-color-link-hover', colors.link.hover] as const,
-];
+/**
+ * Every colour the theme defines, as token name -> the value written in the JS theme.
+ *
+ * Read off the projection in themeCss.ts rather than re-derived from palette.ts and
+ * theme.ts, so the set the checks below run over is by construction the set theme.css is
+ * generated from. Restating the list here is what let `--ox-color-link` go missing: the
+ * generator had it, this file did not, and nothing tied the two together.
+ */
+const themeColors: ReadonlyArray<readonly [string, string]> = [...themeTokens()].filter(
+  ([name]) => name.startsWith('--ox-color-')
+);
 
 /**
  * Theme colours describeColor cannot reduce to channels. Asserted empty below rather than
@@ -312,12 +314,19 @@ const unresolvableThemeColors = themeColors
   .filter(([, value]) => describeColor(value).hex === null)
   .map(([token, value]) => `${token}: ${value}`);
 
-/** Every theme colour, by opaque channels, so a literal can be traced back to its token. */
-const themeValues = new Map(
-  themeColors
-    .map(([token, value]) => [describeColor(value).hex, token] as const)
-    .filter((entry): entry is readonly [string, string] => entry[0] !== null)
-);
+/**
+ * Every theme colour, by opaque channels, so a literal can be traced back to its token.
+ *
+ * A value can carry more than one token — `--ox-color-link` and `--ox-color-medium-blue`
+ * are both #026AA1 — so every token holding a value is kept. Reporting all of them lets
+ * the author pick the one that says what they mean, rather than being sent to whichever
+ * entry happened to be written last.
+ */
+const themeValues = themeColors.reduce((byValue, [token, value]) => {
+  const { hex } = describeColor(value);
+  if (hex !== null) { byValue.set(hex, [...(byValue.get(hex) ?? []), token]); }
+  return byValue;
+}, new Map<string, string[]>());
 
 /** Everything wrong with the colours in one stylesheet. Empty means the file is clean. */
 const colorProblems = (css: string): string[] => {
@@ -336,17 +345,19 @@ const colorProblems = (css: string): string[] => {
         continue;
       }
 
-      const token = themeValues.get(hex);
+      const tokens = themeValues.get(hex);
 
       if (alpha < 1) {
         // An alpha variant of a theme colour is fine — there is no token form for it.
-        if (!token) {
+        if (!tokens) {
           problems.push(
             `"${literal}" is translucent and its channels (${hex}) are not a theme value — add ${hex} to palette.ts, or "${key}" to KNOWN_OFF_PALETTE in ${here} with a reason`
           );
         }
-      } else if (token) {
-        problems.push(`${literal} duplicates the theme — use var(${token})`);
+      } else if (tokens) {
+        problems.push(
+          `${literal} duplicates the theme — use ${tokens.map((name) => `var(${name})`).join(' or ')}`
+        );
       } else {
         problems.push(
           `${literal} is not a theme value — add it to palette.ts, or to KNOWN_OFF_PALETTE in ${here} with a reason`
@@ -461,6 +472,26 @@ describe('the colour check itself', () => {
     // Guards the themeValues map: see unresolvableThemeColors above for why a silent drop
     // would be worse than a failure here.
     expect(unresolvableThemeColors).toEqual([]);
+  });
+
+  it('checks every colour token the theme projects, semantic ones included', () => {
+    // themeColors is derived from the projection, so this cannot drift the way the
+    // hand-written list did — --ox-color-link was absent from it, leaving the link colour
+    // outside both the resolvability guard and the duplicate check.
+    expect(themeColors.map(([name]) => name)).toEqual(
+      [...themeTokens().keys()].filter((name) => name.startsWith('--ox-color-'))
+    );
+    expect(themeColors.map(([name]) => name)).toEqual(
+      expect.arrayContaining(['--ox-color-link', '--ox-color-link-hover'])
+    );
+  });
+
+  it('names every token that carries a colour when more than one does', () => {
+    // #026AA1 is both palette.mediumBlue and colors.link.color. Naming only one would send
+    // half the authors who hit this to a token that does not say what they mean.
+    expect(rule('color: #026AA1;')).toEqual([
+      '#026AA1 duplicates the theme — use var(--ox-color-medium-blue) or var(--ox-color-link)',
+    ]);
   });
 
   it('flags a reference to a token that does not exist', () => {
