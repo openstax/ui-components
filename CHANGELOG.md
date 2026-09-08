@@ -18,6 +18,16 @@ silently discarded and never reached the DOM. These wrappers now use RAC's
 callback form from `ButtonProps`. This widens the accepted type, so string `className` values
 keep working unchanged.
 
+#### Render-callback `style` support in react-aria-components wrappers (CORE-2710)
+
+`NavBarMenuItem`, `NavBarPopover`, and `TreeCheckbox` merged the caller's `style` into their
+own CSS-variable object with a spread. React-aria-components types `style` as
+`CSSProperties | ((renderProps) => CSSProperties)`, and spreading a function into an object
+literal copies nothing, so a render-callback `style` was silently discarded — with no type
+error to catch it. These wrappers now use RAC's `composeRenderProps` and merge inside a
+callback, so both forms reach the DOM. The object form is unchanged, including the caller's
+ability to override the wrapper's CSS variables.
+
 ### Changed - BREAKING CHANGES
 
 #### Button Component Migration (CORE-1999)

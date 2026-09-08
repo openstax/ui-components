@@ -19,11 +19,17 @@ export const NavBarMenuItem = React.forwardRef<
   HTMLDivElement,
   React.ComponentProps<typeof MenuItem>
 >(({ className, style, ...props }, ref) => {
-  const menuItemStyle: CSSPropertiesWithVariables = {
-    '--navbar-menu-item-hover-bg': colors.palette.neutralLighter,
-    '--navbar-menu-item-border-color': colors.palette.neutralBright,
-    ...style
-  };
+  // composeRenderProps normalises the object and render-callback forms of style so a
+  // caller-supplied callback is merged rather than dropped. The caller still spreads last
+  // and can override the CSS variables set here.
+  const menuItemStyle = composeRenderProps(
+    style,
+    (resolvedStyle): CSSPropertiesWithVariables => ({
+      '--navbar-menu-item-hover-bg': colors.palette.neutralLighter,
+      '--navbar-menu-item-border-color': colors.palette.neutralBright,
+      ...resolvedStyle
+    })
+  );
 
   return (
     <MenuItem
@@ -48,10 +54,13 @@ export const NavBarPopover = React.forwardRef<
   HTMLDivElement,
   PopoverProps
 >(({ className, style, ...props }, ref) => {
-  const popoverStyle: CSSPropertiesWithVariables = {
-    '--navbar-popover-border-color': colors.palette.darkGreen,
-    ...style
-  };
+  const popoverStyle = composeRenderProps(
+    style,
+    (resolvedStyle): CSSPropertiesWithVariables => ({
+      '--navbar-popover-border-color': colors.palette.darkGreen,
+      ...resolvedStyle
+    })
+  );
 
   return (
     <Popover
