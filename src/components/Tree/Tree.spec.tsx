@@ -45,4 +45,38 @@ describe('Tree', () => {
     )
     expect(asFragment()).toMatchSnapshot();
   });
+
+  it('applies the tree classes and keeps the chevron structure', () => {
+    render(
+      <Tree>
+        <TreeItem id="1" textValue="1">
+          <TreeItemContent>
+            <TreeChevron>Show/Hide</TreeChevron>
+          </TreeItemContent>
+        </TreeItem>
+      </Tree>
+    );
+
+    expect(document.querySelector('.tree')).not.toBeNull();
+    expect(document.querySelector('.tree-item')).not.toBeNull();
+    // The wrapper is the div; the caller-facing className lands on the button inside it,
+    // which is what the styled-components original did.
+    expect(document.querySelector('.tree-chevron > button')?.getAttribute('slot')).toEqual('chevron');
+  });
+
+  it('composes a render-callback className on the tree and its items', () => {
+    render(
+      <Tree className={() => 'caller-tree'}>
+        <TreeItem id="1" textValue="1" className={() => 'caller-item'}>
+          <TreeItemContent>
+            <TreeChevron className='caller-chevron'>Show/Hide</TreeChevron>
+          </TreeItemContent>
+        </TreeItem>
+      </Tree>
+    );
+
+    expect(document.querySelector('.tree')?.className).toContain('caller-tree');
+    expect(document.querySelector('.tree-item')?.className).toContain('caller-item');
+    expect(document.querySelector('.tree-chevron-button')?.className).toContain('caller-chevron');
+  });
 });
