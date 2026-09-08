@@ -1,13 +1,16 @@
 import React from 'react';
 import { Banner } from './Banner';
-import styled from 'styled-components';
 
-const BannerContainer = styled.div`
-  font-size: 1.2rem;
-  position: relative;
-  padding-right: 2.5rem;
-  width: 42rem;
-`;
+const containerStyle: React.CSSProperties = {
+  fontSize: '1.2rem',
+  position: 'relative',
+  paddingRight: '2.5rem',
+  width: '42rem',
+};
+
+const BannerContainer = ({ children }: React.PropsWithChildren<unknown>) => (
+  <div style={containerStyle}>{children}</div>
+);
 
 export const Error = () => (
   <BannerContainer>
