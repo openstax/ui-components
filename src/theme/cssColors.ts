@@ -5,11 +5,6 @@
  * `rgba()`, `hsl()`, named colours in shorthands and colours in gradient stops — all of
  * which can silently duplicate or diverge from a theme value.
  *
- * Published deliberately, not incidentally. This engine knows nothing about
- * ui-components; REX needed exactly the same thing and, because the first copy lived
- * inside a spec file where nothing could import it, got a second hand-written one
- * instead. The two had already diverged before either merged. See CORE-2736.
- *
  * Two rules keep it publishable:
  *
  * - **No `fs`, no `path`, no node built-ins.** It resolves to the `browser` export
