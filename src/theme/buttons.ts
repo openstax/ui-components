@@ -19,8 +19,8 @@ const asButtonStyleSetTypes = <T>(st: { [K in keyof T]: ButtonStyleSet }) => st;
 const buttonStyleSets = asButtonStyleSetTypes({
   primary: {
     background: palette.orange,
-    backgroundActive: palette.darkerOrange,
-    backgroundHover: palette.darkOrange,
+    backgroundActive: palette.orangeActive,
+    backgroundHover: palette.orangeHover,
     color: palette.white,
     outline: palette.white,
     shadow: palette.black,
@@ -36,8 +36,8 @@ const buttonStyleSets = asButtonStyleSetTypes({
   },
   secondary: {
     background: palette.darkGray,
-    backgroundActive: palette.darkerGray,
-    backgroundHover: palette.mediumGray,
+    backgroundActive: palette.darkGrayActive,
+    backgroundHover: palette.darkGrayHover,
     color: palette.white,
     outline: palette.white,
     shadow: palette.black,
