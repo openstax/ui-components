@@ -27,6 +27,11 @@ describe('stripNoise', () => {
     expect(blanked).toContain('no-repeat');
   });
 
+  it('only blanks url(), not a function whose name merely ends in url', () => {
+    // `myurl(...)` is an unknown container to be descended into, not noise
+    expect(stripNoise('a { --x: myurl(#fff); }')).toContain('#fff');
+  });
+
   it('keeps the url() parentheses, which are structure rather than noise', () => {
     // declarations balances parens to know a `;` inside url() is not a separator
     expect(stripNoise('a { background: url(x;y); }')).toContain('url(');
@@ -121,6 +126,19 @@ describe('declarations', () => {
 
     expect(parsed).toHaveLength(2);
     expect(parsed[1]).toEqual({ context: 'a', property: 'color', value: 'red' });
+  });
+
+  it('keeps a brace block as a custom property value rather than a nested rule', () => {
+    // `--x: { red }` is a valid declaration whose value is a block of component
+    // values. Pushing the block as selector context loses the value entirely.
+    expect(declarations(':root { --x: { red }; }'))
+      .toEqual([{ context: ':root', property: '--x', value: '{ red }' }]);
+  });
+
+  it('still reads a nested rule as a rule, not as a value', () => {
+    // the brace-block rule must not swallow real nesting: this is two contexts
+    expect(declarations('a { color: red; b { color: blue; } }').map((d) => d.context))
+      .toEqual(['a', 'a b']);
   });
 
   it('keeps a custom property declaration', () => {
@@ -390,6 +408,37 @@ describe('findColors', () => {
     expect(findColors('red', false)).toEqual([]);
   });
 
+  it.each([
+    ['a hex escape with its terminating space', 'a { color: r\\65 d; }', 'r\\65 d'],
+    ['a hex escape at the end of the identifier', 'a { color: re\\64; }', 're\\64'],
+    ['an escaped ordinary character', 'a { color: \\red; }', '\\red'],
+    ['a hex escape spelling the first letter', 'a { color: \\72 ed; }', '\\72 ed'],
+  ])('decodes %s so the named colour is not evaded', (_case, css, literal) => {
+    // CSS tokenizes all three of these as the identifier `red`, so an audit that
+    // reads them as separate words is trivially bypassed.
+    const found = stylesheetColors(css);
+    expect(found).toHaveLength(1);
+    // the literal stays the original source span, since that is what a consumer
+    // has to find and rewrite in the file
+    expect(found[0].literal).toEqual(literal);
+    expect(found[0].rgba).toEqual({ r: 255, g: 0, b: 0, a: 1 });
+  });
+
+  it('does not decode an escape into a colour where the property forbids one', () => {
+    expect(literals('a { animation-name: r\\65 d; }')).toEqual([]);
+  });
+
+  it('consumes up to six hex digits, so \\72ed is one character and not red', () => {
+    // `e` and `d` are hex digits, so this escape is U+72ED and the declaration is not
+    // a colour at all — Chromium rejects it. Stopping at two digits would invent a
+    // finding out of valid CSS.
+    expect(literals('a { color: \\72ed; }')).toEqual([]);
+  });
+
+  it('does not throw on an escape outside the Unicode range', () => {
+    expect(() => literals('a { color: \\110000 ; }')).not.toThrow();
+  });
+
   it('records the declaration each colour was written in', () => {
     expect(stylesheetColors('@media (max-width: 50em) { .a:hover { color: #fff; } }'))
       .toEqual([{
@@ -444,6 +493,32 @@ describe('describeColor', () => {
 
   it('returns null for a non-numeric channel', () => {
     expect(describeColor('rgb(var(--x), 0, 0)')).toBeNull();
+  });
+
+  it.each([
+    // modern syntax puts the alpha behind a single slash; without it this is four
+    // channels, which is not a grammar rgb() has
+    'rgb(0 0 0 0.5)',
+    'rgb(0 0 0 // 0.5)',
+    'rgb(0 0 0 /)',
+    // and the legacy comma syntax has no slash at all
+    'rgb(0, 0, 0 / 0.5)',
+  ])('returns null for the malformed rgb() grammar %s', (literal) => {
+    expect(describeColor(literal)).toBeNull();
+  });
+
+  it.each([
+    'rgb(0, 50%, 0)', 'rgba(255, 50%, 0, 0.5)',
+    // not just the comma syntax: rgb() splits into an all-number and an
+    // all-percentage production in both spellings, so neither permits mixing.
+    // Chromium rejects all three of these.
+    'rgb(255 50% 0)',
+  ])('returns null for %s, since rgb() cannot mix channel units', (literal) => {
+    expect(describeColor(literal)).toBeNull();
+  });
+
+  it('reads an all-percentage legacy triple, which is consistent', () => {
+    expect(describeColor('rgb(100%, 50%, 0%)')).toEqual({ r: 255, g: 128, b: 0, a: 1 });
   });
 
   it('returns null for the wrong number of channels', () => {

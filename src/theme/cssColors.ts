@@ -194,7 +194,12 @@ const blankNoise = (css: string, keepStrings: boolean): string => {
       continue;
     }
 
-    const url = /^url\(/i.exec(rest);
+    // `url` has to be the whole function name rather than the tail of one. In
+    // `--x: myurl(#fff)` the payload is ordinary value text to descend into, and
+    // blanking it loses the colour. The preceding source character settles it: an
+    // ident character there means `url` is only a suffix.
+    const boundary = index === 0 || !/[\w-]/.test(css[index - 1]);
+    const url = boundary ? /^url\(/i.exec(rest) : null;
     if (url) {
       const open = index + url[0].length;
       let depth = 1;
@@ -302,6 +307,13 @@ const collapseSeparators = (selector: string): string => {
  * `[data-loading="true"]` and `[data-loading="false"]` stay distinguishable. Both are
  * the same length as the input, which is what lets one index address both.
  */
+/**
+ * A declaration whose property is a custom property, up to and including its colon.
+ * This is what tells `--x: { red }`, a declaration whose value happens to be a block,
+ * from `a { ... }`, a nested rule.
+ */
+const CUSTOM_PROPERTY_DECLARATION = /^\s*--[^\s:]*\s*:/;
+
 export const declarations = (css: string): Declaration[] => {
   const found: Declaration[] = [];
   const values = stripNoise(css);
@@ -309,6 +321,7 @@ export const declarations = (css: string): Declaration[] => {
   const stack: string[] = [];
   let start = 0;
   let parens = 0;
+  let blocks = 0;
 
   const flush = (end: number) => {
     const segment = values.slice(start, end);
@@ -338,7 +351,21 @@ export const declarations = (css: string): Declaration[] => {
     if (character === ')') { parens = Math.max(0, parens - 1); }
     if (parens !== 0) { continue; }
 
+    // A custom property takes an arbitrary token stream, so a `{}` block in its value
+    // is a component value rather than a nested rule: `--x: { red }` is a declaration
+    // whose value is `{ red }`. Everything inside belongs to the value, `;` included,
+    // so the structural rules are suspended until the block closes.
+    if (blocks > 0) {
+      if (character === '{') { blocks++; }
+      if (character === '}') { blocks--; }
+      continue;
+    }
+
     if (character === '{') {
+      if (CUSTOM_PROPERTY_DECLARATION.test(values.slice(start, index))) {
+        blocks = 1;
+        continue;
+      }
       stack.push(collapseSeparators(selectors.slice(start, index)));
       start = index + 1;
     } else if (character === '}') {
@@ -468,6 +495,129 @@ const fromHex = (literal: string): Rgba | null => {
 };
 
 /**
+ * Splits `rgb()`/`rgba()` arguments, or null when none of the productions hold.
+ *
+ * The two syntaxes are parsed separately rather than by normalising the separators
+ * away, because they are four distinct productions and not interchangeable:
+ *
+ *     rgb( <number>{3}     [ / <alpha> ]? )    rgb( <number>#{3}     , <alpha>? )
+ *     rgb( <percentage>{3} [ / <alpha> ]? )    rgb( <percentage>#{3} , <alpha>? )
+ *
+ * Two consequences, both checked against Chromium rather than read off the grammar:
+ * the modern syntax puts its alpha behind exactly one slash, so `rgb(0 0 0 0.5)` is
+ * four channels and not a colour; and each production takes three channels of *one*
+ * type, so `rgb(0, 50%, 0)` and `rgb(0 50% 0)` are both invalid. Resolving either
+ * would let a malformed theme value pass the consumer's "every colour token resolves"
+ * guard while generating CSS the browser drops on the floor.
+ */
+const rgbaArgs = (raw: string): string[] | null => {
+  const consistent = (channels: string[]) => {
+    const percentages = channels.filter((c) => c.trim().endsWith('%')).length;
+    return percentages === 0 || percentages === channels.length;
+  };
+
+  if (raw.includes(',')) {
+    // the legacy syntax has no slash anywhere
+    if (raw.includes('/')) { return null; }
+
+    const parts = raw.split(',');
+    if (parts.length < 3 || parts.length > 4) { return null; }
+
+    return consistent(parts.slice(0, 3)) ? parts : null;
+  }
+
+  const [channels, alpha, ...extra] = raw.split('/');
+  if (extra.length > 0) { return null; }
+
+  const parts = channels.trim().split(/\s+/);
+  if (parts.length !== 3 || !consistent(parts)) { return null; }
+  if (alpha === undefined) { return parts; }
+
+  // a slash with nothing after it is not an alpha
+  return alpha.trim() === '' ? null : [...parts, alpha];
+};
+
+/**
+ * One CSS escape: a backslash and up to six hex digits, whose terminating whitespace
+ * belongs to the escape, or a backslash and any single character bar a newline.
+ *
+ * The six-digit limit is the whole subtlety. `e` and `d` are hex digits, so `\72ed` is
+ * U+72ED rather than `r` followed by `ed` — Chromium rejects `color: \72ed` outright.
+ * Stopping short of six would invent a finding out of valid CSS.
+ */
+const ESCAPE = /^\\(?:([0-9a-fA-F]{1,6})[ \t\n\r\f]?|([^\n\r\f]))/;
+
+/** An identifier cannot start with a digit; a leading `-` or an escape is fine. */
+const IDENT_START = /[a-zA-Z_\u0080-\uffff\\-]/;
+const IDENT_CHARACTER = /[a-zA-Z0-9_\u0080-\uffff-]/;
+
+/**
+ * The source span of one CSS identifier at `from`, or null if there is not one there.
+ *
+ * Escapes are part of an identifier, so the span can be longer than the name it spells:
+ * `r\65 d` is five characters of source for the three of `red`. The span rather than
+ * the name is what a consumer has to find and rewrite in the file, so both are kept --
+ * `decodeEscapes` is the other half.
+ */
+const identSpan = (value: string, from: number): string | null => {
+  if (!IDENT_START.test(value[from] ?? '')) { return null; }
+
+  let index = from;
+
+  while (index < value.length) {
+    if (value[index] === '\\') {
+      const escape = ESCAPE.exec(value.slice(index));
+      // a backslash before a newline is not an escape, and ends the identifier
+      if (escape === null) { break; }
+      index += escape[0].length;
+      continue;
+    }
+
+    if (!IDENT_CHARACTER.test(value[index])) { break; }
+    index++;
+  }
+
+  return index === from ? null : value.slice(from, index);
+};
+
+/**
+ * Decodes CSS escapes, so that the audit reads the identifier CSS reads. `r\65 d`,
+ * `re\64`, `\red` and `\72 ed` are four spellings of `red` and all four resolve to it
+ * in Chromium, so an audit that reads them as separate words is trivially bypassed.
+ */
+const decodeEscapes = (text: string): string => {
+  if (!text.includes('\\')) { return text; }
+
+  let out = '';
+  let index = 0;
+
+  while (index < text.length) {
+    const escape = text[index] === '\\' ? ESCAPE.exec(text.slice(index)) : null;
+
+    if (escape === null) {
+      out += text[index];
+      index++;
+      continue;
+    }
+
+    if (escape[1] === undefined) {
+      out += escape[2];
+    } else {
+      const point = parseInt(escape[1], 16);
+      // null, a surrogate and anything past the last plane all become the replacement
+      // character, which is what CSS says and also stops fromCodePoint throwing
+      out += point === 0 || point > 0x10ffff || (point >= 0xd800 && point <= 0xdfff)
+        ? '\ufffd'
+        : String.fromCodePoint(point);
+    }
+
+    index += escape[0].length;
+  }
+
+  return out;
+};
+
+/**
  * Resolves a colour literal to channels, or null when it cannot be resolved statically.
  * Returning null is deliberate: `hsl()`, `oklch()` and `color()` are reported by the
  * consumer rather than passing silently, so the escape hatch stays explicit.
@@ -477,17 +627,14 @@ export const describeColor = (literal: string): Rgba | null => {
 
   if (text.startsWith('#')) { return fromHex(text.toLowerCase()); }
 
-  const named = NAMED_COLORS[text.toLowerCase()];
+  const named = NAMED_COLORS[decodeEscapes(text).toLowerCase()];
   if (named) { return fromHex(named); }
 
   const fn = /^(rgba?)\((.*)\)$/is.exec(text);
   if (!fn) { return null; }
 
-  const args = fn[2].includes(',')
-    ? fn[2].split(',')
-    : fn[2].replace(/\//g, ' ').trim().split(/\s+/);
-
-  if (args.length < 3 || args.length > 4) { return null; }
+  const args = rgbaArgs(fn[2]);
+  if (args === null) { return null; }
 
   const [r, g, b] = args.slice(0, 3).map(channel);
   const a = alphaChannel(args[3]);
@@ -547,13 +694,13 @@ export const findColors = (value: string, named: boolean): FoundColor[] => {
       continue;
     }
 
-    const word = /^-?[a-zA-Z][\w-]*/.exec(rest);
-    if (word) {
-      const name = word[0].toLowerCase();
+    const ident = identSpan(value, index);
+    if (ident) {
+      const name = decodeEscapes(ident).toLowerCase();
       if (named && NAMED_COLORS[name] && !COLOR_KEYWORDS.includes(name)) {
-        found.push({ literal: word[0], rgba: describeColor(word[0]) });
+        found.push({ literal: ident, rgba: describeColor(ident) });
       }
-      index += word[0].length;
+      index += ident.length;
       continue;
     }
 
