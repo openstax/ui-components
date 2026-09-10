@@ -1,0 +1,70 @@
+/* HelpMenu trigger button */
+.help-menu-button {
+  color: var(--help-menu-button-color, var(--ox-color-gray));
+  font-size: 1.4rem;
+}
+
+/* HelpMenu menu item */
+.help-menu-item {
+  color: var(--help-menu-item-color, var(--ox-color-neutral-darker));
+  text-decoration: none;
+}
+
+/* The compound selector keeps the override of .navbar-menu-item:focus-visible
+   independent of stylesheet order */
+.navbar-menu-item.help-menu-item:focus-visible {
+  outline: 0;
+  background: var(--help-menu-item-focus-bg, var(--ox-color-neutral-lighter));
+}
+
+.help-menu-item:hover {
+  color: var(--help-menu-item-color, var(--ox-color-neutral-darker));
+  text-decoration: none;
+}
+
+/* Contact form iframe, portaled to the body */
+.help-menu-iframe-wrapper {
+  background-color: var(--help-menu-iframe-wrapper-bg, var(--ox-color-neutral-bright));
+  position: absolute;
+  width: 100%;
+  top: 4rem;
+  left: 0;
+  bottom: 0;
+  z-index: 20;
+}
+
+.help-menu-iframe {
+  border: 0;
+  width: 100%;
+  height: calc(100% - 5rem);
+}
+
+/* Bar with the "Back" button that puts the contact form away */
+.help-menu-put-away {
+  border-top: 0.1rem solid var(--help-menu-put-away-border-color, var(--ox-color-pale));
+  width: 100%;
+  height: 5.6rem;
+  display: flex;
+  align-items: center;
+  background-color: var(--help-menu-put-away-bg, var(--ox-color-neutral-bright));
+  padding-left: 1.5rem;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  z-index: 20;
+}
+
+@media (min-width: 56em) {
+  .help-menu-put-away {
+    padding: 0 calc(50vw - 43rem);
+  }
+}
+
+.help-menu-put-away button {
+  height: 3rem;
+  background-color: var(--help-menu-put-away-button-bg, var(--ox-color-white));
+  border: 1px solid var(--help-menu-put-away-button-border-color, var(--ox-color-pale));
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+  width: 9rem;
+  border-radius: 0.5rem;
+}

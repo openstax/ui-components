@@ -1,48 +1,50 @@
 import React from 'react';
-import { Button, Menu, MenuTrigger, Key } from 'react-aria-components';
-import styled from 'styled-components';
-import { colors, defaultFocusOutline } from '../../theme';
+import classNames from 'classnames';
+import { Button, ButtonProps, composeRenderProps, Menu, MenuTrigger, PopoverProps, Key } from 'react-aria-components';
 import { NavBarPopover, NavBarMenuItem } from '../NavBarMenuButtons';
 import { UserIcon } from './UserIcon';
+import './ProfileMenu.css';
+import '../../theme/theme.css';
 
-export const ProfileMenuButton = styled(Button)`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 3.5rem;
-  height: 3.5rem;
-  border-radius: 50%;
-  border: none;
-  line-height: 1.6rem;
-  font-size: 1.4rem;
-  color: ${colors.palette.white};
-  background-color: ${colors.palette.darkTeal};
-  cursor: pointer;
+export const ProfileMenuButton = React.forwardRef<
+  React.ElementRef<typeof Button>,
+  ButtonProps
+>(({ className, ...props }, ref) => (
+  // style is deliberately not destructured: with the theme defaults moved into
+  // ProfileMenu.css there is nothing left to merge it with, so it passes straight through
+  // in ...props and react-aria handles both the object and render-callback forms.
+  <Button
+    ref={ref}
+    className={composeRenderProps(className, (resolved) => classNames('profile-menu-button', resolved))}
+    {...props}
+  />
+));
+ProfileMenuButton.displayName = 'ProfileMenuButton';
 
-  &:hover {
-    box-shadow: 0 0 0.2rem 0.2rem rgba(0, 0, 0, 0.3);
-  }
+export const ProfileMenuPopover = React.forwardRef<
+  HTMLDivElement,
+  PopoverProps
+>(({ className, ...props }, ref) => (
+  <NavBarPopover
+    ref={ref}
+    className={composeRenderProps(className, (resolved) => classNames('profile-menu-popover', resolved))}
+    {...props}
+  />
+));
+ProfileMenuPopover.displayName = 'ProfileMenuPopover';
 
-  &[data-focused],
-  &[data-focus-visible] {
-    ${defaultFocusOutline}
-    outline-offset: 0.2rem;
-  }
-
-  svg {
-    width: 1.5rem;
-  }
-`;
-
-export const ProfileMenuPopover = styled(NavBarPopover)`
-  min-width: 10rem;
-  margin-top: 0.4rem;
-`;
-
-export const ProfileMenuItem = styled(NavBarMenuItem)`
-  color: ${colors.palette.neutralDarker};
-  text-decoration: none;
-`;
+export const ProfileMenuItem = React.forwardRef<
+  HTMLDivElement,
+  React.ComponentProps<typeof NavBarMenuItem>
+>(({ className, ...props }, ref) => (
+  // style passes through in ...props — see the note on ProfileMenuButton above.
+  <NavBarMenuItem
+    ref={ref}
+    className={composeRenderProps(className, (resolved) => classNames('profile-menu-item', resolved))}
+    {...props}
+  />
+));
+ProfileMenuItem.displayName = 'ProfileMenuItem';
 
 function getInitials(
   user?: { firstName?: string; lastName?: string }
