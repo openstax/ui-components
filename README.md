@@ -86,15 +86,29 @@ Color tokens are the kebab-case form of the `src/theme/palette.ts` key
 (`palette.neutralLighter` → `--ox-color-neutral-lighter`); there are also `--ox-color-link`,
 `--ox-color-link-hover`, `--ox-z-index-*` and `--ox-padding-navbar-*`.
 
-Any component whose CSS uses a token must import the token file alongside its own stylesheet:
+Any component whose CSS uses a token must import the token file alongside its own
+stylesheet:
 
 ```ts
 import './MyComponent.css';
 import '../theme/theme.css';
 ```
 
-Consumers need do nothing — bundlers deduplicate the import, and `sideEffects` in
-`package.json` keeps it from being tree-shaken.
+There is no bundler in the build — `build.bash` copies CSS 1:1 — so nothing resolves an
+`@import` on our behalf and a stylesheet does not drag `theme.css` in by itself. Forget the
+import and every `var(--ox-*)` in that file quietly takes its fallback, which usually looks
+right on screen because the fallback is the literal the token replaced. `tokens.spec.ts`
+fails when a stylesheet reads a token and the module importing it does not import the
+tokens, so this cannot be forgotten rather than merely being documented.
+
+Consumers of the package need do nothing: the import rides along with the component,
+bundlers deduplicate it, and `sideEffects` in `package.json` keeps it from being
+tree-shaken. An app that wants the tokens without rendering one of our components — to
+build its own styles on the palette, say — can load the file directly:
+
+```ts
+import '@openstax/ui-components/theme/theme.css';
+```
 
 ### Component override hooks and when to bind in JS
 
@@ -124,6 +138,7 @@ callers can set these without a cast.
 - a component stylesheet introduces a color that is not a theme value and not in the
   `KNOWN_OFF_PALETTE` allowlist
 - a component stylesheet reads an `--ox-*` token that does not exist
+- a stylesheet reads a token and the module that imports it does not import `theme.css`
 
 The color check parses declarations rather than grepping for hex, so it reads a value the
 way the property does. What that covers:
