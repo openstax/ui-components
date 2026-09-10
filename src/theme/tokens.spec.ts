@@ -26,6 +26,10 @@ const themeCssPath = path.join(__dirname, 'theme.css');
 const KNOWN_OFF_PALETTE = new Map([
   ['#cccccc', 'Tooltip border and the uncontrolled-form h3 rule. Predates the palette; nearest entry is pale (#d5d5d5).'],
   ['#dddddd', 'Modal header bottom rule. Predates the palette; nearest entry is pale (#d5d5d5).'],
+  ['#fff5e0', 'Banner note/warning background. Inherited from the styled-components Banner; no palette entry is close.'],
+  ['#976502', 'Banner note/warning text and close button. Inherited from the styled-components Banner; no palette entry is close.'],
+  ['#fdbd3e', 'Banner note/warning border. Inherited from the styled-components Banner; nearest entry is tangerine (#ffbd3e), and snapping to it would be a visual change.'],
+  ['#f8e8ea', 'Banner error background. Inherited from the styled-components Banner; nearest entry is paleRed (#fbe7ea), and snapping to it would be a visual change.'],
 ]);
 
 /**

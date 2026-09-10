@@ -1,0 +1,40 @@
+/* ToggleButtonGroup styles */
+.toggle-button-group {
+  /* formerly tabListBaseCss */
+  overflow-x: auto;
+  overscroll-behavior: contain;
+  display: flex;
+  flex-direction: row;
+}
+
+.toggle-button {
+  all: unset;
+  height: 3.6rem;
+  padding: 0 0.8rem;
+  background-color: var(--toggle-button-bg, var(--ox-color-white));
+  border: solid 0.1rem var(--toggle-button-border-color, var(--ox-color-pale));
+  font-weight: 400;
+  font-size: 1.6rem;
+  line-height: 2rem;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.toggle-button + .toggle-button {
+  border-left: none;
+}
+
+.toggle-button[data-selected] {
+  background-color: var(--toggle-button-selected-bg, var(--ox-color-neutral-lighter));
+  /* achieve a 2px border effect without disrupting layout */
+  box-shadow: inset 0 0 0 0.1rem var(--toggle-button-border-color, var(--ox-color-pale));
+}
+
+.toggle-button[data-disabled] {
+  color: var(--toggle-button-disabled-color, var(--ox-color-neutral-light));
+}
+
+.toggle-button[data-focus-visible] {
+  outline: none;
+  box-shadow: inset 0 0 0 0.1rem var(--toggle-button-focus-color, var(--ox-color-black));
+}
