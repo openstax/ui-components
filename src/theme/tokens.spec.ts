@@ -159,10 +159,19 @@ const allColorProblems = (css: string): string[] => {
   return [...duplicates, ...offPalette];
 };
 
-/** --ox-* tokens a stylesheet reads but theme.css does not define. */
+/**
+ * --ox-* tokens a stylesheet reads but theme.css does not define.
+ *
+ * The match is case-insensitive because CSS function names are: `VAR(--ox-color-pale)` is
+ * the same reference as `var(--ox-color-pale)`, and a check that only knew the lowercase
+ * spelling would let a typo through in the other one. The lookup stays case-sensitive,
+ * because custom property *names* are — `var(--OX-color-pale)` really is a reference to
+ * something nothing defines, and silently falling through to its fallback is the failure
+ * this check exists to catch.
+ */
 const unknownTokenReferences = (css: string, defined: Map<string, string>) => [
   ...new Set(
-    [...stripNoise(css).matchAll(/var\(\s*(--ox-[\w-]+)/g)]
+    [...stripNoise(css).matchAll(/var\(\s*(--ox-[\w-]+)/gi)]
       .map((match) => match[1])
       .filter((name) => !defined.has(name))
   ),
@@ -198,6 +207,7 @@ describe('the colour check itself', () => {
     ['space-separated rgb', 'color: rgb(213 213 213 / 100%);', '--ox-color-pale'],
     ['percentage rgb', 'color: rgb(100%, 100%, 100%);', '--ox-color-white'],
     ['hex in a var() fallback', 'color: var(--thing, #d5d5d5);', '--ox-color-pale'],
+    ['hex in an uppercase var() fallback', 'color: VAR(--thing, #d5d5d5);', '--ox-color-pale'],
     ['colour in a gradient stop', 'background: linear-gradient(to right, #d5d5d5, transparent);', '--ox-color-pale'],
     ['named colour in a custom property', '--tabs-border-color: whitesmoke;', '--ox-color-neutral-bright'],
     ['named colour in box-shadow', 'box-shadow: 0 0 0.2rem white;', '--ox-color-white'],
@@ -228,6 +238,7 @@ describe('the colour check itself', () => {
   it.each([
     ['a token reference', 'color: var(--ox-color-pale);'],
     ['a nested token fallback', 'color: var(--tabs-border-color, var(--ox-color-pale));'],
+    ['an uppercase token reference', 'color: VAR(--ox-color-pale);'],
     ['color-mix over tokens', 'background: color-mix(in srgb, var(--ox-color-black) 20%, transparent);'],
     ['transparent', 'background: transparent;'],
     ['currentcolor', 'border-color: currentcolor;'],
@@ -306,6 +317,25 @@ describe('the colour check itself', () => {
     expect(unknownTokenReferences('.x { color: var(--ox-color-pale); }', defined)).toEqual([]);
     expect(unknownTokenReferences('.x { color: var(--ox-color-palee); }', defined))
       .toEqual(['--ox-color-palee']);
+  });
+
+  it('reads a reference however the var() is spelled', () => {
+    // CSS function names are ASCII case-insensitive. Knowing only the lowercase spelling
+    // would mean an uppercase typo fell through to its fallback unreported — the one
+    // thing this check is for.
+    const defined = themeTokens();
+    expect(unknownTokenReferences('.x { color: VAR(--ox-color-pale); }', defined)).toEqual([]);
+    expect(unknownTokenReferences('.x { color: VAR(--ox-color-palee); }', defined))
+      .toEqual(['--ox-color-palee']);
+    expect(unknownTokenReferences('.x { color: Var( --ox-color-palee ); }', defined))
+      .toEqual(['--ox-color-palee']);
+  });
+
+  it('flags a token name whose case does not match', () => {
+    // Property names, unlike function names, are case-sensitive: --OX-color-pale is not
+    // the token, so the declaration resolves to its fallback or nothing at all.
+    expect(unknownTokenReferences('.x { color: var(--OX-color-pale); }', themeTokens()))
+      .toEqual(['--OX-color-pale']);
   });
 });
 
