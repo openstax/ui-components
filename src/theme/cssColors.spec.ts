@@ -33,6 +33,19 @@ describe('stripNoise', () => {
     expect(stripNoise('a { background: url(x;y); }')).toContain(')');
   });
 
+  it('does not end a url() at a parenthesis inside its quoted payload', () => {
+    // `url("icon).svg")` closes at the last paren. Stopping at the first one leaves the
+    // trailing quote behind, and that "unterminated string" blanks the rest of the rule.
+    const blanked = stripNoise('a { background: url("icon).svg"); color: red; }');
+    expect(blanked).not.toContain('icon');
+    expect(blanked).toContain('color: red;');
+  });
+
+  it('does not end a url() at an escaped parenthesis', () => {
+    expect(stripNoise('a { background: url(icon\\).svg); color: red; }'))
+      .toContain('color: red;');
+  });
+
   it('handles an escaped quote inside a string', () => {
     expect(stripNoise('a { content: "a\\"b"; }')).not.toContain('b"');
   });
@@ -47,6 +60,9 @@ describe('stripNoise', () => {
     ['an unterminated string', 'a { content: "tan }'],
     ['a url()', 'a { background: url(data:image/svg+xml;base64,Zm9v); }'],
     ['an unterminated url()', 'a { background: url(oops }'],
+    ['a url() with a paren in its payload', 'a { background: url("icon).svg"); }'],
+    ['a url() with an unterminated quoted payload', 'a { background: url("oops }'],
+    ['a url() ending in a trailing escape', 'a { background: url(oops\\'],
     ['an unterminated comment', 'a { color: red; /* oops'],
   ])('blanks %s without changing the length', (_case, css) => {
     // declarations addresses two differently-blanked copies with one index, so this
@@ -85,12 +101,33 @@ describe('declarations', () => {
     expect(values('a { background: url(x;y); color: red; }')).toContain('red');
   });
 
+  it('keeps the declarations after a url() whose payload contains a parenthesis', () => {
+    const parsed = values('a { background: url("icon).svg"); color: red; }');
+
+    expect(parsed).toHaveLength(2);
+    expect(parsed[1]).toEqual('red');
+  });
+
+  it('reads several url() payloads in one value', () => {
+    const parsed = declarations('a { background: url("a).svg") no-repeat, url(b); color: red; }');
+
+    expect(parsed).toHaveLength(2);
+    expect(parsed[1]).toEqual({ context: 'a', property: 'color', value: 'red' });
+  });
+
   it('keeps a custom property declaration', () => {
     expect(values(':root { --ox-color-x: #fff; }')).toEqual(['#fff']);
   });
 
   it('lower-cases the property name', () => {
     expect(declarations('a { COLOR: red; }')[0].property).toEqual('color');
+  });
+
+  it('keeps the case of a custom property name, which CSS is case-sensitive about', () => {
+    // `--Brand` and `--brand` are two different custom properties, so lower-casing them
+    // would merge two distinct declarations in the audit metadata.
+    expect(declarations(':root { --Brand: #fff; --brand: #000; }')
+      .map(({ property }) => property)).toEqual(['--Brand', '--brand']);
   });
 
   it('records the selector as context', () => {
@@ -100,6 +137,18 @@ describe('declarations', () => {
 
   it('collapses whitespace in the context', () => {
     expect(declarations('a,\n  b {\n  color: red;\n}')[0].context).toEqual('a, b');
+  });
+
+  it('does not collapse whitespace inside a selector string', () => {
+    // the whole point of keeping string contents is that two rules differing only
+    // inside a selector string stay distinguishable — collapsing runs of spaces there
+    // merges them again.
+    const parsed = declarations(
+      '[data-label="a  b"] { color: #fff; } [data-label="a b"] { color: #fff; }'
+    );
+
+    expect(parsed.map(({ context }) => context))
+      .toEqual(['[data-label="a  b"]', '[data-label="a b"]']);
   });
 
   it('nests the at-rule prelude and the selector in the context', () => {
@@ -265,6 +314,24 @@ describe('findColors', () => {
     expect(literals(css)).toEqual(['red']);
   });
 
+  it.each([
+    ['a gradient', 'a { list-style-image: linear-gradient(red, blue); }'],
+    ['a repeating gradient', 'a { list-style-image: repeating-conic-gradient(red, blue); }'],
+    ['a vendor-prefixed gradient', 'a { list-style-image: -webkit-linear-gradient(red, blue); }'],
+    ['color-mix()', 'a { list-style-image: color-mix(in srgb, red, blue); }'],
+  ])('reads named colours in %s under a property that cannot hold one', (_case, css) => {
+    // `list-style-image` takes an image, but a gradient's stops are colours wherever
+    // the gradient is written, so the property gate must not reach inside one.
+    expect(literals(css)).toEqual(['red', 'blue']);
+  });
+
+  it('keeps the property gate inside var(), whose fallback is not known to be a colour', () => {
+    // the other half: `var()` is whatever the property makes of it, so an identifier in
+    // a fallback is only a colour when the property says so.
+    expect(literals('a { animation-name: var(--enter, red); }')).toEqual([]);
+    expect(literals('a { color: var(--enter, red); }')).toEqual(['red']);
+  });
+
   it('still reads hex and rgb() in a property that cannot take a named colour', () => {
     // only the bare-identifier case is property-sensitive: `#fff` and `rgb(...)` are
     // colours wherever they are written, so they stay in scope everywhere.
@@ -357,6 +424,23 @@ describe('describeColor', () => {
       expect(describeColor(literal)).toBeNull();
     }
   );
+
+  it.each([
+    'rgb(., 0, 0)', 'rgb(1..2, 0, 0)', 'rgb(1.2.3, 0, 0)', 'rgb(0, 0, 0, .)',
+    'rgba(0, 0, 0, 1..2)', 'rgb(.%, 0, 0)', 'rgb(1e, 0, 0)',
+  ])('returns null for the malformed number in %s', (literal) => {
+    // `[\\d.]+` also matches `.` and `1..2`; parseFloat turns those into NaN and a
+    // truncated 1, either of which would be handed back as a resolved channel.
+    expect(describeColor(literal)).toBeNull();
+  });
+
+  it.each([
+    ['no integer part', 'rgb(.0, 0, 0)'],
+    ['an explicit plus sign', 'rgb(+255, 0, 0)'],
+    ['exponent notation', 'rgb(2.55e2, 0, 0)'],
+  ])('still reads a channel written with %s', (_case, literal) => {
+    expect(describeColor(literal)?.r).toEqual(literal.includes('.0') ? 0 : 255);
+  });
 
   it('rounds a percentage channel the same way as its integer spelling', () => {
     // 50% of 255 is 127.5, which rounds to 128. Scaling by the decimal 2.55 gives

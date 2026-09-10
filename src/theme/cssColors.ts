@@ -36,14 +36,19 @@ export interface FoundColor {
 export interface Declaration {
   /**
    * The selectors and at-rule preludes the declaration sits inside, outermost first,
-   * whitespace-collapsed: `@media (max-width: 75em) .book-banner .title`.
+   * with runs of whitespace collapsed outside strings:
+   * `@media (max-width: 75em) .book-banner .title`.
    *
    * Carried because a consumer may need to tell two occurrences of the same literal in
    * one file apart — REX's baseline ratchet identifies an occurrence by the declaration
    * it was written in. Consumers that only need to know a colour is wrong can ignore it.
    */
   context: string;
-  /** Lower-cased property name, e.g. `background-color` or `--tabs-border-color`. */
+  /**
+   * The property name, e.g. `background-color`. Lower-cased, because CSS matches
+   * property names case-insensitively — except for a custom property such as
+   * `--tabs-border-color`, whose name is case-sensitive and is kept as written.
+   */
   property: string;
   /** Everything to the right of the `:`. */
   value: string;
@@ -102,11 +107,27 @@ const NAMED_COLORS: Record<string, string> = {
 /**
  * Functions whose arguments *are* the colour, rather than containing one. These are
  * terminal: we try to resolve them and report them either way. Anything else that
- * happens to contain a colour (`var`, `color-mix`, the gradients) is descended into.
+ * happens to contain a colour (`var`, `color-mix`, the gradients) is descended into —
+ * see `COLOR_CONTAINERS` for which of those are colour-bearing by definition.
  */
 const COLOR_FUNCTIONS = [
   'rgb', 'rgba', 'hsl', 'hsla', 'hwb', 'lab', 'lch', 'oklab', 'oklch', 'color',
   'device-cmyk',
+];
+
+/**
+ * Functions that contain colours rather than being one, and whose arguments are known
+ * to be colour-valued whatever property they sit in. `list-style-image` takes an image,
+ * but `linear-gradient(red, blue)` is still a gradient between two colours, so the
+ * property gate must not reach inside one.
+ *
+ * `var()` is deliberately absent: a fallback is whatever the property makes of it, so
+ * it keeps the gate of the property it was written in.
+ */
+const COLOR_CONTAINERS = [
+  'linear-gradient', 'radial-gradient', 'conic-gradient', 'repeating-linear-gradient',
+  'repeating-radial-gradient', 'repeating-conic-gradient', 'color-mix', 'light-dark',
+  'cross-fade',
 ];
 
 /**
@@ -167,11 +188,31 @@ const blankNoise = (css: string, keepStrings: boolean): string => {
       const open = index + url[0].length;
       let depth = 1;
       let cursor = open;
+      // only a structural `)` ends the url: `url("icon).svg")` closes at the last
+      // paren, not at the one in the filename. Stopping early would leave the trailing
+      // quote behind, and blanking that "unterminated string" would swallow every
+      // declaration after it.
       while (cursor < css.length && depth > 0) {
-        if (css[cursor] === '(') { depth++; }
-        if (css[cursor] === ')') { depth--; }
+        const character = css[cursor];
+
+        if (character === '\\') { cursor += 2; continue; }
+
+        if (character === '"' || character === '\'') {
+          cursor++;
+          while (cursor < css.length && css[cursor] !== character) {
+            cursor += css[cursor] === '\\' ? 2 : 1;
+          }
+          cursor++;
+          continue;
+        }
+
+        if (character === '(') { depth++; }
+        if (character === ')') { depth--; }
         cursor++;
       }
+      // an escape or a quote at the very end can carry the cursor past the end, and the
+      // blanked copy has to stay the same length as the input.
+      cursor = Math.min(cursor, css.length);
       // the parens themselves are structure — `declarations` balances them — so only
       // the payload between them is blanked.
       const closed = depth === 0;
@@ -190,6 +231,50 @@ const blankNoise = (css: string, keepStrings: boolean): string => {
 
 /** Noise blanked for reading declaration values: strings go too. */
 export const stripNoise = (css: string): string => blankNoise(css, false);
+
+/**
+ * Collapses runs of whitespace in a selector, but only where the whitespace is
+ * separator rather than content. `[data-label="a  b"]` and `[data-label="a b"]` match
+ * different values, so a context that collapsed both to the latter would stop telling
+ * two rules apart — which is the one job the context has.
+ */
+const collapseSeparators = (selector: string): string => {
+  let out = '';
+  let index = 0;
+
+  while (index < selector.length) {
+    const character = selector[index];
+
+    if (character === '\\') {
+      // an escaped space is part of an identifier, e.g. the class `.a\\ b`
+      out += selector.slice(index, index + 2);
+      index += 2;
+      continue;
+    }
+
+    if (character === '"' || character === '\'') {
+      let cursor = index + 1;
+      while (cursor < selector.length && selector[cursor] !== character) {
+        cursor += selector[cursor] === '\\' ? 2 : 1;
+      }
+      const stop = Math.min(cursor + 1, selector.length);
+      out += selector.slice(index, stop);
+      index = stop;
+      continue;
+    }
+
+    if (/\s/.test(character)) {
+      while (index < selector.length && /\s/.test(selector[index])) { index++; }
+      out += ' ';
+      continue;
+    }
+
+    out += character;
+    index++;
+  }
+
+  return out.trim();
+};
 
 /**
  * Pulls declarations out of a stylesheet at any nesting depth, so `@media` blocks are
@@ -220,7 +305,10 @@ export const declarations = (css: string): Declaration[] => {
 
     if (stack.length > 0 && separator !== -1) {
       const value = segment.slice(separator + 1).trim();
-      const property = segment.slice(0, separator).trim().toLowerCase();
+      const name = segment.slice(0, separator).trim();
+      // ordinary property names are case-insensitive, but a custom property's is not:
+      // `--Brand` and `--brand` are two different properties and must stay two.
+      const property = name.startsWith('--') ? name : name.toLowerCase();
       if (value) { found.push({ context: stack.join(' '), property, value }); }
     }
 
@@ -235,7 +323,7 @@ export const declarations = (css: string): Declaration[] => {
     if (parens !== 0) { continue; }
 
     if (character === '{') {
-      stack.push(selectors.slice(start, index).replace(/\s+/g, ' ').trim());
+      stack.push(collapseSeparators(selectors.slice(start, index)));
       start = index + 1;
     } else if (character === '}') {
       flush(index);
@@ -269,35 +357,51 @@ const COLOR_SHORTHANDS = [
   'text-decoration', 'text-emphasis', 'text-shadow', 'text-stroke',
 ];
 
+const unprefixed = (name: string) => name.replace(/^-(?:webkit|moz|ms|o)-/, '');
+
 /** Whether a bare identifier in this property's value could be a colour. */
 export const takesColor = (property: string): boolean => {
   // custom properties have no grammar to go on, so anything in one counts
   if (property.startsWith('--')) { return true; }
 
-  const name = property.replace(/^-(?:webkit|moz|ms|o)-/, '');
+  const name = unprefixed(property.toLowerCase());
 
   return name.includes('color') || COLOR_SHORTHANDS.includes(name);
 };
 
+/** Whether this function's arguments are colours regardless of the enclosing property. */
+const holdsColor = (fn: string): boolean => COLOR_CONTAINERS.includes(unprefixed(fn));
+
 const clamp = (value: number, max: number) => Math.min(max, Math.max(0, value));
+
+/**
+ * The CSS `<number>` grammar, shared by the channels and the alpha rather than
+ * approximated as "digits and dots". `[\d.]+` also matches `.` and `1..2`, which
+ * `parseFloat` turns into `NaN` and a truncated `1`; both would then be handed back as
+ * resolved channels, so a malformed declaration would read as a real colour and get a
+ * comparison key built out of `NaN`.
+ */
+const NUMBER = '[+-]?(?:\\d+|\\d*\\.\\d+)(?:e[+-]?\\d+)?';
+const IS_NUMBER = new RegExp(`^${NUMBER}$`, 'i');
+const IS_PERCENTAGE = new RegExp(`^(${NUMBER})%$`, 'i');
 
 const channel = (raw: string): number | null => {
   const text = raw.trim();
-  const percent = /^(-?[\d.]+)%$/.exec(text);
+  const percent = IS_PERCENTAGE.exec(text);
   // scale by 255/100 rather than by the decimal 2.55, which is not representable in
   // binary: 50 * 2.55 is 127.49999999999999 and rounds to 127, where 50% of 255 is
   // 127.5 and rounds to 128. The two spellings of the same colour must agree, or they
   // get different keys and the audit misclassifies one of them.
   if (percent) { return Math.round((clamp(parseFloat(percent[1]), 100) / 100) * 255); }
-  return /^-?[\d.]+$/.test(text) ? Math.round(clamp(parseFloat(text), 255)) : null;
+  return IS_NUMBER.test(text) ? Math.round(clamp(parseFloat(text), 255)) : null;
 };
 
 const alphaChannel = (raw?: string): number | null => {
   if (raw === undefined) { return 1; }
   const text = raw.trim();
-  const percent = /^(-?[\d.]+)%$/.exec(text);
+  const percent = IS_PERCENTAGE.exec(text);
   if (percent) { return clamp(parseFloat(percent[1]), 100) / 100; }
-  return /^-?[\d.]+$/.test(text) ? clamp(parseFloat(text), 1) : null;
+  return IS_NUMBER.test(text) ? clamp(parseFloat(text), 1) : null;
 };
 
 /**
@@ -357,10 +461,12 @@ export const describeColor = (literal: string): Rgba | null => {
  * Finds every colour literal in a declaration value, at any depth. Functions that merely
  * contain colours are descended into; colour functions are terminal.
  *
- * `named` says whether a bare identifier may be read as a colour, which depends on the
- * property the value belongs to — see `takesColor`. Hex and the colour functions are
- * unambiguous and are found either way. It has no default: defaulting it to `true` would
- * quietly restore the over-eager behaviour for any caller that forgot it.
+ * `named` says whether a bare identifier may be read as a colour. That depends on the
+ * property the value belongs to — see `takesColor` — and on whether the walk has since
+ * descended into a function whose arguments are colours whatever the property is, see
+ * `COLOR_CONTAINERS`. Hex and the colour functions are unambiguous and are found either
+ * way. It has no default: defaulting it to `true` would quietly restore the over-eager
+ * behaviour for any caller that forgot it.
  */
 export const findColors = (value: string, named: boolean): FoundColor[] => {
   const found: FoundColor[] = [];
@@ -369,7 +475,9 @@ export const findColors = (value: string, named: boolean): FoundColor[] => {
   while (index < value.length) {
     const rest = value.slice(index);
 
-    const call = /^([a-z][\w-]*)\(/i.exec(rest);
+    // the leading `-` matters: without it `-webkit-linear-gradient(...)` is not read as
+    // a call at all, and its stops are walked as if they were loose identifiers.
+    const call = /^(-?[a-z][\w-]*)\(/i.exec(rest);
     if (call) {
       let depth = 1;
       let cursor = index + call[0].length;
@@ -380,11 +488,14 @@ export const findColors = (value: string, named: boolean): FoundColor[] => {
       }
       const literal = value.slice(index, cursor);
       const args = literal.slice(call[0].length, literal.endsWith(')') ? -1 : undefined);
+      const fn = call[1].toLowerCase();
 
-      if (COLOR_FUNCTIONS.includes(call[1].toLowerCase())) {
+      if (COLOR_FUNCTIONS.includes(fn)) {
         found.push({ literal, rgba: describeColor(literal) });
       } else {
-        found.push(...findColors(args, named));
+        // a colour-bearing container opens the gate for its arguments; anything else
+        // just passes the enclosing property's gate down unchanged.
+        found.push(...findColors(args, named || holdsColor(fn)));
       }
 
       index = cursor;
