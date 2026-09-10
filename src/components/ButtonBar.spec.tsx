@@ -1,6 +1,5 @@
 import { render } from "@testing-library/react";
 import { ButtonBar } from "./ButtonBar";
-import { palette } from "../theme/palette";
 
 describe("ButtonBar", () => {
   it("renders", () => {
@@ -43,8 +42,10 @@ describe("ButtonBar", () => {
       const el = container.querySelector("div") as HTMLElement;
 
       expect(el.style.getPropertyValue("--button-bar-border-color")).toBe("hotpink");
-      // the variables the caller did not override are still bound
-      expect(el.style.getPropertyValue("--button-bar-selected-bg")).toBe(palette.neutralLight);
+      // Defaults for the variables the caller did not override live in the stylesheet
+      // as var(--x, var(--ox-color-*)), so they are deliberately absent from the inline
+      // style. tokens.spec.ts is what keeps those defaults honest.
+      expect(el.style.getPropertyValue("--button-bar-selected-bg")).toBe("");
     });
 
     it("still accepts ordinary css properties", () => {

@@ -4,7 +4,6 @@ exports[`ButtonBar renders 1`] = `
 <DocumentFragment>
   <div
     class="button-bar button-bar-medium"
-    style="--button-bar-border-color: #d5d5d5; --button-bar-selected-bg: #e5e5e5; --button-bar-hover-bg: #f1f1f1;"
   >
     <a>
       One
@@ -20,7 +19,6 @@ exports[`ButtonBar renders large size 1`] = `
 <DocumentFragment>
   <div
     class="button-bar button-bar-large"
-    style="--button-bar-border-color: #d5d5d5; --button-bar-selected-bg: #e5e5e5; --button-bar-hover-bg: #f1f1f1;"
   >
     <button>
       One
@@ -38,7 +36,6 @@ exports[`ButtonBar renders small size 1`] = `
 <DocumentFragment>
   <div
     class="button-bar button-bar-small"
-    style="--button-bar-border-color: #d5d5d5; --button-bar-selected-bg: #e5e5e5; --button-bar-hover-bg: #f1f1f1;"
   >
     <button>
       One

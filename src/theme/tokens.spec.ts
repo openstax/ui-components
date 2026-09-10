@@ -273,54 +273,16 @@ describe('the colour check itself', () => {
   });
 });
 
-/**
- * Stylesheets migrated before the tokens existed, still carrying hand-copied literals.
- * Each is removed by the PR that sweeps it; the list is expected to reach empty, at which
- * point it and the assertion below go away with it.
- *
- * The point of listing them rather than skipping the check is that the list is asserted to
- * be *exactly* the failing set, so it cannot rot in either direction: dropping a name
- * without sweeping the file fails, and sweeping a file without dropping its name fails too.
- */
-const PENDING_SWEEP = new Set([
-  'components/Button.css',
-  'components/ButtonBar.css',
-  'components/Checkbox/Checkbox.css',
-  'components/CloseModalButton.css',
-  'components/DropdownMenu.css',
-  'components/Modal.css',
-  'components/NavBar.css',
-  'components/NavBar.stories.css',
-  'components/NavBarMenuButtons.css',
-  'components/Overlay.css',
-  'components/Radio.css',
-  'components/Tabs.css',
-  'components/Text.css',
-  'components/Toast.css',
-  'components/Tooltip.css',
-  'components/forms/uncontrolled/inputTypes.css',
-]);
-
 describe('component CSS', () => {
   const cssFiles = walk(srcDir).filter((file) => file !== themeCssPath);
   const tokens = themeTokens();
-  const name = (file: string) => path.relative(srcDir, file);
 
   it('has files to check', () => {
     // Guards against the walk silently finding nothing and the suite passing vacuously.
     expect(cssFiles.length).toBeGreaterThan(0);
   });
 
-  it('lists exactly the stylesheets still awaiting the sweep', () => {
-    const failing = cssFiles
-      .filter((file) => colorProblems(fs.readFileSync(file, 'utf8')).length > 0)
-      .map(name);
-    expect(failing.sort()).toEqual([...PENDING_SWEEP].sort());
-  });
-
-  it.each(
-    cssFiles.filter((file) => !PENDING_SWEEP.has(name(file))).map((file) => [name(file), file])
-  )(
+  it.each(cssFiles.map((file) => [path.relative(srcDir, file), file]))(
     '%s uses tokens rather than repeating theme values',
     (_name, file) => {
       expect(colorProblems(fs.readFileSync(file, 'utf8'))).toEqual([]);

@@ -1,12 +1,12 @@
 import React from 'react';
 import { PropsWithChildren } from "react";
-import { colors } from "../theme";
 import { InputHTMLAttributes } from "react";
 import {useTooltipTriggerState} from 'react-stately';
 import {useTooltipTrigger} from 'react-aria';
 import { CustomTooltip } from './Tooltip';
 import classNames from 'classnames';
 import "./Radio.css";
+import '../theme/theme.css';
 
 type RadioProps = PropsWithChildren<
   Omit<InputHTMLAttributes<HTMLInputElement>, 'type'>>;
@@ -26,12 +26,6 @@ export const Radio = ({ children, disabled, labelAs, className, style, tooltipTe
     { 'radio-label--disabled': disabled }
   );
 
-  // Label style with CSS variables
-  const labelStyle = {
-    '--radio-label-color': 'inherit',
-    '--radio-disabled-color': colors.palette.pale,
-  } as unknown as React.CSSProperties;
-
   // Input className
   const inputClassName = classNames(
     'radio-input',
@@ -39,12 +33,9 @@ export const Radio = ({ children, disabled, labelAs, className, style, tooltipTe
     className
   );
 
-  // Input style with CSS variables
+  // Input style: only the values that vary at runtime. Static colours come from the
+  // token defaults in Radio.css.
   const inputStyle = {
-    '--radio-bg': colors.palette.white,
-    '--radio-border': `1px solid ${colors.palette.neutralThin}`,
-    '--radio-border-color': colors.palette.pale,
-    '--radio-checked': colors.palette.mediumBlue,
     '--radio-opacity': disabled ? '0.4' : '1',
     '--radio-checked-opacity': disabled ? '0' : '1',
     ...style
@@ -89,7 +80,6 @@ export const Radio = ({ children, disabled, labelAs, className, style, tooltipTe
             {
               ref,
               className: labelClassName,
-              style: labelStyle,
               ...tPropsWithUpdatedOnFocus,
             },
             labelWithTooltip
@@ -98,10 +88,7 @@ export const Radio = ({ children, disabled, labelAs, className, style, tooltipTe
       </div>
     : React.createElement(
         labelElement,
-        {
-          className: labelClassName,
-          style: labelStyle,
-        },
+        { className: labelClassName },
         labelContent
       );
 };
