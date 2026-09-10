@@ -18,9 +18,10 @@ export const palette = {
   neutralLightBlue: "#0dc0dc",
   tangerine: "#ffbd3e",
   gray: "#5e5e5e",
-  mediumGray: "#646464", // darkGray, hover
   darkGray: "#757575",
-  darkerGray: "#4c4c4c", // darkGray, active
+  // button variants
+  darkGrayHover: "#646464",
+  darkGrayActive: "#4c4c4c",
   pale: "#d5d5d5",
   light: "#e4e4e4",
   white: "#ffffff",
@@ -37,6 +38,7 @@ export const palette = {
   neutralDarker: "#424242", // very dark gray
   black: "#000000",
   orange: "#D4450C",
-  darkOrange: "#be3c08", // orange, hover
-  darkerOrange: "#b03808" // orange, active
+  // button variants
+  orangeHover: "#be3c08",
+  orangeActive: "#b03808"
 } as const;
