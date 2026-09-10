@@ -161,6 +161,17 @@ const blankNoise = (css: string, keepStrings: boolean): string => {
   while (index < css.length) {
     const rest = css.slice(index);
 
+    // A CSS escape makes the character after it ordinary source text, so it has to be
+    // taken before anything that looks for a delimiter: `.foo\"bar` is a valid class
+    // name whose quote opens no string, and treating it as one blanks the rest of the
+    // stylesheet. Both characters are copied through rather than blanked — an escape in
+    // a value is part of an identifier, and `\red` really is the colour `red`.
+    if (css[index] === '\\') {
+      out += css.slice(index, index + 2);
+      index += 2;
+      continue;
+    }
+
     if (rest.startsWith('/*')) {
       const end = css.indexOf('*/', index + 2);
       const stop = end === -1 ? css.length : end + 2;
@@ -318,6 +329,11 @@ export const declarations = (css: string): Declaration[] => {
   for (let index = 0; index < values.length; index++) {
     const character = values[index];
 
+    // same rule as in `blankNoise`, and needed again because this scanner reads the
+    // blanked copy, where escapes survive: `.foo\{bar` is one class name, so its brace
+    // must not open a block and its semicolon must not end a declaration.
+    if (character === '\\') { index++; continue; }
+
     if (character === '(') { parens++; }
     if (character === ')') { parens = Math.max(0, parens - 1); }
     if (parens !== 0) { continue; }
@@ -347,14 +363,34 @@ export const declarations = (css: string): Declaration[] => {
  *
  * Spelled out rather than matched by prefix, so that `border-radius`, `border-width` and
  * the rest of the border family that cannot take a colour do not let one through.
+ *
+ * `list-style` is deliberately absent, though it is image-bearing: its bare identifier
+ * is a `<counter-style>` name, and after `@counter-style red { ... }` the declaration
+ * `list-style: red` is valid and means that counter. A gradient written there is still
+ * found, because a gradient opens the gate for its own stops — see `COLOR_CONTAINERS`.
  */
 const COLOR_SHORTHANDS = [
   'background', 'background-image', 'border', 'border-block', 'border-block-end',
   'border-block-start', 'border-bottom', 'border-image', 'border-image-source',
   'border-inline', 'border-inline-end', 'border-inline-start', 'border-left',
   'border-right', 'border-top', 'box-shadow', 'caret', 'column-rule', 'fill', 'filter',
-  'backdrop-filter', 'list-style', 'mask', 'mask-image', 'outline', 'scrollbar', 'stroke',
+  'backdrop-filter', 'mask', 'mask-image', 'outline', 'scrollbar', 'stroke',
   'text-decoration', 'text-emphasis', 'text-shadow', 'text-stroke',
+];
+
+/**
+ * Properties the `color` substring claims but that hold no `<color>`.
+ *
+ * `color-scheme` is the one that actually produces a false finding: its value is an
+ * author-defined `<custom-ident>`, so `color-scheme: red` names a scheme and reporting
+ * it as red would be wrong — with a suggested fix that breaks the declaration. The rest
+ * take fixed keywords, none of which is a colour name, so excluding them changes no
+ * result today; they are listed because the substring has no business claiming them and
+ * a future keyword could collide.
+ */
+const NOT_COLOR_PROPERTIES = [
+  'color-scheme', 'color-adjust', 'print-color-adjust', 'forced-color-adjust',
+  'color-interpolation', 'color-interpolation-filters', 'color-rendering',
 ];
 
 const unprefixed = (name: string) => name.replace(/^-(?:webkit|moz|ms|o)-/, '');
@@ -365,6 +401,8 @@ export const takesColor = (property: string): boolean => {
   if (property.startsWith('--')) { return true; }
 
   const name = unprefixed(property.toLowerCase());
+
+  if (NOT_COLOR_PROPERTIES.includes(name)) { return false; }
 
   return name.includes('color') || COLOR_SHORTHANDS.includes(name);
 };

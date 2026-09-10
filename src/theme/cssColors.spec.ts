@@ -46,6 +46,12 @@ describe('stripNoise', () => {
       .toContain('color: red;');
   });
 
+  it('treats an escaped quote in a selector as ordinary text', () => {
+    // `.foo\"bar` is a valid class name. Reading its quote as a string opener blanks
+    // everything after it, and the declaration disappears from the audit.
+    expect(stripNoise('.foo\\"bar { color: red; }')).toContain('color: red;');
+  });
+
   it('handles an escaped quote inside a string', () => {
     expect(stripNoise('a { content: "a\\"b"; }')).not.toContain('b"');
   });
@@ -63,6 +69,8 @@ describe('stripNoise', () => {
     ['a url() with a paren in its payload', 'a { background: url("icon).svg"); }'],
     ['a url() with an unterminated quoted payload', 'a { background: url("oops }'],
     ['a url() ending in a trailing escape', 'a { background: url(oops\\'],
+    ['an escaped quote in a selector', '.foo\\"bar { color: red; }'],
+    ['a stylesheet ending in an escape', 'a { color: red; } \\'],
     ['an unterminated comment', 'a { color: red; /* oops'],
   ])('blanks %s without changing the length', (_case, css) => {
     // declarations addresses two differently-blanked copies with one index, so this
@@ -179,6 +187,18 @@ describe('declarations', () => {
     expect(declarations('a { content: "#fff"; }')).toEqual([]);
   });
 
+  it.each([
+    ['a quote', '.foo\\"bar'],
+    ['a brace', '.foo\\{bar'],
+    ['a semicolon', '.foo\\;bar'],
+  ])('does not read %s escaped in a selector as structure', (_case, selector) => {
+    // each of these is one class name. Read as structure they corrupt the context
+    // stack — the brace opens a block that never closes, the semicolon truncates the
+    // selector — and the quote blanks the rest of the stylesheet outright.
+    expect(declarations(`${selector} { color: red; }`))
+      .toEqual([{ context: selector, property: 'color', value: 'red' }]);
+  });
+
   it('does not let a brace inside a selector string open a block', () => {
     expect(declarations('.x[data-glyph="{"] { color: red; }'))
       .toEqual([{ context: '.x[data-glyph="{"]', property: 'color', value: 'red' }]);
@@ -214,6 +234,21 @@ describe('takesColor', () => {
       expect(takesColor(property)).toBe(false);
     }
   );
+
+  it.each(['list-style', 'color-scheme'])(
+    'rejects %s, whose bare identifier names something the author defined', (property) => {
+      // `@counter-style red` and a `red` colour scheme are both legal, and neither is
+      // a colour — so neither can be reported as one.
+      expect(takesColor(property)).toBe(false);
+    }
+  );
+
+  it.each([
+    'print-color-adjust', '-webkit-print-color-adjust', 'forced-color-adjust',
+    'color-interpolation-filters',
+  ])('rejects %s, which is colour-named but holds no colour', (property) => {
+    expect(takesColor(property)).toBe(false);
+  });
 
   it('sees through a vendor prefix', () => {
     expect(takesColor('-webkit-box-shadow')).toBe(true);
@@ -294,6 +329,8 @@ describe('findColors', () => {
     ['a font family', 'a { font-family: black; }'],
     ['a transitioned property', 'a { transition-property: tan; }'],
     ['a grid area', 'a { grid-area: navy; }'],
+    ['a counter style', 'a { list-style: red; }'],
+    ['a colour scheme', 'a { color-scheme: red; }'],
     // the property gate has to survive the descent into a function, not just the
     // top level of the value — findColors passes `named` down to itself.
     ['a var() fallback under one', 'a { animation-name: var(--enter, red); }'],
@@ -330,6 +367,13 @@ describe('findColors', () => {
     // a fallback is only a colour when the property says so.
     expect(literals('a { animation-name: var(--enter, red); }')).toEqual([]);
     expect(literals('a { color: var(--enter, red); }')).toEqual(['red']);
+  });
+
+  it('still finds a gradient in the list-style shorthand', () => {
+    // dropping `list-style` from the shorthands must not lose its image component:
+    // the gradient opens the gate for its own stops whatever property it sits in.
+    expect(literals('a { list-style: square linear-gradient(red, blue); }'))
+      .toEqual(['red', 'blue']);
   });
 
   it('still reads hex and rgb() in a property that cannot take a named colour', () => {
