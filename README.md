@@ -82,7 +82,7 @@ instead:
 ```
 
 Tokens are `--ox-`-prefixed, so they will not collide with a consuming app's own variables.
-Colour tokens are the kebab-case form of the `src/theme/palette.ts` key
+Color tokens are the kebab-case form of the `src/theme/palette.ts` key
 (`palette.neutralLighter` → `--ox-color-neutral-lighter`); there are also `--ox-color-link`,
 `--ox-color-link-hover`, `--ox-z-index-*` and `--ox-padding-navbar-*`.
 
@@ -107,7 +107,7 @@ from JavaScript:
 ```
 
 Bind a custom property from JavaScript only when its value genuinely varies at runtime — a
-variant lookup, a numeric prop, a disabled state. A static colour pushed through an inline
+variant lookup, a numeric prop, a disabled state. A static color pushed through an inline
 style is duplication with extra steps, and it wins over the cascade in ways callers do not
 expect.
 
@@ -120,30 +120,49 @@ callers can set these without a cast.
 
 - the committed `theme.css` is not what the generator produces from the JS theme (the build
   regenerates it; this is what stops a stale copy reaching jest, ladle or a reviewer)
-- a component stylesheet writes a colour literal that duplicates a theme value
-- a component stylesheet introduces a colour that is not a theme value and not in the
+- a component stylesheet writes a color literal that duplicates a theme value
+- a component stylesheet introduces a color that is not a theme value and not in the
   `KNOWN_OFF_PALETTE` allowlist
 - a component stylesheet reads an `--ox-*` token that does not exist
 
-The colour check parses declarations, so it covers every syntax a colour can be written in —
-hex, `rgb()`/`hsl()`/`oklch()`/`color()`, and bare named colours wherever they appear,
-including inside shorthands and gradient stops. Functions that merely *contain* colours
-(`var()`, `color-mix()`, the gradients) are descended into rather than treated as literals,
-so building a value out of tokens stays clean. A translucent colour is accepted when its
-opaque channels are a theme value — `rgba(0, 0, 0, 0.2)` is black at 20% and there is no
-token form for it — which still refuses a new hue smuggled in through `rgba()`.
+The color check parses declarations rather than grepping for hex, so it reads a value the
+way the property does. What that covers:
 
-The check has its own tests, so the guarantee is a tested one rather than an asserted one.
+- Hex, and the color functions — `rgb()`, `hsl()`, `hwb()`, `lab()`, `lch()`, `oklab()`,
+  `oklch()`, `color()` and their `a` variants — in any declaration, whatever the property.
+- A bare name such as `whitesmoke` only where the property could take a color: a property
+  whose name contains `color`, one of the color shorthands (`background`, `border`,
+  `outline`, `box-shadow`, `text-decoration`, `fill` and the rest), or a custom property,
+  which has no grammar to go on. `var()` keeps the gate of the property it is written in,
+  since its fallback is whatever that property makes of it.
+- Functions that merely *contain* colors (`var()`, `color-mix()`, `light-dark()`, the
+  gradients) are descended into rather than read as literals, so a value built out of
+  tokens stays clean. The gradients and `color-mix()` open the gate on their own, because
+  `linear-gradient(red, blue)` is a gradient between two colors whatever it is assigned to.
+- A translucent color where its opaque channels are a theme value — `rgba(0, 0, 0, 0.2)` is
+  black at 20% and there is no token form for it. A new hue smuggled in through `rgba()` is
+  still refused.
+
+What it does not cover, deliberately: a bare name outside a color context. `animation-name:
+red`, `font-family: white` and `grid-area: gold` are identifiers that happen to spell
+colors, and are not reported.
+
+What it does not cover, for now: only the literal ASCII spelling of a *name* is recognized.
+Escapes are decoded in color names themselves, but not in property or function names, so
+`c\6f lor: red` — which is `color: red` to a browser — is missed. Nothing we ship is
+written that way; CORE-2885 tracks it along with the rest of the lexing work.
+
+The check has its own tests, so what is claimed above is pinned rather than asserted.
 
 The stylesheets migrated before the tokens existed are listed in `PENDING_SWEEP` in
 `tokens.spec.ts` and are exempt from the duplicate-literal check until they are swept —
-from that check only. A colour the theme does not have is still refused in those files, so
+from that check only. A color the theme does not have is still refused in those files, so
 the list defers work already owed rather than opening a gap. The list is asserted to be
 exactly the set of files that still carry duplicates, so it cannot drift: you cannot exempt
 a clean file, and you cannot sweep a file without removing it from the list. Do not add to
 it — new stylesheets are expected to use the tokens from the start.
 
-Adding a genuinely new colour is therefore a deliberate act: put it in `palette.ts` if it is
+Adding a genuinely new color is therefore a deliberate act: put it in `palette.ts` if it is
 part of the design, or in the allowlist with a reason if it is a one-off we are keeping.
 
 Breakpoints are the known gap — `@media (min-width: var(--x))` is not valid CSS, so

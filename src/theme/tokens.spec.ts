@@ -9,16 +9,16 @@ const srcDir = path.join(__dirname, '..');
 const themeCssPath = path.join(__dirname, 'theme.css');
 
 /**
- * Colours that appear in component CSS but are deliberately not theme values. Anything
+ * Colors that appear in component CSS but are deliberately not theme values. Anything
  * here is a value we inherited from the styled-components originals and chose not to snap
  * to the nearest palette entry, because doing so would be a visual change rather than a
- * refactor. Adding to this list should be a deliberate act — prefer adding the colour to
+ * refactor. Adding to this list should be a deliberate act — prefer adding the color to
  * palette.ts if it is really part of the design.
  *
- * Keyed by the form the checker computes: `colorKey` for a colour it can resolve, or the
+ * Keyed by the form the checker computes: `colorKey` for a color it can resolve, or the
  * whitespace-collapsed literal for one it cannot. See `allowlistKey` below.
  *
- * Translucent colours do not need an entry when their opaque channels are a theme value —
+ * Translucent colors do not need an entry when their opaque channels are a theme value —
  * `rgba(0, 0, 0, 0.2)` is black at 20% and passes on its own. That rule is what lets
  * shadows and overlays stay readable without allowlisting every alpha we happen to use,
  * while still refusing a new hue smuggled in through rgba().
@@ -29,9 +29,9 @@ const KNOWN_OFF_PALETTE = new Map([
 ]);
 
 /**
- * How a colour is looked up in KNOWN_OFF_PALETTE.
+ * How a color is looked up in KNOWN_OFF_PALETTE.
  *
- * A resolvable colour is keyed by its channels, so the entry covers every spelling of it
+ * A resolvable color is keyed by its channels, so the entry covers every spelling of it
  * at once. One we cannot resolve has no channels to key by, so it falls back to the
  * literal as written — meaning `hsl()` and friends have to be allowlisted per spelling,
  * which is the right amount of friction for a value the checker cannot reason about.
@@ -54,7 +54,7 @@ const walk = (dir: string, out: string[] = []): string[] => {
 const here = path.basename(__filename);
 
 /**
- * Every colour the theme defines, as token name -> the value written in the JS theme.
+ * Every color the theme defines, as token name -> the value written in the JS theme.
  *
  * Read off the projection in themeCss.ts rather than re-derived from palette.ts and
  * theme.ts, so the set the checks below run over is by construction the set theme.css is
@@ -66,8 +66,8 @@ const themeColors: ReadonlyArray<readonly [string, string]> = [...themeTokens()]
 );
 
 /**
- * Theme colours describeColor cannot reduce to channels. Asserted empty below rather than
- * cast away: such an entry would drop out of themeValues, and the colour would then read
+ * Theme colors describeColor cannot reduce to channels. Asserted empty below rather than
+ * cast away: such an entry would drop out of themeValues, and the color would then read
  * as off-palette everywhere it is used — a confusing failure a long way from its cause.
  *
  * Taken as a function of the entries so that the guard itself can be tested against a
@@ -80,7 +80,7 @@ const unresolvableColors = (entries: ReadonlyArray<readonly [string, string]>) =
 const unresolvableThemeColors = unresolvableColors(themeColors);
 
 /**
- * Every theme colour, by opaque channels, so a literal can be traced back to its token.
+ * Every theme color, by opaque channels, so a literal can be traced back to its token.
  *
  * A value can carry more than one token — `--ox-color-link` and `--ox-color-medium-blue`
  * are both #026AA1 — so every token holding a value is kept. Reporting all of them lets
@@ -97,15 +97,15 @@ const themeValues = themeColors.reduce((byValue, [token, value]) => {
 }, new Map<string, string[]>());
 
 /**
- * Everything wrong with the colours in one stylesheet, split by what it would take to fix.
+ * Everything wrong with the colors in one stylesheet, split by what it would take to fix.
  *
  * `duplicates` are literals the theme already holds a token for: a mechanical swap that
  * changes nothing on screen, and the only kind of finding PENDING_SWEEP defers.
  *
- * `offPalette` are colours the theme does not have at all, including the ones the checker
+ * `offPalette` are colors the theme does not have at all, including the ones the checker
  * cannot resolve. Introducing one is a design decision rather than a missed swap, so it is
  * refused in every stylesheet — a file awaiting the sweep is no more entitled to a new
- * colour than a clean one. Keeping the two apart is what stops a pending file from
+ * color than a clean one. Keeping the two apart is what stops a pending file from
  * smuggling one in under cover of the literals it is already known to carry.
  *
  * Both empty means the file is clean.
@@ -124,7 +124,7 @@ const colorProblems = (css: string): ColorProblems => {
 
     if (rgba === null) {
       offPalette.push(
-        `"${literal}" is a colour this check cannot resolve — build it from a theme token, or add "${key}" to KNOWN_OFF_PALETTE in ${here} with a reason`
+        `"${literal}" is a color this check cannot resolve — build it from a theme token, or add "${key}" to KNOWN_OFF_PALETTE in ${here} with a reason`
       );
       continue;
     }
@@ -133,7 +133,7 @@ const colorProblems = (css: string): ColorProblems => {
     const tokens = themeValues.get(hex);
 
     if (rgba.a < 1) {
-      // An alpha variant of a theme colour is fine — there is no token form for it.
+      // An alpha variant of a theme color is fine — there is no token form for it.
       if (!tokens) {
         offPalette.push(
           `"${literal}" is translucent and its channels (${hex}) are not a theme value — add ${hex} to palette.ts, or "${key}" to KNOWN_OFF_PALETTE in ${here} with a reason`
@@ -188,50 +188,50 @@ describe('theme.css', () => {
 
 /**
  * The checker below is only worth anything if it fails on the things it claims to fail on.
- * These cases are the contract: every colour syntax reaches the palette check, and the
- * ways of writing a colour that are legitimately fine stay quiet.
+ * These cases are the contract: every color syntax reaches the palette check, and the
+ * ways of writing a color that are legitimately fine stay quiet.
  *
  * The parsing underneath is covered in cssColors.spec.ts. What is tested here is the layer
- * this file adds: which colours the ui-components palette recognises, and what an author
+ * this file adds: which colors the ui-components palette recognizes, and what an author
  * is told about the ones it does not.
  */
-describe('the colour check itself', () => {
+describe('the color check itself', () => {
   const rule = (declaration: string) => allColorProblems(`.x { ${declaration} }`);
 
   it.each([
     ['hex', 'color: #d5d5d5;', '--ox-color-pale'],
     ['short hex', 'color: #FFF;', '--ox-color-white'],
-    ['named colour', 'color: white;', '--ox-color-white'],
-    ['named colour in a shorthand', 'border: 1px solid whitesmoke;', '--ox-color-neutral-bright'],
+    ['named color', 'color: white;', '--ox-color-white'],
+    ['named color in a shorthand', 'border: 1px solid whitesmoke;', '--ox-color-neutral-bright'],
     ['functional rgb', 'color: rgb(213, 213, 213);', '--ox-color-pale'],
     ['space-separated rgb', 'color: rgb(213 213 213 / 100%);', '--ox-color-pale'],
     ['percentage rgb', 'color: rgb(100%, 100%, 100%);', '--ox-color-white'],
     ['hex in a var() fallback', 'color: var(--thing, #d5d5d5);', '--ox-color-pale'],
     ['hex in an uppercase var() fallback', 'color: VAR(--thing, #d5d5d5);', '--ox-color-pale'],
-    ['colour in a gradient stop', 'background: linear-gradient(to right, #d5d5d5, transparent);', '--ox-color-pale'],
-    ['named colour in a custom property', '--tabs-border-color: whitesmoke;', '--ox-color-neutral-bright'],
-    ['named colour in box-shadow', 'box-shadow: 0 0 0.2rem white;', '--ox-color-white'],
-    ['named colour in a vendor-prefixed property', '-webkit-text-fill-color: white;', '--ox-color-white'],
-    ['hex outside a colour property', 'animation-name: #d5d5d5;', '--ox-color-pale'],
+    ['color in a gradient stop', 'background: linear-gradient(to right, #d5d5d5, transparent);', '--ox-color-pale'],
+    ['named color in a custom property', '--tabs-border-color: whitesmoke;', '--ox-color-neutral-bright'],
+    ['named color in box-shadow', 'box-shadow: 0 0 0.2rem white;', '--ox-color-white'],
+    ['named color in a vendor-prefixed property', '-webkit-text-fill-color: white;', '--ox-color-white'],
+    ['hex outside a color property', 'animation-name: #d5d5d5;', '--ox-color-pale'],
   ])('flags a %s that duplicates a token', (_case, declaration, token) => {
     expect(rule(declaration)).toEqual([expect.stringContaining(`use var(${token})`)]);
   });
 
   it.each([
     ['hex', 'color: #123456;'],
-    ['named colour', 'color: tan;'],
-    ['named colour in a longhand', 'color: red;'],
-    ['named colour in a shorthand', 'border: 1px solid red;'],
-    ['named colour in a gradient', 'background: linear-gradient(to right, tan, transparent);'],
+    ['named color', 'color: tan;'],
+    ['named color in a longhand', 'color: red;'],
+    ['named color in a shorthand', 'border: 1px solid red;'],
+    ['named color in a gradient', 'background: linear-gradient(to right, tan, transparent);'],
     ['rgb', 'color: rgb(1, 2, 3);'],
     ['hsl', 'color: hsl(200 50% 50%);'],
     ['oklch', 'color: oklch(70% 0.1 200);'],
     ['color()', 'color: color(display-p3 1 0 0);'],
-    ['translucent off-palette colour', 'background: rgba(1, 2, 3, 0.5);'],
-    // rgb() may legally hold var() channels, but then we cannot tell what colour it is;
+    ['translucent off-palette color', 'background: rgba(1, 2, 3, 0.5);'],
+    // rgb() may legally hold var() channels, but then we cannot tell what color it is;
     // flagging beats skipping, which would let an off-palette value through unchecked.
     ['rgb() with var() channels', 'background: rgba(var(--channels), 0.2);'],
-  ])('flags an untokenised %s', (_case, declaration) => {
+  ])('flags an untokenized %s', (_case, declaration) => {
     expect(rule(declaration)).toHaveLength(1);
   });
 
@@ -242,19 +242,19 @@ describe('the colour check itself', () => {
     ['color-mix over tokens', 'background: color-mix(in srgb, var(--ox-color-black) 20%, transparent);'],
     ['transparent', 'background: transparent;'],
     ['currentcolor', 'border-color: currentcolor;'],
-    ['a system colour', 'outline: 0.2rem auto Highlight;'],
-    ['an allowlisted colour', 'border-color: #ccc;'],
-    ['alpha over a theme colour', 'box-shadow: 0 0 0.2rem rgba(0, 0, 0, 0.2);'],
-    ['a keyword that merely contains a colour name', 'animation-name: moveblue;'],
-    ['an animation named after a colour', 'animation-name: red;'],
-    ['a font named after a colour', 'font-family: white;'],
-    ['a grid area named after a colour', 'grid-area: gold;'],
-    ['a non-colour value', 'filter: grayscale(1);'],
+    ['a system color', 'outline: 0.2rem auto Highlight;'],
+    ['an allowlisted color', 'border-color: #ccc;'],
+    ['alpha over a theme color', 'box-shadow: 0 0 0.2rem rgba(0, 0, 0, 0.2);'],
+    ['a keyword that merely contains a color name', 'animation-name: moveblue;'],
+    ['an animation named after a color', 'animation-name: red;'],
+    ['a font named after a color', 'font-family: white;'],
+    ['a grid area named after a color', 'grid-area: gold;'],
+    ['a non-color value', 'filter: grayscale(1);'],
   ])('stays quiet for %s', (_case, declaration) => {
     expect(rule(declaration)).toEqual([]);
   });
 
-  it('ignores colour-shaped text outside declaration values', () => {
+  it('ignores color-shaped text outside declaration values', () => {
     expect(allColorProblems('.red { }')).toEqual([]);
     expect(allColorProblems('.x { content: "tan"; }')).toEqual([]);
     expect(allColorProblems('.x { /* #d5d5d5 */ color: var(--ox-color-pale); }')).toEqual([]);
@@ -265,9 +265,9 @@ describe('the colour check itself', () => {
     expect(allColorProblems(css)).toEqual([expect.stringContaining('use var(--ox-color-pale)')]);
   });
 
-  it('sorts a finding by whether the theme already has the colour', () => {
+  it('sorts a finding by whether the theme already has the color', () => {
     // The split is what PENDING_SWEEP keys off, so it is worth stating directly: a file
-    // may be excused the literals it copied from the theme, never a colour the theme
+    // may be excused the literals it copied from the theme, never a color the theme
     // does not have. Both kinds in one stylesheet, to show neither absorbs the other.
     const css = '.x { color: #d5d5d5; border-color: #123456; background: hsl(200 50% 50%); }';
     expect(colorProblems(css)).toEqual({
@@ -279,22 +279,22 @@ describe('the colour check itself', () => {
     });
   });
 
-  it('can reduce every theme colour to channels', () => {
+  it('can reduce every theme color to channels', () => {
     // Guards the themeValues map: see unresolvableThemeColors above for why a silent drop
     // would be worse than a failure here.
     expect(unresolvableThemeColors).toEqual([]);
   });
 
-  it('would fail if a theme colour were malformed', () => {
+  it('would fail if a theme color were malformed', () => {
     // The guard above only means something if it can fail. `#ggg` is the case that used to
-    // slip through it: expanded to six characters it looked like a colour, so it entered
+    // slip through it: expanded to six characters it looked like a color, so it entered
     // themeValues under a key nothing could ever match.
     expect(unresolvableColors([['--ox-color-bad', '#ggg']])).toEqual(['--ox-color-bad: #ggg']);
   });
 
-  it('checks every colour token the theme projects, semantic ones included', () => {
+  it('checks every color token the theme projects, semantic ones included', () => {
     // themeColors is derived from the projection, so this cannot drift the way the
-    // hand-written list did — --ox-color-link was absent from it, leaving the link colour
+    // hand-written list did — --ox-color-link was absent from it, leaving the link color
     // outside both the resolvability guard and the duplicate check.
     expect(themeColors.map(([name]) => name)).toEqual(
       [...themeTokens().keys()].filter((name) => name.startsWith('--ox-color-'))
@@ -304,7 +304,7 @@ describe('the colour check itself', () => {
     );
   });
 
-  it('names every token that carries a colour when more than one does', () => {
+  it('names every token that carries a color when more than one does', () => {
     // #026AA1 is both palette.mediumBlue and colors.link.color. Naming only one would send
     // half the authors who hit this to a token that does not say what they mean.
     expect(rule('color: #026AA1;')).toEqual([
@@ -346,7 +346,7 @@ describe('the colour check itself', () => {
  *
  * The exemption is narrow: only the duplicate-literal check. The off-palette check below
  * runs over these files too, so being on this list defers a swap that is already owed and
- * grants nothing else — a new colour in one of them fails exactly as it would anywhere.
+ * grants nothing else — a new color in one of them fails exactly as it would anywhere.
  *
  * The point of listing them rather than skipping the check is that the list is asserted to
  * be *exactly* the set with duplicates left, so it cannot rot in either direction: dropping
@@ -390,10 +390,10 @@ describe('component CSS', () => {
   });
 
   it.each(cssFiles.map((file) => [name(file), file]))(
-    '%s introduces no colour the theme does not have',
+    '%s introduces no color the theme does not have',
     (_name, file) => {
       // Every stylesheet, PENDING_SWEEP included: the exemption is for literals that
-      // duplicate a token, not a licence to add a colour while the file waits its turn.
+      // duplicate a token, not a licence to add a color while the file waits its turn.
       expect(colorProblems(fs.readFileSync(file, 'utf8')).offPalette).toEqual([]);
     }
   );

@@ -17,7 +17,7 @@ export const themeTokenGroups: ReadonlyArray<{ label: string; tokens: Token[] }>
     tokens: Object.entries(palette).map(([key, value]) => [`--ox-color-${kebab(key)}`, value] as const),
   },
   {
-    label: "link colours — src/theme.ts",
+    label: "link colors — src/theme.ts",
     tokens: [
       ["--ox-color-link", colors.link.color],
       ["--ox-color-link-hover", colors.link.hover],
@@ -46,7 +46,7 @@ const header = `/*
  * GENERATED FILE — do not edit by hand. Run \`npm run generate:theme-css\`.
  *
  * Projected from the JavaScript theme, which stays the single source of truth:
- * src/theme/palette.ts (colours) and src/theme.ts (link colours, z-index, padding).
+ * src/theme/palette.ts (colors) and src/theme.ts (link colors, z-index, padding).
  * src/theme/tokens.spec.ts fails if this file is out of date, so add the value to the
  * JS theme and regenerate rather than editing here.
  *
