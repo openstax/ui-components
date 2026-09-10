@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import ts from 'typescript';
 import {
   colorKey, describeColor, FoundColor, opaqueKey, stripNoise, stylesheetColors,
 } from './cssColors';
@@ -426,12 +427,33 @@ describe('component CSS', () => {
 /**
  * Stylesheets a module imports, as absolute paths.
  *
- * Only relative imports, because that is how a component reaches its own CSS and the token
- * file. A package-relative spelling would not resolve inside src/ anyway.
+ * Parsed rather than matched. A regex over the source also sees `// import './x.css';` and
+ * the same text inside a string, and reading either as an import is the wrong way round for
+ * a check like this: it says the token file is present when it is not, so deleting a real
+ * import next to a commented-out one would pass.
+ *
+ * Only relative specifiers, because that is how a component reaches its own CSS and the
+ * token file; a package-relative spelling would not resolve inside src/ anyway. Only static
+ * imports, which is what a stylesheet side effect is written as here — `require` and dynamic
+ * `import()` of CSS appear nowhere in src, and would need their own handling if they did.
  */
-const importedStylesheets = (moduleFile: string, source: string): string[] =>
-  [...source.matchAll(/import\s+['"](\.[^'"]*\.css)['"]/g)]
-    .map((match) => path.resolve(path.dirname(moduleFile), match[1]));
+const importedStylesheets = (moduleFile: string, source: string): string[] => {
+  const parsed = ts.createSourceFile(
+    moduleFile,
+    source,
+    ts.ScriptTarget.Latest,
+    /* setParentNodes */ false,
+    moduleFile.endsWith('.tsx') ? ts.ScriptKind.TSX : ts.ScriptKind.TS
+  );
+
+  return parsed.statements
+    .filter(ts.isImportDeclaration)
+    .map(({ moduleSpecifier }) => moduleSpecifier)
+    .filter(ts.isStringLiteral)
+    .map(({ text }) => text)
+    .filter((specifier) => specifier.startsWith('.') && specifier.endsWith('.css'))
+    .map((specifier) => path.resolve(path.dirname(moduleFile), specifier));
+};
 
 /**
  * Stylesheets this module pulls in that read a token, when the module does not also pull in
@@ -472,6 +494,34 @@ describe('the token import rule', () => {
 
   it('stays quiet when the stylesheet reads no token', () => {
     expect(missingThemeImport(moduleFile, "import './Thing.css';", new Set())).toEqual([]);
+  });
+
+  it('does not count a commented-out import of the token file', () => {
+    // The failure this rule exists to catch is a missing import, so anything that reads as
+    // present when it is absent defeats it — deleting the real import and leaving the
+    // comment behind is the exact shape of that.
+    const source = "import './Thing.css';\n// import '../theme/theme.css';";
+    expect(missingThemeImport(moduleFile, source, readsTokens)).toEqual([ownStyles]);
+
+    const block = "import './Thing.css';\n/* import '../theme/theme.css'; */";
+    expect(missingThemeImport(moduleFile, block, readsTokens)).toEqual([ownStyles]);
+  });
+
+  it('does not count the specifier appearing in a string', () => {
+    const source = "import './Thing.css';\nexport const doc = \"import '../theme/theme.css';\";";
+    expect(missingThemeImport(moduleFile, source, readsTokens)).toEqual([ownStyles]);
+  });
+
+  it('counts a real import written with a comment beside it', () => {
+    const source = "import './Thing.css';\nimport '../theme/theme.css'; // tokens\n";
+    expect(missingThemeImport(moduleFile, source, readsTokens)).toEqual([]);
+  });
+
+  it('parses a .tsx module', () => {
+    // TS and TSX disagree about `<T>x`, so the kind is chosen from the extension rather
+    // than left at the default. A component file is the case that actually matters here.
+    const tsx = "import './Thing.css';\nexport const T = () => <div className=\"x\" />;";
+    expect(missingThemeImport(moduleFile, tsx, readsTokens)).toEqual([ownStyles]);
   });
 
   it('resolves an import from a subdirectory', () => {
