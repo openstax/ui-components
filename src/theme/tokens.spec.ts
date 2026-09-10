@@ -39,17 +39,25 @@ const KNOWN_OFF_PALETTE = new Map([
 const allowlistKey = ({ literal, rgba }: FoundColor) =>
   rgba === null ? literal.replace(/\s+/g, ' ').trim().toLowerCase() : colorKey(rgba);
 
-const walk = (dir: string, out: string[] = []): string[] => {
+const walk = (
+  dir: string, matches: (fileName: string) => boolean, out: string[] = []
+): string[] => {
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
     const full = path.join(dir, entry.name);
     if (entry.isDirectory()) {
-      walk(full, out);
-    } else if (entry.name.endsWith('.css')) {
+      walk(full, matches, out);
+    } else if (matches(entry.name)) {
       out.push(full);
     }
   }
   return out;
 };
+
+const isStylesheet = (fileName: string) => fileName.endsWith('.css');
+
+/** Source modules, specs excluded: a spec's CSS import is mapped away by jest anyway. */
+const isModule = (fileName: string) =>
+  /\.tsx?$/.test(fileName) && !/\.spec\.tsx?$/.test(fileName);
 
 const here = path.basename(__filename);
 
@@ -373,7 +381,7 @@ const PENDING_SWEEP = new Set([
 ]);
 
 describe('component CSS', () => {
-  const cssFiles = walk(srcDir).filter((file) => file !== themeCssPath);
+  const cssFiles = walk(srcDir, isStylesheet).filter((file) => file !== themeCssPath);
   const tokens = themeTokens();
   const name = (file: string) => path.relative(srcDir, file);
 
@@ -411,6 +419,84 @@ describe('component CSS', () => {
     '%s only references tokens that exist',
     (_name, file) => {
       expect(unknownTokenReferences(fs.readFileSync(file, 'utf8'), tokens)).toEqual([]);
+    }
+  );
+});
+
+/**
+ * Stylesheets a module imports, as absolute paths.
+ *
+ * Only relative imports, because that is how a component reaches its own CSS and the token
+ * file. A package-relative spelling would not resolve inside src/ anyway.
+ */
+const importedStylesheets = (moduleFile: string, source: string): string[] =>
+  [...source.matchAll(/import\s+['"](\.[^'"]*\.css)['"]/g)]
+    .map((match) => path.resolve(path.dirname(moduleFile), match[1]));
+
+/**
+ * Stylesheets this module pulls in that read a token, when the module does not also pull in
+ * the file that defines them. Empty means the module is sound.
+ *
+ * There is no bundler here: build.bash rsyncs CSS 1:1, so nothing resolves an `@import` for
+ * us and a stylesheet does not drag theme.css in by itself. The component that imports the
+ * stylesheet has to import the token file too, or every `var(--ox-*)` in it silently takes
+ * its fallback — which is exactly the failure that is invisible in review, because a
+ * fallback is usually the literal the token replaced and so looks right on screen.
+ */
+const missingThemeImport = (
+  moduleFile: string, source: string, readsTokens: ReadonlySet<string>
+): string[] => {
+  const imported = importedStylesheets(moduleFile, source);
+  const needy = imported.filter((file) => readsTokens.has(file));
+
+  return imported.includes(themeCssPath) ? [] : needy;
+};
+
+/** Whether a stylesheet reads a theme token at all. */
+const readsThemeToken = (css: string) => /var\(\s*--ox-/i.test(stripNoise(css));
+
+describe('the token import rule', () => {
+  const moduleFile = path.join(srcDir, 'components/Thing.tsx');
+  const ownStyles = path.join(srcDir, 'components/Thing.css');
+  const readsTokens = new Set([ownStyles]);
+
+  it('flags a component that imports a token-reading stylesheet and not the tokens', () => {
+    expect(missingThemeImport(moduleFile, "import './Thing.css';", readsTokens))
+      .toEqual([ownStyles]);
+  });
+
+  it('stays quiet when the component imports the token file too', () => {
+    const source = "import './Thing.css';\nimport '../theme/theme.css';";
+    expect(missingThemeImport(moduleFile, source, readsTokens)).toEqual([]);
+  });
+
+  it('stays quiet when the stylesheet reads no token', () => {
+    expect(missingThemeImport(moduleFile, "import './Thing.css';", new Set())).toEqual([]);
+  });
+
+  it('resolves an import from a subdirectory', () => {
+    const nested = path.join(srcDir, 'components/Thing/Thing.tsx');
+    const nestedStyles = path.join(srcDir, 'components/Thing/Thing.css');
+    expect(missingThemeImport(nested, "import './Thing.css';", new Set([nestedStyles])))
+      .toEqual([nestedStyles]);
+  });
+
+  it('reads a token reference through comments and however var() is spelled', () => {
+    expect(readsThemeToken('.x { color: VAR(--ox-color-pale); }')).toBe(true);
+    expect(readsThemeToken('.x { /* var(--ox-color-pale) */ color: red; }')).toBe(false);
+    expect(readsThemeToken('.x { color: var(--tabs-border-color); }')).toBe(false);
+  });
+
+  it.each(walk(srcDir, isModule).map((file) => [path.relative(srcDir, file), file]))(
+    '%s imports theme.css if its stylesheet needs it',
+    (_name, file) => {
+      // Vacuous on this branch by construction — no stylesheet reads a token until the
+      // sweep in #143 converts one, and the rule exists so that sweep cannot forget the
+      // import. The helper above is tested on its own, so the rule itself is pinned now.
+      const readsTokens = new Set(
+        walk(srcDir, isStylesheet).filter((css) => readsThemeToken(fs.readFileSync(css, 'utf8')))
+      );
+      expect(missingThemeImport(file, fs.readFileSync(file, 'utf8'), readsTokens)).toEqual([]);
     }
   );
 });
