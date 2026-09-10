@@ -40,6 +40,7 @@
   ],
   "scripts": {
     "build": "./scripts/build.bash",
+    "generate:theme-css": "./scripts/generate-theme-css.bash",
     "clean": "rm -rf ./dist",
     "build:clean": "npm-run-all clean build",
     "dist": "npm-run-all clean build",
