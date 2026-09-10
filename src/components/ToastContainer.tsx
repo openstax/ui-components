@@ -1,9 +1,9 @@
 import { BodyPortal } from './BodyPortal';
 import { Toast } from './Toast';
-import { zIndex } from '../theme';
-import { CSSPropertiesWithVariables, ToastData } from '../types';
+import { ToastData } from '../types';
 import classNames from 'classnames';
 import './ToastContainer.css';
+import '../theme/theme.css';
 
 export type ToastContainerParams = {
   toasts: ToastData[];
@@ -24,17 +24,13 @@ const makeToasts = (toasts: ToastData[], inline: boolean, onDismissToast?: (id: 
       >{toast.message}</Toast>
   )
 );
-const zIndexStyle: CSSPropertiesWithVariables = {
-  '--toast-container-z-index': zIndex.toasts,
-};
-
 export const ToastContainer: ToastContainerComponent = ({ toasts, onDismissToast, inline = false, className }) => {
   const containerClass = classNames('toast-container', {
     'toast-container-inline': inline,
   }, className);
 
   return (
-    <div className={containerClass} aria-live='polite' style={zIndexStyle}>
+    <div className={containerClass} aria-live='polite'>
       {makeToasts(toasts, inline, onDismissToast)}
     </div>
   );
@@ -46,7 +42,7 @@ export const BodyPortalToastContainer: ToastContainerComponent = ({ toasts, onDi
   }, className);
 
   return (
-    <BodyPortal className={containerClass} aria-live='polite' slot='toast' style={zIndexStyle}>
+    <BodyPortal className={containerClass} aria-live='polite' slot='toast'>
       {makeToasts(toasts, inline, onDismissToast)}
     </BodyPortal>
   );
