@@ -8,7 +8,6 @@ exports[`NavBar matches snapshot 1`] = `
   <nav
     class="navbar-wrapper"
     data-portal-slot="nav"
-    style="--navbar-z-index: 10; --navbar-padding-mobile: 1.6rem; --navbar-padding-desktop: 3.2rem;"
   >
     <div
       class="navbar-bar"
@@ -29,7 +28,6 @@ exports[`NavBar sets the ariaLabel 1`] = `
     aria-label="test"
     class="navbar-wrapper"
     data-portal-slot="nav"
-    style="--navbar-z-index: 10; --navbar-padding-mobile: 1.6rem; --navbar-padding-desktop: 3.2rem;"
   >
     <div
       class="navbar-bar"
@@ -49,7 +47,6 @@ exports[`NavBar sets the maxWidth 1`] = `
   <nav
     class="navbar-wrapper"
     data-portal-slot="nav"
-    style="--navbar-z-index: 10; --navbar-padding-mobile: 1.6rem; --navbar-padding-desktop: 3.2rem;"
   >
     <div
       class="navbar-bar"
@@ -69,7 +66,6 @@ exports[`NavBar with a logo customizes the alt text 1`] = `
   <nav
     class="navbar-wrapper"
     data-portal-slot="nav"
-    style="--navbar-z-index: 10; --navbar-padding-mobile: 1.6rem; --navbar-padding-desktop: 3.2rem;"
   >
     <div
       class="navbar-bar"
@@ -129,7 +125,6 @@ exports[`NavBar with a logo links the logo 1`] = `
   <nav
     class="navbar-wrapper"
     data-portal-slot="nav"
-    style="--navbar-z-index: 10; --navbar-padding-mobile: 1.6rem; --navbar-padding-desktop: 3.2rem;"
   >
     <div
       class="navbar-bar"
@@ -193,7 +188,6 @@ exports[`NavBar with a logo matches snapshot 1`] = `
   <nav
     class="navbar-wrapper"
     data-portal-slot="nav"
-    style="--navbar-z-index: 10; --navbar-padding-mobile: 1.6rem; --navbar-padding-desktop: 3.2rem;"
   >
     <div
       class="navbar-bar"
