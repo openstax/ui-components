@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import theme from '../theme';
 import { getButtonVariantStyles, ButtonVariant } from "../theme/buttons";
 import './Button.css';
+import '../theme/theme.css';
 
 // Re-export for backwards compatibility
 export { applyButtonVariantStyles } from "../theme/buttons";
@@ -140,18 +141,12 @@ export const ButtonLink = React.forwardRef<HTMLButtonElement, React.ComponentPro
   (props, ref) => {
     const { className, style, children, ...otherProps } = props;
 
-    const linkStyleVars = {
-      '--link-color': theme.colors.link.color,
-      '--link-hover-color': theme.colors.link.hover,
-      ...style
-    } as React.CSSProperties;
-
     return (
       <button
         {...otherProps}
         ref={ref}
         className={classNames('button-link', className)}
-        style={linkStyleVars}
+        style={style}
       >
         {children}
       </button>

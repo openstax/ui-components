@@ -3,22 +3,12 @@
 exports[`Radio matches disabled snapshot 1`] = `
 <label
   className="radio-label radio-label--disabled"
-  style={
-    Object {
-      "--radio-disabled-color": "#d5d5d5",
-      "--radio-label-color": "inherit",
-    }
-  }
 >
   <input
     className="radio-input radio-input--disabled"
     disabled={true}
     style={
       Object {
-        "--radio-bg": "#ffffff",
-        "--radio-border": "1px solid #6f6f6f",
-        "--radio-border-color": "#d5d5d5",
-        "--radio-checked": "#026AA1",
         "--radio-checked-opacity": "0",
         "--radio-opacity": "0.4",
       }
@@ -32,21 +22,11 @@ exports[`Radio matches disabled snapshot 1`] = `
 exports[`Radio matches snapshot 1`] = `
 <label
   className="radio-label"
-  style={
-    Object {
-      "--radio-disabled-color": "#d5d5d5",
-      "--radio-label-color": "inherit",
-    }
-  }
 >
   <input
     className="radio-input"
     style={
       Object {
-        "--radio-bg": "#ffffff",
-        "--radio-border": "1px solid #6f6f6f",
-        "--radio-border-color": "#d5d5d5",
-        "--radio-checked": "#026AA1",
         "--radio-checked-opacity": "1",
         "--radio-opacity": "1",
       }
