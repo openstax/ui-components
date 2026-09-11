@@ -177,10 +177,22 @@ const allColorProblems = (css: string): string[] => {
  * because custom property *names* are — `var(--OX-color-pale)` really is a reference to
  * something nothing defines, and silently falling through to its fallback is the failure
  * this check exists to catch.
+ *
+ * The name runs to the end of the CSS identifier, non-ASCII included, because anything at
+ * U+0080 or above is a name code point. `[\w-]+` stopped at the first of them and handed
+ * back a prefix, so `var(--ox-color-redé)` was looked up as `--ox-color-red`, found, and
+ * passed — the undefined reference reported as fine, which is the one answer this check
+ * must never give.
+ *
+ * Escaped spellings are still read literally: `var(--ox-color-r\65 d)` is a reference to
+ * `--ox-color-red` that this reads as `--ox-color-r` and reports as undefined. Wrong, but
+ * wrong in the direction of a failure rather than a pass, and it is the same
+ * decode-the-escapes work as the rest of CORE-2885 rather than a boundary this regex can
+ * fix.
  */
 const unknownTokenReferences = (css: string, defined: Map<string, string>) => [
   ...new Set(
-    [...stripNoise(css).matchAll(/var\(\s*(--ox-[\w-]+)/gi)]
+    [...stripNoise(css).matchAll(/var\(\s*(--ox-(?:[\w-]|[^\x00-\x7f])+)/gi)]
       .map((match) => match[1])
       .filter((name) => !defined.has(name))
   ),
@@ -338,6 +350,23 @@ describe('the color check itself', () => {
       .toEqual(['--ox-color-palee']);
     expect(unknownTokenReferences('.x { color: Var( --ox-color-palee ); }', defined))
       .toEqual(['--ox-color-palee']);
+  });
+
+  it('reads the whole name when it carries a character outside ASCII', () => {
+    // CSS name code points include everything at U+0080 and above, so `--ox-color-redé` is
+    // a valid name and a different one from `--ox-color-red`. Truncating to the prefix
+    // found a token that exists and passed the reference that does not — a missing token
+    // reported as present, which is the failure mode this check cannot have.
+    const defined = themeTokens();
+    expect(defined.has('--ox-color-red')).toBe(true);
+    expect(unknownTokenReferences('.x { color: var(--ox-color-redé); }', defined))
+      .toEqual(['--ox-color-redé']);
+    expect(unknownTokenReferences('.x { color: var(--ox-color-red🎨); }', defined))
+      .toEqual(['--ox-color-red🎨']);
+    expect(unknownTokenReferences('.x { color: var(--ox-cölor-pale); }', defined))
+      .toEqual(['--ox-cölor-pale']);
+    // and the name it is a prefix of still passes
+    expect(unknownTokenReferences('.x { color: var(--ox-color-red); }', defined)).toEqual([]);
   });
 
   it('flags a token name whose case does not match', () => {
