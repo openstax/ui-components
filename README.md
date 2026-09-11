@@ -51,6 +51,138 @@ npm run lint       # Check code rules
 npm run dist       # Build distribution files
 ```
 
+## Styling
+
+Components are styled with plain CSS in a sibling `.css` file, imported for side effects.
+
+### Theme tokens
+
+Theme values are defined once, in JavaScript, and projected into CSS custom properties by
+`src/theme/theme.css`. That file is **generated** from `src/theme/palette.ts` and
+`src/theme.ts` — never edit it by hand. `npm run build` regenerates it as its first step, so
+a published package can never ship a stale one. To refresh it without a full build:
+
+```
+npm run generate:theme-css
+```
+
+It is committed as well as generated, because jest and ladle read `src/` directly and never
+run the build — `src/theme/tokens.spec.ts` fails when the committed copy is stale, which is
+what makes CI (which runs lint and test, not build) catch it.
+
+**Never write a theme value as a literal in a component stylesheet** — reference the token
+instead:
+
+```css
+/* no */
+.thing { border-color: #d5d5d5; }
+
+/* yes */
+.thing { border-color: var(--ox-color-pale); }
+```
+
+Tokens are `--ox-`-prefixed, so they will not collide with a consuming app's own variables.
+Color tokens are the kebab-case form of the `src/theme/palette.ts` key
+(`palette.neutralLighter` → `--ox-color-neutral-lighter`); there are also `--ox-color-link`,
+`--ox-color-link-hover`, `--ox-z-index-*` and `--ox-padding-navbar-*`.
+
+Any component whose CSS uses a token must import the token file alongside its own
+stylesheet:
+
+```ts
+import './MyComponent.css';
+import '../theme/theme.css';
+```
+
+There is no bundler in the build — `build.bash` copies CSS 1:1 — so nothing resolves an
+`@import` on our behalf and a stylesheet does not drag `theme.css` in by itself. Forget the
+import and every `var(--ox-*)` in that file quietly takes its fallback, which usually looks
+right on screen because the fallback is the literal the token replaced. `tokens.spec.ts`
+fails when a stylesheet reads a token and the module importing it does not import the
+tokens, so this cannot be forgotten rather than merely being documented.
+
+Consumers of the package need do nothing: the import rides along with the component,
+bundlers deduplicate it, and `sideEffects` in `package.json` keeps it from being
+tree-shaken. An app that wants the tokens without rendering one of our components — to
+build its own styles on the palette, say — can load the file directly:
+
+```ts
+import '@openstax/ui-components/theme/theme.css';
+```
+
+### Component override hooks and when to bind in JS
+
+A component may expose its own `--component-*` custom property so consumers can restyle it.
+Declare the **default in the stylesheet** with the token as the fallback, and do not bind it
+from JavaScript:
+
+```css
+.tabs [role="tab"] { border-color: var(--tabs-active-border-color, var(--ox-color-dark-green)); }
+```
+
+Bind a custom property from JavaScript only when its value genuinely varies at runtime — a
+variant lookup, a numeric prop, a disabled state. A static color pushed through an inline
+style is duplication with extra steps, and it wins over the cascade in ways callers do not
+expect.
+
+Widen the component's `style` prop to `CSSPropertiesWithVariables` (from `src/types`) so
+callers can set these without a cast.
+
+### What CI enforces
+
+`src/theme/tokens.spec.ts` fails the build if:
+
+- the committed `theme.css` is not what the generator produces from the JS theme (the build
+  regenerates it; this is what stops a stale copy reaching jest, ladle or a reviewer)
+- a component stylesheet writes a color literal that duplicates a theme value
+- a component stylesheet introduces a color that is not a theme value and not in the
+  `KNOWN_OFF_PALETTE` allowlist
+- a component stylesheet reads an `--ox-*` token that does not exist
+- a stylesheet reads a token and the module that imports it does not import `theme.css`
+
+The color check parses declarations rather than grepping for hex, so it reads a value the
+way the property does. What that covers:
+
+- Hex, and the color functions — `rgb()`, `hsl()`, `hwb()`, `lab()`, `lch()`, `oklab()`,
+  `oklch()`, `color()` and their `a` variants — in any declaration, whatever the property.
+- A bare name such as `whitesmoke` only where the property could take a color: a property
+  whose name contains `color`, one of the color shorthands (`background`, `border`,
+  `outline`, `box-shadow`, `text-decoration`, `fill` and the rest), or a custom property,
+  which has no grammar to go on. `var()` keeps the gate of the property it is written in,
+  since its fallback is whatever that property makes of it.
+- Functions that merely *contain* colors (`var()`, `color-mix()`, `light-dark()`, the
+  gradients) are descended into rather than read as literals, so a value built out of
+  tokens stays clean. The gradients and `color-mix()` open the gate on their own, because
+  `linear-gradient(red, blue)` is a gradient between two colors whatever it is assigned to.
+- A translucent color where its opaque channels are a theme value — `rgba(0, 0, 0, 0.2)` is
+  black at 20% and there is no token form for it. A new hue smuggled in through `rgba()` is
+  still refused.
+
+What it does not cover, deliberately: a bare name outside a color context. `animation-name:
+red`, `font-family: white` and `grid-area: gold` are identifiers that happen to spell
+colors, and are not reported.
+
+What it does not cover, for now: only the literal ASCII spelling of a *name* is recognized.
+Escapes are decoded in color names themselves, but not in property or function names, so
+`c\6f lor: red` — which is `color: red` to a browser — is missed. Nothing we ship is
+written that way; CORE-2885 tracks it along with the rest of the lexing work.
+
+The check has its own tests, so what is claimed above is pinned rather than asserted.
+
+The stylesheets migrated before the tokens existed are listed in `PENDING_SWEEP` in
+`tokens.spec.ts` and are exempt from the duplicate-literal check until they are swept —
+from that check only. A color the theme does not have is still refused in those files, so
+the list defers work already owed rather than opening a gap. The list is asserted to be
+exactly the set of files that still carry duplicates, so it cannot drift: you cannot exempt
+a clean file, and you cannot sweep a file without removing it from the list. Do not add to
+it — new stylesheets are expected to use the tokens from the start.
+
+Adding a genuinely new color is therefore a deliberate act: put it in `palette.ts` if it is
+part of the design, or in the allowlist with a reason if it is a one-off we are keeping.
+
+Breakpoints are the known gap — `@media (min-width: var(--x))` is not valid CSS, so
+breakpoint values are still repeated in media queries and are not covered by the tests.
+
 ## Testing Across Projects
 
 To test changes before tagging:
