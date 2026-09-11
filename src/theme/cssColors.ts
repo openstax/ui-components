@@ -60,8 +60,20 @@ export interface StylesheetColor extends FoundColor {
   property: string;
 }
 
-/** https://www.w3.org/TR/css-color-4/#named-colors */
-const NAMED_COLORS: Record<string, string> = {
+/**
+ * https://www.w3.org/TR/css-color-4/#named-colors
+ *
+ * Prototype-less, so a lookup can only answer for a colour that is actually in the
+ * table. An object literal inherits from `Object.prototype`, where `constructor` and
+ * `__proto__` are truthy — and they are the two inherited keys that survive being
+ * lower-cased, so `color: constructor` looked up to a function, was reported as a
+ * colour, and then crashed `fromHex` on `.toLowerCase()`. A crash here takes down the
+ * whole suite of whichever consumer is running the audit.
+ *
+ * Fixed on the table rather than at the two lookups, because guarding a call site only
+ * holds until someone adds a third.
+ */
+const NAMED_COLORS: Record<string, string> = Object.assign(Object.create(null), {
   aliceblue: '#f0f8ff', antiquewhite: '#faebd7', aqua: '#00ffff', aquamarine: '#7fffd4',
   azure: '#f0ffff', beige: '#f5f5dc', bisque: '#ffe4c4', black: '#000000',
   blanchedalmond: '#ffebcd', blue: '#0000ff', blueviolet: '#8a2be2', brown: '#a52a2a',
@@ -102,7 +114,7 @@ const NAMED_COLORS: Record<string, string> = {
   steelblue: '#4682b4', tan: '#d2b48c', teal: '#008080', thistle: '#d8bfd8',
   tomato: '#ff6347', turquoise: '#40e0d0', violet: '#ee82ee', wheat: '#f5deb3',
   white: '#ffffff', whitesmoke: '#f5f5f5', yellow: '#ffff00', yellowgreen: '#9acd32',
-};
+});
 
 /**
  * Functions whose arguments *are* the colour, rather than containing one. These are

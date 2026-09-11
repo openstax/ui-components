@@ -479,6 +479,16 @@ describe('findColors', () => {
     expect(() => literals('a { color: \\110000 ; }')).not.toThrow();
   });
 
+  it.each(['constructor', '__proto__'])(
+    'does not report or crash on %s, which is inherited rather than a colour', (name) => {
+      // a crash in the audit takes down the suite of whichever consumer is running it,
+      // so this is worse than the wrong answer it also gave
+      expect(() => stylesheetColors(`a { color: ${name}; }`)).not.toThrow();
+      expect(literals(`a { color: ${name}; }`)).toEqual([]);
+      expect(literals(`:root { --x: ${name}; }`)).toEqual([]);
+    }
+  );
+
   it('records the declaration each colour was written in', () => {
     expect(stylesheetColors('@media (max-width: 50em) { .a:hover { color: #fff; } }'))
       .toEqual([{
@@ -568,6 +578,15 @@ describe('describeColor', () => {
   it('returns null for an unknown identifier', () => {
     expect(describeColor('notacolor')).toBeNull();
   });
+
+  it.each(['constructor', '__proto__', 'toString', 'valueOf', 'hasOwnProperty'])(
+    'returns null for %s rather than reading a key off Object.prototype', (name) => {
+      // `constructor` and `__proto__` are the inherited keys that survive being
+      // lower-cased. They used to look up to a function and an object, both truthy,
+      // which `fromHex` then crashed on.
+      expect(describeColor(name)).toBeNull();
+    }
+  );
 
   it.each(['#12345', '#1234567', '#123456789'])(
     'returns null for the malformed hex length %s', (literal) => {
