@@ -123,11 +123,15 @@ const COLOR_FUNCTIONS = [
  *
  * `var()` is deliberately absent: a fallback is whatever the property makes of it, so
  * it keeps the gate of the property it was written in.
+ *
+ * `image()` is here for its second argument, which is a bare fallback `<color>`:
+ * `image(url(marker.svg), red)` renders red if the marker fails to load. `image-set()`
+ * is deliberately *not* here -- it holds images and resolutions, never a colour.
  */
 const COLOR_CONTAINERS = [
   'linear-gradient', 'radial-gradient', 'conic-gradient', 'repeating-linear-gradient',
   'repeating-radial-gradient', 'repeating-conic-gradient', 'color-mix', 'light-dark',
-  'cross-fade',
+  'cross-fade', 'image',
 ];
 
 /**
@@ -643,17 +647,13 @@ export const describeColor = (literal: string): Rgba | null => {
 };
 
 /**
- * Finds every colour literal in a declaration value, at any depth. Functions that merely
- * contain colours are descended into; colour functions are terminal.
+ * The colour walk itself, over a value whose noise has already been blanked.
  *
- * `named` says whether a bare identifier may be read as a colour. That depends on the
- * property the value belongs to — see `takesColor` — and on whether the walk has since
- * descended into a function whose arguments are colours whatever the property is, see
- * `COLOR_CONTAINERS`. Hex and the colour functions are unambiguous and are found either
- * way. It has no default: defaulting it to `true` would quietly restore the over-eager
- * behaviour for any caller that forgot it.
+ * Split from `findColors` because the two have different preconditions rather than
+ * different behaviour: this one requires a blanked value and is also how it recurses
+ * into its own arguments, where re-blanking would be wasted work.
  */
-export const findColors = (value: string, named: boolean): FoundColor[] => {
+const scanColors = (value: string, named: boolean): FoundColor[] => {
   const found: FoundColor[] = [];
   let index = 0;
 
@@ -680,7 +680,7 @@ export const findColors = (value: string, named: boolean): FoundColor[] => {
       } else {
         // a colour-bearing container opens the gate for its arguments; anything else
         // just passes the enclosing property's gate down unchanged.
-        found.push(...findColors(args, named || holdsColor(fn)));
+        found.push(...scanColors(args, named || holdsColor(fn)));
       }
 
       index = cursor;
@@ -711,6 +711,26 @@ export const findColors = (value: string, named: boolean): FoundColor[] => {
 };
 
 /**
+ * Finds every colour literal in a declaration value, at any depth. Functions that merely
+ * contain colours are descended into; colour functions are terminal.
+ *
+ * `named` says whether a bare identifier may be read as a colour. That depends on the
+ * property the value belongs to — see `takesColor` — and on whether the walk has since
+ * descended into a function whose arguments are colours whatever the property is, see
+ * `COLOR_CONTAINERS`. Hex and the colour functions are unambiguous and are found either
+ * way. It has no default: defaulting it to `true` would quietly restore the over-eager
+ * behaviour for any caller that forgot it.
+ *
+ * The value is taken *raw*, as written in the source, and its noise is blanked here.
+ * Without that this took a declaration value in its doc comment and a noise-free one in
+ * fact: `url(#fff)` is a URL whose fragment is not a colour and `content: "red"` is a
+ * string, yet both were reported. `stylesheetColors` does not pay for this twice — it
+ * reads values that `declarations` has already blanked, so it walks them directly.
+ */
+export const findColors = (value: string, named: boolean): FoundColor[] =>
+  scanColors(stripNoise(value), named);
+
+/**
  * Every colour literal written in a stylesheet, in source order.
  *
  * Accumulated with `push` rather than by spreading into a new array per declaration:
@@ -721,7 +741,7 @@ export const stylesheetColors = (css: string): StylesheetColor[] => {
   const found: StylesheetColor[] = [];
 
   for (const { context, property, value } of declarations(css)) {
-    for (const color of findColors(value, takesColor(property))) {
+    for (const color of scanColors(value, takesColor(property))) {
       found.push({ ...color, context, property });
     }
   }

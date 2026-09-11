@@ -381,6 +381,23 @@ describe('findColors', () => {
     expect(literals(css)).toEqual(['red', 'blue']);
   });
 
+  it('reads the fallback colour in image(), whose first argument is a url', () => {
+    // `image()` takes an image and then a bare `<color>` to fall back to, so the stop
+    // is a colour however the property is spelled. The url payload is blanked, so the
+    // `#` of a fragment in it cannot be read as a hex literal.
+    expect(literals('a { list-style-image: image(url(marker.svg#a), red); }'))
+      .toEqual(['red']);
+  });
+
+  it('does not open the named-colour gate inside image-set(), which holds no colour', () => {
+    // the sibling function takes images and resolutions only, so an identifier there is
+    // not a colour -- it is listed as deliberately absent from COLOR_CONTAINERS.
+    expect(literals('a { list-style-image: image-set(red 1x); }')).toEqual([]);
+    // a gradient inside one still opens its own gate, so nothing is lost by the absence
+    expect(literals('a { list-style-image: image-set(linear-gradient(red, blue) 1x); }'))
+      .toEqual(['red', 'blue']);
+  });
+
   it('keeps the property gate inside var(), whose fallback is not known to be a colour', () => {
     // the other half: `var()` is whatever the property makes of it, so an identifier in
     // a fallback is only a colour when the property says so.
@@ -407,6 +424,28 @@ describe('findColors', () => {
     // colour for any call site that omitted the argument.
     expect(findColors('red', true)).toHaveLength(1);
     expect(findColors('red', false)).toEqual([]);
+  });
+
+  it.each([
+    ['a url fragment', 'url(#fff)'],
+    ['a quoted string', '"red"'],
+    ['a string in a shorthand', '0 0 0 "red"'],
+    ['a comment', '/* red */ 0'],
+    ['a data: URI', 'url(data:image/svg+xml;utf8,<rect fill="#fff"/>)'],
+  ])('blanks %s in a raw value handed straight to findColors', (_case, value) => {
+    // findColors takes a value as written, not one a caller has already cleaned up:
+    // `stylesheetColors` gets that for free from `declarations` and a direct caller
+    // should not have to know it is a precondition.
+    expect(findColors(value, true)).toEqual([]);
+  });
+
+  it.each([
+    ['a hex literal', '#fff', '#fff'],
+    ['a named colour beside a string', '"x" red', 'red'],
+    ['a colour after a url', 'url(a.svg) red', 'red'],
+  ])('still finds %s in a raw value', (_case, value, literal) => {
+    // the other direction: blanking the noise must not blank the colours with it
+    expect(findColors(value, true).map((found) => found.literal)).toEqual([literal]);
   });
 
   it.each([
