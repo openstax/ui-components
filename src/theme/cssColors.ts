@@ -136,15 +136,37 @@ const COLOR_FUNCTIONS = [
  * `var()` is deliberately absent: a fallback is whatever the property makes of it, so
  * it keeps the gate of the property it was written in.
  *
- * `image()` is here for its second argument, which is a bare fallback `<color>`:
- * `image(url(marker.svg), red)` renders red if the marker fails to load. `image-set()`
- * is deliberately *not* here -- it holds images and resolutions, never a colour.
+ * `image()` is here for its bare `<color>` argument, which renders as a solid image.
+ * `drop-shadow()` is here because it is the only part of `filter` that holds a colour,
+ * which is why `filter` itself is not in `COLOR_SHORTHANDS`.
+ *
+ * Verified in Chromium 153 rather than read off the grammar, one argument at a time:
+ * `image(red)`, `color-mix(in srgb, red, blue)`, `light-dark(red, blue)` and
+ * `drop-shadow(0 0 2px red)` are all accepted, and `image-set(red 1x)` is rejected
+ * while `image-set(url(a.png) 1x)` is accepted.
+ *
+ * `cross-fade()` is the one entry no engine could arbitrate: Chromium implements
+ * neither the standard syntax nor a colour argument to the prefixed one, so even the
+ * all-image control is rejected. CSS Images 4 defines its argument as
+ * `<percentage>? && [ <image> | <color> ]`, so it is kept on the spec's word.
  */
 const COLOR_CONTAINERS = [
   'linear-gradient', 'radial-gradient', 'conic-gradient', 'repeating-linear-gradient',
   'repeating-radial-gradient', 'repeating-conic-gradient', 'color-mix', 'light-dark',
-  'cross-fade', 'image',
+  'cross-fade', 'image', 'drop-shadow',
 ];
+
+/**
+ * Functions whose arguments are never a bare `<color>`, so the enclosing property's
+ * gate must not reach inside them either.
+ *
+ * Being absent from `COLOR_CONTAINERS` is not enough. An unlisted function passes the
+ * property's gate straight through, which is right for `var()` — a fallback is whatever
+ * the property makes of it — but wrong here: `background` does take a colour, so
+ * `background: image-set(red 1x)` arrived with the gate open and reported `red`, though
+ * `image-set()` holds images and resolutions and Chromium rejects that value.
+ */
+const NOT_COLOR_CONTAINERS = ['image-set', 'element', 'paint'];
 
 /**
  * Keywords that are colour-valued but carry no fixed channels, so there is nothing to
@@ -407,18 +429,28 @@ export const declarations = (css: string): Declaration[] => {
  * Spelled out rather than matched by prefix, so that `border-radius`, `border-width` and
  * the rest of the border family that cannot take a colour do not let one through.
  *
- * `list-style` is deliberately absent, though it is image-bearing: its bare identifier
- * is a `<counter-style>` name, and after `@counter-style red { ... }` the declaration
- * `list-style: red` is valid and means that counter. A gradient written there is still
- * found, because a gradient opens the gate for its own stops — see `COLOR_CONTAINERS`.
+ * The image-valued and filter-valued properties are all deliberately absent, because a
+ * bare identifier in one is never a colour. Each was checked in Chromium 153 by setting
+ * the declaration and reading it back, with `inherit` as a control for whether the
+ * property exists at all: `background-image`, `border-image`, `border-image-source`,
+ * `mask`, `mask-image`, `filter` and `backdrop-filter` all reject `red`. `list-style`
+ * is absent for a related but distinct reason — its identifier is an author-defined
+ * `<counter-style>` name, so `list-style: red` is *valid* and means that counter.
+ *
+ * Nothing is lost by their absence: a gradient opens the gate for its own stops and
+ * `drop-shadow()` for its own colour, wherever they are written — see
+ * `COLOR_CONTAINERS`.
+ *
+ * The entries that stay were checked the same way, and the question is whether a bare
+ * colour can appear *anywhere* in the value rather than as the whole of it: `red` alone
+ * is rejected by `box-shadow` and `text-shadow`, while `0 0 red` is accepted by both.
  */
 const COLOR_SHORTHANDS = [
-  'background', 'background-image', 'border', 'border-block', 'border-block-end',
-  'border-block-start', 'border-bottom', 'border-image', 'border-image-source',
-  'border-inline', 'border-inline-end', 'border-inline-start', 'border-left',
-  'border-right', 'border-top', 'box-shadow', 'caret', 'column-rule', 'fill', 'filter',
-  'backdrop-filter', 'mask', 'mask-image', 'outline', 'scrollbar', 'stroke',
-  'text-decoration', 'text-emphasis', 'text-shadow', 'text-stroke',
+  'background', 'border', 'border-block', 'border-block-end', 'border-block-start',
+  'border-bottom', 'border-inline', 'border-inline-end', 'border-inline-start',
+  'border-left', 'border-right', 'border-top', 'box-shadow', 'caret', 'column-rule',
+  'fill', 'outline', 'scrollbar', 'stroke', 'text-decoration', 'text-emphasis',
+  'text-shadow', 'text-stroke',
 ];
 
 /**
@@ -450,8 +482,22 @@ export const takesColor = (property: string): boolean => {
   return name.includes('color') || COLOR_SHORTHANDS.includes(name);
 };
 
-/** Whether this function's arguments are colours regardless of the enclosing property. */
-const holdsColor = (fn: string): boolean => COLOR_CONTAINERS.includes(unprefixed(fn));
+/**
+ * Whether a bare identifier inside this function may be read as a colour.
+ *
+ * Three answers, not two. A colour-bearing container opens the gate whatever the
+ * property was; a function known to hold no colour closes it whatever the property was;
+ * anything else — `var()`, and any function neither list has heard of — passes the
+ * property's own gate through unchanged.
+ */
+const gateInside = (fn: string, named: boolean): boolean => {
+  const name = unprefixed(fn);
+
+  if (COLOR_CONTAINERS.includes(name)) { return true; }
+  if (NOT_COLOR_CONTAINERS.includes(name)) { return false; }
+
+  return named;
+};
 
 const clamp = (value: number, max: number) => Math.min(max, Math.max(0, value));
 
@@ -690,9 +736,7 @@ const scanColors = (value: string, named: boolean): FoundColor[] => {
       if (COLOR_FUNCTIONS.includes(fn)) {
         found.push({ literal, rgba: describeColor(literal) });
       } else {
-        // a colour-bearing container opens the gate for its arguments; anything else
-        // just passes the enclosing property's gate down unchanged.
-        found.push(...scanColors(args, named || holdsColor(fn)));
+        found.push(...scanColors(args, gateInside(fn, named)));
       }
 
       index = cursor;

@@ -391,11 +391,51 @@ describe('findColors', () => {
 
   it('does not open the named-colour gate inside image-set(), which holds no colour', () => {
     // the sibling function takes images and resolutions only, so an identifier there is
-    // not a colour -- it is listed as deliberately absent from COLOR_CONTAINERS.
+    // not a colour.
     expect(literals('a { list-style-image: image-set(red 1x); }')).toEqual([]);
-    // a gradient inside one still opens its own gate, so nothing is lost by the absence
+    // a gradient inside one still opens its own gate, so nothing is lost
     expect(literals('a { list-style-image: image-set(linear-gradient(red, blue) 1x); }'))
       .toEqual(['red', 'blue']);
+  });
+
+  it('closes the gate inside image-set() even when the property opens it', () => {
+    // `background` does take a colour, so the enclosing gate is open here. Being
+    // absent from COLOR_CONTAINERS is not enough — an unlisted function passes the
+    // property's gate straight through, which is why image-set() has to close it.
+    expect(literals('a { background: image-set(red 1x); }')).toEqual([]);
+    expect(literals('a { background: image-set(linear-gradient(red, blue) 1x); }'))
+      .toEqual(['red', 'blue']);
+  });
+
+  it.each(['element', 'paint'])(
+    'closes the gate inside %s(), whose argument is a name rather than a colour', (fn) => {
+      expect(literals(`a { background: ${fn}(red); }`)).toEqual([]);
+    }
+  );
+
+  it.each([
+    'background-image', 'border-image', 'border-image-source', 'mask', 'mask-image',
+    'filter', 'backdrop-filter',
+  ])('does not read a bare colour in %s, which takes an image or a filter', (property) => {
+    // every one of these rejects `red` in Chromium 153 — they take an <image> or a
+    // <filter-function-list>, so a bare identifier there is never a colour
+    expect(takesColor(property)).toBe(false);
+    expect(literals(`a { ${property}: red; }`)).toEqual([]);
+  });
+
+  it.each([
+    ['a gradient', 'background-image', 'linear-gradient(red, blue)'],
+    ['a gradient', 'border-image-source', 'linear-gradient(red, blue)'],
+    ['a gradient', 'mask-image', 'linear-gradient(red, blue)'],
+  ])('still finds %s in %s, whose stops are colours regardless', (_case, property, value) => {
+    expect(literals(`a { ${property}: ${value}; }`)).toEqual(['red', 'blue']);
+  });
+
+  it('still finds the colour in filter: drop-shadow(), which does hold one', () => {
+    // dropping `filter` from the shorthands must not lose this: the colour lives in
+    // drop-shadow(), which opens the gate for its own arguments
+    expect(literals('a { filter: drop-shadow(0 0 2px red); }')).toEqual(['red']);
+    expect(literals('a { backdrop-filter: drop-shadow(0 0 2px red); }')).toEqual(['red']);
   });
 
   it('keeps the property gate inside var(), whose fallback is not known to be a colour', () => {
