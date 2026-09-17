@@ -33,6 +33,11 @@ export const Plain = () => <NavBar className="story-navbar">NavBar</NavBar>;
 export const LogoAndChildren = () => <NavBar logo className="story-navbar">Menu</NavBar>;
 export const AltTextLinkedLogo = () => <NavBar logo={{alt: 'custom alt', href: '/'}} className="story-navbar" />;
 export const AltTextNoLinkedLogo = () => <NavBar logo={{alt: 'custom alt unlinked'}} className="story-navbar" />;
+export const HeaderTagName = () => <NavBar tagName='header' className="story-navbar">
+  <h1>Activity title</h1>
+  <NavBarButton label="Help" />
+</NavBar>;
+
 export const OverrideJustifyContent = () => <NavBar justifyContent='center' className="story-navbar">
   <strong>Centered Menu</strong>
 </NavBar>;
