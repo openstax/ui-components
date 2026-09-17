@@ -201,14 +201,25 @@ const staleAllowlistEntries = (allowlist: ReadonlyMap<string, string>) =>
   });
 
 /**
- * --ox-* tokens a stylesheet reads but theme.css does not define.
+ * Every `--ox-*` token a stylesheet reads, in the order written.
+ *
+ * One scan, shared by the unknown-reference check below and the import rule at the foot of
+ * the file, because the two disagreeing is a gap rather than an inconsistency: `var(--ox-)`
+ * names a custom property nothing defines, and requiring a character after the prefix meant
+ * the import rule saw that reference while the check that would have failed it did not. The
+ * one reference that cannot possibly resolve was the one that passed.
+ *
+ * `var` has to be the whole function name, or `myvar(--ox-color-pale)` reads as a token
+ * reference. That is a legal custom-property value which calls no CSS variable, so it
+ * failed the build over a misspelling in a name nothing reads, and told the component
+ * holding it to import a token file it has no use for.
  *
  * The match is case-insensitive because CSS function names are: `VAR(--ox-color-pale)` is
  * the same reference as `var(--ox-color-pale)`, and a check that only knew the lowercase
- * spelling would let a typo through in the other one. The lookup stays case-sensitive,
- * because custom property *names* are — `var(--OX-color-pale)` really is a reference to
- * something nothing defines, and silently falling through to its fallback is the failure
- * this check exists to catch.
+ * spelling would let a typo through in the other one. The lookup in
+ * `unknownTokenReferences` stays case-sensitive, because custom property *names* are —
+ * `var(--OX-color-pale)` really is a reference to something nothing defines, and silently
+ * falling through to its fallback is the failure this check exists to catch.
  *
  * The name runs to the end of the CSS identifier, non-ASCII included, because anything at
  * U+0080 or above is a name code point. `[\w-]+` stopped at the first of them and handed
@@ -220,15 +231,21 @@ const staleAllowlistEntries = (allowlist: ReadonlyMap<string, string>) =>
  * `--ox-color-red` that this reads as `--ox-color-r` and reports as undefined. Wrong, but
  * wrong in the direction of a failure rather than a pass, and it is the same
  * decode-the-escapes work as the rest of CORE-2885 rather than a boundary this regex can
- * fix.
+ * fix. The boundary deliberately ignores a preceding backslash for the same reason: `\var(`
+ * is a real call and `my\var(` is not, and telling those apart needs the decoding too — so
+ * it matches both, erring towards the failure rather than the silent pass.
  */
-const unknownTokenReferences = (css: string, defined: Map<string, string>) => [
-  ...new Set(
-    [...stripNoise(css).matchAll(/var\(\s*(--ox-(?:[\w-]|[^\x00-\x7f])+)/gi)]
-      .map((match) => match[1])
-      .filter((name) => !defined.has(name))
-  ),
-];
+const themeTokenReferences = (css: string): string[] =>
+  [...stripNoise(css).matchAll(
+    /(?<![-\w]|[^\x00-\x7f])var\(\s*(--ox-(?:[\w-]|[^\x00-\x7f])*)/gi
+  )].map((match) => match[1]);
+
+/** Whether a stylesheet reads a theme token at all. Used by the import rule below. */
+const readsThemeToken = (css: string) => themeTokenReferences(css).length > 0;
+
+/** --ox-* tokens a stylesheet reads but theme.css does not define. */
+const unknownTokenReferences = (css: string, defined: Map<string, string>) =>
+  [...new Set(themeTokenReferences(css).filter((name) => !defined.has(name)))];
 
 describe('theme.css', () => {
   it('is what the generator produces from the JS theme', () => {
@@ -442,6 +459,29 @@ describe('the color check itself', () => {
     expect(unknownTokenReferences('.x { color: var(--OX-color-pale); }', themeTokens()))
       .toEqual(['--OX-color-pale']);
   });
+
+  it('flags the bare prefix, which nothing defines', () => {
+    // `--ox-` is a valid custom property name in its own right, and the suffix used to be
+    // required: the import rule saw `var(--ox-)` and this check did not, so the one
+    // reference that cannot possibly resolve was the one that passed.
+    const defined = themeTokens();
+    expect(defined.has('--ox-')).toBe(false);
+    expect(unknownTokenReferences('.x { color: var(--ox-); }', defined)).toEqual(['--ox-']);
+    expect(readsThemeToken('.x { color: var(--ox-); }')).toBe(true);
+  });
+
+  it('reads var() only where it is the whole function name', () => {
+    // `myvar(--ox-color-palee)` is a legal custom-property value that calls no CSS
+    // variable. Read as a reference it failed the build over a name nothing looks up, and
+    // through the import rule below demanded theme.css of a component with no use for it.
+    const defined = themeTokens();
+    expect(unknownTokenReferences('.x { --y: myvar(--ox-color-palee); }', defined)).toEqual([]);
+    expect(unknownTokenReferences('.x { --y: -var(--ox-color-palee); }', defined)).toEqual([]);
+    expect(readsThemeToken('.x { --y: myvar(--ox-color-pale); }')).toBe(false);
+    // a boundary, not a ban on the letters: a real call beside one still reads
+    expect(unknownTokenReferences('.x { --y: myvar(var(--ox-color-palee)); }', defined))
+      .toEqual(['--ox-color-palee']);
+  });
 });
 
 /**
@@ -569,9 +609,6 @@ const missingThemeImport = (
 
   return imported.includes(themeCssPath) ? [] : needy;
 };
-
-/** Whether a stylesheet reads a theme token at all. */
-const readsThemeToken = (css: string) => /var\(\s*--ox-/i.test(stripNoise(css));
 
 describe('the token import rule', () => {
   const moduleFile = path.join(srcDir, 'components/Thing.tsx');
