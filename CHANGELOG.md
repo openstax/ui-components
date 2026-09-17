@@ -18,8 +18,14 @@ still defaults to `'nav'`, so existing consumers are unchanged; bars that hold n
 navigation links can pass `'header'` (a `banner` landmark) or `'div'` (no landmark).
 
 The portal `slot` stays `'nav'` regardless — it is only an ordering key for
-`BodyPortalSlotsContext`, and consumer layouts select on `[data-portal-slot="nav"]`
-rather than the tag, so there is no visual change.
+`BodyPortalSlotsContext` — and styling inside the bar is class-based, so the default
+`'nav'` behaves exactly as before.
+
+Consumers that pass a non-default `tagName` must check their body-portal layout CSS: a
+tag-qualified selector such as `nav[data-portal-slot="nav"]` stops matching once the bar
+renders as a `header` or `div`, and the bar loses its `grid-area`. Drop the tag qualifier
+(`[data-portal-slot="nav"]`) to select the slot regardless of element. The
+`SidebarNav` "UsingBodyPortal" story was updated accordingly.
 
 #### Render-callback `className` support in react-aria-components wrappers (CORE-2708)
 
