@@ -38,7 +38,8 @@ const BodyPortalGlobalStyle = createGlobalStyle`
       grid-area: sidebar;
     }
 
-    nav[data-portal-slot="nav"] {
+    /* Not tag-qualified: NavBar's element is configurable via tagName */
+    [data-portal-slot="nav"] {
       grid-area: nav;
     }
 
