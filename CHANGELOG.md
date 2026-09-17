@@ -6,6 +6,21 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 
+#### Configurable `NavBar` element (CORE-2876)
+
+`NavBar` hard-coded `tagName='nav'` on its `BodyPortal`, so every consumer got a
+`navigation` landmark whether or not the bar contained navigation. An accessibility audit
+of the Assignments student view flagged a bar holding only a heading, a Help menu, and a
+kebab menu as an unnecessary navigation landmark (WCAG 4.1.2).
+
+`NavBar` now accepts `tagName?: 'nav' | 'header' | 'div'`, forwarded to `BodyPortal`. It
+still defaults to `'nav'`, so existing consumers are unchanged; bars that hold no
+navigation links can pass `'header'` (a `banner` landmark) or `'div'` (no landmark).
+
+The portal `slot` stays `'nav'` regardless — it is only an ordering key for
+`BodyPortalSlotsContext`, and consumer layouts select on `[data-portal-slot="nav"]`
+rather than the tag, so there is no visual change.
+
 #### Render-callback `className` support in react-aria-components wrappers (CORE-2708)
 
 `NavBarMenuItem`, `NavBarPopover`, `NavBarButton`, and `TreeCheckbox` passed the caller's
