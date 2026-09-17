@@ -23,6 +23,10 @@ const themeCssPath = path.join(__dirname, 'theme.css');
  * `rgba(0, 0, 0, 0.2)` is black at 20% and passes on its own. That rule is what lets
  * shadows and overlays stay readable without allowlisting every alpha we happen to use,
  * while still refusing a new hue smuggled in through rgba().
+ *
+ * An entry excuses a color only while the theme does not have it. Add one of these to
+ * palette.ts and the literals become a swap owed like any other, and the entry itself has
+ * to go with the same commit — see `staleAllowlistEntries` below.
  */
 const KNOWN_OFF_PALETTE = new Map([
   ['#cccccc', 'Tooltip border and the uncontrolled-form h3 rule. Predates the palette; nearest entry is pale (#d5d5d5).'],
@@ -121,15 +125,23 @@ const themeValues = themeColors.reduce((byValue, [token, value]) => {
  */
 interface ColorProblems { duplicates: string[]; offPalette: string[] }
 
-const colorProblems = (css: string): ColorProblems => {
+const colorProblems = (
+  css: string, allowlist: ReadonlyMap<string, string> = KNOWN_OFF_PALETTE
+): ColorProblems => {
   const duplicates: string[] = [];
   const offPalette: string[] = [];
 
   for (const found of stylesheetColors(css)) {
     const { literal, rgba } = found;
     const key = allowlistKey(found);
+    const tokens = rgba === null ? undefined : themeValues.get(opaqueKey(rgba));
 
-    if (KNOWN_OFF_PALETTE.has(key)) { continue; }
+    // The allowlist excuses a color the theme does not have, and only for as long as that
+    // is true. Read before the theme lookup it also excused one the theme *does* have, so
+    // promoting an entry into palette.ts — the thing the list tells you to prefer — left
+    // every literal of it exempt: the swap never reached `duplicates`, so PENDING_SWEEP
+    // could not ask for it and the sweep had no way to know the copies were still there.
+    if (allowlist.has(key) && tokens === undefined) { continue; }
 
     if (rgba === null) {
       offPalette.push(
@@ -139,7 +151,6 @@ const colorProblems = (css: string): ColorProblems => {
     }
 
     const hex = opaqueKey(rgba);
-    const tokens = themeValues.get(hex);
 
     if (rgba.a < 1) {
       // An alpha variant of a theme color is fine — there is no token form for it.
@@ -167,6 +178,27 @@ const allColorProblems = (css: string): string[] => {
   const { duplicates, offPalette } = colorProblems(css);
   return [...duplicates, ...offPalette];
 };
+
+/**
+ * Allowlist entries the theme now has a token for, and which therefore excuse nothing.
+ *
+ * The other half of the rule above: once a color is in the palette the exemption lapses, so
+ * the entry is dead weight carrying a reason that has stopped being true. Naming it is the
+ * difference between an author deleting it as part of the promotion and finding it years
+ * later next to literals it no longer covers.
+ *
+ * A translucent entry counts too — an alpha over a theme color passes on its own channels.
+ * An entry the checker cannot resolve has no channels to compare, so it is left alone.
+ *
+ * Taken as a function of the allowlist so the check can be run over a map that has such an
+ * entry, rather than only ever over a file that happens to be tidy.
+ */
+const staleAllowlistEntries = (allowlist: ReadonlyMap<string, string>) =>
+  [...allowlist.keys()].filter((key) => {
+    // `#rrggbb`, or `#rrggbb/alpha` when there is one: see colorKey.
+    const channels = describeColor(key.replace(/\/.*$/, ''));
+    return channels !== null && themeValues.has(opaqueKey(channels));
+  });
 
 /**
  * --ox-* tokens a stylesheet reads but theme.css does not define.
@@ -298,6 +330,41 @@ describe('the color check itself', () => {
         expect.stringContaining('cannot resolve'),
       ],
     });
+  });
+
+  it('stops excusing an allowlisted color once the theme has it', () => {
+    // The list's own advice is to put a color in palette.ts if it is really part of the
+    // design. Checked before the theme lookup, taking that advice silently exempted every
+    // literal of it instead of turning them into the swap they now are — so PENDING_SWEEP
+    // could not name the files and the sweep would have left the copies behind.
+    const promoted = new Map([['#d5d5d5', 'pretend pale predates the palette']]);
+    expect(colorProblems('.x { color: #d5d5d5; }', promoted)).toEqual({
+      duplicates: [expect.stringContaining('use var(--ox-color-pale)')],
+      offPalette: [],
+    });
+  });
+
+  it('still excuses an allowlisted color the theme does not have', () => {
+    // The other direction, so the fix above cannot be read as dropping the exemption.
+    const kept = new Map([['#123456', 'pretend this came from the styled-components original']]);
+    expect(colorProblems('.x { color: #123456; }', kept))
+      .toEqual({ duplicates: [], offPalette: [] });
+  });
+
+  it('carries no allowlist entry the theme already defines', () => {
+    expect(staleAllowlistEntries(KNOWN_OFF_PALETTE)).toEqual([]);
+  });
+
+  it('would name an allowlist entry the theme defines', () => {
+    // The guard above only means something if it can fail. The translucent case is here
+    // because an alpha over a theme color passes on its channels, so such an entry is
+    // just as inert as an opaque one.
+    expect(staleAllowlistEntries(new Map([['#d5d5d5', 'pale is in the palette']])))
+      .toEqual(['#d5d5d5']);
+    expect(staleAllowlistEntries(new Map([['#d5d5d5/0.5', 'so is pale at half alpha']])))
+      .toEqual(['#d5d5d5/0.5']);
+    // and an entry it cannot resolve has no channels to compare, so it stays
+    expect(staleAllowlistEntries(new Map([['hsl(200 50% 50%)', 'unresolvable']]))).toEqual([]);
   });
 
   it('can reduce every theme color to channels', () => {
