@@ -615,6 +615,15 @@ describe('the token import rule', () => {
   const ownStyles = path.join(srcDir, 'components/Thing.css');
   const readsTokens = new Set([ownStyles]);
 
+  /**
+   * The real stylesheets that read a token, for the per-module case at the foot of the
+   * block. Every module there asks the same question of the same files, so computing it
+   * inside the case walked src/ and re-read every stylesheet once per module.
+   */
+  const tokenReadingStylesheets = new Set(
+    walk(srcDir, isStylesheet).filter((css) => readsThemeToken(fs.readFileSync(css, 'utf8')))
+  );
+
   it('flags a component that imports a token-reading stylesheet and not the tokens', () => {
     expect(missingThemeImport(moduleFile, "import './Thing.css';", readsTokens))
       .toEqual([ownStyles]);
@@ -676,10 +685,8 @@ describe('the token import rule', () => {
       // Vacuous on this branch by construction — no stylesheet reads a token until the
       // sweep in #143 converts one, and the rule exists so that sweep cannot forget the
       // import. The helper above is tested on its own, so the rule itself is pinned now.
-      const readsTokens = new Set(
-        walk(srcDir, isStylesheet).filter((css) => readsThemeToken(fs.readFileSync(css, 'utf8')))
-      );
-      expect(missingThemeImport(file, fs.readFileSync(file, 'utf8'), readsTokens)).toEqual([]);
+      expect(missingThemeImport(file, fs.readFileSync(file, 'utf8'), tokenReadingStylesheets))
+        .toEqual([]);
     }
   );
 });
