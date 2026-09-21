@@ -8,7 +8,7 @@
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  height: 4rem;
+  min-height: 4rem;
   padding: 0 3rem;
   border: 0;
   border-radius: 0.5rem;
@@ -16,7 +16,6 @@
   transition: all 0.2s ease-in-out;
   text-decoration: none;
   user-select: none;
-  white-space: nowrap;
 
   /* Variant-specific styles using CSS custom properties with fallback defaults (primary variant) */
   background-color: var(--button-bg, #d4450c);
