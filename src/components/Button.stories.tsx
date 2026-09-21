@@ -7,7 +7,7 @@ export const Primary = () => {
 
   return (
     <>
-      <Input value={state} onChange={e => setState(e.target.value)} />
+      <Input aria-label="Button text" value={state} onChange={e => setState(e.target.value)} />
       <br />
       <br />
       <Button>{state}</Button>
