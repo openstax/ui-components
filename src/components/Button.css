@@ -16,6 +16,7 @@
   transition: all 0.2s ease-in-out;
   text-decoration: none;
   user-select: none;
+  overflow-wrap: anywhere;
 
   /* Variant-specific styles using CSS custom properties with fallback defaults (primary variant) */
   background-color: var(--button-bg, #d4450c);
