@@ -19,6 +19,11 @@
       "import": "./dist/esm/index.js",
       "require": "./dist/cjs/index.js"
     },
+    "./*.css": {
+      "browser": "./dist/esm/*.css",
+      "import": "./dist/esm/*.css",
+      "require": "./dist/cjs/*.css"
+    },
     "./*": {
       "browser": "./dist/esm/*.js",
       "import": "./dist/esm/*.js",
@@ -40,6 +45,7 @@
   ],
   "scripts": {
     "build": "./scripts/build.bash",
+    "generate:theme-css": "./scripts/generate-theme-css.bash",
     "clean": "rm -rf ./dist",
     "build:clean": "npm-run-all clean build",
     "dist": "npm-run-all clean build",
