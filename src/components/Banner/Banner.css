@@ -31,12 +31,27 @@
   align-items: center;
 }
 
-.banner a {
-  text-decoration: none;
+/*
+ * CORE-2734: on the warning tone the link colour (#026AA1) and the banner's body text
+ * (#976502) sit at 1.17:1, well under the 3:1 WCAG 1.4.1 asks for before colour alone may
+ * carry a distinction. So links are underlined at rest, not only on hover.
+ *
+ * `.button-link` is in here because banners compose link-styled buttons inline in their
+ * message text — the "here" in assignments' GracePeriodNotification — and those read as
+ * links to a sighted user with exactly the same problem. The descendant selector outranks
+ * `.button-link`'s own `text-decoration: none` in Button.css on specificity, so this does
+ * not depend on stylesheet order.
+ */
+.banner a,
+.banner .button-link {
+  text-decoration: underline;
   color: var(--banner-link-color, var(--ox-color-medium-blue));
 }
 
-.banner a:hover {
+.banner a:hover,
+.banner a:focus,
+.banner .button-link:hover,
+.banner .button-link:focus {
   text-decoration: underline;
   color: var(--banner-link-hover-color, var(--ox-color-link-hover));
 }
