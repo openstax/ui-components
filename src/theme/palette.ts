@@ -19,6 +19,9 @@ export const palette = {
   tangerine: "#ffbd3e",
   gray: "#5e5e5e",
   darkGray: "#757575",
+  // button variants
+  darkGrayHover: "#646464",
+  darkGrayActive: "#4c4c4c",
   pale: "#d5d5d5",
   light: "#e4e4e4",
   white: "#ffffff",
@@ -34,5 +37,8 @@ export const palette = {
   neutralFeedback: "#555", // another dark gray
   neutralDarker: "#424242", // very dark gray
   black: "#000000",
-  orange: "#D4450C"
+  orange: "#D4450C",
+  // button variants
+  orangeHover: "#be3c08",
+  orangeActive: "#b03808"
 } as const;
