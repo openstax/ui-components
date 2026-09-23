@@ -13,25 +13,38 @@ export type BannerSeverity = 'note' | 'warning' | 'error';
 type WithVariableStyle<E extends keyof JSX.IntrinsicElements> =
   Omit<React.ComponentPropsWithoutRef<E>, 'style'> & { style?: CSSPropertiesWithVariables };
 
-export const Severity = ({ className, ...props }: WithVariableStyle<'span'>) => (
-  <span {...props} className={classNames('banner-severity', className)} />
+export const Severity = React.forwardRef<HTMLSpanElement, WithVariableStyle<'span'>>(
+  ({ className, ...props }, ref) => (
+    <span ref={ref} {...props} className={classNames('banner-severity', className)} />
+  )
 );
+Severity.displayName = 'Severity';
 
 export interface StyledBannerProps extends WithVariableStyle<'div'> {
   severity: BannerSeverity;
 }
 
-export const StyledBanner = ({ severity, className, ...props }: StyledBannerProps) => (
-  <div {...props} className={classNames('banner', `banner-${severity}`, className)} />
+export const StyledBanner = React.forwardRef<HTMLDivElement, StyledBannerProps>(
+  ({ severity, className, ...props }, ref) => (
+    <div ref={ref} {...props} className={classNames('banner', `banner-${severity}`, className)} />
+  )
 );
+StyledBanner.displayName = 'StyledBanner';
 
 export interface CloseButtonProps extends WithVariableStyle<'button'> {
   severity: BannerSeverity;
 }
 
-export const CloseButton = ({ severity, className, ...props }: CloseButtonProps) => (
-  <button {...props} className={classNames('banner-close-button', `banner-${severity}`, className)} />
+export const CloseButton = React.forwardRef<HTMLButtonElement, CloseButtonProps>(
+  ({ severity, className, ...props }, ref) => (
+    <button
+      ref={ref}
+      {...props}
+      className={classNames('banner-close-button', `banner-${severity}`, className)}
+    />
+  )
 );
+CloseButton.displayName = 'CloseButton';
 
 export const Banner = (props: {messages: string[]; severity: BannerSeverity; onDismiss?: () => void}) => {
   const numWarnings = props.messages.length;

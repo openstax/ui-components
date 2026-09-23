@@ -6,19 +6,40 @@ import "../../theme/theme.css";
 
 // composeRenderProps normalises the string and render-callback forms of className so a
 // caller-supplied callback is composed rather than dropped.
-export const Tree = <T extends object>({ className, ...props }: RAC.TreeProps<T>) => (
-  <RAC.Tree
-    {...props}
-    className={RAC.composeRenderProps(className, (resolved) => classNames('tree', resolved))}
-  />
+//
+// forwardRef erases the generic, so each wrapper is declared over `object` and then given
+// back the generic signature react-aria-components itself exports for the component being
+// wrapped. That keeps both the ref the styled() wrappers used to forward and the item-type
+// inference callers rely on.
+const TreeBase = React.forwardRef<HTMLDivElement, RAC.TreeProps<object>>(
+  ({ className, ...props }, ref) => (
+    <RAC.Tree
+      ref={ref}
+      {...props}
+      className={RAC.composeRenderProps(className, (resolved) => classNames('tree', resolved))}
+    />
+  )
 );
+TreeBase.displayName = 'Tree';
 
-export const TreeItem = <T extends object>({ className, ...props }: RAC.TreeItemProps<T>) => (
-  <RAC.TreeItem
-    {...props}
-    className={RAC.composeRenderProps(className, (resolved) => classNames('tree-item', resolved))}
-  />
+export const Tree = TreeBase as <T extends object>(
+  props: RAC.TreeProps<T> & React.RefAttributes<HTMLDivElement>
+) => React.ReactElement | null;
+
+const TreeItemBase = React.forwardRef<HTMLDivElement, RAC.TreeItemProps<object>>(
+  ({ className, ...props }, ref) => (
+    <RAC.TreeItem
+      ref={ref}
+      {...props}
+      className={RAC.composeRenderProps(className, (resolved) => classNames('tree-item', resolved))}
+    />
+  )
 );
+TreeItemBase.displayName = 'TreeItem';
+
+export const TreeItem = TreeItemBase as <T extends object>(
+  props: RAC.TreeItemProps<T> & React.RefAttributes<HTMLDivElement>
+) => React.ReactElement | null;
 
 // TreeItemContent renders no DOM node, so it never had anything to style — the empty
 // styled() wrapper it used to carry was a no-op.
