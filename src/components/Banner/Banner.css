@@ -55,6 +55,13 @@
  * wrapped Button and then unset everything Button gave it, which only worked because
  * styled-components injected its sheet last. Plain CSS has no such guarantee, and the two
  * class selectors would have equal specificity.
+ *
+ * Self-contained means carrying the parts of .button-base the original did *not* unset,
+ * or the control would lose them. The first block below is the original's own
+ * declarations; the second is the .button-base remainder, which is what kept the dismiss
+ * control an inline-flex 4rem box with its contents centred. `:disabled` and `:focus` are
+ * carried for the same reason — they outranked the reset on specificity, so the original
+ * kept Button's 40% disabled fade and its keyboard focus ring.
  */
 .banner-close-button {
   color: var(--banner-color);
@@ -67,4 +74,31 @@
   outline: inherit;
   box-shadow: none;
   margin-left: 2.4rem;
+
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  height: 4rem;
+  border-radius: 0.5rem;
+  transition: all 0.2s ease-in-out;
+  text-decoration: none;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.banner-close-button:disabled {
+  opacity: 0.4;
+}
+
+/*
+ * The --button-* custom properties are read here, not renamed to --banner-*, because the
+ * control used to be a Button: a consumer that had set them to retheme the focus ring
+ * keeps doing so.
+ */
+.banner-close-button:focus {
+  outline: solid var(--button-outline, var(--ox-color-white));
+  box-shadow: inset 0 0 0 0.3rem var(--button-shadow, var(--ox-color-black));
 }

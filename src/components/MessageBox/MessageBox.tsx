@@ -18,27 +18,40 @@ export interface BoxWrapperProps extends BoxProps<'div'> {
   margin?: string;
 }
 
-export const BoxWrapper = ({ margin, className, style, ...props }: BoxWrapperProps) => (
-  <div
-    {...props}
-    className={classNames('message-box', className)}
-    // Only the margin is bound from JS, because only the margin varies at runtime. It is
-    // left unset when the prop is absent so the stylesheet's `0 auto` default still wins.
-    style={margin === undefined ? style : { '--message-box-margin': margin, ...style }}
-  />
+export const BoxWrapper = React.forwardRef<HTMLDivElement, BoxWrapperProps>(
+  ({ margin, className, style, ...props }, ref) => (
+    <div
+      ref={ref}
+      {...props}
+      className={classNames('message-box', className)}
+      // Only the margin is bound from JS, because only the margin varies at runtime. It is
+      // left unset when the prop is absent so the stylesheet's `0 auto` default still wins.
+      style={margin === undefined ? style : { '--message-box-margin': margin, ...style }}
+    />
+  )
 );
+BoxWrapper.displayName = 'BoxWrapper';
 
-export const BoxHeading = ({ className, ...props }: BoxProps<'h3'>) => (
-  <h3 {...props} className={classNames('message-box-heading', className)} />
+export const BoxHeading = React.forwardRef<HTMLHeadingElement, BoxProps<'h3'>>(
+  ({ className, ...props }, ref) => (
+    <h3 ref={ref} {...props} className={classNames('message-box-heading', className)} />
+  )
 );
+BoxHeading.displayName = 'BoxHeading';
 
-export const BoxBody = ({ className, ...props }: BoxProps<'div'>) => (
-  <div {...props} className={classNames('message-box-body', className)} />
+export const BoxBody = React.forwardRef<HTMLDivElement, BoxProps<'div'>>(
+  ({ className, ...props }, ref) => (
+    <div ref={ref} {...props} className={classNames('message-box-body', className)} />
+  )
 );
+BoxBody.displayName = 'BoxBody';
 
-export const BoxEventId = ({ className, ...props }: BoxProps<'div'>) => (
-  <div {...props} className={classNames('message-box-event-id', className)} />
+export const BoxEventId = React.forwardRef<HTMLDivElement, BoxProps<'div'>>(
+  ({ className, ...props }, ref) => (
+    <div ref={ref} {...props} className={classNames('message-box-event-id', className)} />
+  )
 );
+BoxEventId.displayName = 'BoxEventId';
 
 export const MessageBox = ({ children, customMargin, ...props }: MessageBoxProps) => {
 

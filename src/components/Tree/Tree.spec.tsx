@@ -1,3 +1,4 @@
+import { createRef } from "react";
 import { render } from "@testing-library/react";
 import { Tree, TreeChevron, TreeItem, TreeItemContent } from './Tree';
 import { Checkbox } from '../Checkbox/Checkbox';
@@ -78,5 +79,26 @@ describe('Tree', () => {
     expect(document.querySelector('.tree')?.className).toContain('caller-tree');
     expect(document.querySelector('.tree-item')?.className).toContain('caller-item');
     expect(document.querySelector('.tree-chevron-button')?.className).toContain('caller-chevron');
+  });
+
+  // The styled RAC wrappers these replaced forwarded refs, and this package is on React
+  // 17, where a plain function component silently drops one. forwardRef also erases the
+  // generic, so these calls double as a check that the item type still infers.
+  it('forwards refs from the tree and its items to their elements', () => {
+    const treeRef = createRef<HTMLDivElement>();
+    const itemRef = createRef<HTMLDivElement>();
+
+    render(
+      <Tree ref={treeRef}>
+        <TreeItem id="1" textValue="1" ref={itemRef}>
+          <TreeItemContent>
+            <TreeChevron>Show/Hide</TreeChevron>
+          </TreeItemContent>
+        </TreeItem>
+      </Tree>
+    );
+
+    expect(treeRef.current?.className).toContain('tree');
+    expect(itemRef.current?.className).toContain('tree-item');
   });
 });

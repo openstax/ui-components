@@ -1,5 +1,7 @@
+import { createRef } from "react";
 import { render } from "@testing-library/react";
-import { ToggleButtonGroup } from "./ToggleButtonGroup/index";
+import { ToggleButton, ToggleButtonGroup } from "./ToggleButtonGroup/index";
+import { StyledToggleButtonGroup } from "./ToggleButtonGroup/styles";
 import renderer from "react-test-renderer";
 
 describe('ToggleButtonGroup', () => {
@@ -69,5 +71,23 @@ describe('ToggleButtonGroup', () => {
 
     const group = document.querySelector('.toggle-button-group');
     expect(group?.className).toContain('caller-group');
+  });
+
+  // The styled RAC wrappers these replaced forwarded refs, and this package is on React
+  // 17, where a plain function component silently drops one.
+  it("forwards a ref from the group to its element", () => {
+    const ref = createRef<HTMLDivElement>();
+
+    render(<StyledToggleButtonGroup ref={ref} />);
+
+    expect(ref.current?.className).toContain('toggle-button-group');
+  });
+
+  it("forwards a ref from ToggleButton to the button", () => {
+    const ref = createRef<HTMLButtonElement>();
+
+    render(<ToggleButton ref={ref}>Red</ToggleButton>);
+
+    expect(ref.current?.tagName).toEqual('BUTTON');
   });
 });

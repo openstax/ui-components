@@ -55,13 +55,20 @@ unchanged, but the exported pieces are no longer styled-components:
      only worked because styled-components injects its sheet last; in plain CSS the two class
      selectors have equal specificity and the winner would depend on module evaluation order
    - **Impact**: `variant` and `isWaiting` are no longer accepted (no consumer passes them), and the
-     rendered element no longer carries a `severity` attribute or the `button-base` class
+     rendered element no longer carries a `severity` attribute or the `button-base` class. The
+     parts of `.button-base` the old override did *not* unset — the inline-flex 4rem centred box,
+     the 40% disabled fade and the `:focus` outline and inset ring — are carried into
+     `.banner-close-button`, so the control looks and focuses the same
    - **Migration**: none needed for the `severity` / `onClick` / `aria-label` usage in the wild
 
 **Non-Breaking Changes:**
 
 - `StyledBanner`, `Severity`, `Tree`, `TreeItem`, `TreeItemContent`, `TreeChevron`, `MessageBox`
   and `ToggleButtonGroup` keep their props and rendered structure.
+- Every replaced export still forwards refs to its element. The styled components these grew out
+  of did, and this package is on React 17, where a plain function component drops a ref silently.
+  `Tree` and `TreeItem` keep their item-type generic as well: `forwardRef` erases it, so each is
+  given back the signature react-aria-components itself exports.
 - Banner severity is now a tone class — `.banner-note`, `.banner-warning`, `.banner-error` — which
   sets `--banner-bg`, `--banner-color` and `--banner-border-color`. The tone class is applied to
   the close button as well as the banner, so `CloseButton` keeps its colour when rendered outside
