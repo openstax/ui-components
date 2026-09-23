@@ -1,10 +1,23 @@
-import { Button, LinkButton, ButtonLink } from "./Button";
+import React from 'react';
+import { Button, LinkButton, ButtonLink } from './Button';
+import { Input } from 'react-aria-components';
 
-export const Primary = () => <>
-  <Button>Primary</Button>
-  <Button disabled>Disabled</Button>
-  <Button isWaiting={true} waitingText='Waiting...'>Button</Button>
-</>;
+export const Primary = () => {
+  const [state, setState] = React.useState('Primary');
+
+  return (
+    <>
+      <Input aria-label="Button text" value={state} onChange={e => setState(e.target.value)} />
+      <br />
+      <br />
+      <Button>{state}</Button>
+      <Button disabled>Disabled</Button>
+      <Button isWaiting={true} waitingText="Waiting...">
+        Button
+      </Button>
+    </>
+  );
+};
 
 export const Light = () => <>
   <Button variant='light'>Light</Button>
