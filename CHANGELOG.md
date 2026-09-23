@@ -6,6 +6,15 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 
+#### Banner links are underlined by default (CORE-2734)
+
+Links inside `Banner`/`StyledBanner` were distinguished from the surrounding banner text by
+colour alone, and only picked up an underline on hover. On the warning background the link
+colour (`#026AA1`) and the body-text colour (`#976502`) have a contrast ratio of 1.17:1 — far
+under the 3:1 that WCAG 1.4.1 requires before colour can be the only distinction. Both `a`
+elements and `.button-link` buttons in a banner are now underlined at rest; hover and focus
+keep the underline and continue to change the colour.
+
 #### Render-callback `className` support in react-aria-components wrappers (CORE-2708)
 
 `NavBarMenuItem`, `NavBarPopover`, `NavBarButton`, and `TreeCheckbox` passed the caller's
