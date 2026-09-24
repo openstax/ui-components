@@ -6,6 +6,17 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 
+#### Dropped the `os` restriction that blocked Windows installs (CORE-2876)
+
+`package.json` declared `"os": [ "darwin", "linux" ]`, which npm enforces at install time in
+*consuming* projects: `npm ci` on Windows fails with `EBADPLATFORM`, and the restriction is
+copied into consumers' lockfiles. It arrived incidentally in #134, an error-boundary change,
+and has shipped since 1.23.6.
+
+Nothing here is platform-specific — every dependency is pure JavaScript and the published
+package is prebuilt `dist` output — so the field is removed. The repo's own bash build
+scripts are unaffected: `os` gates installation of the package, not development in this repo.
+
 #### Consumer-supplied `generic` error fallback is honoured (CORE-2876)
 
 `ErrorBoundary` merges a consumer's `errorFallbacks` over its defaults, `generic` included,
