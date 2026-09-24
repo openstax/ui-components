@@ -50,6 +50,10 @@ export const ErrorBoundary = ({
     ...props.errorLevels
   }), [includeDefaultHandlers, props.errorLevels]);
   const typedFallback = error?.type ? errorFallbacks[error.type] : undefined;
+  // Supplying `generic` is a consumer saying it can display any error, so this
+  // boundary stops passing untyped ones up to its parent. Read off the prop rather
+  // than the merged map, which carries the built-in `generic` by default.
+  const handlesUntypedErrors = !!props.errorFallbacks?.generic;
   const initCalled = React.useRef(false);
 
   type FrontendConfigType = {
@@ -105,7 +109,7 @@ export const ErrorBoundary = ({
     const error = input instanceof Error ? input : new Error(String(input));
     const type = getTypeFromError(error);
 
-    if (type in errorFallbacks || !parentContext.initialized) {
+    if (type in errorFallbacks || handlesUntypedErrors || !parentContext.initialized) {
       setThisError({
         error, type, componentStack, isInline,
         // the level goes on the scope because sentry's capture hint disallows
@@ -128,7 +132,7 @@ export const ErrorBoundary = ({
       // catcher is intact because this boundary is the one that caught the error
       parentContext.setError(input, componentStack);
     }
-  }, [errorFallbacks, errorLevels, parentContext]);
+  }, [errorFallbacks, errorLevels, handlesUntypedErrors, parentContext]);
 
   const contextValue = React.useMemo(() => ({
     error,
@@ -136,7 +140,10 @@ export const ErrorBoundary = ({
     initialized: true
   }), [error, setError]);
 
-  const errorDisplay = typedFallback || defaultErrorFallbacks.generic;
+  // `generic` is merged in from props like any other key, so a consumer can replace
+  // the stock error screen. The built-in is the last resort, for boundaries that turn
+  // the default handlers off without supplying a generic of their own.
+  const errorDisplay = typedFallback || errorFallbacks.generic || defaultErrorFallbacks.generic;
 
   // ErrorBoundary is not an actual ErrorBoundary becuase writing class components
   // is too annoying, we delegate just the catching part to RenderErrorCatcher

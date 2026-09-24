@@ -6,6 +6,24 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 
+#### Consumer-supplied `generic` error fallback is honoured (CORE-2876)
+
+`ErrorBoundary` merges a consumer's `errorFallbacks` over its defaults, `generic` included,
+but then chose what to display with `typedFallback || defaultErrorFallbacks.generic` — the
+module-level constant rather than the merged map. Since `typedFallback` is keyed on
+`getTypeFromError`, which returns the error's constructor name (`'Error'`) and never
+`'generic'`, an override of `generic` was unreachable by either path and silently ignored.
+Consumers that had replaced the stock error screen — openstax/assignments deliberately uses
+its own, with support details instead of a Sentry id — got the built-in one back.
+
+The display now reads the merged map, falling back to the built-in only for boundaries that
+set `includeDefaultHandlers={false}` without supplying a `generic` of their own.
+
+A boundary that supplies `generic` also stops passing untyped errors up to its parent. It has
+declared it can display anything, so bubbling past it would make the override unreachable
+again whenever the boundary is nested. Boundaries without their own `generic` bubble exactly
+as before.
+
 #### Configurable `NavBar` element (CORE-2876)
 
 `NavBar` hard-coded `tagName='nav'` on its `BodyPortal`, so every consumer got a
