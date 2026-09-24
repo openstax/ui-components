@@ -19,11 +19,11 @@ import { Banner, BannerSeverity } from "./Banner";
  * interrupt whatever the user was doing; severity describes how loud the
  * banner looks, not how urgently it needs to reach someone.
  */
-export const BannerRegion = (props: {
+export const BannerRegion = ({className, ...props}: {
   messages: string[];
   severity: BannerSeverity;
   onDismiss?: () => void;
   className?: string;
-}) => <div role='status' className={props.className}>
+}) => <div role='status' className={className}>
   {props.messages.length ? <Banner {...props} /> : null}
 </div>;
