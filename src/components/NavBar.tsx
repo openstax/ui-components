@@ -18,6 +18,12 @@ type NavBarProps = React.PropsWithChildren<{
   ariaLabel?: string;
   className?: string;
   style?: CSSPropertiesWithVariables;
+  /**
+   * Element the bar is rendered as. Defaults to 'nav', which exposes a
+   * navigation landmark. Use 'header' or 'div' when the bar holds no
+   * navigation links, so it doesn't advertise navigation that isn't there.
+   */
+  tagName?: 'nav' | 'header' | 'div';
 }>
 
 export const NavBar = ({
@@ -29,6 +35,7 @@ export const NavBar = ({
   ariaLabel,
   className,
   style,
+  tagName = 'nav',
   ...props
 }: NavBarProps) => {
   const logoIsObject = typeof logo === 'object';
@@ -52,7 +59,7 @@ export const NavBar = ({
 
   return (
     <BodyPortal
-      tagName='nav'
+      tagName={tagName}
       ariaLabel={ariaLabel}
       slot='nav'
       className={classNames('navbar-wrapper', className)}
