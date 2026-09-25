@@ -92,9 +92,6 @@ Array [
       role="tooltip"
       style={
         Object {
-          "--tooltip-bg": "#ffffff",
-          "--tooltip-border-color": "#ccc",
-          "--tooltip-color": "#6f6f6f",
           "maxHeight": "100vh",
           "position": "absolute",
           "zIndex": 100000,

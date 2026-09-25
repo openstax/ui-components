@@ -15,7 +15,7 @@
 }
 
 .overlay-wrapper {
-  color: #fff;
+  color: var(--ox-color-white);
 }
 
 .overlay-body {

@@ -12,22 +12,22 @@
   justify-content: center;
 
   /* Default variant colors using CSS custom properties with fallbacks */
-  color: var(--close-button-color, #a0a0a0);
+  color: var(--close-button-color, var(--ox-color-neutral-medium));
 }
 
 .close-modal-button:hover {
-  color: var(--close-button-hover-color, #5f6163);
+  color: var(--close-button-hover-color, var(--ox-color-neutral-dark));
 }
 
 /* Error variant */
 .close-modal-button.error {
-  --close-button-color: #c22032;
+  --close-button-color: var(--ox-color-dark-red);
 }
 
 /* Inverted circle variant */
 .close-modal-button.inverted-circle {
-  color: #ffffff;
-  border: 0.1rem solid #ffffff;
+  color: var(--ox-color-white);
+  border: 0.1rem solid var(--ox-color-white);
   padding: 0;
   display: flex;
   align-items: center;
@@ -37,7 +37,7 @@
 
 .close-modal-button.inverted-circle:hover,
 .close-modal-button.inverted-circle:focus {
-  color: #000000;
-  background-color: #ffffff;
-  border-color: #ffffff;
+  color: var(--ox-color-black);
+  background-color: var(--ox-color-white);
+  border-color: var(--ox-color-white);
 }
