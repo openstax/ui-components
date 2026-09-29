@@ -13,6 +13,7 @@ import {
 import { colors } from "../theme";
 import { NavBarButton, NavBarButtonProps } from "./NavBarButton";
 import { CSSPropertiesWithVariables } from "../types";
+import { MenuPopover } from "./MenuPopover";
 import "./NavBarMenuButtons.css";
 
 export const NavBarMenuItem = React.forwardRef<
@@ -62,8 +63,12 @@ export const NavBarPopover = React.forwardRef<
     })
   );
 
+  // A non-modal popover needs MenuPopover's outside-press handling to close on a click
+  // elsewhere on the page.
+  const PopoverComponent = props.isNonModal ? MenuPopover : Popover;
+
   return (
-    <Popover
+    <PopoverComponent
       ref={ref}
       className={composeRenderProps(className, (resolved) => classNames("navbar-popover", resolved))}
       style={popoverStyle}

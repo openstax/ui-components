@@ -93,7 +93,11 @@ describe('ProfileMenu', () => {
     await user.click(screen.getByTestId('profile-menu'));
     await screen.findByRole('menu');
 
-    await user.click(screen.getByText('Page content'));
+    // A press on non-focusable page content, with no focus change: what a real browser
+    // does, and what useInteractOutside (not blur) has to catch.
+    const outside = screen.getByText('Page content');
+    fireEvent.mouseDown(outside);
+    fireEvent.mouseUp(outside);
 
     await waitFor(() => expect(screen.queryByRole('menu')).toBeNull());
   });

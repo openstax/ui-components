@@ -21,6 +21,12 @@ has no role and the menu is the only thing announced. `NavBarMenuButton` sets it
 `popoverProps`, so a caller can still override it. `NavBarPopoverButton` is unchanged and
 still renders a dialog.
 
+`isNonModal` on its own also stops a click elsewhere on the page from closing the menu.
+The underlay used to catch that click, and react-aria's blur fallback ignores focus
+moving to the page body. A new exported `MenuPopover` wraps `Popover` with `isNonModal`
+and closes the menu again on an outside press. `NavBarPopover` switches to it whenever
+`isNonModal` is set, and `DropdownMenu` uses it directly.
+
 What changes for users while a menu is open: the page behind it stays scrollable and
 visible to assistive tech, and focus is no longer trapped. Moving focus out of the menu
 closes it, as does Escape or a click outside. Focus still returns to the trigger on close.

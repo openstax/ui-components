@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { DropdownMenu, DropdownMenuItem } from './DropdownMenu';
 
@@ -57,9 +57,13 @@ describe('DropdownMenu', () => {
     });
 
     it('closes on an outside press', async () => {
-      const { user } = await renderOpenMenu();
+      await renderOpenMenu();
 
-      await user.click(screen.getByText('Page content'));
+      // A press on non-focusable page content, with no focus change: what a real browser
+      // does, and what useInteractOutside (not blur) has to catch.
+      const outside = screen.getByText('Page content');
+      fireEvent.mouseDown(outside);
+      fireEvent.mouseUp(outside);
 
       await waitFor(() => expect(screen.queryByRole('menu')).toBeNull());
     });

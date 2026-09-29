@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Dialog, DialogTrigger, Menu, MenuItem } from "react-aria-components";
 import renderer from "react-test-renderer";
@@ -104,11 +104,45 @@ describe("NavBarMenuButton when open", () => {
   });
 
   it("closes on an outside press", async () => {
-    const { user } = await renderOpenMenu();
+    await renderOpenMenu();
 
-    await user.click(screen.getByText("Page content"));
+    // A press on non-focusable page content, with no focus change: what a real browser
+    // does, and what useInteractOutside (not blur) has to catch.
+    const outside = screen.getByText("Page content");
+    fireEvent.mouseDown(outside);
+    fireEvent.mouseUp(outside);
 
     await waitFor(() => expect(screen.queryByRole("menu")).toBeNull());
+  });
+
+  it("closes, and stays closed, when the trigger is pressed again", async () => {
+    const { user, button } = await renderOpenMenu();
+
+    await user.click(button);
+
+    await waitFor(() => expect(screen.queryByRole("menu")).toBeNull());
+    expect(button.getAttribute("aria-expanded")).toBe("false");
+  });
+
+  it("toggles closed, and stays closed, when the trigger is tapped again", async () => {
+    render(
+      <NavBarMenuButton label="Test menu">
+        <NavBarMenuItem>Menu item</NavBarMenuItem>
+      </NavBarMenuButton>,
+    );
+    const button = screen.getByRole("button", { name: "Test menu" });
+    const tap = () => {
+      const touch = { identifier: 1, target: button, clientX: 0, clientY: 0 };
+      fireEvent.touchStart(button, { targetTouches: [touch], changedTouches: [touch] });
+      fireEvent.touchEnd(button, { targetTouches: [], changedTouches: [touch] });
+    };
+
+    tap();
+    await screen.findByRole("menu");
+    tap();
+
+    await waitFor(() => expect(screen.queryByRole("menu")).toBeNull());
+    expect(button.getAttribute("aria-expanded")).toBe("false");
   });
 });
 
