@@ -18,7 +18,14 @@ the tap closed the tooltip on pointerdown, leaving the content unreachable.
 `TooltipGroup` now owns the trigger state and presses toggle it, so the button role
 describes real behaviour and the content is reachable by keyboard and by touch. Because
 those library handlers run before `onPress`, the press records the state at `onPressStart`
-rather than reading one react-aria has already flipped.
+rather than reading one react-aria has already flipped. The trigger also exposes
+`aria-expanded`, so the state it toggles is reported and not just described: `aria-describedby`
+supplies the description once the tooltip is already open, and says nothing about a control
+that can be opened and closed.
+
+`onOpenChange` reports each transition once. react-aria's own pointerdown/keydown handler
+closes the tooltip through the same callback before `onPress` finishes the toggle, so
+`setOpen` drops a call that would not change the value.
 
 The two things the evaluation's recommendation asked for — `role="tooltip"` on the tooltip
 element and `aria-describedby` on the trigger — were already correct, with one exception now

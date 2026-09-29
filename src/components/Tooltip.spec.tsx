@@ -177,6 +177,45 @@ describe('Tooltip', () => {
       expect(onOpenChange).toHaveBeenCalledWith(true);
     });
 
+    // react-aria closes the tooltip from its own pointerdown/keydown handler before our
+    // onPress completes the toggle, so both halves would otherwise report the same close.
+    it('reports each transition once when a press closes the tooltip', async () => {
+      const onOpenChange = jest.fn();
+      const user = userEvent.setup();
+      render(<TooltipGroup placement='right' onOpenChange={onOpenChange}>Tooltip content</TooltipGroup>);
+
+      await act(async () => { await user.tab(); });
+      expect(onOpenChange.mock.calls).toEqual([[true]]);
+
+      await act(async () => { await user.keyboard('{Enter}'); });
+      expect(tooltip()).toBe(null);
+      expect(onOpenChange.mock.calls).toEqual([[true], [false]]);
+
+      await act(async () => { await user.keyboard('{Enter}'); });
+      expect(onOpenChange.mock.calls).toEqual([[true], [false], [true]]);
+    });
+
+    // The trigger toggles persistent content, so the state it toggles has to be exposed;
+    // aria-describedby only supplies the description once it is already open.
+    it('exposes the toggle state as aria-expanded', async () => {
+      const user = userEvent.setup();
+      const { container } = render(<TooltipGroup placement='right'>Tooltip content</TooltipGroup>);
+
+      expect(trigger(container).getAttribute('aria-expanded')).toBe('false');
+
+      await act(async () => { await user.tab(); });
+      expect(trigger(container).getAttribute('aria-expanded')).toBe('true');
+
+      await act(async () => { await user.keyboard('{Enter}'); });
+      expect(trigger(container).getAttribute('aria-expanded')).toBe('false');
+    });
+
+    it('exposes aria-expanded for a caller controlling isOpen', () => {
+      const { container } = render(<TooltipGroup isOpen={true} placement='right'>Tooltip content</TooltipGroup>);
+
+      expect(trigger(container).getAttribute('aria-expanded')).toBe('true');
+    });
+
     it('names the trigger More information by default', () => {
       const { container } = render(<TooltipGroup placement='right'>Tooltip content</TooltipGroup>);
 

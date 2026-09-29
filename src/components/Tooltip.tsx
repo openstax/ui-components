@@ -107,6 +107,11 @@ export const Tooltip = ({children, placement, className, style, ...props}: React
  * That close-on-press default is also why the button used to do nothing useful: tabbing to
  * it opened the tooltip and then Enter or Space dismissed it, and on touch — where hover
  * never fires — the tap closed it on pointerdown and the content was unreachable.
+ *
+ * Because that library close already runs through `onOpenChange`, `setOpen` drops a call
+ * that does not change the value. Otherwise pressing an open trigger would report the same
+ * close twice — once from react-aria's pointerdown/keydown and again from our `onPress`
+ * finishing the toggle. This is the same rule `useControlledState` applies internally.
  */
 export const TooltipGroup = (
   {icon, ariaLabel, isOpen, defaultOpen, onOpenChange, ...props}: React.PropsWithChildren<TooltipGroupProps>
@@ -116,6 +121,7 @@ export const TooltipGroup = (
   const openAtPressStart = React.useRef(false);
 
   const setOpen = (next: boolean) => {
+    if (next === open) return;
     setUncontrolledOpen(next);
     onOpenChange?.(next);
   };
@@ -123,6 +129,7 @@ export const TooltipGroup = (
   return <TooltipTrigger delay={0} isOpen={open} onOpenChange={setOpen}>
     <StyledTrigger
       aria-label={ariaLabel || 'More information'}
+      aria-expanded={open}
       onPressStart={() => { openAtPressStart.current = open; }}
       onPress={() => setOpen(!openAtPressStart.current)}
     >
