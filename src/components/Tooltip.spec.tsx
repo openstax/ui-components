@@ -1,6 +1,6 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
-import { act, render } from '@testing-library/react';
+import { act, fireEvent, render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import ReactDOM from 'react-dom';
 import { TooltipTrigger } from 'react-aria-components';
@@ -232,6 +232,81 @@ describe('Tooltip', () => {
       );
 
       expect(trigger(container).getAttribute('aria-label')).toBe('More information about Multiple attempts');
+    });
+
+    // Touch is the case the old component failed hardest — useHover ignores touch, so
+    // nothing opened the tooltip, and the tap closed it on pointerdown. Testing it needs a
+    // PointerEvent polyfill: jsdom has none, and without it react-aria takes fallback
+    // branches that cannot represent touch. useHover's fallback binds onMouseEnter with a
+    // hardcoded 'mouse' pointerType (useHover.mjs), so a simulated tap opened the tooltip
+    // by "hover" and passed for the wrong reason. With PointerEvent defined, both useHover
+    // and usePress take the same branches a real browser does and triggerHoverStart bails
+    // on pointerType 'touch', so these assertions are about the press and nothing else.
+    describe('touch', () => {
+      // Sizes must be non-zero: isVirtualPointerEvent treats a zero-sized pointer as a
+      // screen reader, which would route through usePress's virtual-click path instead.
+      class TouchPointerEvent extends MouseEvent {
+        public pointerId: number;
+        public pointerType: string;
+        public width: number;
+        public height: number;
+
+        constructor(type: string, props: any = {}) {
+          super(type, props);
+          this.pointerId = props.pointerId ?? 1;
+          this.pointerType = props.pointerType ?? 'mouse';
+          this.width = props.width ?? 1;
+          this.height = props.height ?? 1;
+        }
+      }
+
+      beforeAll(() => { (window as any).PointerEvent = TouchPointerEvent; });
+      afterAll(() => { delete (window as any).PointerEvent; });
+
+      // The event sequence a browser sends for a tap, in order.
+      const tap = (el: HTMLElement) => {
+        const touch = { pointerType: 'touch', pointerId: 1, button: 0, isPrimary: true };
+        act(() => {
+          fireEvent.pointerEnter(el, touch);
+          fireEvent.pointerDown(el, { ...touch, buttons: 1 });
+        });
+        act(() => {
+          fireEvent.pointerUp(el, { ...touch, buttons: 0 });
+          fireEvent.click(el, { detail: 1 });
+        });
+      };
+
+      it('opens on a tap and toggles shut on the next one', () => {
+        const onOpenChange = jest.fn();
+        const { container } = render(
+          <TooltipGroup placement='right' onOpenChange={onOpenChange}>Tooltip content</TooltipGroup>
+        );
+
+        tap(trigger(container));
+        const tip = tooltip();
+        expect(tip).toBeTruthy();
+        expect(trigger(container).getAttribute('aria-describedby')).toBe(tip?.id);
+        expect(trigger(container).getAttribute('aria-expanded')).toBe('true');
+
+        tap(trigger(container));
+        expect(tooltip()).toBe(null);
+        expect(trigger(container).getAttribute('aria-expanded')).toBe('false');
+
+        // once each way — the library's close-on-pointerdown and our onPress are one toggle
+        expect(onOpenChange.mock.calls).toEqual([[true], [false]]);
+      });
+
+      // Guards the reason the above is meaningful: if hover were opening the tooltip the
+      // test would pass without the press working at all.
+      it('is not opened by hover, because touch does not hover', () => {
+        const { container } = render(<TooltipGroup placement='right'>Tooltip content</TooltipGroup>);
+
+        act(() => {
+          fireEvent.pointerEnter(trigger(container), { pointerType: 'touch', pointerId: 1, isPrimary: true });
+        });
+
+        expect(tooltip()).toBe(null);
+      });
     });
   });
 });

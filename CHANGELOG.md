@@ -27,6 +27,12 @@ that can be opened and closed.
 closes the tooltip through the same callback before `onPress` finishes the toggle, so
 `setOpen` drops a call that would not change the value.
 
+The touch path is covered by tests. jsdom has no `PointerEvent`, and without one react-aria
+falls back to branches that cannot represent touch — `useHover` binds `onMouseEnter` with a
+hardcoded `mouse` pointer type — so the tests install a minimal polyfill and drive the
+pointer sequence a tap produces. That puts `useHover` and `usePress` on the same branches a
+real browser takes, with `triggerHoverStart` correctly ignoring touch.
+
 The two things the evaluation's recommendation asked for — `role="tooltip"` on the tooltip
 element and `aria-describedby` on the trigger — were already correct, with one exception now
 fixed: `isOpen` was spread into `Tooltip` instead of being given to `TooltipTrigger`.
