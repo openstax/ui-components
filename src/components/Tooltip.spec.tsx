@@ -234,6 +234,58 @@ describe('Tooltip', () => {
       expect(trigger(container).getAttribute('aria-label')).toBe('More information about Multiple attempts');
     });
 
+    // defaultOpen is new in this change and, unlike isOpen, is uncontrolled: it seeds the
+    // initial state and then the component owns it. Both props also have to reach
+    // TooltipTrigger rather than the Tooltip element — react-aria's Tooltip builds a
+    // detached state when handed either one, which is the bug fixed above for isOpen and
+    // would be just as silent for defaultOpen.
+    describe('defaultOpen', () => {
+      it('starts open and describes the trigger', () => {
+        const { container } = render(<TooltipGroup defaultOpen={true} placement='right'>Tooltip content</TooltipGroup>);
+
+        const tip = tooltip();
+        expect(tip).toBeTruthy();
+        expect(trigger(container).getAttribute('aria-describedby')).toBe(tip?.id);
+        expect(trigger(container).getAttribute('aria-expanded')).toBe('true');
+      });
+
+      it('starts closed when false', () => {
+        const { container } = render(<TooltipGroup defaultOpen={false} placement='right'>Tooltip content</TooltipGroup>);
+
+        expect(tooltip()).toBe(null);
+        expect(trigger(container).getAttribute('aria-expanded')).toBe('false');
+      });
+
+      // The distinguishing behaviour: it seeds state rather than pinning it.
+      it('hands control to the user after the initial render', async () => {
+        const onOpenChange = jest.fn();
+        const user = userEvent.setup();
+        const { container } = render(
+          <TooltipGroup defaultOpen={true} placement='right' onOpenChange={onOpenChange}>
+            Tooltip content
+          </TooltipGroup>
+        );
+
+        await act(async () => { await user.keyboard('{Escape}'); });
+
+        expect(tooltip()).toBe(null);
+        expect(trigger(container).getAttribute('aria-expanded')).toBe('false');
+        expect(onOpenChange.mock.calls).toEqual([[false]]);
+      });
+
+      // The counterpart that gives the test above its meaning: isOpen is controlled, so the
+      // caller owns the state and a dismiss that it ignores must not close the tooltip.
+      it('isOpen pins the state instead, when the caller ignores the change', async () => {
+        const user = userEvent.setup();
+        const { container } = render(<TooltipGroup isOpen={true} placement='right'>Tooltip content</TooltipGroup>);
+
+        await act(async () => { await user.keyboard('{Escape}'); });
+
+        expect(tooltip()).toBeTruthy();
+        expect(trigger(container).getAttribute('aria-expanded')).toBe('true');
+      });
+    });
+
     // Touch is the case the old component failed hardest — useHover ignores touch, so
     // nothing opened the tooltip, and the tap closed it on pointerdown. Testing it needs a
     // PointerEvent polyfill: jsdom has none, and without it react-aria takes fallback
