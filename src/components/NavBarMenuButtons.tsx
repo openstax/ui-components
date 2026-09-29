@@ -91,7 +91,13 @@ const NavBarBaseButton = ({
   return (
     <Trigger>
       <NavBarButton {...props} />
-      <NavBarPopover {...popoverProps}>
+      {/* A menu popover is not a dialog. RAC's Popover adds role="dialog" (plus a
+          full-screen underlay, a focus trap, body scroll-lock and aria-hidden on the
+          rest of the page) unless isNonModal is set. The trigger already exposes
+          aria-haspopup/aria-expanded and the Menu carries the accessible name, so the
+          extra dialog layer is announced twice and implies modality that does not hold.
+          isNonModal is set before the spread so callers can still override it. */}
+      <NavBarPopover isNonModal={isMenu} {...popoverProps}>
         <Content>{children}</Content>
       </NavBarPopover>
     </Trigger>

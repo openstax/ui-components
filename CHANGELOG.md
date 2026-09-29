@@ -6,6 +6,26 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 
+#### Menu popovers no longer render as dialogs (CORE-2875)
+
+react-aria-components' `Popover` gives itself `role="dialog"` unless `isNonModal` is set, and
+none of our menus set it. So every `MenuTrigger` → `Popover` → `Menu` put a dialog around
+the menu, with the trigger labelling both. Screen readers announced "Help menu, dialog" and
+then "Help menu, menu". The dialog also made the menu modal: a full-screen underlay, a focus
+trap, a scroll-locked body, and `aria-hidden` on the rest of the page. An accessibility
+audit flagged this under WCAG 4.1.2 (Name, Role, Value) on the Help and Resources menus in
+Assignable.
+
+`NavBarMenuButton`, `ProfileMenu` and `DropdownMenu` now pass `isNonModal`, so the popover
+has no role and the menu is the only thing announced. `NavBarMenuButton` sets it ahead of
+`popoverProps`, so a caller can still override it. `NavBarPopoverButton` is unchanged and
+still renders a dialog.
+
+What changes for users while a menu is open: the page behind it stays scrollable and
+visible to assistive tech, and focus is no longer trapped. Moving focus out of the menu
+closes it, as does Escape or a click outside. Focus still returns to the trigger on close.
+The menu also closes when the page scrolls.
+
 #### Dropped the `os` restriction that blocked Windows installs (CORE-2876)
 
 `package.json` declared `"os": [ "darwin", "linux" ]`, which npm enforces at install time in

@@ -1,4 +1,5 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { ProfileMenu, ProfileMenuItem, UserIcon } from '.';
 
 describe('ProfileMenu', () => {
@@ -30,6 +31,71 @@ describe('ProfileMenu', () => {
     expect(button.getAttribute('aria-expanded')).toBe('true');
     expect(button.getAttribute('aria-controls')).toBe(menu.id);
     expect(menu.getAttribute('aria-labelledby')).toBe(button.id);
+  });
+
+  it('does not wrap the menu in a dialog', async () => {
+    render(
+      <>
+        <ProfileMenu
+          user={{ firstName: 'John', lastName: 'Doe' }}
+          data-testid="profile-menu"
+        >
+          <ProfileMenuItem id="profile">Profile</ProfileMenuItem>
+        </ProfileMenu>
+        <p>Page content</p>
+      </>
+    );
+
+    fireEvent.click(screen.getByTestId('profile-menu'));
+    await screen.findByRole('menu', { name: 'Account actions' });
+
+    expect(screen.queryByRole('dialog')).toBeNull();
+    expect(document.querySelector('[data-testid="underlay"]')).toBeNull();
+    expect(screen.getByText('Page content').closest('[aria-hidden="true"]')).toBeNull();
+  });
+
+  it('closes on Escape and returns focus to the trigger', async () => {
+    const user = userEvent.setup();
+    render(
+      <ProfileMenu
+        user={{ firstName: 'John', lastName: 'Doe' }}
+        data-testid="profile-menu"
+      >
+        <ProfileMenuItem id="profile">Profile</ProfileMenuItem>
+      </ProfileMenu>
+    );
+
+    const button = screen.getByTestId('profile-menu');
+    await user.click(button);
+    await screen.findByRole('menu');
+
+    await user.keyboard('{Escape}');
+
+    await waitFor(() => expect(screen.queryByRole('menu')).toBeNull());
+    // FocusScope restores focus to the trigger on an animation frame.
+    await waitFor(() => expect(document.activeElement).toBe(button));
+  });
+
+  it('closes on an outside press', async () => {
+    const user = userEvent.setup();
+    render(
+      <>
+        <ProfileMenu
+          user={{ firstName: 'John', lastName: 'Doe' }}
+          data-testid="profile-menu"
+        >
+          <ProfileMenuItem id="profile">Profile</ProfileMenuItem>
+        </ProfileMenu>
+        <p>Page content</p>
+      </>
+    );
+
+    await user.click(screen.getByTestId('profile-menu'));
+    await screen.findByRole('menu');
+
+    await user.click(screen.getByText('Page content'));
+
+    await waitFor(() => expect(screen.queryByRole('menu')).toBeNull());
   });
 
   it('moves focus into the menu when it opens', async () => {
@@ -85,7 +151,7 @@ describe('ProfileMenu', () => {
     fireEvent.click(screen.getByTestId('profile-menu'));
     await screen.findByRole('menu');
 
-    const popover = screen.getByRole('dialog');
+    const popover = document.querySelector('.navbar-popover') as HTMLElement;
     expect(popover.getAttribute('data-placement')).toBe('bottom');
   });
 
