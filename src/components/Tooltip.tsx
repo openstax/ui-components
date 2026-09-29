@@ -34,10 +34,14 @@ type TooltipProps = ClassNameAndStyle & {
   isOpen?: boolean;
 };
 
-// icon/ariaLabel configure the trigger button, so they are only accepted by TooltipGroup
+// icon/ariaLabel configure the trigger button, so they are only accepted by TooltipGroup.
+// isOpen/defaultOpen/onOpenChange drive the *trigger*, not the tooltip element — see the
+// comment on TooltipGroup for why that distinction matters.
 type TooltipGroupProps = TooltipProps & {
   icon?: any;
   ariaLabel?: string;
+  defaultOpen?: boolean;
+  onOpenChange?: (isOpen: boolean) => void;
 };
 
 /**
@@ -84,9 +88,44 @@ export const Tooltip = ({children, placement, className, style, ...props}: React
     {children}
   </StyledTooltip>;
 
-export const TooltipGroup = ({icon, ariaLabel, ...props}: React.PropsWithChildren<TooltipGroupProps>) =>
-  <TooltipTrigger delay={0}>
-    <StyledTrigger aria-label={ariaLabel || 'More information'}>
+/**
+ * An info icon that reveals a tooltip. The trigger is a real button: pressing it toggles the
+ * tooltip, so `role="button"` describes something the control actually does.
+ *
+ * Two things here are deliberate and easy to undo by accident.
+ *
+ * `isOpen`/`defaultOpen`/`onOpenChange` are handed to `TooltipTrigger`, not spread into
+ * `Tooltip`. react-aria's `Tooltip` reads `state = props.isOpen != null || props.defaultOpen
+ * != null || !contextState ? localState : contextState`, so passing either prop to the
+ * tooltip element gives it a second state that the trigger knows nothing about — the
+ * trigger's own state stays closed, which means `useTooltipTrigger` never emits
+ * `aria-describedby` and Escape-to-dismiss stops working.
+ *
+ * `useTooltipTrigger` also binds `onPointerDown` and `onKeyDown` to close the tooltip, and
+ * those fire before `onPress`. Without `onPressStart` recording the state first, a press
+ * would read a state react-aria had already flipped, so the toggle would only ever open.
+ * That close-on-press default is also why the button used to do nothing useful: tabbing to
+ * it opened the tooltip and then Enter or Space dismissed it, and on touch — where hover
+ * never fires — the tap closed it on pointerdown and the content was unreachable.
+ */
+export const TooltipGroup = (
+  {icon, ariaLabel, isOpen, defaultOpen, onOpenChange, ...props}: React.PropsWithChildren<TooltipGroupProps>
+) => {
+  const [uncontrolledOpen, setUncontrolledOpen] = React.useState(defaultOpen ?? false);
+  const open = isOpen ?? uncontrolledOpen;
+  const openAtPressStart = React.useRef(false);
+
+  const setOpen = (next: boolean) => {
+    setUncontrolledOpen(next);
+    onOpenChange?.(next);
+  };
+
+  return <TooltipTrigger delay={0} isOpen={open} onOpenChange={setOpen}>
+    <StyledTrigger
+      aria-label={ariaLabel || 'More information'}
+      onPressStart={() => { openAtPressStart.current = open; }}
+      onPress={() => setOpen(!openAtPressStart.current)}
+    >
       {icon
         ? <img src={icon} aria-hidden={true} alt='' />
         : <Info aria-hidden={true} />
@@ -94,6 +133,7 @@ export const TooltipGroup = ({icon, ariaLabel, ...props}: React.PropsWithChildre
     </StyledTrigger>
     <Tooltip {...props} />
   </TooltipTrigger>;
+};
 
 export const CustomTooltip = ({ state, ...props }: any) => {
   const { tooltipProps } = useTooltip(props, state);

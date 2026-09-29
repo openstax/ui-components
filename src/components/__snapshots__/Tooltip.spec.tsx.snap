@@ -43,6 +43,7 @@ exports[`Tooltip hides 1`] = `
 exports[`Tooltip matches snapshot 1`] = `
 Array [
   <button
+    aria-describedby="react-aria-1"
     aria-label="More information"
     className="tooltip-trigger"
     data-rac=""
