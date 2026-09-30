@@ -6,6 +6,56 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 
+#### Dropped the `os` restriction that blocked Windows installs (CORE-2876)
+
+`package.json` declared `"os": [ "darwin", "linux" ]`, which npm enforces at install time in
+*consuming* projects: `npm ci` on Windows fails with `EBADPLATFORM`, and the restriction is
+copied into consumers' lockfiles. It arrived incidentally in #134, an error-boundary change,
+and has shipped since 1.23.6.
+
+Nothing here is platform-specific — every dependency is pure JavaScript and the published
+package is prebuilt `dist` output — so the field is removed. The repo's own bash build
+scripts are unaffected: `os` gates installation of the package, not development in this repo.
+
+#### Consumer-supplied `generic` error fallback is honoured (CORE-2876)
+
+`ErrorBoundary` merges a consumer's `errorFallbacks` over its defaults, `generic` included,
+but then chose what to display with `typedFallback || defaultErrorFallbacks.generic` — the
+module-level constant rather than the merged map. Since `typedFallback` is keyed on
+`getTypeFromError`, which returns the error's constructor name (`'Error'`) and never
+`'generic'`, an override of `generic` was unreachable by either path and silently ignored.
+Consumers that had replaced the stock error screen — openstax/assignments deliberately uses
+its own, with support details instead of a Sentry id — got the built-in one back.
+
+The display now reads the merged map, falling back to the built-in only for boundaries that
+set `includeDefaultHandlers={false}` without supplying a `generic` of their own.
+
+A boundary that supplies `generic` also stops passing untyped errors up to its parent. It has
+declared it can display anything, so bubbling past it would make the override unreachable
+again whenever the boundary is nested. Boundaries without their own `generic` bubble exactly
+as before.
+
+#### Configurable `NavBar` element (CORE-2876)
+
+`NavBar` hard-coded `tagName='nav'` on its `BodyPortal`, so every consumer got a
+`navigation` landmark whether or not the bar contained navigation. An accessibility audit
+of the Assignments student view flagged a bar holding only a heading, a Help menu, and a
+kebab menu as an unnecessary navigation landmark (WCAG 4.1.2).
+
+`NavBar` now accepts `tagName?: 'nav' | 'header' | 'div'`, forwarded to `BodyPortal`. It
+still defaults to `'nav'`, so existing consumers are unchanged; bars that hold no
+navigation links can pass `'header'` (a `banner` landmark) or `'div'` (no landmark).
+
+The portal `slot` stays `'nav'` regardless — it is only an ordering key for
+`BodyPortalSlotsContext` — and styling inside the bar is class-based, so the default
+`'nav'` behaves exactly as before.
+
+Consumers that pass a non-default `tagName` must check their body-portal layout CSS: a
+tag-qualified selector such as `nav[data-portal-slot="nav"]` stops matching once the bar
+renders as a `header` or `div`, and the bar loses its `grid-area`. Drop the tag qualifier
+(`[data-portal-slot="nav"]`) to select the slot regardless of element. The
+`SidebarNav` "UsingBodyPortal" story was updated accordingly.
+
 #### Render-callback `className` support in react-aria-components wrappers (CORE-2708)
 
 `NavBarMenuItem`, `NavBarPopover`, `NavBarButton`, and `TreeCheckbox` passed the caller's

@@ -189,6 +189,79 @@ describe('ErrorBoundary', () => {
     spy.mockRestore();
   });
 
+  describe('the generic fallback', () => {
+    it('uses a consumer-supplied generic for errors with no typed fallback', () => withoutReactLogs(() => {
+      const tree = renderer.create(
+        <ErrorBoundary errorFallbacks={{ 'generic': <div data-testid='custom-generic' /> }}>
+          <ErrorComponent />
+        </ErrorBoundary>
+      );
+
+      expect(findByTestId(tree.root, 'custom-generic')).toBeTruthy();
+      // the stock screen is replaced, not rendered alongside
+      expect(() => findByTestId(tree.root, 'error-fallback')).toThrow();
+    }));
+
+    it('still prefers a typed fallback over the consumer generic', () => withoutReactLogs(() => {
+      const SessionExpiredComponent = () => { throw new SessionExpiredError(); };
+
+      const tree = renderer.create(
+        <ErrorBoundary
+          errorFallbacks={{
+            'generic': <div data-testid='custom-generic' />,
+            'SessionExpiredError': <div data-testid='typed-fallback' />,
+          }}
+        >
+          <SessionExpiredComponent />
+        </ErrorBoundary>
+      );
+
+      expect(findByTestId(tree.root, 'typed-fallback')).toBeTruthy();
+      expect(() => findByTestId(tree.root, 'custom-generic')).toThrow();
+    }));
+
+    it('falls back to the built-in when default handlers are off and no generic is given', () =>
+      withoutReactLogs(() => {
+        const tree = renderer.create(
+          <ErrorBoundary includeDefaultHandlers={false}>
+            <ErrorComponent />
+          </ErrorBoundary>
+        );
+
+        expect(findByTestId(tree.root, 'error-fallback')).toBeTruthy();
+      }));
+
+    it('handles untyped errors itself rather than bubbling, when it has a generic', () =>
+      withoutReactLogs(() => {
+        const tree = renderer.create(
+          <ErrorBoundary errorFallbacks={{ 'Error': <div data-testid='outer-fallback' /> }}>
+            <div data-testid='outer-content' />
+            <ErrorBoundary errorFallbacks={{ 'generic': <div data-testid='inner-generic' /> }}>
+              <ErrorComponent />
+            </ErrorBoundary>
+          </ErrorBoundary>
+        );
+
+        expect(findByTestId(tree.root, 'inner-generic')).toBeTruthy();
+        // the outer boundary never saw the error, so its other children keep rendering
+        expect(findByTestId(tree.root, 'outer-content')).toBeTruthy();
+        expect(() => findByTestId(tree.root, 'outer-fallback')).toThrow();
+        expect(testkit.reports()).toHaveLength(1);
+      }));
+
+    it('keeps bubbling untyped errors when it has no generic of its own', () => withoutReactLogs(() => {
+      const tree = renderer.create(
+        <ErrorBoundary errorFallbacks={{ 'generic': <div data-testid='outer-generic' /> }}>
+          <ErrorBoundary errorFallbacks={{ 'SessionExpiredError': <div data-testid='unrelated' /> }}>
+            <ErrorComponent />
+          </ErrorBoundary>
+        </ErrorBoundary>
+      );
+
+      expect(findByTestId(tree.root, 'outer-generic')).toBeTruthy();
+    }));
+  });
+
   it('inits Sentry', () => {
     const initMock = Sentry.init as jest.Mock;
     initMock.mockClear();
