@@ -23,9 +23,10 @@ rather than reading one react-aria has already flipped. The trigger also exposes
 supplies the description once the tooltip is already open, and says nothing about a control
 that can be opened and closed.
 
-`onOpenChange` reports each transition once. react-aria's own pointerdown/keydown handler
-closes the tooltip through the same callback before `onPress` finishes the toggle, so
-`setOpen` drops a call that would not change the value.
+`onOpenChange` reports each transition once, including for a caller that controls `isOpen`
+and has not applied the change yet. react-aria's own pointerdown/keydown handler closes the
+tooltip through the same callback before `onPress` runs, so `onPress` closes it only for a
+press that had neither, such as a screen reader click.
 
 The touch path is covered by tests. jsdom has no `PointerEvent`, and without one react-aria
 falls back to branches that cannot represent touch — `useHover` binds `onMouseEnter` with a

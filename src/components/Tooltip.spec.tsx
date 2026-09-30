@@ -195,6 +195,39 @@ describe('Tooltip', () => {
       expect(onOpenChange.mock.calls).toEqual([[true], [false], [true]]);
     });
 
+    // A caller that controls isOpen and has not applied the change yet still sees `open` as
+    // true when onPress runs, so the dedupe on the current value cannot catch this one.
+    it('reports a close once when the caller controls isOpen and ignores it', async () => {
+      const onOpenChange = jest.fn();
+      const user = userEvent.setup();
+      render(<TooltipGroup isOpen={true} placement='right' onOpenChange={onOpenChange}>Tooltip content</TooltipGroup>);
+
+      await act(async () => { await user.tab(); });
+      onOpenChange.mockClear();
+
+      await act(async () => { await user.keyboard('{Enter}'); });
+
+      expect(onOpenChange.mock.calls).toEqual([[false]]);
+    });
+
+    // A screen reader activates the button with a click that has no pointerdown or keydown
+    // before it, so the close must not depend on those.
+    it('closes on a virtual click and reports the close once', async () => {
+      const onOpenChange = jest.fn();
+      const user = userEvent.setup();
+      const { container } = render(
+        <TooltipGroup placement='right' onOpenChange={onOpenChange}>Tooltip content</TooltipGroup>
+      );
+
+      await act(async () => { await user.tab(); });
+      onOpenChange.mockClear();
+
+      await act(async () => { fireEvent.click(trigger(container), { detail: 0 }); });
+
+      expect(tooltip()).toBe(null);
+      expect(onOpenChange.mock.calls).toEqual([[false]]);
+    });
+
     // The trigger toggles persistent content, so the state it toggles has to be exposed;
     // aria-describedby only supplies the description once it is already open.
     it('exposes the toggle state as aria-expanded', async () => {
