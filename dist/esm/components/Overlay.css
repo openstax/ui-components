@@ -1,0 +1,31 @@
+/* Overlay component styles */
+
+/* Compound selectors keep these ahead of the base .mask / .close-modal-button
+   rules regardless of the order the stylesheets are bundled in. */
+.mask.overlay-mask {
+  background-color: rgba(0, 0, 0, 0.89);
+}
+
+.close-modal-button.overlay-close-button {
+  height: 4rem;
+  width: 4rem;
+  position: absolute;
+  right: 2em;
+  top: 2em;
+}
+
+.overlay-wrapper {
+  color: #fff;
+}
+
+.overlay-body {
+  position: relative;
+  flex-grow: 1;
+  height: 100%;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  outline: none;
+}
