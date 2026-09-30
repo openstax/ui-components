@@ -63,8 +63,7 @@ export const NavBarPopover = React.forwardRef<
     })
   );
 
-  // A non-modal popover needs MenuPopover's outside-press handling to close on a click
-  // elsewhere on the page.
+  // MenuPopover closes a non-modal popover on an outside press.
   const PopoverComponent = props.isNonModal ? MenuPopover : Popover;
 
   return (
@@ -96,12 +95,7 @@ const NavBarBaseButton = ({
   return (
     <Trigger>
       <NavBarButton {...props} />
-      {/* A menu popover is not a dialog. RAC's Popover adds role="dialog" (plus a
-          full-screen underlay, a focus trap, body scroll-lock and aria-hidden on the
-          rest of the page) unless isNonModal is set. The trigger already exposes
-          aria-haspopup/aria-expanded and the Menu carries the accessible name, so the
-          extra dialog layer is announced twice and implies modality that does not hold.
-          isNonModal is set before the spread so callers can still override it. */}
+      {/* Non-modal so the popover is not announced as a dialog; popoverProps can override. */}
       <NavBarPopover isNonModal={isMenu} {...popoverProps}>
         <Content>{children}</Content>
       </NavBarPopover>

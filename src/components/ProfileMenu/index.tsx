@@ -82,7 +82,6 @@ export const ProfileMenu: React.FC<ProfileMenuProps> = ({
       >
         {displayInitials || <UserIcon />}
       </ProfileMenuButton>
-      {/* isNonModal: a menu popover is not a dialog (see NavBarBaseButton). */}
       <ProfileMenuPopover placement="bottom end" isNonModal>
         <Menu onAction={onAction}>
           {children}

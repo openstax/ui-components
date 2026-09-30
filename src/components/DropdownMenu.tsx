@@ -31,7 +31,6 @@ export const DropdownMenu = <T extends object>(
   return (
     <MenuTrigger {...props}>
       <Button className="dropdown-menu-button" style={buttonStyle} isDisabled={disabled}>{text}</Button>
-      {/* A menu popover is not a dialog; MenuPopover is non-modal. */}
       <MenuPopover>
         <Menu {...props} className="dropdown-menu">
           {children}

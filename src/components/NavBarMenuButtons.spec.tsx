@@ -106,8 +106,7 @@ describe("NavBarMenuButton when open", () => {
   it("closes on an outside press", async () => {
     await renderOpenMenu();
 
-    // A press on non-focusable page content, with no focus change: what a real browser
-    // does, and what useInteractOutside (not blur) has to catch.
+    // Press without moving focus, so only the outside-press handler can close the menu.
     const outside = screen.getByText("Page content");
     fireEvent.mouseDown(outside);
     fireEvent.mouseUp(outside);
