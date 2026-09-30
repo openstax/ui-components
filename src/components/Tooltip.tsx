@@ -101,17 +101,14 @@ export const Tooltip = ({children, placement, className, style, ...props}: React
  * trigger's own state stays closed, which means `useTooltipTrigger` never emits
  * `aria-describedby` and Escape-to-dismiss stops working.
  *
- * `useTooltipTrigger` also binds `onPointerDown` and `onKeyDown` to close the tooltip, and
- * those fire before `onPress`. Without `onPressStart` recording the state first, a press
- * would read a state react-aria had already flipped, so the toggle would only ever open.
+ * `useTooltipTrigger` closes the tooltip from its own `onPointerDown` and `onKeyDown`, before
+ * `onPress` runs, so `onPress` closes it only for a press that had neither, such as a screen
+ * reader click (pointerType "virtual"). Closing it again would report the same close to
+ * `onOpenChange` twice. The state is recorded in `onPressStart` because by `onPress`
+ * react-aria has already closed the tooltip.
  * That close-on-press default is also why the button used to do nothing useful: tabbing to
- * it opened the tooltip and then Enter or Space dismissed it, and on touch — where hover
- * never fires — the tap closed it on pointerdown and the content was unreachable.
- *
- * Because that library close already runs through `onOpenChange`, `setOpen` drops a call
- * that does not change the value. Otherwise pressing an open trigger would report the same
- * close twice — once from react-aria's pointerdown/keydown and again from our `onPress`
- * finishing the toggle. This is the same rule `useControlledState` applies internally.
+ * it opened the tooltip and then Enter or Space dismissed it, and on touch, where hover
+ * never fires, the tap closed it and the content was unreachable.
  */
 export const TooltipGroup = (
   {icon, ariaLabel, isOpen, defaultOpen, onOpenChange, ...props}: React.PropsWithChildren<TooltipGroupProps>
@@ -121,7 +118,6 @@ export const TooltipGroup = (
   const openAtPressStart = React.useRef(false);
 
   const setOpen = (next: boolean) => {
-    if (next === open) return;
     setUncontrolledOpen(next);
     onOpenChange?.(next);
   };
@@ -131,7 +127,9 @@ export const TooltipGroup = (
       aria-label={ariaLabel || 'More information'}
       aria-expanded={open}
       onPressStart={() => { openAtPressStart.current = open; }}
-      onPress={() => setOpen(!openAtPressStart.current)}
+      onPress={(e) => {
+        if (!openAtPressStart.current || e.pointerType === 'virtual') setOpen(!openAtPressStart.current);
+      }}
     >
       {icon
         ? <img src={icon} aria-hidden={true} alt='' />
