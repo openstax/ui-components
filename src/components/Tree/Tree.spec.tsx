@@ -1,3 +1,4 @@
+import { createRef } from "react";
 import { render } from "@testing-library/react";
 import { Tree, TreeChevron, TreeItem, TreeItemContent } from './Tree';
 import { Checkbox } from '../Checkbox/Checkbox';
@@ -44,5 +45,60 @@ describe('Tree', () => {
       </Tree>
     )
     expect(asFragment()).toMatchSnapshot();
+  });
+
+  it('applies the tree classes and keeps the chevron structure', () => {
+    render(
+      <Tree>
+        <TreeItem id="1" textValue="1">
+          <TreeItemContent>
+            <TreeChevron>Show/Hide</TreeChevron>
+          </TreeItemContent>
+        </TreeItem>
+      </Tree>
+    );
+
+    expect(document.querySelector('.tree')).not.toBeNull();
+    expect(document.querySelector('.tree-item')).not.toBeNull();
+    // The wrapper is the div; the caller-facing className lands on the button inside it,
+    // which is what the styled-components original did.
+    expect(document.querySelector('.tree-chevron > button')?.getAttribute('slot')).toEqual('chevron');
+  });
+
+  it('composes a render-callback className on the tree and its items', () => {
+    render(
+      <Tree className={() => 'caller-tree'}>
+        <TreeItem id="1" textValue="1" className={() => 'caller-item'}>
+          <TreeItemContent>
+            <TreeChevron className='caller-chevron'>Show/Hide</TreeChevron>
+          </TreeItemContent>
+        </TreeItem>
+      </Tree>
+    );
+
+    expect(document.querySelector('.tree')?.className).toContain('caller-tree');
+    expect(document.querySelector('.tree-item')?.className).toContain('caller-item');
+    expect(document.querySelector('.tree-chevron-button')?.className).toContain('caller-chevron');
+  });
+
+  // The styled RAC wrappers these replaced forwarded refs, and this package is on React
+  // 17, where a plain function component silently drops one. forwardRef also erases the
+  // generic, so these calls double as a check that the item type still infers.
+  it('forwards refs from the tree and its items to their elements', () => {
+    const treeRef = createRef<HTMLDivElement>();
+    const itemRef = createRef<HTMLDivElement>();
+
+    render(
+      <Tree ref={treeRef}>
+        <TreeItem id="1" textValue="1" ref={itemRef}>
+          <TreeItemContent>
+            <TreeChevron>Show/Hide</TreeChevron>
+          </TreeItemContent>
+        </TreeItem>
+      </Tree>
+    );
+
+    expect(treeRef.current?.className).toContain('tree');
+    expect(itemRef.current?.className).toContain('tree-item');
   });
 });
