@@ -14,11 +14,10 @@ type CheckboxProps = PropsWithChildren<
   labelProps?: LabelHTMLAttributes<HTMLLabelElement>;
 }>;
 
-export const Checkbox = ({ children, disabled, variant = 'primary', bold = false, size = 1.6, labelProps, className, style, indeterminate = false, ...props }: CheckboxProps) => {
+export const Checkbox = ({ children, disabled, variant = 'primary', bold = false, size = 1.6, labelProps, className, style, indeterminate = false, onClick, ...props }: CheckboxProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // `indeterminate` is a DOM property with no attribute. The browser clears it on click, so it is
-  // applied after every render to keep following the prop.
+  // `indeterminate` is a DOM property with no attribute, so it is applied after every render.
   useEffect(() => {
     if (inputRef.current) {
       inputRef.current.indeterminate = indeterminate;
@@ -71,6 +70,12 @@ export const Checkbox = ({ children, disabled, variant = 'primary', bold = false
       <input
         {...props}
         ref={inputRef}
+        onClick={indeterminate ? (event) => {
+          onClick?.(event);
+          // The browser clears it on click, before any render. Put it back so it follows the prop
+          // even when the click does not cause one.
+          event.currentTarget.indeterminate = true;
+        } : onClick}
         type="checkbox"
         className={inputClassName}
         style={inputStyle}

@@ -56,11 +56,11 @@ const renderIndeterminateCheckboxes = (variant: CheckboxProps['variant'], size: 
 </CheckboxGroup>;
 
 export const Indeterminate = () => <>
-  {renderIndeterminateCheckboxes('primary', 1.6)}
-  {renderIndeterminateCheckboxes('primary', 2)}
-  {renderIndeterminateCheckboxes('light', 1.6)}
-  {renderIndeterminateCheckboxes('light', 2)}
-  {renderIndeterminateCheckboxes('error', 1.6)}
+  {(['primary', 'light', 'error'] as const).flatMap(variant =>
+    ([1.4, 1.6, 1.8, 2] as const).map(size =>
+      <React.Fragment key={`${variant}-${size}`}>{renderIndeterminateCheckboxes(variant, size)}</React.Fragment>
+    )
+  )}
 </>;
 
 const options = ['Option one', 'Option two', 'Option three'];
