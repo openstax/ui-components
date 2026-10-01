@@ -1,4 +1,5 @@
-import { render } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { Dialog, DialogTrigger, Menu, MenuItem } from "react-aria-components";
 import renderer from "react-test-renderer";
 import {
@@ -47,6 +48,115 @@ describe("NavBarMenuButton", () => {
       )
       .toJSON();
     expect(tree).toMatchSnapshot();
+  });
+});
+
+describe("NavBarMenuButton when open", () => {
+  const renderOpenMenu = async () => {
+    const user = userEvent.setup();
+    render(
+      <>
+        <NavBarMenuButton label="Test menu">
+          <NavBarMenuItem>Menu item</NavBarMenuItem>
+          <NavBarMenuItem>Another menu item</NavBarMenuItem>
+        </NavBarMenuButton>
+        <p>Page content</p>
+      </>,
+    );
+
+    const button = screen.getByRole("button", { name: "Test menu" });
+    await user.click(button);
+    const menu = await screen.findByRole("menu");
+
+    return { user, button, menu };
+  };
+
+  it("does not wrap the menu in a dialog", async () => {
+    const { menu } = await renderOpenMenu();
+
+    expect(document.querySelector('[role="dialog"]')).toBeNull();
+    expect(menu.closest(".navbar-popover")?.getAttribute("role")).toBeNull();
+  });
+
+  it("names the menu from its trigger", async () => {
+    const { button, menu } = await renderOpenMenu();
+
+    expect(screen.getByRole("menu", { name: "Test menu" })).toBe(menu);
+    expect(menu.getAttribute("aria-labelledby")).toBe(button.id);
+  });
+
+  it("leaves the rest of the page exposed to assistive tech", async () => {
+    await renderOpenMenu();
+
+    expect(document.querySelector('[data-testid="underlay"]')).toBeNull();
+    expect(screen.getByText("Page content").closest('[aria-hidden="true"]')).toBeNull();
+  });
+
+  it("closes on Escape and returns focus to the trigger", async () => {
+    const { user, button } = await renderOpenMenu();
+
+    await user.keyboard("{Escape}");
+
+    await waitFor(() => expect(screen.queryByRole("menu")).toBeNull());
+    expect(button.getAttribute("aria-expanded")).toBe("false");
+    // FocusScope restores focus to the trigger on an animation frame.
+    await waitFor(() => expect(document.activeElement).toBe(button));
+  });
+
+  it("closes on an outside press", async () => {
+    await renderOpenMenu();
+
+    // Press without moving focus, so only the outside-press handler can close the menu.
+    const outside = screen.getByText("Page content");
+    fireEvent.mouseDown(outside);
+    fireEvent.mouseUp(outside);
+
+    await waitFor(() => expect(screen.queryByRole("menu")).toBeNull());
+  });
+
+  it("closes, and stays closed, when the trigger is pressed again", async () => {
+    const { user, button } = await renderOpenMenu();
+
+    await user.click(button);
+
+    await waitFor(() => expect(screen.queryByRole("menu")).toBeNull());
+    expect(button.getAttribute("aria-expanded")).toBe("false");
+  });
+
+  it("toggles closed, and stays closed, when the trigger is tapped again", async () => {
+    render(
+      <NavBarMenuButton label="Test menu">
+        <NavBarMenuItem>Menu item</NavBarMenuItem>
+      </NavBarMenuButton>,
+    );
+    const button = screen.getByRole("button", { name: "Test menu" });
+    const tap = () => {
+      const touch = { identifier: 1, target: button, clientX: 0, clientY: 0 };
+      fireEvent.touchStart(button, { targetTouches: [touch], changedTouches: [touch] });
+      fireEvent.touchEnd(button, { targetTouches: [], changedTouches: [touch] });
+    };
+
+    tap();
+    await screen.findByRole("menu");
+    tap();
+
+    await waitFor(() => expect(screen.queryByRole("menu")).toBeNull());
+    expect(button.getAttribute("aria-expanded")).toBe("false");
+  });
+});
+
+describe("NavBarPopoverButton when open", () => {
+  it("still renders its content as a dialog", async () => {
+    const user = userEvent.setup();
+    render(
+      <NavBarPopoverButton label="Test popover">
+        Popover content
+      </NavBarPopoverButton>,
+    );
+
+    await user.click(screen.getByRole("button", { name: "Test popover" }));
+
+    expect(await screen.findByRole("dialog")).toBeTruthy();
   });
 });
 
