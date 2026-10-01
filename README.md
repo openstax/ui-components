@@ -172,6 +172,10 @@ The check has its own tests, so what is claimed above is pinned rather than asse
 Adding a genuinely new color is therefore a deliberate act: put it in `palette.ts` if it is
 part of the design, or in the allowlist with a reason if it is a one-off we are keeping.
 
+An allowlist entry only excuses a color while the theme does not have it. Promote one into
+`palette.ts` later and every literal of it becomes a duplicate owed a swap, and the entry
+itself has to go in the same commit — the tests say both.
+
 Breakpoints are the known gap — `@media (min-width: var(--x))` is not valid CSS, so
 breakpoint values are still repeated in media queries and are not covered by the tests.
 

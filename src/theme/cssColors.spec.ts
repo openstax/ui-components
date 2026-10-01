@@ -381,6 +381,63 @@ describe('findColors', () => {
     expect(literals(css)).toEqual(['red', 'blue']);
   });
 
+  it('reads the fallback colour in image(), whose first argument is a url', () => {
+    // `image()` takes an image and then a bare `<color>` to fall back to, so the stop
+    // is a colour however the property is spelled. The url payload is blanked, so the
+    // `#` of a fragment in it cannot be read as a hex literal.
+    expect(literals('a { list-style-image: image(url(marker.svg#a), red); }'))
+      .toEqual(['red']);
+  });
+
+  it('does not open the named-colour gate inside image-set(), which holds no colour', () => {
+    // the sibling function takes images and resolutions only, so an identifier there is
+    // not a colour.
+    expect(literals('a { list-style-image: image-set(red 1x); }')).toEqual([]);
+    // a gradient inside one still opens its own gate, so nothing is lost
+    expect(literals('a { list-style-image: image-set(linear-gradient(red, blue) 1x); }'))
+      .toEqual(['red', 'blue']);
+  });
+
+  it('closes the gate inside image-set() even when the property opens it', () => {
+    // `background` does take a colour, so the enclosing gate is open here. Being
+    // absent from COLOR_CONTAINERS is not enough — an unlisted function passes the
+    // property's gate straight through, which is why image-set() has to close it.
+    expect(literals('a { background: image-set(red 1x); }')).toEqual([]);
+    expect(literals('a { background: image-set(linear-gradient(red, blue) 1x); }'))
+      .toEqual(['red', 'blue']);
+  });
+
+  it.each(['element', 'paint'])(
+    'closes the gate inside %s(), whose argument is a name rather than a colour', (fn) => {
+      expect(literals(`a { background: ${fn}(red); }`)).toEqual([]);
+    }
+  );
+
+  it.each([
+    'background-image', 'border-image', 'border-image-source', 'mask', 'mask-image',
+    'filter', 'backdrop-filter',
+  ])('does not read a bare colour in %s, which takes an image or a filter', (property) => {
+    // every one of these rejects `red` in Chromium 153 — they take an <image> or a
+    // <filter-function-list>, so a bare identifier there is never a colour
+    expect(takesColor(property)).toBe(false);
+    expect(literals(`a { ${property}: red; }`)).toEqual([]);
+  });
+
+  it.each([
+    ['a gradient', 'background-image', 'linear-gradient(red, blue)'],
+    ['a gradient', 'border-image-source', 'linear-gradient(red, blue)'],
+    ['a gradient', 'mask-image', 'linear-gradient(red, blue)'],
+  ])('still finds %s in %s, whose stops are colours regardless', (_case, property, value) => {
+    expect(literals(`a { ${property}: ${value}; }`)).toEqual(['red', 'blue']);
+  });
+
+  it('still finds the colour in filter: drop-shadow(), which does hold one', () => {
+    // dropping `filter` from the shorthands must not lose this: the colour lives in
+    // drop-shadow(), which opens the gate for its own arguments
+    expect(literals('a { filter: drop-shadow(0 0 2px red); }')).toEqual(['red']);
+    expect(literals('a { backdrop-filter: drop-shadow(0 0 2px red); }')).toEqual(['red']);
+  });
+
   it('keeps the property gate inside var(), whose fallback is not known to be a colour', () => {
     // the other half: `var()` is whatever the property makes of it, so an identifier in
     // a fallback is only a colour when the property says so.
@@ -407,6 +464,28 @@ describe('findColors', () => {
     // colour for any call site that omitted the argument.
     expect(findColors('red', true)).toHaveLength(1);
     expect(findColors('red', false)).toEqual([]);
+  });
+
+  it.each([
+    ['a url fragment', 'url(#fff)'],
+    ['a quoted string', '"red"'],
+    ['a string in a shorthand', '0 0 0 "red"'],
+    ['a comment', '/* red */ 0'],
+    ['a data: URI', 'url(data:image/svg+xml;utf8,<rect fill="#fff"/>)'],
+  ])('blanks %s in a raw value handed straight to findColors', (_case, value) => {
+    // findColors takes a value as written, not one a caller has already cleaned up:
+    // `stylesheetColors` gets that for free from `declarations` and a direct caller
+    // should not have to know it is a precondition.
+    expect(findColors(value, true)).toEqual([]);
+  });
+
+  it.each([
+    ['a hex literal', '#fff', '#fff'],
+    ['a named colour beside a string', '"x" red', 'red'],
+    ['a colour after a url', 'url(a.svg) red', 'red'],
+  ])('still finds %s in a raw value', (_case, value, literal) => {
+    // the other direction: blanking the noise must not blank the colours with it
+    expect(findColors(value, true).map((found) => found.literal)).toEqual([literal]);
   });
 
   it.each([
@@ -439,6 +518,16 @@ describe('findColors', () => {
   it('does not throw on an escape outside the Unicode range', () => {
     expect(() => literals('a { color: \\110000 ; }')).not.toThrow();
   });
+
+  it.each(['constructor', '__proto__'])(
+    'does not report or crash on %s, which is inherited rather than a colour', (name) => {
+      // a crash in the audit takes down the suite of whichever consumer is running it,
+      // so this is worse than the wrong answer it also gave
+      expect(() => stylesheetColors(`a { color: ${name}; }`)).not.toThrow();
+      expect(literals(`a { color: ${name}; }`)).toEqual([]);
+      expect(literals(`:root { --x: ${name}; }`)).toEqual([]);
+    }
+  );
 
   it('records the declaration each colour was written in', () => {
     expect(stylesheetColors('@media (max-width: 50em) { .a:hover { color: #fff; } }'))
@@ -529,6 +618,15 @@ describe('describeColor', () => {
   it('returns null for an unknown identifier', () => {
     expect(describeColor('notacolor')).toBeNull();
   });
+
+  it.each(['constructor', '__proto__', 'toString', 'valueOf', 'hasOwnProperty'])(
+    'returns null for %s rather than reading a key off Object.prototype', (name) => {
+      // `constructor` and `__proto__` are the inherited keys that survive being
+      // lower-cased. They used to look up to a function and an object, both truthy,
+      // which `fromHex` then crashed on.
+      expect(describeColor(name)).toBeNull();
+    }
+  );
 
   it.each(['#12345', '#1234567', '#123456789'])(
     'returns null for the malformed hex length %s', (literal) => {

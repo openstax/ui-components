@@ -23,6 +23,10 @@ const themeCssPath = path.join(__dirname, 'theme.css');
  * `rgba(0, 0, 0, 0.2)` is black at 20% and passes on its own. That rule is what lets
  * shadows and overlays stay readable without allowlisting every alpha we happen to use,
  * while still refusing a new hue smuggled in through rgba().
+ *
+ * An entry excuses a color only while the theme does not have it. Add one of these to
+ * palette.ts and the literals become a swap owed like any other, and the entry itself has
+ * to go with the same commit — see `staleAllowlistEntries` below.
  */
 const KNOWN_OFF_PALETTE = new Map([
   ['#cccccc', 'Tooltip border and the uncontrolled-form h3 rule. Predates the palette; nearest entry is pale (#d5d5d5).'],
@@ -124,15 +128,23 @@ const themeValues = themeColors.reduce((byValue, [token, value]) => {
  */
 interface ColorProblems { duplicates: string[]; offPalette: string[] }
 
-const colorProblems = (css: string): ColorProblems => {
+const colorProblems = (
+  css: string, allowlist: ReadonlyMap<string, string> = KNOWN_OFF_PALETTE
+): ColorProblems => {
   const duplicates: string[] = [];
   const offPalette: string[] = [];
 
   for (const found of stylesheetColors(css)) {
     const { literal, rgba } = found;
     const key = allowlistKey(found);
+    const tokens = rgba === null ? undefined : themeValues.get(opaqueKey(rgba));
 
-    if (KNOWN_OFF_PALETTE.has(key)) { continue; }
+    // The allowlist excuses a color the theme does not have, and only for as long as that
+    // is true. Read before the theme lookup it also excused one the theme *does* have, so
+    // promoting an entry into palette.ts — the thing the list tells you to prefer — left
+    // every literal of it exempt: the swap never reached `duplicates`, so nothing asked
+    // for it and the copies stayed behind unnoticed.
+    if (allowlist.has(key) && tokens === undefined) { continue; }
 
     if (rgba === null) {
       offPalette.push(
@@ -142,7 +154,6 @@ const colorProblems = (css: string): ColorProblems => {
     }
 
     const hex = opaqueKey(rgba);
-    const tokens = themeValues.get(hex);
 
     if (rgba.a < 1) {
       // An alpha variant of a theme color is fine — there is no token form for it.
@@ -172,14 +183,46 @@ const allColorProblems = (css: string): string[] => {
 };
 
 /**
- * --ox-* tokens a stylesheet reads but theme.css does not define.
+ * Allowlist entries the theme now has a token for, and which therefore excuse nothing.
+ *
+ * The other half of the rule above: once a color is in the palette the exemption lapses, so
+ * the entry is dead weight carrying a reason that has stopped being true. Naming it is the
+ * difference between an author deleting it as part of the promotion and finding it years
+ * later next to literals it no longer covers.
+ *
+ * A translucent entry counts too — an alpha over a theme color passes on its own channels.
+ * An entry the checker cannot resolve has no channels to compare, so it is left alone.
+ *
+ * Taken as a function of the allowlist so the check can be run over a map that has such an
+ * entry, rather than only ever over a file that happens to be tidy.
+ */
+const staleAllowlistEntries = (allowlist: ReadonlyMap<string, string>) =>
+  [...allowlist.keys()].filter((key) => {
+    // `#rrggbb`, or `#rrggbb/alpha` when there is one: see colorKey.
+    const channels = describeColor(key.replace(/\/.*$/, ''));
+    return channels !== null && themeValues.has(opaqueKey(channels));
+  });
+
+/**
+ * Every `--ox-*` token a stylesheet reads, in the order written.
+ *
+ * One scan, shared by the unknown-reference check below and the import rule at the foot of
+ * the file, because the two disagreeing is a gap rather than an inconsistency: `var(--ox-)`
+ * names a custom property nothing defines, and requiring a character after the prefix meant
+ * the import rule saw that reference while the check that would have failed it did not. The
+ * one reference that cannot possibly resolve was the one that passed.
+ *
+ * `var` has to be the whole function name, or `myvar(--ox-color-pale)` reads as a token
+ * reference. That is a legal custom-property value which calls no CSS variable, so it
+ * failed the build over a misspelling in a name nothing reads, and told the component
+ * holding it to import a token file it has no use for.
  *
  * The match is case-insensitive because CSS function names are: `VAR(--ox-color-pale)` is
  * the same reference as `var(--ox-color-pale)`, and a check that only knew the lowercase
- * spelling would let a typo through in the other one. The lookup stays case-sensitive,
- * because custom property *names* are — `var(--OX-color-pale)` really is a reference to
- * something nothing defines, and silently falling through to its fallback is the failure
- * this check exists to catch.
+ * spelling would let a typo through in the other one. The lookup in
+ * `unknownTokenReferences` stays case-sensitive, because custom property *names* are —
+ * `var(--OX-color-pale)` really is a reference to something nothing defines, and silently
+ * falling through to its fallback is the failure this check exists to catch.
  *
  * The name runs to the end of the CSS identifier, non-ASCII included, because anything at
  * U+0080 or above is a name code point. `[\w-]+` stopped at the first of them and handed
@@ -191,15 +234,21 @@ const allColorProblems = (css: string): string[] => {
  * `--ox-color-red` that this reads as `--ox-color-r` and reports as undefined. Wrong, but
  * wrong in the direction of a failure rather than a pass, and it is the same
  * decode-the-escapes work as the rest of CORE-2885 rather than a boundary this regex can
- * fix.
+ * fix. The boundary deliberately ignores a preceding backslash for the same reason: `\var(`
+ * is a real call and `my\var(` is not, and telling those apart needs the decoding too — so
+ * it matches both, erring towards the failure rather than the silent pass.
  */
-const unknownTokenReferences = (css: string, defined: Map<string, string>) => [
-  ...new Set(
-    [...stripNoise(css).matchAll(/var\(\s*(--ox-(?:[\w-]|[^\x00-\x7f])+)/gi)]
-      .map((match) => match[1])
-      .filter((name) => !defined.has(name))
-  ),
-];
+const themeTokenReferences = (css: string): string[] =>
+  [...stripNoise(css).matchAll(
+    /(?<![-\w]|[^\x00-\x7f])var\(\s*(--ox-(?:[\w-]|[^\x00-\x7f])*)/gi
+  )].map((match) => match[1]);
+
+/** Whether a stylesheet reads a theme token at all. Used by the import rule below. */
+const readsThemeToken = (css: string) => themeTokenReferences(css).length > 0;
+
+/** --ox-* tokens a stylesheet reads but theme.css does not define. */
+const unknownTokenReferences = (css: string, defined: Map<string, string>) =>
+  [...new Set(themeTokenReferences(css).filter((name) => !defined.has(name)))];
 
 describe('theme.css', () => {
   it('is what the generator produces from the JS theme', () => {
@@ -303,6 +352,41 @@ describe('the color check itself', () => {
     });
   });
 
+  it('stops excusing an allowlisted color once the theme has it', () => {
+    // The list's own advice is to put a color in palette.ts if it is really part of the
+    // design. Checked before the theme lookup, taking that advice silently exempted every
+    // literal of it instead of turning them into the swap they now are — so the duplicate
+    // check stayed quiet and the copies would have been left behind.
+    const promoted = new Map([['#d5d5d5', 'pretend pale predates the palette']]);
+    expect(colorProblems('.x { color: #d5d5d5; }', promoted)).toEqual({
+      duplicates: [expect.stringContaining('use var(--ox-color-pale)')],
+      offPalette: [],
+    });
+  });
+
+  it('still excuses an allowlisted color the theme does not have', () => {
+    // The other direction, so the fix above cannot be read as dropping the exemption.
+    const kept = new Map([['#123456', 'pretend this came from the styled-components original']]);
+    expect(colorProblems('.x { color: #123456; }', kept))
+      .toEqual({ duplicates: [], offPalette: [] });
+  });
+
+  it('carries no allowlist entry the theme already defines', () => {
+    expect(staleAllowlistEntries(KNOWN_OFF_PALETTE)).toEqual([]);
+  });
+
+  it('would name an allowlist entry the theme defines', () => {
+    // The guard above only means something if it can fail. The translucent case is here
+    // because an alpha over a theme color passes on its channels, so such an entry is
+    // just as inert as an opaque one.
+    expect(staleAllowlistEntries(new Map([['#d5d5d5', 'pale is in the palette']])))
+      .toEqual(['#d5d5d5']);
+    expect(staleAllowlistEntries(new Map([['#d5d5d5/0.5', 'so is pale at half alpha']])))
+      .toEqual(['#d5d5d5/0.5']);
+    // and an entry it cannot resolve has no channels to compare, so it stays
+    expect(staleAllowlistEntries(new Map([['hsl(200 50% 50%)', 'unresolvable']]))).toEqual([]);
+  });
+
   it('can reduce every theme color to channels', () => {
     // Guards the themeValues map: see unresolvableThemeColors above for why a silent drop
     // would be worse than a failure here.
@@ -377,6 +461,29 @@ describe('the color check itself', () => {
     // the token, so the declaration resolves to its fallback or nothing at all.
     expect(unknownTokenReferences('.x { color: var(--OX-color-pale); }', themeTokens()))
       .toEqual(['--OX-color-pale']);
+  });
+
+  it('flags the bare prefix, which nothing defines', () => {
+    // `--ox-` is a valid custom property name in its own right, and the suffix used to be
+    // required: the import rule saw `var(--ox-)` and this check did not, so the one
+    // reference that cannot possibly resolve was the one that passed.
+    const defined = themeTokens();
+    expect(defined.has('--ox-')).toBe(false);
+    expect(unknownTokenReferences('.x { color: var(--ox-); }', defined)).toEqual(['--ox-']);
+    expect(readsThemeToken('.x { color: var(--ox-); }')).toBe(true);
+  });
+
+  it('reads var() only where it is the whole function name', () => {
+    // `myvar(--ox-color-palee)` is a legal custom-property value that calls no CSS
+    // variable. Read as a reference it failed the build over a name nothing looks up, and
+    // through the import rule below demanded theme.css of a component with no use for it.
+    const defined = themeTokens();
+    expect(unknownTokenReferences('.x { --y: myvar(--ox-color-palee); }', defined)).toEqual([]);
+    expect(unknownTokenReferences('.x { --y: -var(--ox-color-palee); }', defined)).toEqual([]);
+    expect(readsThemeToken('.x { --y: myvar(--ox-color-pale); }')).toBe(false);
+    // a boundary, not a ban on the letters: a real call beside one still reads
+    expect(unknownTokenReferences('.x { --y: myvar(var(--ox-color-palee)); }', defined))
+      .toEqual(['--ox-color-palee']);
   });
 });
 
@@ -462,13 +569,19 @@ const missingThemeImport = (
   return imported.includes(themeCssPath) ? [] : needy;
 };
 
-/** Whether a stylesheet reads a theme token at all. */
-const readsThemeToken = (css: string) => /var\(\s*--ox-/i.test(stripNoise(css));
-
 describe('the token import rule', () => {
   const moduleFile = path.join(srcDir, 'components/Thing.tsx');
   const ownStyles = path.join(srcDir, 'components/Thing.css');
   const readsTokens = new Set([ownStyles]);
+
+  /**
+   * The real stylesheets that read a token, for the per-module case at the foot of the
+   * block. Every module there asks the same question of the same files, so computing it
+   * inside the case walked src/ and re-read every stylesheet once per module.
+   */
+  const tokenReadingStylesheets = new Set(
+    walk(srcDir, isStylesheet).filter((css) => readsThemeToken(fs.readFileSync(css, 'utf8')))
+  );
 
   it('flags a component that imports a token-reading stylesheet and not the tokens', () => {
     expect(missingThemeImport(moduleFile, "import './Thing.css';", readsTokens))
@@ -531,10 +644,8 @@ describe('the token import rule', () => {
       // Vacuous on this branch by construction — no stylesheet reads a token until the
       // sweep in #143 converts one, and the rule exists so that sweep cannot forget the
       // import. The helper above is tested on its own, so the rule itself is pinned now.
-      const readsTokens = new Set(
-        walk(srcDir, isStylesheet).filter((css) => readsThemeToken(fs.readFileSync(css, 'utf8')))
-      );
-      expect(missingThemeImport(file, fs.readFileSync(file, 'utf8'), readsTokens)).toEqual([]);
+      expect(missingThemeImport(file, fs.readFileSync(file, 'utf8'), tokenReadingStylesheets))
+        .toEqual([]);
     }
   );
 });
