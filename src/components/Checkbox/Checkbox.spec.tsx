@@ -1,3 +1,4 @@
+import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { Checkbox } from './Checkbox';
 import renderer from 'react-test-renderer';
@@ -59,14 +60,34 @@ describe('Checkbox', () => {
       expect(input().indeterminate).toBe(true);
     });
 
-    it('keeps following the prop after the browser clears it on click', () => {
-      const { rerender } = render(<Checkbox indeterminate onChange={jest.fn()}>Click Me</Checkbox>);
+    it('stays mixed after a click that does not change the prop', () => {
+      render(<Checkbox indeterminate onChange={jest.fn()}>Click Me</Checkbox>);
 
       fireEvent.click(input());
-      expect(input().indeterminate).toBe(false);
 
-      rerender(<Checkbox indeterminate onChange={jest.fn()}>Click Me</Checkbox>);
       expect(input().indeterminate).toBe(true);
+    });
+
+    it('calls the onClick it was given', () => {
+      const onClick = jest.fn();
+      render(<Checkbox indeterminate onClick={onClick} onChange={jest.fn()}>Click Me</Checkbox>);
+
+      fireEvent.click(input());
+
+      expect(onClick).toHaveBeenCalledTimes(1);
+    });
+
+    it('lets the parent clear it in response to the click', () => {
+      const Parent = () => {
+        const [mixed, setMixed] = React.useState(true);
+        return <Checkbox indeterminate={mixed} checked={!mixed} onChange={() => setMixed(false)}>Click Me</Checkbox>;
+      };
+      render(<Parent />);
+
+      fireEvent.click(input());
+
+      expect(input().indeterminate).toBe(false);
+      expect(input().checked).toBe(true);
     });
 
     it.each(['primary', 'light', 'error'] as const)('draws a dash for the %s variant', (variant) => {
