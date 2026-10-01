@@ -11,6 +11,7 @@ import {
   PopoverProps,
 } from "react-aria-components";
 import { NavBarButton, NavBarButtonProps } from "./NavBarButton";
+import { MenuPopover } from "./MenuPopover";
 import "./NavBarMenuButtons.css";
 import "../theme/theme.css";
 
@@ -42,14 +43,19 @@ PopoverContainer.displayName = "PopoverContainer";
 export const NavBarPopover = React.forwardRef<
   HTMLDivElement,
   PopoverProps
->(({ className, ...props }, ref) => (
+>(({ className, ...props }, ref) => {
   // style passes through in ...props — see the note on NavBarMenuItem above.
-  <Popover
-    ref={ref}
-    className={composeRenderProps(className, (resolved) => classNames("navbar-popover", resolved))}
-    {...props}
-  />
-));
+  // MenuPopover closes a non-modal popover on an outside press.
+  const PopoverComponent = props.isNonModal ? MenuPopover : Popover;
+
+  return (
+    <PopoverComponent
+      ref={ref}
+      className={composeRenderProps(className, (resolved) => classNames("navbar-popover", resolved))}
+      {...props}
+    />
+  );
+});
 NavBarPopover.displayName = "NavBarPopover";
 
 export type NavBarBaseButtonProps = React.PropsWithChildren<{
@@ -70,7 +76,8 @@ const NavBarBaseButton = ({
   return (
     <Trigger>
       <NavBarButton {...props} />
-      <NavBarPopover {...popoverProps}>
+      {/* Non-modal so the popover is not announced as a dialog; popoverProps can override. */}
+      <NavBarPopover isNonModal={isMenu} {...popoverProps}>
         <Content>{children}</Content>
       </NavBarPopover>
     </Trigger>
