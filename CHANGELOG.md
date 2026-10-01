@@ -6,6 +6,46 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 
+#### `TooltipGroup`'s trigger is a button that does something (CORE-2871)
+
+An accessibility evaluation flagged the info-icon trigger as a name/role/value failure
+(WCAG 4.1.2): it is exposed as `role="button"`, but pressing it did nothing useful.
+react-aria's `useTooltipTrigger` binds `onPointerDown` and `onKeyDown` to *close* the
+tooltip, so tabbing to the trigger opened it and then Enter or Space — the one interaction
+the button role promises — dismissed it. On touch it was worse: hover never fires there and
+the tap closed the tooltip on pointerdown, leaving the content unreachable.
+
+`TooltipGroup` now owns the trigger state and presses toggle it, so the button role
+describes real behaviour and the content is reachable by keyboard and by touch. Because
+those library handlers run before `onPress`, the press records the state at `onPressStart`
+rather than reading one react-aria has already flipped. The trigger also exposes
+`aria-expanded`, so the state it toggles is reported and not just described: `aria-describedby`
+supplies the description once the tooltip is already open, and says nothing about a control
+that can be opened and closed.
+
+`onOpenChange` reports each transition once, including for a caller that controls `isOpen`
+and has not applied the change yet. react-aria's own pointerdown/keydown handler closes the
+tooltip through the same callback before `onPress` runs, so `onPress` closes it only for a
+press that had neither, such as a screen reader click.
+
+The touch path is covered by tests. jsdom has no `PointerEvent`, and without one react-aria
+falls back to branches that cannot represent touch — `useHover` binds `onMouseEnter` with a
+hardcoded `mouse` pointer type — so the tests install a minimal polyfill and drive the
+pointer sequence a tap produces. That puts `useHover` and `usePress` on the same branches a
+real browser takes, with `triggerHoverStart` correctly ignoring touch.
+
+The two things the evaluation's recommendation asked for — `role="tooltip"` on the tooltip
+element and `aria-describedby` on the trigger — were already correct, with one exception now
+fixed: `isOpen` was spread into `Tooltip` instead of being given to `TooltipTrigger`.
+react-aria's `Tooltip` builds its own state when passed `isOpen` or `defaultOpen`, detached
+from the trigger's, so in controlled mode the trigger's state stayed closed and
+`aria-describedby` was never emitted at all — and hover and Escape-to-dismiss stopped
+working. `isOpen` keeps its meaning for callers; it now drives the trigger. `defaultOpen`
+and `onOpenChange` are accepted alongside it.
+
+`ariaLabel` is unchanged but now documented in the story: the `More information` default
+repeats across every instance on a screen, so callers should name what the tooltip is about.
+
 #### Dropped the `os` restriction that blocked Windows installs (CORE-2876)
 
 `package.json` declared `"os": [ "darwin", "linux" ]`, which npm enforces at install time in
