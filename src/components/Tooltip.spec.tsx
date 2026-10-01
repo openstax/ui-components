@@ -1,36 +1,11 @@
 import React from 'react';
-import renderer from 'react-test-renderer';
 import { act, fireEvent, render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import ReactDOM from 'react-dom';
 import { TooltipTrigger } from 'react-aria-components';
 import { StyledTooltip, StyledTrigger, TooltipGroup } from './Tooltip';
 import { palette } from '../theme/palette';
 
 describe('Tooltip', () => {
-  beforeAll(() => {
-    ReactDOM.createPortal = jest.fn((element) => element) as any;
-  })
-  it('matches snapshot', () => {
-    const tree = renderer.create(
-      <TooltipGroup isOpen={true} placement='right'>Tooltip content</TooltipGroup>
-    ).toJSON();
-    expect(tree).toMatchSnapshot();
-  });
-
-  it('hides', () => {
-    const tree = renderer.create(
-      <TooltipGroup isOpen={false} placement='right'>Tooltip content</TooltipGroup>
-    ).toJSON();
-    expect(tree).toMatchSnapshot();
-  });
-
-  it('uses icon', () => {
-    const tree = renderer.create(
-      <TooltipGroup isOpen={false} placement='right' icon={'icon'}>Tooltip content</TooltipGroup>
-    ).toJSON();
-    expect(tree).toMatchSnapshot();
-  });
   describe('className passthrough', () => {
     // openstax/assignments wraps TooltipGroup in styled(), which passes a generated
     // className down; styled-components used to merge it with the tooltip styles.
@@ -255,6 +230,42 @@ describe('Tooltip', () => {
     });
 
     // defaultOpen only seeds the state, and like isOpen it has to reach TooltipTrigger, not Tooltip.
+    describe('structure', () => {
+      it('has a button-type trigger with the default info icon hidden from assistive tech', () => {
+        const { container } = render(<TooltipGroup placement='right'>Tooltip content</TooltipGroup>);
+
+        const button = trigger(container);
+        expect(button.getAttribute('type')).toBe('button');
+        expect(button.querySelector('svg')?.getAttribute('aria-hidden')).toBe('true');
+        expect(button.querySelector('img')).toBe(null);
+      });
+
+      it('uses a caller icon in place of the default', () => {
+        const { container } = render(<TooltipGroup placement='right' icon='icon.png'>Tooltip content</TooltipGroup>);
+
+        const img = trigger(container).querySelector('img');
+        expect(img?.getAttribute('src')).toBe('icon.png');
+        expect(img?.getAttribute('alt')).toBe('');
+        expect(img?.getAttribute('aria-hidden')).toBe('true');
+        expect(trigger(container).querySelector('svg')).toBe(null);
+      });
+
+      it('shows the content and an arrow when open', () => {
+        render(<TooltipGroup isOpen={true} placement='right'>Tooltip content</TooltipGroup>);
+
+        expect(tooltip()?.textContent).toBe('Tooltip content');
+        expect(tooltip()?.querySelector('.react-aria-OverlayArrow svg')).toBeTruthy();
+      });
+
+      it('renders no tooltip and does not describe the trigger when closed', () => {
+        const { container } = render(<TooltipGroup isOpen={false} placement='right'>Tooltip content</TooltipGroup>);
+
+        expect(tooltip()).toBe(null);
+        expect(trigger(container).getAttribute('aria-expanded')).toBe('false');
+        expect(trigger(container).getAttribute('aria-describedby')).toBe(null);
+      });
+    });
+
     describe('defaultOpen', () => {
       it('starts open and describes the trigger', () => {
         const { container } = render(<TooltipGroup defaultOpen={true} placement='right'>Tooltip content</TooltipGroup>);
