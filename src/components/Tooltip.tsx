@@ -9,16 +9,10 @@ import {
 } from 'react-aria-components';
 import { Info } from './svgs/Info';
 import { mergeProps, Placement, useTooltip } from 'react-aria';
-import { palette } from '../theme/palette';
 import { CSSPropertiesWithVariables } from '../types';
 import classNames from 'classnames';
 import './Tooltip.css';
-
-const tooltipCssVariables: CSSPropertiesWithVariables = {
-  '--tooltip-bg': palette.white,
-  '--tooltip-color': palette.neutralThin,
-  '--tooltip-border-color': '#ccc',
-};
+import '../theme/theme.css';
 
 // The styled-components versions of these accepted a plain className/style and merged
 // them, so the replacements narrow away the react-aria render-callback forms rather
@@ -51,7 +45,7 @@ export const StyledTooltip = React.forwardRef<
   <AriaTooltip
     ref={ref}
     className={classNames('tooltip', className)}
-    style={{...tooltipCssVariables, ...style}}
+    style={style}
     {...props}
   />
 ));
@@ -98,15 +92,10 @@ export const TooltipGroup = ({icon, ariaLabel, ...props}: React.PropsWithChildre
 export const CustomTooltip = ({ state, ...props }: any) => {
   const { tooltipProps } = useTooltip(props, state);
 
-  // mergeProps combines className with clsx, but style is last-wins, so merge it explicitly
   const mergedProps = mergeProps(props, tooltipProps, { className: 'tooltip' });
 
   return (
-    <div
-      data-placement={props.placement}
-      {...mergedProps}
-      style={{...tooltipCssVariables, ...mergedProps.style}}
-    >
+    <div data-placement={props.placement} {...mergedProps}>
       {props.children}
       <OverlayArrow {...props}>
         <svg width={8} height={8} viewBox="0 0 8 8">

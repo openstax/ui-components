@@ -4,12 +4,6 @@ exports[`ManageCookies when CookieYes loads renders button 1`] = `
 <button
   className="button-link cky-banner-element"
   onClick={[Function]}
-  style={
-    Object {
-      "--link-color": "#026AA1",
-      "--link-hover-color": "#005481",
-    }
-  }
 >
   Manage Cookies
 </button>
@@ -20,12 +14,6 @@ exports[`ManageCookies when CookieYes loads renders button in wrapper 1`] = `
   <button
     className="button-link cky-banner-element"
     onClick={[Function]}
-    style={
-      Object {
-        "--link-color": "#026AA1",
-        "--link-hover-color": "#005481",
-      }
-    }
   >
     Manage Cookies
   </button>
@@ -36,12 +24,6 @@ exports[`ManageCookies when CookieYes loads renders button with className 1`] = 
 <button
   className="button-link cky-banner-element test"
   onClick={[Function]}
-  style={
-    Object {
-      "--link-color": "#026AA1",
-      "--link-hover-color": "#005481",
-    }
-  }
 >
   Manage Cookies
 </button>
@@ -51,12 +33,6 @@ exports[`ManageCookies when CookieYes loads renders button with content and corr
 <button
   className="button-link cky-banner-element"
   onClick={[Function]}
-  style={
-    Object {
-      "--link-color": "#026AA1",
-      "--link-hover-color": "#005481",
-    }
-  }
 >
   some content
 </button>
@@ -66,12 +42,6 @@ exports[`ManageCookies with CookieYes already loaded renders button 1`] = `
 <button
   className="button-link cky-banner-element"
   onClick={[Function]}
-  style={
-    Object {
-      "--link-color": "#026AA1",
-      "--link-hover-color": "#005481",
-    }
-  }
 >
   Manage Cookies
 </button>
@@ -82,12 +52,6 @@ exports[`ManageCookies with CookieYes already loaded renders button in wrapper 1
   <button
     className="button-link cky-banner-element"
     onClick={[Function]}
-    style={
-      Object {
-        "--link-color": "#026AA1",
-        "--link-hover-color": "#005481",
-      }
-    }
   >
     Manage Cookies
   </button>
@@ -98,12 +62,6 @@ exports[`ManageCookies with CookieYes already loaded renders button with content
 <button
   className="button-link cky-banner-element"
   onClick={[Function]}
-  style={
-    Object {
-      "--link-color": "#026AA1",
-      "--link-hover-color": "#005481",
-    }
-  }
 >
   some content
 </button>

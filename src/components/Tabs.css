@@ -34,7 +34,7 @@
 
 /* Default tabs variant (horizontal with underline) */
 .tabs:not(.tabs-button-bar)[data-orientation="horizontal"] [role="tablist"] {
-  border-bottom: 0.1rem solid var(--tabs-border-color, #d5d5d5);
+  border-bottom: 0.1rem solid var(--tabs-border-color, var(--ox-color-pale));
 }
 
 .tabs:not(.tabs-button-bar) [role="tab"] {
@@ -53,19 +53,19 @@
 
 .tabs:not(.tabs-button-bar) [role="tab"][data-selected=true],
 .tabs:not(.tabs-button-bar) [role="tab"]:hover {
-  border-color: var(--tabs-active-border-color, #63a524);
+  border-color: var(--tabs-active-border-color, var(--ox-color-dark-green));
 }
 
 /* Button bar variant */
 .tabs.tabs-button-bar [role="tablist"] {
-  border: 0.1rem solid var(--tabs-border-color, #d5d5d5);
+  border: 0.1rem solid var(--tabs-border-color, var(--ox-color-pale));
   border-radius: 0.5rem;
 }
 
 .tabs.tabs-button-bar [role="tab"] {
   padding: 0 1.6rem;
-  background: #fff;
-  border-right: 0.1rem solid var(--tabs-border-color, #d5d5d5);
+  background: var(--ox-color-white);
+  border-right: 0.1rem solid var(--tabs-border-color, var(--ox-color-pale));
 }
 
 .tabs.tabs-button-bar.tabs-small [role="tab"] {
@@ -93,12 +93,12 @@
 }
 
 .tabs.tabs-button-bar [role="tab"][data-selected=true] {
-  background: var(--tabs-button-selected-bg, #e5e5e5);
-  box-shadow: inset 0 0 0 0.1rem var(--tabs-border-color, #d5d5d5);
+  background: var(--tabs-button-selected-bg, var(--ox-color-neutral-light));
+  box-shadow: inset 0 0 0 0.1rem var(--tabs-border-color, var(--ox-color-pale));
 }
 
 .tabs.tabs-button-bar [role="tab"]:hover:not([data-selected=true]) {
-  background: var(--tabs-button-hover-bg, #f1f1f1);
+  background: var(--tabs-button-hover-bg, var(--ox-color-neutral-lighter));
 }
 
 @media (forced-colors: active) {

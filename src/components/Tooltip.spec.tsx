@@ -4,7 +4,6 @@ import { render } from '@testing-library/react';
 import ReactDOM from 'react-dom';
 import { TooltipTrigger } from 'react-aria-components';
 import { StyledTooltip, StyledTrigger, TooltipGroup } from './Tooltip';
-import { palette } from '../theme/palette';
 
 describe('Tooltip', () => {
   beforeAll(() => {
@@ -62,7 +61,6 @@ describe('Tooltip', () => {
       expect(tooltip).toBeTruthy();
       expect(tooltip.classList.contains('tooltip')).toBe(true);
       expect(tooltip.classList.contains('generated-class')).toBe(true);
-      expect(tooltip.style.getPropertyValue('--tooltip-bg')).toBe(palette.white);
     });
   });
   describe('ref forwarding', () => {
@@ -102,8 +100,10 @@ describe('Tooltip', () => {
 
       const tooltip = document.body.querySelector('[role="tooltip"]') as HTMLElement;
       expect(tooltip.style.getPropertyValue('--tooltip-bg')).toBe('hotpink');
-      // the variables the caller did not override are still bound
-      expect(tooltip.style.getPropertyValue('--tooltip-color')).toBe(palette.neutralThin);
+      // Defaults for the variables the caller did not override live in the stylesheet
+      // as var(--x, var(--ox-color-*)), so they are deliberately absent from the inline
+      // style. tokens.spec.ts is what keeps those defaults honest.
+      expect(tooltip.style.getPropertyValue('--tooltip-color')).toBe('');
     });
   });
 });
