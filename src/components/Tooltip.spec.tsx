@@ -108,11 +108,6 @@ describe('Tooltip', () => {
     });
   });
   describe('name, role and state', () => {
-    // CORE-2871. An accessibility evaluation found the trigger exposed as role=button with
-    // no action behind it: react-aria's useTooltipTrigger binds pointerdown and keydown to
-    // close, so tabbing in opened the tooltip and Enter/Space then dismissed it, and on
-    // touch (no hover) the tap closed it before anything was shown. TooltipGroup now owns
-    // the trigger state and presses toggle it.
     const trigger = (container: HTMLElement) => container.querySelector('button') as HTMLElement;
     const tooltip = () => document.body.querySelector('[role="tooltip"]') as HTMLElement | null;
 
@@ -129,9 +124,7 @@ describe('Tooltip', () => {
       expect(trigger(container).getAttribute('aria-describedby')).toBe(tip?.id);
     });
 
-    // Regression: isOpen used to be spread into Tooltip, whose own isOpen prop makes
-    // react-aria build a state detached from the trigger's. The tooltip rendered, but the
-    // trigger's state stayed closed so aria-describedby was never emitted at all.
+    // isOpen has to reach TooltipTrigger, not Tooltip, or the trigger never gets aria-describedby.
     it('describes the trigger when opened through the isOpen prop', () => {
       const { container } = render(<TooltipGroup isOpen={true} placement='right'>Tooltip content</TooltipGroup>);
 
@@ -177,8 +170,7 @@ describe('Tooltip', () => {
       expect(onOpenChange).toHaveBeenCalledWith(true);
     });
 
-    // react-aria closes the tooltip from its own pointerdown/keydown handler before our
-    // onPress completes the toggle, so both halves would otherwise report the same close.
+    // react-aria closes on pointerdown/keydown before onPress, and the close must be reported once.
     it('reports each transition once when a press closes the tooltip', async () => {
       const onOpenChange = jest.fn();
       const user = userEvent.setup();
@@ -195,8 +187,7 @@ describe('Tooltip', () => {
       expect(onOpenChange.mock.calls).toEqual([[true], [false], [true]]);
     });
 
-    // A caller that controls isOpen and has not applied the change yet still sees `open` as
-    // true when onPress runs, so the dedupe on the current value cannot catch this one.
+    // `open` is still true in onPress when the caller has not applied the change yet.
     it('reports a close once when the caller controls isOpen and ignores it', async () => {
       const onOpenChange = jest.fn();
       const user = userEvent.setup();
@@ -210,8 +201,7 @@ describe('Tooltip', () => {
       expect(onOpenChange.mock.calls).toEqual([[false]]);
     });
 
-    // A screen reader activates the button with a click that has no pointerdown or keydown
-    // before it, so the close must not depend on those.
+    // A screen reader click has no pointerdown or keydown, so react-aria does not close it.
     it('closes on a virtual click and reports the close once', async () => {
       const onOpenChange = jest.fn();
       const user = userEvent.setup();
@@ -228,8 +218,7 @@ describe('Tooltip', () => {
       expect(onOpenChange.mock.calls).toEqual([[false]]);
     });
 
-    // The trigger toggles persistent content, so the state it toggles has to be exposed;
-    // aria-describedby only supplies the description once it is already open.
+    // aria-describedby only describes an open tooltip, so the toggle state needs aria-expanded.
     it('exposes the toggle state as aria-expanded', async () => {
       const user = userEvent.setup();
       const { container } = render(<TooltipGroup placement='right'>Tooltip content</TooltipGroup>);
@@ -255,8 +244,6 @@ describe('Tooltip', () => {
       expect(trigger(container).getAttribute('aria-label')).toBe('More information');
     });
 
-    // The default name repeats across every instance on a screen, so callers are expected
-    // to name the thing the tooltip is about.
     it('lets a caller name the trigger for its context', () => {
       const { container } = render(
         <TooltipGroup placement='right' ariaLabel='More information about Multiple attempts'>
@@ -267,11 +254,7 @@ describe('Tooltip', () => {
       expect(trigger(container).getAttribute('aria-label')).toBe('More information about Multiple attempts');
     });
 
-    // defaultOpen is new in this change and, unlike isOpen, is uncontrolled: it seeds the
-    // initial state and then the component owns it. Both props also have to reach
-    // TooltipTrigger rather than the Tooltip element — react-aria's Tooltip builds a
-    // detached state when handed either one, which is the bug fixed above for isOpen and
-    // would be just as silent for defaultOpen.
+    // defaultOpen only seeds the state, and like isOpen it has to reach TooltipTrigger, not Tooltip.
     describe('defaultOpen', () => {
       it('starts open and describes the trigger', () => {
         const { container } = render(<TooltipGroup defaultOpen={true} placement='right'>Tooltip content</TooltipGroup>);
@@ -289,7 +272,6 @@ describe('Tooltip', () => {
         expect(trigger(container).getAttribute('aria-expanded')).toBe('false');
       });
 
-      // The distinguishing behaviour: it seeds state rather than pinning it.
       it('hands control to the user after the initial render', async () => {
         const onOpenChange = jest.fn();
         const user = userEvent.setup();
@@ -306,8 +288,6 @@ describe('Tooltip', () => {
         expect(onOpenChange.mock.calls).toEqual([[false]]);
       });
 
-      // The counterpart that gives the test above its meaning: isOpen is controlled, so the
-      // caller owns the state and a dismiss that it ignores must not close the tooltip.
       it('isOpen pins the state instead, when the caller ignores the change', async () => {
         const user = userEvent.setup();
         const { container } = render(<TooltipGroup isOpen={true} placement='right'>Tooltip content</TooltipGroup>);
@@ -319,17 +299,10 @@ describe('Tooltip', () => {
       });
     });
 
-    // Touch is the case the old component failed hardest — useHover ignores touch, so
-    // nothing opened the tooltip, and the tap closed it on pointerdown. Testing it needs a
-    // PointerEvent polyfill: jsdom has none, and without it react-aria takes fallback
-    // branches that cannot represent touch. useHover's fallback binds onMouseEnter with a
-    // hardcoded 'mouse' pointerType (useHover.mjs), so a simulated tap opened the tooltip
-    // by "hover" and passed for the wrong reason. With PointerEvent defined, both useHover
-    // and usePress take the same branches a real browser does and triggerHoverStart bails
-    // on pointerType 'touch', so these assertions are about the press and nothing else.
+    // jsdom has no PointerEvent, so react-aria falls back to branches that cannot represent
+    // touch (useHover hardcodes 'mouse'). The polyfill puts useHover and usePress on a browser's branches.
     describe('touch', () => {
-      // Sizes must be non-zero: isVirtualPointerEvent treats a zero-sized pointer as a
-      // screen reader, which would route through usePress's virtual-click path instead.
+      // Non-zero sizes: a zero-sized pointer is treated as a screen reader (a virtual click).
       class TouchPointerEvent extends MouseEvent {
         public pointerId: number;
         public pointerType: string;
@@ -348,7 +321,6 @@ describe('Tooltip', () => {
       beforeAll(() => { (window as any).PointerEvent = TouchPointerEvent; });
       afterAll(() => { delete (window as any).PointerEvent; });
 
-      // The event sequence a browser sends for a tap, in order.
       const tap = (el: HTMLElement) => {
         const touch = { pointerType: 'touch', pointerId: 1, button: 0, isPrimary: true };
         act(() => {
@@ -377,12 +349,10 @@ describe('Tooltip', () => {
         expect(tooltip()).toBe(null);
         expect(trigger(container).getAttribute('aria-expanded')).toBe('false');
 
-        // once each way — the library's close-on-pointerdown and our onPress are one toggle
         expect(onOpenChange.mock.calls).toEqual([[true], [false]]);
       });
 
-      // Guards the reason the above is meaningful: if hover were opening the tooltip the
-      // test would pass without the press working at all.
+      // Without this, hover could be opening the tooltip and the tap test would pass anyway.
       it('is not opened by hover, because touch does not hover', () => {
         const { container } = render(<TooltipGroup placement='right'>Tooltip content</TooltipGroup>);
 

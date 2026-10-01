@@ -22,8 +22,7 @@ const Row = styled.div`
   }
 `;
 
-// ariaLabel is what the trigger is announced as. The 'More information' default repeats
-// across every instance on a screen, so name the thing the tooltip is about.
+// The 'More information' default is the same on every instance, so name the subject with ariaLabel.
 export const Default = () => <Wrapper>
   {(['right', 'top', 'bottom'] as Placement[]).map((placement, i) =>
     <Row key={i}>

@@ -34,9 +34,8 @@ type TooltipProps = ClassNameAndStyle & {
   isOpen?: boolean;
 };
 
-// icon/ariaLabel configure the trigger button, so they are only accepted by TooltipGroup.
-// isOpen/defaultOpen/onOpenChange drive the *trigger*, not the tooltip element — see the
-// comment on TooltipGroup for why that distinction matters.
+// icon and ariaLabel configure the trigger. isOpen, defaultOpen and onOpenChange drive the
+// trigger, not the tooltip element; see TooltipGroup.
 type TooltipGroupProps = TooltipProps & {
   icon?: any;
   ariaLabel?: string;
@@ -89,26 +88,15 @@ export const Tooltip = ({children, placement, className, style, ...props}: React
   </StyledTooltip>;
 
 /**
- * An info icon that reveals a tooltip. The trigger is a real button: pressing it toggles the
- * tooltip, so `role="button"` describes something the control actually does.
+ * An info icon that reveals a tooltip. The trigger is a button: pressing it toggles the tooltip.
  *
- * Two things here are deliberate and easy to undo by accident.
+ * `isOpen`, `defaultOpen` and `onOpenChange` go to `TooltipTrigger`, not `Tooltip`. Giving
+ * either prop to `Tooltip` makes react-aria build a second state the trigger cannot see, so
+ * `aria-describedby` is never set and Escape stops dismissing it.
  *
- * `isOpen`/`defaultOpen`/`onOpenChange` are handed to `TooltipTrigger`, not spread into
- * `Tooltip`. react-aria's `Tooltip` reads `state = props.isOpen != null || props.defaultOpen
- * != null || !contextState ? localState : contextState`, so passing either prop to the
- * tooltip element gives it a second state that the trigger knows nothing about — the
- * trigger's own state stays closed, which means `useTooltipTrigger` never emits
- * `aria-describedby` and Escape-to-dismiss stops working.
- *
- * `useTooltipTrigger` closes the tooltip from its own `onPointerDown` and `onKeyDown`, before
- * `onPress` runs, so `onPress` closes it only for a press that had neither, such as a screen
- * reader click (pointerType "virtual"). Closing it again would report the same close to
- * `onOpenChange` twice. The state is recorded in `onPressStart` because by `onPress`
- * react-aria has already closed the tooltip.
- * That close-on-press default is also why the button used to do nothing useful: tabbing to
- * it opened the tooltip and then Enter or Space dismissed it, and on touch, where hover
- * never fires, the tap closed it and the content was unreachable.
+ * react-aria closes the tooltip on `onPointerDown` and `onKeyDown`, before `onPress`. So
+ * `onPress` closes it only for a press with neither, such as a screen reader click
+ * (pointerType "virtual"), and the state at press start is recorded in `onPressStart`.
  */
 export const TooltipGroup = (
   {icon, ariaLabel, isOpen, defaultOpen, onOpenChange, ...props}: React.PropsWithChildren<TooltipGroupProps>
