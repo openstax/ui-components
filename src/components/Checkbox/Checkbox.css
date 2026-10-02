@@ -45,12 +45,19 @@
   opacity: var(--checkbox-checked-opacity, 1);
 }
 
+.checkbox-input:indeterminate::before {
+  transform: scale(1);
+  background-color: var(--checkbox-indeterminate-bg, #026AA1);
+  background-image: var(--checkbox-indeterminate-icon, none);
+}
+
 .checkbox-input--disabled {
   opacity: 0.4;
   border: var(--checkbox-disabled-border, 1px solid #d5d5d5);
 }
 
-.checkbox-input--disabled:checked::before {
+.checkbox-input--disabled:checked::before,
+.checkbox-input--disabled:indeterminate::before {
   opacity: 0;
 }
 

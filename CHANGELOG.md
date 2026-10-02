@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+
+#### `Checkbox` supports an `indeterminate` state (CORE-2901)
+
+A checkbox that summarises a set of others, such as "all options" above a list, has no way
+to say that only some of them are chosen. It was either checked or unchecked, so assistive
+tech reported a fully checked box when it was not (WCAG 4.1.2, Name, Role, Value).
+
+`Checkbox` takes a new `indeterminate` prop. It sets the input's `indeterminate` property,
+which browsers expose as the "mixed" state, and draws a dash in place of the checkmark for
+each variant. It does not change `checked`, so the parent decides what a click on a mixed
+box does; selecting everything is the native behaviour. The browser clears `indeterminate`
+on click, so the prop is reapplied after every render and stays the source of truth.
+
+A disabled indeterminate checkbox draws no dash, the same as a disabled checked one.
+
 ### Fixed
 
 #### Menu popovers no longer render as dialogs (CORE-2875)
