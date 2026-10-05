@@ -8,18 +8,9 @@ All notable changes to this project will be documented in this file.
 
 #### The Help menu no longer announces "menu" twice (CORE-2940)
 
-The Help trigger carried `aria-label='Help menu'` alongside its visible `label='Help'`. The
-aria-label wins, so the accessible name was "Help menu" while react-aria was separately
-supplying the role — NVDA read "Help menu, menu button, collapsed, subMenu", and the open
-popover, which takes its name from the trigger, read "Help menu, menu". An accessibility
-audit flagged it under WCAG 2.4.6 (Headings and Labels).
-
-The aria-label is gone, so the name comes from the visible label: "Help, menu button,
-collapsed". That also makes the accessible name match the visible text exactly, which is
-stronger for 2.5.3 (Label in Name) than the prefix match it had before.
-
-This is separate from the dialog wrapper below. That fix removed the "Help menu, dialog"
-announcement; this one removes the duplicated "menu".
+The Help trigger had `aria-label='Help menu'` on top of its visible "Help", so screen readers
+read "Help menu, menu button". The aria-label is removed, so the name is now the visible
+"Help".
 
 #### Menu popovers no longer render as dialogs (CORE-2875)
 
