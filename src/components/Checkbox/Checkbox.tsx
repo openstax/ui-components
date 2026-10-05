@@ -2,7 +2,6 @@ import type React from "react";
 import { LabelHTMLAttributes, PropsWithChildren } from "react";
 import { checkboxVariants, CheckboxVariant, CheckboxSize } from "./sharedCheckboxStyles";
 import { InputHTMLAttributes } from "react";
-import { colors } from "../../theme";
 import classNames from "classnames";
 import "./Checkbox.css";
 
@@ -29,7 +28,6 @@ export const Checkbox = ({ children, disabled, variant = 'primary', bold = false
   const labelStyle = {
     '--checkbox-font-weight': bold ? 700 : 400,
     '--checkbox-color': variantStyles.color,
-    '--checkbox-disabled-color': colors.palette.neutralLight,
     ...labelProps?.style
   } as unknown as React.CSSProperties;
 
@@ -43,13 +41,11 @@ export const Checkbox = ({ children, disabled, variant = 'primary', bold = false
   // Merge input style with our CSS variables
   const inputStyle = {
     '--checkbox-size': `${size}rem`,
-    '--checkbox-bg-unchecked': colors.palette.white,
     '--checkbox-bg': variantStyles.backgroundColor,
     '--checkbox-border-unchecked': variantStyles.unCheckedBorder,
     '--checkbox-border-checked': variantStyles.checkedBorder,
     '--checkbox-checkmark': variantStyles.backgroundImage === 'none' ? 'none' : `url('${variantStyles.backgroundImage}')`,
     '--checkbox-opacity': disabled ? '0.4' : '1',
-    '--checkbox-disabled-border': `1px solid ${colors.palette.pale}`,
     ...style
   } as unknown as React.CSSProperties;
 
