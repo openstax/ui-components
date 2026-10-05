@@ -4,6 +4,7 @@ import { ButtonVariant, getButtonVariantStyles } from '../theme/buttons';
 import { palette } from '../theme/palette';
 import { MenuPopover } from './MenuPopover';
 import './DropdownMenu.css';
+import '../theme/theme.css';
 
 interface DropdownMenuButtonProps<T> extends MenuProps<T>, Omit<MenuTriggerProps, 'children'> {
   text?: string;

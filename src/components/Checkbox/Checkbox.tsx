@@ -3,6 +3,7 @@ import { checkboxVariants, CheckboxVariant, CheckboxSize } from "./sharedCheckbo
 import { InputHTMLAttributes } from "react";
 import classNames from "classnames";
 import "./Checkbox.css";
+import '../../theme/theme.css';
 
 type CheckboxProps = PropsWithChildren<
   Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> & {

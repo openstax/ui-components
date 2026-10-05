@@ -2,6 +2,7 @@ import React from "react";
 import classNames from "classnames";
 import { CSSPropertiesWithVariables } from "../types";
 import './ButtonBar.css';
+import '../theme/theme.css';
 
 type ButtonBarProps = {
   size?: "large" | "medium" | "small";

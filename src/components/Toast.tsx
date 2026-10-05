@@ -2,6 +2,7 @@ import React from 'react';
 import classNames from 'classnames';
 import { CSSPropertiesWithVariables, ToastData } from '../types';
 import './Toast.css';
+import '../theme/theme.css';
 
 const ANIMATION_TIME_MS = 500;
 const DISMISS_AFTER_MS_FLOOR = 1000;
