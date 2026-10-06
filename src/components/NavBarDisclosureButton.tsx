@@ -30,6 +30,7 @@ export const NavBarDisclosureButton = ({
   defaultOpen = false,
   onOpenChange,
   panelClassName,
+  onPress,
   ...buttonProps
 }: NavBarDisclosureButtonProps) => {
   const [isOpen, setIsOpen] = React.useState(defaultOpen);
@@ -75,7 +76,10 @@ export const NavBarDisclosureButton = ({
           ref={triggerRef}
           aria-expanded={isOpen}
           aria-controls={isOpen ? panelId : undefined}
-          onPress={() => setOpen(!openRef.current)}
+          onPress={(event) => {
+            onPress?.(event);
+            setOpen(!openRef.current);
+          }}
         />
         {isOpen
           // list-style: none drops list semantics in Safari, so the role is stated.

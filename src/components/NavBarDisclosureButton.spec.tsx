@@ -193,6 +193,19 @@ describe("NavBarDisclosureButton", () => {
   });
 
   describe("pointer", () => {
+    it("calls a caller's onPress and still toggles", async () => {
+      const onPress = jest.fn();
+      const { user, trigger } = renderDisclosure({ onPress });
+
+      await user.click(trigger);
+      expect(onPress).toHaveBeenCalledTimes(1);
+      expect(screen.getByRole("list")).toBeTruthy();
+
+      await user.click(trigger);
+      expect(onPress).toHaveBeenCalledTimes(2);
+      expect(screen.queryByRole("list")).toBeNull();
+    });
+
     it("closes, and stays closed, when the button is pressed again", async () => {
       const { user, trigger } = renderDisclosure();
       await user.click(trigger);
