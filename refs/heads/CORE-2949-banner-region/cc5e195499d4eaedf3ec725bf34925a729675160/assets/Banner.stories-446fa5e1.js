@@ -1,0 +1,8 @@
+import{s as a,j as s,a as e,R as m,F as l}from"./index-9c04b4c7.js";import{B as n}from"./Banner-8691ba41.js";import"./Html-9bcb17bd.js";import"./Button-25b5889b.js";import"./theme-faedbfeb.js";import"./palette-97ed00c9.js";import"./buttons-1d51466c.js";const i=a.div`
+  font-size: 1.2rem;
+  position: relative;
+  padding-right: 2.5rem;
+  width: 42rem;
+`,r=a.p`
+  margin: 0 0 1.2rem;
+`,t=s(l,{children:["Present when the page loads, so it is not announced. If it appears because of something the user or the app did, use ",e("code",{children:"BannerRegion"}),"."]}),b=()=>s(i,{children:[s(r,{children:["This shows how an error looks. An error like this usually comes from a request that fails after the page loads, and then it belongs in a ",e("code",{children:"BannerRegion"})," so it is announced."]}),e(n,{messages:["This is an error message"],severity:"error"})]}),y=()=>s(i,{children:[e(r,{children:t}),e(n,{messages:["This is a warning message"],severity:"warning"})]}),v=()=>s(i,{children:[e(r,{children:t}),e(n,{messages:["This is a note message"],severity:"note"})]}),B=()=>s(i,{children:[e(r,{children:t}),e(n,{messages:["First message","Second message","Third message"],severity:"warning"})]}),T=()=>{const[o,d]=m.useState(!0);return o?s(i,{children:[s(r,{children:["Present when the page loads, and removed by the user, so nothing needs announcing. A banner that appears later belongs in a ",e("code",{children:"BannerRegion"}),"."]}),e(n,{messages:["This is a dismissible warning message"],severity:"warning",onDismiss:()=>d(!1)})]}):null};typeof window<"u"&&window.document&&window.document.createElement&&document.documentElement.setAttribute("data-storyloaded","");export{T as Dismissible,b as Error,B as MultipleMessages,v as Note,y as Warning};
