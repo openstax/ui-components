@@ -13,6 +13,7 @@ import {
 import { colors } from "../theme";
 import { NavBarButton, NavBarButtonProps } from "./NavBarButton";
 import { CSSPropertiesWithVariables } from "../types";
+import { MenuPopover } from "./MenuPopover";
 import "./NavBarMenuButtons.css";
 
 export const NavBarMenuItem = React.forwardRef<
@@ -62,8 +63,11 @@ export const NavBarPopover = React.forwardRef<
     })
   );
 
+  // MenuPopover closes a non-modal popover on an outside press.
+  const PopoverComponent = props.isNonModal ? MenuPopover : Popover;
+
   return (
-    <Popover
+    <PopoverComponent
       ref={ref}
       className={composeRenderProps(className, (resolved) => classNames("navbar-popover", resolved))}
       style={popoverStyle}
@@ -91,7 +95,8 @@ const NavBarBaseButton = ({
   return (
     <Trigger>
       <NavBarButton {...props} />
-      <NavBarPopover {...popoverProps}>
+      {/* Non-modal so the popover is not announced as a dialog; popoverProps can override. */}
+      <NavBarPopover isNonModal={isMenu} {...popoverProps}>
         <Content>{children}</Content>
       </NavBarPopover>
     </Trigger>

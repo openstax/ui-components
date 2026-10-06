@@ -4,7 +4,7 @@
  * GENERATED FILE — do not edit by hand. Run `npm run generate:theme-css`.
  *
  * Projected from the JavaScript theme, which stays the single source of truth:
- * src/theme/palette.ts (colours) and src/theme.ts (link colours, z-index, padding).
+ * src/theme/palette.ts (colors) and src/theme.ts (link colors, z-index, padding).
  * src/theme/tokens.spec.ts fails if this file is out of date, so add the value to the
  * JS theme and regenerate rather than editing here.
  *
@@ -58,7 +58,7 @@
   --ox-color-orange-hover: #be3c08;
   --ox-color-orange-active: #b03808;
 
-  /* link colours — src/theme.ts */
+  /* link colors — src/theme.ts */
   --ox-color-link: #026AA1;
   --ox-color-link-hover: #005481;
 

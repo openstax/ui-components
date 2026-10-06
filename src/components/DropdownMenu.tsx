@@ -1,7 +1,8 @@
 import React from 'react';
-import { Button, Menu, MenuItem, MenuProps, MenuTrigger, MenuTriggerProps, Popover } from 'react-aria-components';
+import { Button, Menu, MenuItem, MenuProps, MenuTrigger, MenuTriggerProps } from 'react-aria-components';
 import { ButtonVariant, getButtonVariantStyles } from '../theme/buttons';
 import { palette } from '../theme/palette';
+import { MenuPopover } from './MenuPopover';
 import './DropdownMenu.css';
 
 interface DropdownMenuButtonProps<T> extends MenuProps<T>, Omit<MenuTriggerProps, 'children'> {
@@ -30,11 +31,11 @@ export const DropdownMenu = <T extends object>(
   return (
     <MenuTrigger {...props}>
       <Button className="dropdown-menu-button" style={buttonStyle} isDisabled={disabled}>{text}</Button>
-      <Popover>
+      <MenuPopover>
         <Menu {...props} className="dropdown-menu">
           {children}
         </Menu>
-      </Popover>
+      </MenuPopover>
     </MenuTrigger>
   );
 };

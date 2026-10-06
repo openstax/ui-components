@@ -20,6 +20,7 @@ export * from './components/Modal';
 export * from './components/NavBar';
 export * from './components/NavBarButton';
 export * from './components/NavBarLogo';
+export * from './components/MenuPopover';
 export * from './components/NavBarMenuButtons';
 export * from './components/Overlay';
 export * from './components/Pagination';

@@ -106,7 +106,7 @@ describe('HelpMenu', () => {
     fireEvent.click(await screen.findByText('Help'));
     await screen.findByRole('menu');
 
-    expect(screen.getByRole('dialog').getAttribute('data-placement')).toBe('bottom');
+    expect(document.querySelector('.navbar-popover')?.getAttribute('data-placement')).toBe('bottom');
   });
 
   it('errors if the service is unavailable', async () => {

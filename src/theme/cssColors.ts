@@ -36,14 +36,19 @@ export interface FoundColor {
 export interface Declaration {
   /**
    * The selectors and at-rule preludes the declaration sits inside, outermost first,
-   * whitespace-collapsed: `@media (max-width: 75em) .book-banner .title`.
+   * with runs of whitespace collapsed outside strings:
+   * `@media (max-width: 75em) .book-banner .title`.
    *
    * Carried because a consumer may need to tell two occurrences of the same literal in
    * one file apart — REX's baseline ratchet identifies an occurrence by the declaration
    * it was written in. Consumers that only need to know a colour is wrong can ignore it.
    */
   context: string;
-  /** Lower-cased property name, e.g. `background-color` or `--tabs-border-color`. */
+  /**
+   * The property name, e.g. `background-color`. Lower-cased, because CSS matches
+   * property names case-insensitively — except for a custom property such as
+   * `--tabs-border-color`, whose name is case-sensitive and is kept as written.
+   */
   property: string;
   /** Everything to the right of the `:`. */
   value: string;
@@ -55,8 +60,20 @@ export interface StylesheetColor extends FoundColor {
   property: string;
 }
 
-/** https://www.w3.org/TR/css-color-4/#named-colors */
-const NAMED_COLORS: Record<string, string> = {
+/**
+ * https://www.w3.org/TR/css-color-4/#named-colors
+ *
+ * Prototype-less, so a lookup can only answer for a colour that is actually in the
+ * table. An object literal inherits from `Object.prototype`, where `constructor` and
+ * `__proto__` are truthy — and they are the two inherited keys that survive being
+ * lower-cased, so `color: constructor` looked up to a function, was reported as a
+ * colour, and then crashed `fromHex` on `.toLowerCase()`. A crash here takes down the
+ * whole suite of whichever consumer is running the audit.
+ *
+ * Fixed on the table rather than at the two lookups, because guarding a call site only
+ * holds until someone adds a third.
+ */
+const NAMED_COLORS: Record<string, string> = Object.assign(Object.create(null), {
   aliceblue: '#f0f8ff', antiquewhite: '#faebd7', aqua: '#00ffff', aquamarine: '#7fffd4',
   azure: '#f0ffff', beige: '#f5f5dc', bisque: '#ffe4c4', black: '#000000',
   blanchedalmond: '#ffebcd', blue: '#0000ff', blueviolet: '#8a2be2', brown: '#a52a2a',
@@ -97,17 +114,59 @@ const NAMED_COLORS: Record<string, string> = {
   steelblue: '#4682b4', tan: '#d2b48c', teal: '#008080', thistle: '#d8bfd8',
   tomato: '#ff6347', turquoise: '#40e0d0', violet: '#ee82ee', wheat: '#f5deb3',
   white: '#ffffff', whitesmoke: '#f5f5f5', yellow: '#ffff00', yellowgreen: '#9acd32',
-};
+});
 
 /**
  * Functions whose arguments *are* the colour, rather than containing one. These are
  * terminal: we try to resolve them and report them either way. Anything else that
- * happens to contain a colour (`var`, `color-mix`, the gradients) is descended into.
+ * happens to contain a colour (`var`, `color-mix`, the gradients) is descended into —
+ * see `COLOR_CONTAINERS` for which of those are colour-bearing by definition.
  */
 const COLOR_FUNCTIONS = [
   'rgb', 'rgba', 'hsl', 'hsla', 'hwb', 'lab', 'lch', 'oklab', 'oklch', 'color',
   'device-cmyk',
 ];
+
+/**
+ * Functions that contain colours rather than being one, and whose arguments are known
+ * to be colour-valued whatever property they sit in. `list-style-image` takes an image,
+ * but `linear-gradient(red, blue)` is still a gradient between two colours, so the
+ * property gate must not reach inside one.
+ *
+ * `var()` is deliberately absent: a fallback is whatever the property makes of it, so
+ * it keeps the gate of the property it was written in.
+ *
+ * `image()` is here for its bare `<color>` argument, which renders as a solid image.
+ * `drop-shadow()` is here because it is the only part of `filter` that holds a colour,
+ * which is why `filter` itself is not in `COLOR_SHORTHANDS`.
+ *
+ * Verified in Chromium 153 rather than read off the grammar, one argument at a time:
+ * `image(red)`, `color-mix(in srgb, red, blue)`, `light-dark(red, blue)` and
+ * `drop-shadow(0 0 2px red)` are all accepted, and `image-set(red 1x)` is rejected
+ * while `image-set(url(a.png) 1x)` is accepted.
+ *
+ * `cross-fade()` is the one entry no engine could arbitrate: Chromium implements
+ * neither the standard syntax nor a colour argument to the prefixed one, so even the
+ * all-image control is rejected. CSS Images 4 defines its argument as
+ * `<percentage>? && [ <image> | <color> ]`, so it is kept on the spec's word.
+ */
+const COLOR_CONTAINERS = [
+  'linear-gradient', 'radial-gradient', 'conic-gradient', 'repeating-linear-gradient',
+  'repeating-radial-gradient', 'repeating-conic-gradient', 'color-mix', 'light-dark',
+  'cross-fade', 'image', 'drop-shadow',
+];
+
+/**
+ * Functions whose arguments are never a bare `<color>`, so the enclosing property's
+ * gate must not reach inside them either.
+ *
+ * Being absent from `COLOR_CONTAINERS` is not enough. An unlisted function passes the
+ * property's gate straight through, which is right for `var()` — a fallback is whatever
+ * the property makes of it — but wrong here: `background` does take a colour, so
+ * `background: image-set(red 1x)` arrived with the gate open and reported `red`, though
+ * `image-set()` holds images and resolutions and Chromium rejects that value.
+ */
+const NOT_COLOR_CONTAINERS = ['image-set', 'element', 'paint'];
 
 /**
  * Keywords that are colour-valued but carry no fixed channels, so there is nothing to
@@ -140,6 +199,17 @@ const blankNoise = (css: string, keepStrings: boolean): string => {
   while (index < css.length) {
     const rest = css.slice(index);
 
+    // A CSS escape makes the character after it ordinary source text, so it has to be
+    // taken before anything that looks for a delimiter: `.foo\"bar` is a valid class
+    // name whose quote opens no string, and treating it as one blanks the rest of the
+    // stylesheet. Both characters are copied through rather than blanked — an escape in
+    // a value is part of an identifier, and `\red` really is the colour `red`.
+    if (css[index] === '\\') {
+      out += css.slice(index, index + 2);
+      index += 2;
+      continue;
+    }
+
     if (rest.startsWith('/*')) {
       const end = css.indexOf('*/', index + 2);
       const stop = end === -1 ? css.length : end + 2;
@@ -162,16 +232,41 @@ const blankNoise = (css: string, keepStrings: boolean): string => {
       continue;
     }
 
-    const url = /^url\(/i.exec(rest);
+    // `url` has to be the whole function name rather than the tail of one. In
+    // `--x: myurl(#fff)` the payload is ordinary value text to descend into, and
+    // blanking it loses the colour. The preceding source character settles it: an
+    // ident character there means `url` is only a suffix.
+    const boundary = index === 0 || !/[\w-]/.test(css[index - 1]);
+    const url = boundary ? /^url\(/i.exec(rest) : null;
     if (url) {
       const open = index + url[0].length;
       let depth = 1;
       let cursor = open;
+      // only a structural `)` ends the url: `url("icon).svg")` closes at the last
+      // paren, not at the one in the filename. Stopping early would leave the trailing
+      // quote behind, and blanking that "unterminated string" would swallow every
+      // declaration after it.
       while (cursor < css.length && depth > 0) {
-        if (css[cursor] === '(') { depth++; }
-        if (css[cursor] === ')') { depth--; }
+        const character = css[cursor];
+
+        if (character === '\\') { cursor += 2; continue; }
+
+        if (character === '"' || character === '\'') {
+          cursor++;
+          while (cursor < css.length && css[cursor] !== character) {
+            cursor += css[cursor] === '\\' ? 2 : 1;
+          }
+          cursor++;
+          continue;
+        }
+
+        if (character === '(') { depth++; }
+        if (character === ')') { depth--; }
         cursor++;
       }
+      // an escape or a quote at the very end can carry the cursor past the end, and the
+      // blanked copy has to stay the same length as the input.
+      cursor = Math.min(cursor, css.length);
       // the parens themselves are structure — `declarations` balances them — so only
       // the payload between them is blanked.
       const closed = depth === 0;
@@ -192,6 +287,50 @@ const blankNoise = (css: string, keepStrings: boolean): string => {
 export const stripNoise = (css: string): string => blankNoise(css, false);
 
 /**
+ * Collapses runs of whitespace in a selector, but only where the whitespace is
+ * separator rather than content. `[data-label="a  b"]` and `[data-label="a b"]` match
+ * different values, so a context that collapsed both to the latter would stop telling
+ * two rules apart — which is the one job the context has.
+ */
+const collapseSeparators = (selector: string): string => {
+  let out = '';
+  let index = 0;
+
+  while (index < selector.length) {
+    const character = selector[index];
+
+    if (character === '\\') {
+      // an escaped space is part of an identifier, e.g. the class `.a\\ b`
+      out += selector.slice(index, index + 2);
+      index += 2;
+      continue;
+    }
+
+    if (character === '"' || character === '\'') {
+      let cursor = index + 1;
+      while (cursor < selector.length && selector[cursor] !== character) {
+        cursor += selector[cursor] === '\\' ? 2 : 1;
+      }
+      const stop = Math.min(cursor + 1, selector.length);
+      out += selector.slice(index, stop);
+      index = stop;
+      continue;
+    }
+
+    if (/\s/.test(character)) {
+      while (index < selector.length && /\s/.test(selector[index])) { index++; }
+      out += ' ';
+      continue;
+    }
+
+    out += character;
+    index++;
+  }
+
+  return out.trim();
+};
+
+/**
  * Pulls declarations out of a stylesheet at any nesting depth, so `@media` blocks are
  * covered. Selectors and at-rule preludes end at a `{` and become the declaration's
  * `context` rather than being read as declarations themselves, which is what keeps
@@ -206,6 +345,13 @@ export const stripNoise = (css: string): string => blankNoise(css, false);
  * `[data-loading="true"]` and `[data-loading="false"]` stay distinguishable. Both are
  * the same length as the input, which is what lets one index address both.
  */
+/**
+ * A declaration whose property is a custom property, up to and including its colon.
+ * This is what tells `--x: { red }`, a declaration whose value happens to be a block,
+ * from `a { ... }`, a nested rule.
+ */
+const CUSTOM_PROPERTY_DECLARATION = /^\s*--[^\s:]*\s*:/;
+
 export const declarations = (css: string): Declaration[] => {
   const found: Declaration[] = [];
   const values = stripNoise(css);
@@ -213,6 +359,7 @@ export const declarations = (css: string): Declaration[] => {
   const stack: string[] = [];
   let start = 0;
   let parens = 0;
+  let blocks = 0;
 
   const flush = (end: number) => {
     const segment = values.slice(start, end);
@@ -220,7 +367,10 @@ export const declarations = (css: string): Declaration[] => {
 
     if (stack.length > 0 && separator !== -1) {
       const value = segment.slice(separator + 1).trim();
-      const property = segment.slice(0, separator).trim().toLowerCase();
+      const name = segment.slice(0, separator).trim();
+      // ordinary property names are case-insensitive, but a custom property's is not:
+      // `--Brand` and `--brand` are two different properties and must stay two.
+      const property = name.startsWith('--') ? name : name.toLowerCase();
       if (value) { found.push({ context: stack.join(' '), property, value }); }
     }
 
@@ -230,12 +380,31 @@ export const declarations = (css: string): Declaration[] => {
   for (let index = 0; index < values.length; index++) {
     const character = values[index];
 
+    // same rule as in `blankNoise`, and needed again because this scanner reads the
+    // blanked copy, where escapes survive: `.foo\{bar` is one class name, so its brace
+    // must not open a block and its semicolon must not end a declaration.
+    if (character === '\\') { index++; continue; }
+
     if (character === '(') { parens++; }
     if (character === ')') { parens = Math.max(0, parens - 1); }
     if (parens !== 0) { continue; }
 
+    // A custom property takes an arbitrary token stream, so a `{}` block in its value
+    // is a component value rather than a nested rule: `--x: { red }` is a declaration
+    // whose value is `{ red }`. Everything inside belongs to the value, `;` included,
+    // so the structural rules are suspended until the block closes.
+    if (blocks > 0) {
+      if (character === '{') { blocks++; }
+      if (character === '}') { blocks--; }
+      continue;
+    }
+
     if (character === '{') {
-      stack.push(selectors.slice(start, index).replace(/\s+/g, ' ').trim());
+      if (CUSTOM_PROPERTY_DECLARATION.test(values.slice(start, index))) {
+        blocks = 1;
+        continue;
+      }
+      stack.push(collapseSeparators(selectors.slice(start, index)));
       start = index + 1;
     } else if (character === '}') {
       flush(index);
@@ -259,45 +428,107 @@ export const declarations = (css: string): Declaration[] => {
  *
  * Spelled out rather than matched by prefix, so that `border-radius`, `border-width` and
  * the rest of the border family that cannot take a colour do not let one through.
+ *
+ * The image-valued and filter-valued properties are all deliberately absent, because a
+ * bare identifier in one is never a colour. Each was checked in Chromium 153 by setting
+ * the declaration and reading it back, with `inherit` as a control for whether the
+ * property exists at all: `background-image`, `border-image`, `border-image-source`,
+ * `mask`, `mask-image`, `filter` and `backdrop-filter` all reject `red`. `list-style`
+ * is absent for a related but distinct reason — its identifier is an author-defined
+ * `<counter-style>` name, so `list-style: red` is *valid* and means that counter.
+ *
+ * Nothing is lost by their absence: a gradient opens the gate for its own stops and
+ * `drop-shadow()` for its own colour, wherever they are written — see
+ * `COLOR_CONTAINERS`.
+ *
+ * The entries that stay were checked the same way, and the question is whether a bare
+ * colour can appear *anywhere* in the value rather than as the whole of it: `red` alone
+ * is rejected by `box-shadow` and `text-shadow`, while `0 0 red` is accepted by both.
  */
 const COLOR_SHORTHANDS = [
-  'background', 'background-image', 'border', 'border-block', 'border-block-end',
-  'border-block-start', 'border-bottom', 'border-image', 'border-image-source',
-  'border-inline', 'border-inline-end', 'border-inline-start', 'border-left',
-  'border-right', 'border-top', 'box-shadow', 'caret', 'column-rule', 'fill', 'filter',
-  'backdrop-filter', 'list-style', 'mask', 'mask-image', 'outline', 'scrollbar', 'stroke',
-  'text-decoration', 'text-emphasis', 'text-shadow', 'text-stroke',
+  'background', 'border', 'border-block', 'border-block-end', 'border-block-start',
+  'border-bottom', 'border-inline', 'border-inline-end', 'border-inline-start',
+  'border-left', 'border-right', 'border-top', 'box-shadow', 'caret', 'column-rule',
+  'fill', 'outline', 'scrollbar', 'stroke', 'text-decoration', 'text-emphasis',
+  'text-shadow', 'text-stroke',
 ];
+
+/**
+ * Properties the `color` substring claims but that hold no `<color>`.
+ *
+ * `color-scheme` is the one that actually produces a false finding: its value is an
+ * author-defined `<custom-ident>`, so `color-scheme: red` names a scheme and reporting
+ * it as red would be wrong — with a suggested fix that breaks the declaration. The rest
+ * take fixed keywords, none of which is a colour name, so excluding them changes no
+ * result today; they are listed because the substring has no business claiming them and
+ * a future keyword could collide.
+ */
+const NOT_COLOR_PROPERTIES = [
+  'color-scheme', 'color-adjust', 'print-color-adjust', 'forced-color-adjust',
+  'color-interpolation', 'color-interpolation-filters', 'color-rendering',
+];
+
+const unprefixed = (name: string) => name.replace(/^-(?:webkit|moz|ms|o)-/, '');
 
 /** Whether a bare identifier in this property's value could be a colour. */
 export const takesColor = (property: string): boolean => {
   // custom properties have no grammar to go on, so anything in one counts
   if (property.startsWith('--')) { return true; }
 
-  const name = property.replace(/^-(?:webkit|moz|ms|o)-/, '');
+  const name = unprefixed(property.toLowerCase());
+
+  if (NOT_COLOR_PROPERTIES.includes(name)) { return false; }
 
   return name.includes('color') || COLOR_SHORTHANDS.includes(name);
 };
 
+/**
+ * Whether a bare identifier inside this function may be read as a colour.
+ *
+ * Three answers, not two. A colour-bearing container opens the gate whatever the
+ * property was; a function known to hold no colour closes it whatever the property was;
+ * anything else — `var()`, and any function neither list has heard of — passes the
+ * property's own gate through unchanged.
+ */
+const gateInside = (fn: string, named: boolean): boolean => {
+  const name = unprefixed(fn);
+
+  if (COLOR_CONTAINERS.includes(name)) { return true; }
+  if (NOT_COLOR_CONTAINERS.includes(name)) { return false; }
+
+  return named;
+};
+
 const clamp = (value: number, max: number) => Math.min(max, Math.max(0, value));
+
+/**
+ * The CSS `<number>` grammar, shared by the channels and the alpha rather than
+ * approximated as "digits and dots". `[\d.]+` also matches `.` and `1..2`, which
+ * `parseFloat` turns into `NaN` and a truncated `1`; both would then be handed back as
+ * resolved channels, so a malformed declaration would read as a real colour and get a
+ * comparison key built out of `NaN`.
+ */
+const NUMBER = '[+-]?(?:\\d+|\\d*\\.\\d+)(?:e[+-]?\\d+)?';
+const IS_NUMBER = new RegExp(`^${NUMBER}$`, 'i');
+const IS_PERCENTAGE = new RegExp(`^(${NUMBER})%$`, 'i');
 
 const channel = (raw: string): number | null => {
   const text = raw.trim();
-  const percent = /^(-?[\d.]+)%$/.exec(text);
+  const percent = IS_PERCENTAGE.exec(text);
   // scale by 255/100 rather than by the decimal 2.55, which is not representable in
   // binary: 50 * 2.55 is 127.49999999999999 and rounds to 127, where 50% of 255 is
   // 127.5 and rounds to 128. The two spellings of the same colour must agree, or they
   // get different keys and the audit misclassifies one of them.
   if (percent) { return Math.round((clamp(parseFloat(percent[1]), 100) / 100) * 255); }
-  return /^-?[\d.]+$/.test(text) ? Math.round(clamp(parseFloat(text), 255)) : null;
+  return IS_NUMBER.test(text) ? Math.round(clamp(parseFloat(text), 255)) : null;
 };
 
 const alphaChannel = (raw?: string): number | null => {
   if (raw === undefined) { return 1; }
   const text = raw.trim();
-  const percent = /^(-?[\d.]+)%$/.exec(text);
+  const percent = IS_PERCENTAGE.exec(text);
   if (percent) { return clamp(parseFloat(percent[1]), 100) / 100; }
-  return /^-?[\d.]+$/.test(text) ? clamp(parseFloat(text), 1) : null;
+  return IS_NUMBER.test(text) ? clamp(parseFloat(text), 1) : null;
 };
 
 /**
@@ -326,6 +557,129 @@ const fromHex = (literal: string): Rgba | null => {
 };
 
 /**
+ * Splits `rgb()`/`rgba()` arguments, or null when none of the productions hold.
+ *
+ * The two syntaxes are parsed separately rather than by normalising the separators
+ * away, because they are four distinct productions and not interchangeable:
+ *
+ *     rgb( <number>{3}     [ / <alpha> ]? )    rgb( <number>#{3}     , <alpha>? )
+ *     rgb( <percentage>{3} [ / <alpha> ]? )    rgb( <percentage>#{3} , <alpha>? )
+ *
+ * Two consequences, both checked against Chromium rather than read off the grammar:
+ * the modern syntax puts its alpha behind exactly one slash, so `rgb(0 0 0 0.5)` is
+ * four channels and not a colour; and each production takes three channels of *one*
+ * type, so `rgb(0, 50%, 0)` and `rgb(0 50% 0)` are both invalid. Resolving either
+ * would let a malformed theme value pass the consumer's "every colour token resolves"
+ * guard while generating CSS the browser drops on the floor.
+ */
+const rgbaArgs = (raw: string): string[] | null => {
+  const consistent = (channels: string[]) => {
+    const percentages = channels.filter((c) => c.trim().endsWith('%')).length;
+    return percentages === 0 || percentages === channels.length;
+  };
+
+  if (raw.includes(',')) {
+    // the legacy syntax has no slash anywhere
+    if (raw.includes('/')) { return null; }
+
+    const parts = raw.split(',');
+    if (parts.length < 3 || parts.length > 4) { return null; }
+
+    return consistent(parts.slice(0, 3)) ? parts : null;
+  }
+
+  const [channels, alpha, ...extra] = raw.split('/');
+  if (extra.length > 0) { return null; }
+
+  const parts = channels.trim().split(/\s+/);
+  if (parts.length !== 3 || !consistent(parts)) { return null; }
+  if (alpha === undefined) { return parts; }
+
+  // a slash with nothing after it is not an alpha
+  return alpha.trim() === '' ? null : [...parts, alpha];
+};
+
+/**
+ * One CSS escape: a backslash and up to six hex digits, whose terminating whitespace
+ * belongs to the escape, or a backslash and any single character bar a newline.
+ *
+ * The six-digit limit is the whole subtlety. `e` and `d` are hex digits, so `\72ed` is
+ * U+72ED rather than `r` followed by `ed` — Chromium rejects `color: \72ed` outright.
+ * Stopping short of six would invent a finding out of valid CSS.
+ */
+const ESCAPE = /^\\(?:([0-9a-fA-F]{1,6})[ \t\n\r\f]?|([^\n\r\f]))/;
+
+/** An identifier cannot start with a digit; a leading `-` or an escape is fine. */
+const IDENT_START = /[a-zA-Z_\u0080-\uffff\\-]/;
+const IDENT_CHARACTER = /[a-zA-Z0-9_\u0080-\uffff-]/;
+
+/**
+ * The source span of one CSS identifier at `from`, or null if there is not one there.
+ *
+ * Escapes are part of an identifier, so the span can be longer than the name it spells:
+ * `r\65 d` is five characters of source for the three of `red`. The span rather than
+ * the name is what a consumer has to find and rewrite in the file, so both are kept --
+ * `decodeEscapes` is the other half.
+ */
+const identSpan = (value: string, from: number): string | null => {
+  if (!IDENT_START.test(value[from] ?? '')) { return null; }
+
+  let index = from;
+
+  while (index < value.length) {
+    if (value[index] === '\\') {
+      const escape = ESCAPE.exec(value.slice(index));
+      // a backslash before a newline is not an escape, and ends the identifier
+      if (escape === null) { break; }
+      index += escape[0].length;
+      continue;
+    }
+
+    if (!IDENT_CHARACTER.test(value[index])) { break; }
+    index++;
+  }
+
+  return index === from ? null : value.slice(from, index);
+};
+
+/**
+ * Decodes CSS escapes, so that the audit reads the identifier CSS reads. `r\65 d`,
+ * `re\64`, `\red` and `\72 ed` are four spellings of `red` and all four resolve to it
+ * in Chromium, so an audit that reads them as separate words is trivially bypassed.
+ */
+const decodeEscapes = (text: string): string => {
+  if (!text.includes('\\')) { return text; }
+
+  let out = '';
+  let index = 0;
+
+  while (index < text.length) {
+    const escape = text[index] === '\\' ? ESCAPE.exec(text.slice(index)) : null;
+
+    if (escape === null) {
+      out += text[index];
+      index++;
+      continue;
+    }
+
+    if (escape[1] === undefined) {
+      out += escape[2];
+    } else {
+      const point = parseInt(escape[1], 16);
+      // null, a surrogate and anything past the last plane all become the replacement
+      // character, which is what CSS says and also stops fromCodePoint throwing
+      out += point === 0 || point > 0x10ffff || (point >= 0xd800 && point <= 0xdfff)
+        ? '\ufffd'
+        : String.fromCodePoint(point);
+    }
+
+    index += escape[0].length;
+  }
+
+  return out;
+};
+
+/**
  * Resolves a colour literal to channels, or null when it cannot be resolved statically.
  * Returning null is deliberate: `hsl()`, `oklch()` and `color()` are reported by the
  * consumer rather than passing silently, so the escape hatch stays explicit.
@@ -335,17 +689,14 @@ export const describeColor = (literal: string): Rgba | null => {
 
   if (text.startsWith('#')) { return fromHex(text.toLowerCase()); }
 
-  const named = NAMED_COLORS[text.toLowerCase()];
+  const named = NAMED_COLORS[decodeEscapes(text).toLowerCase()];
   if (named) { return fromHex(named); }
 
   const fn = /^(rgba?)\((.*)\)$/is.exec(text);
   if (!fn) { return null; }
 
-  const args = fn[2].includes(',')
-    ? fn[2].split(',')
-    : fn[2].replace(/\//g, ' ').trim().split(/\s+/);
-
-  if (args.length < 3 || args.length > 4) { return null; }
+  const args = rgbaArgs(fn[2]);
+  if (args === null) { return null; }
 
   const [r, g, b] = args.slice(0, 3).map(channel);
   const a = alphaChannel(args[3]);
@@ -354,22 +705,22 @@ export const describeColor = (literal: string): Rgba | null => {
 };
 
 /**
- * Finds every colour literal in a declaration value, at any depth. Functions that merely
- * contain colours are descended into; colour functions are terminal.
+ * The colour walk itself, over a value whose noise has already been blanked.
  *
- * `named` says whether a bare identifier may be read as a colour, which depends on the
- * property the value belongs to — see `takesColor`. Hex and the colour functions are
- * unambiguous and are found either way. It has no default: defaulting it to `true` would
- * quietly restore the over-eager behaviour for any caller that forgot it.
+ * Split from `findColors` because the two have different preconditions rather than
+ * different behaviour: this one requires a blanked value and is also how it recurses
+ * into its own arguments, where re-blanking would be wasted work.
  */
-export const findColors = (value: string, named: boolean): FoundColor[] => {
+const scanColors = (value: string, named: boolean): FoundColor[] => {
   const found: FoundColor[] = [];
   let index = 0;
 
   while (index < value.length) {
     const rest = value.slice(index);
 
-    const call = /^([a-z][\w-]*)\(/i.exec(rest);
+    // the leading `-` matters: without it `-webkit-linear-gradient(...)` is not read as
+    // a call at all, and its stops are walked as if they were loose identifiers.
+    const call = /^(-?[a-z][\w-]*)\(/i.exec(rest);
     if (call) {
       let depth = 1;
       let cursor = index + call[0].length;
@@ -380,11 +731,12 @@ export const findColors = (value: string, named: boolean): FoundColor[] => {
       }
       const literal = value.slice(index, cursor);
       const args = literal.slice(call[0].length, literal.endsWith(')') ? -1 : undefined);
+      const fn = call[1].toLowerCase();
 
-      if (COLOR_FUNCTIONS.includes(call[1].toLowerCase())) {
+      if (COLOR_FUNCTIONS.includes(fn)) {
         found.push({ literal, rgba: describeColor(literal) });
       } else {
-        found.push(...findColors(args, named));
+        found.push(...scanColors(args, gateInside(fn, named)));
       }
 
       index = cursor;
@@ -398,13 +750,13 @@ export const findColors = (value: string, named: boolean): FoundColor[] => {
       continue;
     }
 
-    const word = /^-?[a-zA-Z][\w-]*/.exec(rest);
-    if (word) {
-      const name = word[0].toLowerCase();
+    const ident = identSpan(value, index);
+    if (ident) {
+      const name = decodeEscapes(ident).toLowerCase();
       if (named && NAMED_COLORS[name] && !COLOR_KEYWORDS.includes(name)) {
-        found.push({ literal: word[0], rgba: describeColor(word[0]) });
+        found.push({ literal: ident, rgba: describeColor(ident) });
       }
-      index += word[0].length;
+      index += ident.length;
       continue;
     }
 
@@ -413,6 +765,26 @@ export const findColors = (value: string, named: boolean): FoundColor[] => {
 
   return found;
 };
+
+/**
+ * Finds every colour literal in a declaration value, at any depth. Functions that merely
+ * contain colours are descended into; colour functions are terminal.
+ *
+ * `named` says whether a bare identifier may be read as a colour. That depends on the
+ * property the value belongs to — see `takesColor` — and on whether the walk has since
+ * descended into a function whose arguments are colours whatever the property is, see
+ * `COLOR_CONTAINERS`. Hex and the colour functions are unambiguous and are found either
+ * way. It has no default: defaulting it to `true` would quietly restore the over-eager
+ * behaviour for any caller that forgot it.
+ *
+ * The value is taken *raw*, as written in the source, and its noise is blanked here.
+ * Without that this took a declaration value in its doc comment and a noise-free one in
+ * fact: `url(#fff)` is a URL whose fragment is not a colour and `content: "red"` is a
+ * string, yet both were reported. `stylesheetColors` does not pay for this twice — it
+ * reads values that `declarations` has already blanked, so it walks them directly.
+ */
+export const findColors = (value: string, named: boolean): FoundColor[] =>
+  scanColors(stripNoise(value), named);
 
 /**
  * Every colour literal written in a stylesheet, in source order.
@@ -425,7 +797,7 @@ export const stylesheetColors = (css: string): StylesheetColor[] => {
   const found: StylesheetColor[] = [];
 
   for (const { context, property, value } of declarations(css)) {
-    for (const color of findColors(value, takesColor(property))) {
+    for (const color of scanColors(value, takesColor(property))) {
       found.push({ ...color, context, property });
     }
   }
