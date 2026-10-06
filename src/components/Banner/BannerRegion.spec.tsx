@@ -1,5 +1,6 @@
 import "@testing-library/jest-dom";
 import { render, fireEvent } from "@testing-library/react";
+import { renderToStaticMarkup } from "react-dom/server";
 import { BannerRegion } from "./BannerRegion";
 
 describe('BannerRegion', () => {
@@ -14,6 +15,15 @@ describe('BannerRegion', () => {
 
     rerender(<BannerRegion messages={['Heads up']} severity='warning' />);
     expect(getByRole('status').matches(':empty')).toBe(false);
+  });
+
+  it('renders messages from the first render as page content, not after an effect', () => {
+    // effects do not run in a server render, so this only passes if the banner is in the
+    // first render's output
+    const html = renderToStaticMarkup(<BannerRegion messages={['Heads up']} severity='warning' />);
+
+    expect(html).toContain('role="status"');
+    expect(html).toContain('Heads up');
   });
 
   it('keeps its own class alongside a caller class', () => {

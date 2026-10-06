@@ -14,7 +14,7 @@ const Caption = styled.p`
 `;
 
 const presentAtLoad = <>
-  Present when the page loads, so it is not announced. If it appears because something the user or
+  Present when the page loads, so it is not announced. If it appears because of something the user or
   the app did, use <code>BannerRegion</code>.
 </>;
 

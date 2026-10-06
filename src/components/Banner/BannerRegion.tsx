@@ -18,6 +18,10 @@ import "./BannerRegion.css";
  * inside a live region announces itself again on every remount, for a
  * change the user never made.
  *
+ * Messages present on the first render are page content, read in order, and are not
+ * announced. Only messages that arrive after it has mounted are, so keep it mounted rather
+ * than rendering it only when there is something to show.
+ *
  * While it is empty the wrapper is taken out of flow, so in a flex or grid parent it does
  * not add a gap or take a grid cell. It stays in the accessibility tree, and with a banner
  * in it, it is an ordinary block; `className` styles it then.

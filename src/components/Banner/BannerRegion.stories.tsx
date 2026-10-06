@@ -40,7 +40,7 @@ export const ComparedWithBanner = () => {
       <h3>BannerRegion</h3>
       <p>
         The live region is already on the page, so the warning is announced. Right for a banner
-        that appears because something the user or the app did, such as a failed request.
+        that appears because of something the user or the app did, such as a failed request.
       </p>
       <BannerRegion messages={region} severity='warning' onDismiss={() => setRegion([])} />
       <Button onClick={() => setRegion([message])}>Show in a BannerRegion</Button>
