@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+
+#### `NavBarDisclosureButton` and `NavBarDisclosureItem` (CORE-2875)
+
+A button that shows a list of links and actions, for navigation. `NavBarMenuButton`'s
+`role="menu"` is meant for command menus and misdescribes a list of links, which screen
+readers then don't announce as links.
+
+The button reports `aria-expanded`, and the list holds real links (`href`) and buttons
+(`onAction`) right after it, so Tab moves through the items. Escape closes the list and
+returns focus to the button, and so does activating an item.
+
 ### Fixed
 
 #### The Help menu no longer announces "menu" twice (CORE-2940)
