@@ -64,9 +64,8 @@ describe('HelpMenu', () => {
 
     const button = await screen.findByRole('button', { name: 'Help' });
 
-    // An aria-label of "Help menu" used to override the visible text, so screen readers
-    // announced the role twice: "Help menu, menu button". react-aria already supplies the
-    // role, so the name must carry the label alone.
+    // react-aria announces "menu button" from the role itself, so an aria-label like
+    // "Help menu" just doubles "menu". The visible label "Help" is sufficient.
     expect(button.hasAttribute('aria-label')).toBe(false);
     expect(button.textContent).toBe('Help');
   });
