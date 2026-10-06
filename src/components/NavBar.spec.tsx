@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { NavBar } from './NavBar';
+import * as Constants from '../constants';
 
 describe('NavBar', () => {
   let root: HTMLElement;
@@ -10,19 +11,44 @@ describe('NavBar', () => {
     document.body.append(root);
   });
 
-  it('matches snapshot', () => {
+  const wrapper = () => document.body.querySelector('[data-portal-slot="nav"]') as HTMLElement;
+  const bar = () => document.body.querySelector('.navbar-bar') as HTMLElement;
+  const barVar = (name: string) => bar().style.getPropertyValue(name);
+
+  it('renders its children in a bar inside a wrapper outside the root', () => {
     render(<NavBar>NavBar content</NavBar>, { container: root });
-    expect(document.body).toMatchSnapshot();
+
+    expect(wrapper().classList.contains('navbar-wrapper')).toBe(true);
+    expect(root.contains(wrapper())).toBe(false);
+    expect(wrapper().contains(bar())).toBe(true);
+    expect(bar().textContent).toBe('NavBar content');
+  });
+
+  it('uses the default heights and no max width', () => {
+    render(<NavBar>NavBar content</NavBar>, { container: root });
+
+    expect(barVar('--navbar-height-mobile')).toBe(`${Constants.navMobileHeight}rem`);
+    expect(barVar('--navbar-height-desktop')).toBe(`${Constants.navDesktopHeight}rem`);
+    expect(barVar('--navbar-max-width')).toBe('');
   });
 
   it('sets the maxWidth', () => {
     render(<NavBar maxWidth={128}>NavBar content</NavBar>, { container: root });
-    expect(document.body).toMatchSnapshot();
+
+    expect(barVar('--navbar-max-width')).toBe('128rem');
+  });
+
+  it('sets the heights from its props', () => {
+    render(<NavBar navMobileHeight={5} navDesktopHeight={7}>NavBar content</NavBar>, { container: root });
+
+    expect(barVar('--navbar-height-mobile')).toBe('5rem');
+    expect(barVar('--navbar-height-desktop')).toBe('7rem');
   });
 
   it('sets the ariaLabel', () => {
-    render(<NavBar ariaLabel='test' maxWidth={128}>NavBar content</NavBar>, { container: root });
-    expect(document.body).toMatchSnapshot();
+    render(<NavBar ariaLabel='test'>NavBar content</NavBar>, { container: root });
+
+    expect(screen.getByRole('navigation', { name: 'test' })).toBe(wrapper());
   });
 
   it('renders a navigation landmark by default', () => {
@@ -47,19 +73,32 @@ describe('NavBar', () => {
   });
 
   describe('with a logo', () => {
-    it('matches snapshot', () => {
+    it('shows no logo by default', () => {
+      render(<NavBar>NavBar content</NavBar>, { container: root });
+
+      expect(screen.queryByRole('img')).toBeNull();
+    });
+
+    it('shows the default logo, unlinked', () => {
       render(<NavBar logo={true}>NavBar content</NavBar>, { container: root });
-      expect(document.body).toMatchSnapshot();
+
+      const logo = screen.getByRole('img', { name: 'OpenStax Logo' });
+      expect(bar().contains(logo)).toBe(true);
+      expect(logo.closest('a')).toBeNull();
     });
 
     it('links the logo', () => {
       render(<NavBar logo={{alt: 'Logo', href:'/'}}>NavBar content</NavBar>, { container: root });
-      expect(document.body).toMatchSnapshot();
+
+      const link = screen.getByRole('img', { name: 'Logo' }).closest('a');
+      expect(link?.getAttribute('href')).toBe('/');
     });
 
     it('customizes the alt text', () => {
       render(<NavBar logo={{alt: 'Custom alt text'}}>NavBar content</NavBar>, { container: root });
-      expect(document.body).toMatchSnapshot();
+
+      const logo = screen.getByRole('img', { name: 'Custom alt text' });
+      expect(logo.closest('a')).toBeNull();
     });
   });
 });

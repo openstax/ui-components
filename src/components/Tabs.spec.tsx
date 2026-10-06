@@ -1,108 +1,59 @@
-import { render } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { Tabs, Tab, TabList, TabPanel } from "./Tabs";
 import { palette } from "../theme/palette";
 import type { ComponentProps } from "react";
 
 describe("Tabs component", () => {
-  describe("normal styling", () => {
-    it("renders", () => {
-      const { asFragment } = render(
-        <Tabs>
-          <TabList aria-label="Items">
-            <Tab id="one">First Item</Tab>
-            <Tab id="two">Second Item</Tab>
-            <Tab id="three">Last Item</Tab>
-          </TabList>
-          <TabPanel id="one">First Content Panel</TabPanel>
-          <TabPanel id="two">Second Content Panel</TabPanel>
-          <TabPanel id="three">Third Content Panel</TabPanel>
-        </Tabs>,
-      );
-      expect(asFragment()).toMatchSnapshot();
-    });
+  const renderTabs = (props: Partial<ComponentProps<typeof Tabs>> = {}) => render(
+    <Tabs {...props}>
+      <TabList aria-label="Items">
+        <Tab id="one">First Item</Tab>
+        <Tab id="two">Second Item</Tab>
+        <Tab id="three">Last Item</Tab>
+      </TabList>
+      <TabPanel id="one">First Content Panel</TabPanel>
+      <TabPanel id="two">Second Content Panel</TabPanel>
+      <TabPanel id="three">Third Content Panel</TabPanel>
+    </Tabs>,
+  );
 
-    it("renders small size", () => {
-      const { asFragment } = render(
-        <Tabs size="small">
-          <TabList aria-label="Items">
-            <Tab id="one">First Item</Tab>
-            <Tab id="two">Second Item</Tab>
-            <Tab id="three">Last Item</Tab>
-          </TabList>
-          <TabPanel id="one">First Content Panel</TabPanel>
-          <TabPanel id="two">Second Content Panel</TabPanel>
-          <TabPanel id="three">Third Content Panel</TabPanel>
-        </Tabs>,
-      );
-      expect(asFragment()).toMatchSnapshot();
-    });
+  describe("variants and sizes", () => {
+    it.each([
+      [undefined, undefined, "tabs tabs-medium"],
+      [undefined, "small", "tabs tabs-small"],
+      [undefined, "large", "tabs tabs-large"],
+      ["button-bar", undefined, "tabs tabs-button-bar tabs-medium"],
+      ["button-bar", "small", "tabs tabs-button-bar tabs-small"],
+      ["button-bar", "large", "tabs tabs-button-bar tabs-large"],
+    ] as const)("classes the root for variant %s and size %s", (variant, size, expected) => {
+      const { container } = renderTabs({ variant, size });
 
-    it("renders large size", () => {
-      const { asFragment } = render(
-        <Tabs size="large">
-          <TabList aria-label="Items">
-            <Tab id="one">First Item</Tab>
-            <Tab id="two">Second Item</Tab>
-            <Tab id="three">Last Item</Tab>
-          </TabList>
-          <TabPanel id="one">First Content Panel</TabPanel>
-          <TabPanel id="two">Second Content Panel</TabPanel>
-          <TabPanel id="three">Third Content Panel</TabPanel>
-        </Tabs>,
-      );
-      expect(asFragment()).toMatchSnapshot();
+      expect((container.querySelector("[data-orientation]") as HTMLElement).className).toBe(expected);
     });
   });
 
-  describe("button-bar styling", () => {
-    it("renders", () => {
-      const { asFragment } = render(
-        <Tabs variant="button-bar">
-          <TabList aria-label="Items">
-            <Tab id="one">First Item</Tab>
-            <Tab id="two">Second Item</Tab>
-            <Tab id="three">Last Item</Tab>
-          </TabList>
-          <TabPanel id="one">First Content Panel</TabPanel>
-          <TabPanel id="two">Second Content Panel</TabPanel>
-          <TabPanel id="three">Third Content Panel</TabPanel>
-        </Tabs>,
-      );
-      expect(asFragment()).toMatchSnapshot();
+  describe("tab list and panels", () => {
+    it("exposes a named tab list with the first tab selected and its panel shown", () => {
+      renderTabs();
+
+      expect(screen.getByRole("tablist", { name: "Items" })).toBeTruthy();
+      expect(screen.getAllByRole("tab").map((tab) => tab.textContent))
+        .toEqual(["First Item", "Second Item", "Last Item"]);
+      expect(screen.getByRole("tab", { name: "First Item" }).getAttribute("aria-selected")).toBe("true");
+      expect(screen.getByRole("tabpanel").textContent).toBe("First Content Panel");
     });
 
-    it("renders small size", () => {
-      const { asFragment } = render(
-        <Tabs size="small" variant="button-bar">
-          <TabList aria-label="Items">
-            <Tab id="one">First Item</Tab>
-            <Tab id="two">Second Item</Tab>
-            <Tab id="three">Last Item</Tab>
-          </TabList>
-          <TabPanel id="one">First Content Panel</TabPanel>
-          <TabPanel id="two">Second Content Panel</TabPanel>
-          <TabPanel id="three">Third Content Panel</TabPanel>
-        </Tabs>,
-      );
-      expect(asFragment()).toMatchSnapshot();
-    });
+    it("shows another tab's panel when that tab is activated", () => {
+      renderTabs();
 
-    it("renders large size", () => {
-      const { asFragment } = render(
-        <Tabs size="large" variant="button-bar">
-          <TabList aria-label="Items">
-            <Tab id="one">First Item</Tab>
-            <Tab id="two">Second Item</Tab>
-            <Tab id="three">Last Item</Tab>
-          </TabList>
-          <TabPanel id="one">First Content Panel</TabPanel>
-          <TabPanel id="two">Second Content Panel</TabPanel>
-          <TabPanel id="three">Third Content Panel</TabPanel>
-        </Tabs>,
-      );
-      expect(asFragment()).toMatchSnapshot();
+      fireEvent.click(screen.getByRole("tab", { name: "Second Item" }));
+
+      expect(screen.getByRole("tab", { name: "Second Item" }).getAttribute("aria-selected")).toBe("true");
+      expect(screen.getByRole("tab", { name: "First Item" }).getAttribute("aria-selected")).toBe("false");
+      expect(screen.getByRole("tabpanel").textContent).toBe("Second Content Panel");
     });
   });
+
   describe("caller className and style", () => {
     const tabs = (props: Partial<ComponentProps<typeof Tabs>>) => render(
       <Tabs {...props}>
