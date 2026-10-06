@@ -32,8 +32,8 @@ export const Radio = ({ children, disabled, labelAs, className, style, tooltipTe
     className
   );
 
-  // Input style: only the values that vary at runtime. Static colours come from the
-  // token defaults in Radio.css.
+  // Input style: only the values that vary at runtime. Static colours are defaults in
+  // Radio.css.
   const inputStyle = {
     '--radio-opacity': disabled ? '0.4' : '1',
     '--radio-checked-opacity': disabled ? '0' : '1',

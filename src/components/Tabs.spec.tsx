@@ -129,9 +129,8 @@ describe("Tabs component", () => {
       const el = container.querySelector('[data-orientation]') as HTMLElement;
 
       expect(el.style.getPropertyValue("--tabs-border-color")).toBe("hotpink");
-      // Defaults for the variables the caller did not override live in Tabs.css as
-      // var(--tabs-*, var(--ox-color-*)), so they are deliberately absent from the
-      // inline style. tokens.spec.ts is what keeps those defaults honest.
+      // Defaults for the variables the caller did not override live in Tabs.css, so they
+      // are deliberately absent from the inline style.
       expect(el.style.getPropertyValue("--tabs-active-border-color")).toBe("");
     });
 

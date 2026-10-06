@@ -18,11 +18,8 @@ export const NavBarMenuItem = React.forwardRef<
   HTMLDivElement,
   React.ComponentProps<typeof MenuItem>
 >(({ className, ...props }, ref) => (
-  // style is deliberately not destructured: with the theme defaults moved into
-  // NavBarMenuButtons.css there is nothing left to merge it with, so it passes straight
-  // through in ...props and react-aria handles both the object and render-callback forms.
-  // That is why this needs no composeRenderProps for style (cf. CORE-2710) — the bug that
-  // one guards against was us overwriting the caller's style, which we no longer do.
+  // style is not destructured: with no defaults to merge it with, it passes through in
+  // ...props and react-aria handles both the object and render-callback forms.
   <MenuItem
     ref={ref}
     className={composeRenderProps(className, (resolved) => classNames("navbar-menu-item", resolved))}

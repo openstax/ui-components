@@ -42,9 +42,8 @@ describe("ButtonBar", () => {
       const el = container.querySelector("div") as HTMLElement;
 
       expect(el.style.getPropertyValue("--button-bar-border-color")).toBe("hotpink");
-      // Defaults for the variables the caller did not override live in the stylesheet
-      // as var(--x, var(--ox-color-*)), so they are deliberately absent from the inline
-      // style. tokens.spec.ts is what keeps those defaults honest.
+      // Defaults for the variables the caller did not override live in the stylesheet, so
+      // they are deliberately absent from the inline style.
       expect(el.style.getPropertyValue("--button-bar-selected-bg")).toBe("");
     });
 

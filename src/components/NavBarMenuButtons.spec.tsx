@@ -194,9 +194,9 @@ describe("NavBarMenuItem", () => {
       </Menu>,
     );
 
-    // The component no longer sets --navbar-menu-item-* inline; those are defaults in
-    // NavBarMenuButtons.css, guarded by src/theme/tokens.spec.ts. What matters here is
-    // that a render-callback style still reaches the element rather than being dropped.
+    // The component does not set --navbar-menu-item-* inline; those defaults live in
+    // NavBarMenuButtons.css. What matters here is that a render-callback style still
+    // reaches the element rather than being dropped.
     const item = document.querySelector(".navbar-menu-item") as HTMLElement;
     expect(item.style.color).toBe("rgb(255, 0, 0)");
   });

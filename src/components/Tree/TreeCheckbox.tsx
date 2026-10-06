@@ -46,9 +46,7 @@ export const TreeCheckbox = ({
   // render-callback forms of style so a caller-supplied callback is merged rather than
   // dropped. The caller still spreads last and can override the variables set here.
   //
-  // Only genuinely dynamic bindings live here. The static palette values that used to sit
-  // alongside them are defaults in Checkbox.css now, as var(--checkbox-*, var(--ox-*));
-  // src/theme/tokens.spec.ts is what guards them.
+  // Only bindings that depend on props live here; the static defaults are in Checkbox.css.
   const checkboxStyle = composeRenderProps(
     style,
     (resolvedStyle): CSSPropertiesWithVariables => ({
