@@ -10,9 +10,11 @@ import { Banner, BannerSeverity } from "./Banner";
  * tick, and AT reads that as initial state rather than a change — Chrome +
  * NVDA usually announces it anyway, Safari + VoiceOver reliably does not.
  *
- * Use plain `Banner` for a banner that is page furniture rather than an
- * event. Steady-state information inside a live region announces itself
- * again on every remount, for a change the user never made.
+ * Use it when something the user or the app did causes the banner to
+ * appear or change, such as a failed request. Use plain `Banner` for one
+ * that is already on the page when it loads: steady-state information
+ * inside a live region announces itself again on every remount, for a
+ * change the user never made.
  *
  * `role="status"` is polite for every severity, deliberately. Mapping
  * `error` to `role="alert"` would make a banner rendered on page load
