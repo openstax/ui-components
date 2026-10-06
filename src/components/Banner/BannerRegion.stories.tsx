@@ -47,3 +47,20 @@ export const ComparedWithBanner = () => {
     </section>
   </div>;
 };
+
+export const InAFlexContainer = () => {
+  const [messages, setMessages] = React.useState<string[]>([]);
+  const item = {background: 'rgb(205, 221, 238)', padding: '0.4rem 1.2rem'};
+
+  return <div style={{width: '42rem'}}>
+    <p>
+      The region sits between the two items in a row with a 2rem gap. Empty, it adds no extra gap.
+    </p>
+    <div style={{display: 'flex', gap: '2rem', alignItems: 'center'}}>
+      <span style={item}>First</span>
+      <BannerRegion messages={messages} severity='warning' onDismiss={() => setMessages([])} />
+      <span style={item}>Second</span>
+    </div>
+    <Button onClick={() => setMessages([message])}>Show a warning</Button>
+  </div>;
+};

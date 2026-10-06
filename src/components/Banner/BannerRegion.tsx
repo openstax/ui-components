@@ -1,4 +1,6 @@
+import classNames from "classnames";
 import { Banner, BannerSeverity } from "./Banner";
+import "./BannerRegion.css";
 
 /**
  * A Banner that announces itself when it appears.
@@ -16,6 +18,10 @@ import { Banner, BannerSeverity } from "./Banner";
  * inside a live region announces itself again on every remount, for a
  * change the user never made.
  *
+ * While it is empty the wrapper is taken out of flow, so in a flex or grid parent it does
+ * not add a gap or take a grid cell. It stays in the accessibility tree, and with a banner
+ * in it, it is an ordinary block; `className` styles it then.
+ *
  * `role="status"` is polite for every severity, deliberately. Mapping
  * `error` to `role="alert"` would make a banner rendered on page load
  * interrupt whatever the user was doing; severity describes how loud the
@@ -26,6 +32,6 @@ export const BannerRegion = ({className, ...props}: {
   severity: BannerSeverity;
   onDismiss?: () => void;
   className?: string;
-}) => <div role='status' className={className}>
+}) => <div role='status' className={classNames('banner-region', className)}>
   {props.messages.length ? <Banner {...props} /> : null}
 </div>;

@@ -8,6 +8,20 @@ describe('BannerRegion', () => {
     expect(getByRole('status')).toBeEmptyDOMElement();
   });
 
+  it('is :empty until there is something to announce, which its layout rule depends on', () => {
+    const { getByRole, rerender } = render(<BannerRegion messages={[]} severity='warning' />);
+    expect(getByRole('status').matches(':empty')).toBe(true);
+
+    rerender(<BannerRegion messages={['Heads up']} severity='warning' />);
+    expect(getByRole('status').matches(':empty')).toBe(false);
+  });
+
+  it('keeps its own class alongside a caller class', () => {
+    const { getByRole } = render(<BannerRegion messages={[]} severity='warning' className='caller' />);
+
+    expect(getByRole('status')).toHaveClass('banner-region', 'caller');
+  });
+
   it('announces into the region that was already there', () => {
     const { getByRole, rerender } = render(<BannerRegion messages={[]} severity='warning' />);
     const region = getByRole('status');
