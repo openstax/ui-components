@@ -59,10 +59,21 @@ describe('HelpMenu', () => {
     timestamp: Date.now(),
   });
 
+  it('names the trigger from its visible label', async () => {
+    renderHelpMenu();
+
+    const button = await screen.findByRole('button', { name: 'Help' });
+
+    // react-aria announces "menu button" from the role itself, so an aria-label like
+    // "Help menu" just doubles "menu". The visible label "Help" is sufficient.
+    expect(button.hasAttribute('aria-label')).toBe(false);
+    expect(button.textContent).toBe('Help');
+  });
+
   it('wires the trigger to the menu for assistive tech', async () => {
     renderHelpMenu();
 
-    const button = await screen.findByRole('button', { name: 'Help menu' });
+    const button = await screen.findByRole('button', { name: 'Help' });
     expect(button.getAttribute('aria-haspopup')).toBe('true');
     expect(button.getAttribute('aria-expanded')).toBe('false');
 
@@ -77,7 +88,7 @@ describe('HelpMenu', () => {
   it('moves focus into the menu when it opens', async () => {
     renderHelpMenu();
 
-    const button = await screen.findByRole('button', { name: 'Help menu' });
+    const button = await screen.findByRole('button', { name: 'Help' });
     fireEvent.click(button);
     const menu = await screen.findByRole('menu');
 

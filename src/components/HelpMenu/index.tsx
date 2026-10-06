@@ -110,7 +110,7 @@ export const HelpMenu: React.FC<HelpMenuProps> = ({ contactFormParams, chatConfi
 
   return (
     <>
-      <HelpMenuButton label='Help' aria-label='Help menu'>
+      <HelpMenuButton label='Help'>
         {hoursRange && openChat
           ? (
             <HelpMenuItem onAction={() => openChat()}>

@@ -6,6 +6,12 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 
+#### The Help menu no longer announces "menu" twice (CORE-2940)
+
+The Help trigger had `aria-label='Help menu'` on top of its visible "Help", so screen readers
+read "Help menu, menu button". The aria-label is removed, so the name is now the visible
+"Help".
+
 #### Menu popovers no longer render as dialogs (CORE-2875)
 
 react-aria-components' `Popover` gives itself `role="dialog"` unless `isNonModal` is set, and
