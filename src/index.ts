@@ -18,6 +18,7 @@ export * from './components/Loader';
 export * from './components/ManageCookies';
 export * from './components/Modal';
 export * from './components/NavBar';
+export * from './components/NavBarDisclosureButton';
 export * from './components/NavBarButton';
 export * from './components/NavBarLogo';
 export * from './components/MenuPopover';
