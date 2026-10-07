@@ -1,35 +1,31 @@
 import React from 'react';
 import classNames from 'classnames';
 import { composeRenderProps } from 'react-aria-components';
-import { NavBarBaseButtonProps, NavBarMenuButton, NavBarMenuItem } from '../NavBarMenuButtons';
+import {
+  NavBarDisclosureButton, NavBarDisclosureButtonProps, NavBarDisclosureItem, NavBarDisclosureItemProps
+} from '../NavBarDisclosureButton';
 import { colors } from '../../theme';
 import { BodyPortal } from '../BodyPortal';
 import { ChatConfiguration, getPreChatFields, useChatController, useHoursRange } from './hooks';
 import './HelpMenu.css';
 import '../../theme/theme.css';
 
-export const HelpMenuButton = ({ className, ...props }: NavBarBaseButtonProps) => (
-  // style is deliberately not destructured: with the theme defaults moved into
-  // HelpMenu.css there is nothing left to merge it with, so it passes straight through in
-  // ...props and react-aria handles both the object and render-callback forms.
-  <NavBarMenuButton
+/**
+ * The Help button: a disclosure whose list lines up with the button's end edge, since Help
+ * sits at the right of the nav bar.
+ */
+export const HelpMenuButton = ({ className, ...props }: NavBarDisclosureButtonProps) => (
+  <NavBarDisclosureButton
+    align='end'
     className={composeRenderProps(className, (resolved) => classNames('help-menu-button', resolved))}
     {...props}
   />
 );
 
-export const HelpMenuItem = React.forwardRef<
-  HTMLDivElement,
-  React.ComponentProps<typeof NavBarMenuItem>
->(({ className, ...props }, ref) => (
-  // style passes through in ...props — see the note on HelpMenuButton above.
-  <NavBarMenuItem
-    ref={ref}
-    className={composeRenderProps(className, (resolved) => classNames('help-menu-item', resolved))}
-    {...props}
-  />
-));
-HelpMenuItem.displayName = 'HelpMenuItem';
+/** A link (with `href`) or an action (with `onAction`) in the Help list. */
+export const HelpMenuItem = ({ className, ...props }: NavBarDisclosureItemProps) => (
+  <NavBarDisclosureItem className={classNames('help-menu-item', className)} {...props} />
+);
 
 function PutAway({onClick, className}: {onClick: () => void; className?: string}) {
   return (

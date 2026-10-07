@@ -1,5 +1,5 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { Menu } from 'react-aria-components';
+import { fireEvent, render, screen, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { BodyPortalSlotsContext } from '../BodyPortalSlotsContext';
 import { HelpMenu, HelpMenuButton, HelpMenuItem, HelpMenuProps, NewTabIcon } from '.';
 import { NavBar } from '../NavBar';
@@ -7,7 +7,6 @@ import { ChatConfiguration } from './hooks';
 import type { CSSPropertiesWithVariables } from '../../types';
 
 type HelpMenuButtonProps = React.ComponentProps<typeof HelpMenuButton>;
-type HelpMenuItemProps = React.ComponentProps<typeof HelpMenuItem>;
 
 describe('HelpMenu', () => {
   let root: HTMLElement;
@@ -64,60 +63,70 @@ describe('HelpMenu', () => {
 
     const button = await screen.findByRole('button', { name: 'Help' });
 
-    // react-aria announces "menu button" from the role itself, so an aria-label like
-    // "Help menu" just doubles "menu". The visible label "Help" is sufficient.
+    // The visible label is the whole name; an aria-label would only repeat it.
     expect(button.hasAttribute('aria-label')).toBe(false);
     expect(button.textContent).toBe('Help');
   });
 
-  it('wires the trigger to the menu for assistive tech', async () => {
+  it('reports its state as a disclosure, not a menu', async () => {
     renderHelpMenu();
 
     const button = await screen.findByRole('button', { name: 'Help' });
-    expect(button.getAttribute('aria-haspopup')).toBe('true');
     expect(button.getAttribute('aria-expanded')).toBe('false');
+    expect(button.hasAttribute('aria-haspopup')).toBe(false);
 
     fireEvent.click(button);
-    const menu = await screen.findByRole('menu');
+    const list = await screen.findByRole('list');
 
     expect(button.getAttribute('aria-expanded')).toBe('true');
-    expect(button.getAttribute('aria-controls')).toBe(menu.id);
-    expect(menu.getAttribute('aria-labelledby')).toBe(button.id);
+    expect(button.getAttribute('aria-controls')).toBe(list.id);
+    expect(screen.queryByRole('menu')).toBeNull();
+    expect(screen.queryByRole('dialog')).toBeNull();
   });
 
-  it('moves focus into the menu when it opens', async () => {
+  it('keeps focus on the button when it opens, so Tab reaches the first item', async () => {
+    const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
     renderHelpMenu();
 
     const button = await screen.findByRole('button', { name: 'Help' });
-    fireEvent.click(button);
-    const menu = await screen.findByRole('menu');
+    await user.click(button);
+    expect(document.activeElement).toBe(button);
 
-    // react-aria defers the trigger -> menu focus move to an animation frame when the
-    // click looks like a virtual (screen reader) one, which fireEvent.click does. Wait
-    // for it to land rather than asserting on the intermediate frame where the trigger
-    // still holds focus; waitFor drives the suite's fake timers for us.
-    await waitFor(() => expect(document.activeElement).toBe(menu));
-    expect(button.hasAttribute('data-focused')).toBe(false);
+    await user.tab();
+
+    expect(document.activeElement).toBe(within(screen.getByRole('list')).getAllByRole('button')[0]);
   });
 
-  it('renders items in order with a roving tabindex', async () => {
+  it('renders actions as buttons, in order', async () => {
     renderHelpMenu();
 
     fireEvent.click(await screen.findByText('Help'));
-    await screen.findByRole('menu');
 
-    const items = screen.getAllByRole('menuitem');
+    const items = within(await screen.findByRole('list')).getAllByRole('button');
     expect(items.map((item) => item.textContent)).toEqual(['Report an issue', 'Test Callback']);
-    expect(items.map((item) => item.getAttribute('tabindex'))).toEqual(['0', '-1']);
+    expect(items.every((item) => item.getAttribute('type') === 'button')).toBe(true);
   });
 
-  it('positions the popover below the trigger', async () => {
+  it('renders links as links that open in a new tab', async () => {
+    renderHelpMenu({
+      children: <HelpMenuItem href='/faq' target='_blank'>Course Access FAQ</HelpMenuItem>,
+    });
+
+    fireEvent.click(await screen.findByText('Help'));
+
+    const link = await screen.findByRole('link', { name: 'Course Access FAQ' });
+    expect(link.getAttribute('href')).toBe('/faq');
+    expect(link.getAttribute('target')).toBe('_blank');
+    expect(link.getAttribute('rel')).toBe('noreferrer');
+  });
+
+  it('lines the list up with the end edge of the button', async () => {
     renderHelpMenu();
 
     fireEvent.click(await screen.findByText('Help'));
-    await screen.findByRole('menu');
+    await screen.findByRole('list');
 
-    expect(document.querySelector('.navbar-popover')?.getAttribute('data-placement')).toBe('bottom');
+    expect(document.querySelector('.navbar-disclosure')?.classList.contains('navbar-disclosure-end')).toBe(true);
   });
 
   it('errors if the service is unavailable', async () => {
@@ -148,7 +157,7 @@ describe('HelpMenu', () => {
       contactFormParams: [{key: 'userId', value: 'test'}, {key: 'other', value: 'param'}],
     });
     fireEvent.click(await screen.findByText('Help'));
-    await screen.findByRole('menuitem', { name: /chat with us/i });
+    await screen.findByRole('button', { name: /chat with us/i });
   });
 
   it('calls openChat when Chat With Us is clicked', async () => {
@@ -167,7 +176,7 @@ describe('HelpMenu', () => {
     fireEvent.click(await screen.findByText('Help'));
 
     // Click Chat With Us
-    const chatButton = await screen.findByRole('menuitem', { name: /chat with us/i });
+    const chatButton = await screen.findByRole('button', { name: /chat with us/i });
     fireEvent.click(chatButton);
 
     // Verify window.open was called with chat embed path
@@ -189,8 +198,9 @@ describe('HelpMenu', () => {
     fireEvent.click(await screen.findByText('Help'));
 
     // Click "Report an issue"
-    const reportButton = await screen.findByRole('menuitem', { name: /report an issue/i });
+    const reportButton = await screen.findByRole('button', { name: /report an issue/i });
     fireEvent.click(reportButton);
+    expect(screen.queryByRole('list')).toBeNull();
 
     // Verify iframe is shown with correct URL encoding
     const iframe = await screen.findByTitle('Contact form');
@@ -245,7 +255,7 @@ describe('HelpMenu', () => {
 
     // Open the menu and click Report an issue
     fireEvent.click(await screen.findByText('Help'));
-    const reportButton = await screen.findByRole('menuitem', { name: /report an issue/i });
+    const reportButton = await screen.findByRole('button', { name: /report an issue/i });
     fireEvent.click(reportButton);
 
     // Verify iframe URL encodes special characters
@@ -283,7 +293,7 @@ describe('HelpMenu', () => {
 
     // Open the menu and show iframe
     fireEvent.click(await screen.findByText('Help'));
-    const reportButton = await screen.findByRole('menuitem', { name: /report an issue/i });
+    const reportButton = await screen.findByRole('button', { name: /report an issue/i });
     fireEvent.click(reportButton);
 
     // Verify iframe is shown
@@ -310,7 +320,7 @@ describe('HelpMenu', () => {
     fireEvent.click(await screen.findByText('Help'));
 
     // Verify custom child is rendered
-    const customItem = await screen.findByRole('menuitem', { name: /custom action item/i });
+    const customItem = await screen.findByRole('button', { name: /custom action item/i });
     expect(customItem).toBeTruthy();
 
     // Click it and verify callback is invoked
@@ -326,13 +336,13 @@ describe('HelpMenu', () => {
 
     // Open menu and verify chat option appears
     fireEvent.click(await screen.findByText('Help'));
-    await screen.findByRole('menuitem', { name: /chat with us/i });
+    await screen.findByRole('button', { name: /chat with us/i });
 
     // Rerender with same chatConfig object (should use memoized value)
     rerender(helpMenu({chatConfig, children: null}));
 
     // Verify chat option still appears
-    await screen.findByRole('menuitem', { name: /chat with us/i });
+    await screen.findByRole('button', { name: /chat with us/i });
   });
 
   it('handles undefined chatConfig gracefully', async () => {
@@ -340,7 +350,7 @@ describe('HelpMenu', () => {
 
     // Open menu and verify fallback to Report an issue
     fireEvent.click(await screen.findByText('Help'));
-    await screen.findByRole('menuitem', { name: /report an issue/i });
+    await screen.findByRole('button', { name: /report an issue/i });
   });
 });
 
@@ -357,15 +367,6 @@ describe('HelpMenu style passthrough', () => {
   const renderButton = (style: HelpMenuButtonProps['style']) => {
     render(<HelpMenuButton label='Help' style={style} />);
     return document.querySelector('.help-menu-button') as HTMLElement;
-  };
-
-  const renderMenuItem = (style: HelpMenuItemProps['style']) => {
-    render(
-      <Menu aria-label='Test menu'>
-        <HelpMenuItem style={style}>Report an issue</HelpMenuItem>
-      </Menu>
-    );
-    return document.querySelector('.help-menu-item') as HTMLElement;
   };
 
   describe('HelpMenuButton', () => {
@@ -389,28 +390,6 @@ describe('HelpMenu style passthrough', () => {
       expect(button.style.getPropertyValue('--help-menu-button-color')).toBe('rebeccapurple');
     });
   });
-
-  describe('HelpMenuItem', () => {
-    it('passes a render-callback style through', () => {
-      const item = renderMenuItem(() => ({ color: 'rgb(255, 0, 0)' }));
-
-      expect(item.style.color).toBe('rgb(255, 0, 0)');
-    });
-
-    it('passes an object style through', () => {
-      const item = renderMenuItem({ color: 'rgb(0, 0, 255)' });
-
-      expect(item.style.color).toBe('rgb(0, 0, 255)');
-    });
-
-    it('lets the caller override the CSS variables', () => {
-      const item = renderMenuItem({
-        '--help-menu-item-focus-bg': 'rebeccapurple'
-      } as CSSPropertiesWithVariables);
-
-      expect(item.style.getPropertyValue('--help-menu-item-focus-bg')).toBe('rebeccapurple');
-    });
-  });
 });
 
 describe('HelpMenu className composition', () => {
@@ -421,37 +400,29 @@ describe('HelpMenu className composition', () => {
     } as any;
   });
 
-  it('composes a render-callback className on each wrapper', () => {
-    render(
-      <HelpMenuButton label='Help' className={() => 'caller-button'}>
-        <HelpMenuItem className={() => 'caller-item'}>Report an issue</HelpMenuItem>
-      </HelpMenuButton>
-    );
+  it('composes a render-callback className on the button', () => {
+    render(<HelpMenuButton label='Help' className={() => 'caller-button'} />);
 
     const button = document.querySelector('.help-menu-button');
     expect(button?.className).toContain('navbar-button');
     expect(button?.className).toContain('caller-button');
+  });
 
+  it('keeps composing a string className on the button', () => {
+    render(<HelpMenuButton label='Help' className='caller-button' />);
+
+    expect(document.querySelector('.help-menu-button')?.className).toContain('caller-button');
+  });
+
+  it('adds its own class to an item alongside the caller\'s', () => {
     render(
-      <Menu aria-label='Test menu'>
-        <HelpMenuItem className={() => 'caller-item'}>Report an issue</HelpMenuItem>
-      </Menu>
+      <HelpMenuButton label='Help' defaultOpen>
+        <HelpMenuItem className='caller-item' onAction={jest.fn()}>Report an issue</HelpMenuItem>
+      </HelpMenuButton>
     );
 
     const item = document.querySelector('.help-menu-item');
-    expect(item?.className).toContain('navbar-menu-item');
+    expect(item?.className).toContain('navbar-disclosure-item');
     expect(item?.className).toContain('caller-item');
-  });
-
-  it('keeps composing a string className', () => {
-    render(<HelpMenuButton label='Help' className='caller-button' />);
-    expect(document.querySelector('.help-menu-button')?.className).toContain('caller-button');
-
-    render(
-      <Menu aria-label='Test menu'>
-        <HelpMenuItem className='caller-item'>Report an issue</HelpMenuItem>
-      </Menu>
-    );
-    expect(document.querySelector('.help-menu-item')?.className).toContain('caller-item');
   });
 });
