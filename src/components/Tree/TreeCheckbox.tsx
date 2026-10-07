@@ -10,7 +10,6 @@ import {
   CheckboxVariant
 } from "../Checkbox/sharedCheckboxStyles";
 import { checkedMixIcon } from "../svgs/checkmarksvgs";
-import { colors } from '../../theme';
 import { CSSPropertiesWithVariables } from "../../types";
 import classNames from "classnames";
 import "../Checkbox/Checkbox.css";
@@ -46,22 +45,20 @@ export const TreeCheckbox = ({
   // Build style with CSS variables. composeRenderProps normalises the object and
   // render-callback forms of style so a caller-supplied callback is merged rather than
   // dropped. The caller still spreads last and can override the variables set here.
+  //
+  // Only bindings that depend on props live here; the static defaults are in Checkbox.css.
   const checkboxStyle = composeRenderProps(
     style,
     (resolvedStyle): CSSPropertiesWithVariables => ({
       '--checkbox-font-weight': bold ? 700 : 400,
       '--checkbox-color': variantStyles.color,
-      '--checkbox-disabled-color': colors.palette.neutralLight,
       '--checkbox-size': `${size}rem`,
-      '--checkbox-bg-unchecked': colors.palette.white,
       '--checkbox-bg': variantStyles.backgroundColor,
       '--checkbox-border-unchecked': variantStyles.unCheckedBorder,
       '--checkbox-border-checked': variantStyles.checkedBorder,
       '--checkbox-checkmark': variantStyles.backgroundImage === 'none' ? 'none' : `url('${variantStyles.backgroundImage}')`,
       '--checkbox-opacity': isDisabled ? '0.4' : '1',
       '--checkbox-checked-opacity': isDisabled ? '0' : '1',
-      '--checkbox-disabled-border': `1px solid ${colors.palette.pale}`,
-      '--checkbox-indeterminate-bg': colors.palette.mediumBlue,
       '--checkbox-indeterminate-icon': `url('${checkedMixIcon}')`,
       ...resolvedStyle,
     })
