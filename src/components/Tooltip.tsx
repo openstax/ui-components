@@ -34,10 +34,13 @@ type TooltipProps = ClassNameAndStyle & {
   isOpen?: boolean;
 };
 
-// icon/ariaLabel configure the trigger button, so they are only accepted by TooltipGroup
+// icon and ariaLabel configure the trigger. isOpen, defaultOpen and onOpenChange drive the
+// trigger, not the tooltip element; see TooltipGroup.
 type TooltipGroupProps = TooltipProps & {
   icon?: any;
   ariaLabel?: string;
+  defaultOpen?: boolean;
+  onOpenChange?: (isOpen: boolean) => void;
 };
 
 /**
@@ -84,9 +87,38 @@ export const Tooltip = ({children, placement, className, style, ...props}: React
     {children}
   </StyledTooltip>;
 
-export const TooltipGroup = ({icon, ariaLabel, ...props}: React.PropsWithChildren<TooltipGroupProps>) =>
-  <TooltipTrigger delay={0}>
-    <StyledTrigger aria-label={ariaLabel || 'More information'}>
+/**
+ * An info icon that reveals a tooltip. The trigger is a button: pressing it toggles the tooltip.
+ *
+ * `isOpen`, `defaultOpen` and `onOpenChange` go to `TooltipTrigger`, not `Tooltip`. Giving
+ * either prop to `Tooltip` makes react-aria build a second state the trigger cannot see, so
+ * `aria-describedby` is never set and Escape stops dismissing it.
+ *
+ * react-aria closes the tooltip on `onPointerDown` and `onKeyDown`, before `onPress`. So
+ * `onPress` closes it only for a press with neither, such as a screen reader click
+ * (pointerType "virtual"), and the state at press start is recorded in `onPressStart`.
+ */
+export const TooltipGroup = (
+  {icon, ariaLabel, isOpen, defaultOpen, onOpenChange, ...props}: React.PropsWithChildren<TooltipGroupProps>
+) => {
+  const [uncontrolledOpen, setUncontrolledOpen] = React.useState(defaultOpen ?? false);
+  const open = isOpen ?? uncontrolledOpen;
+  const openAtPressStart = React.useRef(false);
+
+  const setOpen = (next: boolean) => {
+    setUncontrolledOpen(next);
+    onOpenChange?.(next);
+  };
+
+  return <TooltipTrigger delay={0} isOpen={open} onOpenChange={setOpen}>
+    <StyledTrigger
+      aria-label={ariaLabel || 'More information'}
+      aria-expanded={open}
+      onPressStart={() => { openAtPressStart.current = open; }}
+      onPress={(e) => {
+        if (!openAtPressStart.current || e.pointerType === 'virtual') setOpen(!openAtPressStart.current);
+      }}
+    >
       {icon
         ? <img src={icon} aria-hidden={true} alt='' />
         : <Info aria-hidden={true} />
@@ -94,6 +126,7 @@ export const TooltipGroup = ({icon, ariaLabel, ...props}: React.PropsWithChildre
     </StyledTrigger>
     <Tooltip {...props} />
   </TooltipTrigger>;
+};
 
 export const CustomTooltip = ({ state, ...props }: any) => {
   const { tooltipProps } = useTooltip(props, state);
