@@ -47,7 +47,7 @@
 
 .checkbox-input:indeterminate::before {
   transform: scale(1);
-  background-color: var(--checkbox-indeterminate-bg, #026AA1);
+  background-color: var(--checkbox-indeterminate-bg, var(--ox-color-medium-blue));
   background-image: var(--checkbox-indeterminate-icon, none);
 }
 
