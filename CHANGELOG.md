@@ -220,6 +220,9 @@ unchanged, but the exported pieces are no longer styled-components:
 - The `style` prop on the `MessageBox` and `Banner` exports is widened from `React.CSSProperties`
   to `CSSPropertiesWithVariables`, so callers can set the documented `--message-box-*` and
   `--banner-*` variables without casting. This is a widening, so existing usage is unaffected.
+- `ToggleButtonGroup` shows its focus ring as an outline rather than a box-shadow, and marks the
+  selected button with `Highlight` / `HighlightText` under `forced-colors: active`, so both stay
+  visible in Windows contrast themes.
 - Four Banner colours (`#fff5e0`, `#976502`, `#fdbd3e`, `#f8e8ea`) are recorded in
   `KNOWN_OFF_PALETTE` rather than snapped to the nearest palette entry, which would have been a
   visual change.
