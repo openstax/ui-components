@@ -194,9 +194,11 @@ describe("NavBarMenuItem", () => {
       </Menu>,
     );
 
+    // The component does not set --navbar-menu-item-* inline; those defaults live in
+    // NavBarMenuButtons.css. What matters here is that a render-callback style still
+    // reaches the element rather than being dropped.
     const item = document.querySelector(".navbar-menu-item") as HTMLElement;
     expect(item.style.color).toBe("rgb(255, 0, 0)");
-    expect(item.style.getPropertyValue("--navbar-menu-item-hover-bg")).toBeTruthy();
   });
 
   it("lets a render-callback style override the wrapper variables", () => {
@@ -228,7 +230,6 @@ describe("NavBarMenuItem", () => {
     const item = document.querySelector(".navbar-menu-item") as HTMLElement;
     expect(item.style.color).toBe("rgb(0, 0, 255)");
     expect(item.style.getPropertyValue("--navbar-menu-item-hover-bg")).toBe("rebeccapurple");
-    expect(item.style.getPropertyValue("--navbar-menu-item-border-color")).toBeTruthy();
   });
 });
 
@@ -263,8 +264,8 @@ describe("NavBarPopover", () => {
   it("merges a render-callback style", () => {
     const popover = renderPopover({ style: () => ({ color: "rgb(255, 0, 0)" }) });
 
+    // See the note in NavBarMenuItem: --navbar-popover-border-color is a CSS default now.
     expect(popover.style.color).toBe("rgb(255, 0, 0)");
-    expect(popover.style.getPropertyValue("--navbar-popover-border-color")).toBeTruthy();
   });
 
   it("lets a render-callback style override the wrapper variables", () => {

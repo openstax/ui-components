@@ -4,6 +4,7 @@ import { Mask, ModalWrapper } from "./Modal";
 import * as RAC from "react-aria-components";
 import React from "react";
 import './Overlay.css';
+import '../theme/theme.css';
 
 export const OverlayMask = React.forwardRef<HTMLDivElement, RAC.ModalOverlayProps>(
   ({ className, ...props }, ref) => (

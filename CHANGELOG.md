@@ -4,7 +4,69 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+
+#### `Checkbox` supports an `indeterminate` state (CORE-2901)
+
+A checkbox that summarises a set of others, such as "all options" above a list, has no way
+to say that only some of them are chosen. It was either checked or unchecked, so assistive
+tech reported a fully checked box when it was not (WCAG 4.1.2, Name, Role, Value).
+
+`Checkbox` takes a new `indeterminate` prop. It sets the input's `indeterminate` property,
+which browsers expose as the "mixed" state, and draws a dash in place of the checkmark for
+each variant. It does not change `checked`, so the parent decides what a click on a mixed
+box does; selecting everything is the native behaviour. The browser clears `indeterminate`
+on click, so the prop is reapplied after every render and stays the source of truth.
+
+A disabled indeterminate checkbox draws no dash, the same as a disabled checked one.
+
 ### Fixed
+
+#### `TooltipGroup`'s trigger is a button that does something (CORE-2871)
+
+An accessibility evaluation flagged the info-icon trigger as a name/role/value failure
+(WCAG 4.1.2): it is exposed as `role="button"`, but pressing it did nothing useful.
+react-aria's `useTooltipTrigger` binds `onPointerDown` and `onKeyDown` to *close* the
+tooltip, so tabbing to the trigger opened it and then Enter or Space — the one interaction
+the button role promises — dismissed it. On touch it was worse: hover never fires there and
+the tap closed the tooltip on pointerdown, leaving the content unreachable.
+
+`TooltipGroup` now owns the trigger state and presses toggle it, so the button role
+describes real behaviour and the content is reachable by keyboard and by touch. Because
+those library handlers run before `onPress`, the press records the state at `onPressStart`
+rather than reading one react-aria has already flipped. The trigger also exposes
+`aria-expanded`, so the state it toggles is reported and not just described: `aria-describedby`
+supplies the description once the tooltip is already open, and says nothing about a control
+that can be opened and closed.
+
+`onOpenChange` reports each transition once, including for a caller that controls `isOpen`
+and has not applied the change yet. react-aria's own pointerdown/keydown handler closes the
+tooltip through the same callback before `onPress` runs, so `onPress` closes it only for a
+press that had neither, such as a screen reader click.
+
+The touch path is covered by tests. jsdom has no `PointerEvent`, and without one react-aria
+falls back to branches that cannot represent touch — `useHover` binds `onMouseEnter` with a
+hardcoded `mouse` pointer type — so the tests install a minimal polyfill and drive the
+pointer sequence a tap produces. That puts `useHover` and `usePress` on the same branches a
+real browser takes, with `triggerHoverStart` correctly ignoring touch.
+
+The two things the evaluation's recommendation asked for — `role="tooltip"` on the tooltip
+element and `aria-describedby` on the trigger — were already correct, with one exception now
+fixed: `isOpen` was spread into `Tooltip` instead of being given to `TooltipTrigger`.
+react-aria's `Tooltip` builds its own state when passed `isOpen` or `defaultOpen`, detached
+from the trigger's, so in controlled mode the trigger's state stayed closed and
+`aria-describedby` was never emitted at all — and hover and Escape-to-dismiss stopped
+working. `isOpen` keeps its meaning for callers; it now drives the trigger. `defaultOpen`
+and `onOpenChange` are accepted alongside it.
+
+`ariaLabel` is unchanged but now documented in the story: the `More information` default
+repeats across every instance on a screen, so callers should name what the tooltip is about.
+
+#### The Help menu no longer announces "menu" twice (CORE-2940)
+
+The Help trigger had `aria-label='Help menu'` on top of its visible "Help", so screen readers
+read "Help menu, menu button". The aria-label is removed, so the name is now the visible
+"Help".
 
 #### Menu popovers no longer render as dialogs (CORE-2875)
 
@@ -31,6 +93,7 @@ What changes for users while a menu is open: the page behind it stays scrollable
 visible to assistive tech, and focus is no longer trapped. Moving focus out of the menu
 closes it, as does Escape or a click outside. Focus still returns to the trigger on close.
 The menu also closes when the page scrolls.
+
 
 #### Dropped the `os` restriction that blocked Windows installs (CORE-2876)
 

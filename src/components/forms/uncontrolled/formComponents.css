@@ -8,6 +8,7 @@
 }
 
 .uncontrolled-form h3 {
+  /* #ccc is not a palette value; see KNOWN_OFF_PALETTE in src/theme/tokens.spec.ts */
   border-bottom: 1px solid #ccc;
 }
 

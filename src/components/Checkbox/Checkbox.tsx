@@ -1,20 +1,34 @@
-import type React from "react";
-import { LabelHTMLAttributes, PropsWithChildren } from "react";
+import React, { LabelHTMLAttributes, PropsWithChildren, useEffect, useLayoutEffect, useRef } from "react";
 import { checkboxVariants, CheckboxVariant, CheckboxSize } from "./sharedCheckboxStyles";
 import { InputHTMLAttributes } from "react";
-import { colors } from "../../theme";
 import classNames from "classnames";
 import "./Checkbox.css";
+import '../../theme/theme.css';
 
 type CheckboxProps = PropsWithChildren<
   Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> & {
   variant?: CheckboxVariant;
+  /** Exposes the mixed state, for a checkbox that summarises a set of others. Does not change `checked`. */
+  indeterminate?: boolean;
   size?: CheckboxSize;
   bold?: boolean;
   labelProps?: LabelHTMLAttributes<HTMLLabelElement>;
 }>;
 
-export const Checkbox = ({ children, disabled, variant = 'primary', bold = false, size = 1.6, labelProps, className, style, ...props }: CheckboxProps) => {
+// useLayoutEffect warns when rendered on the server.
+const useIsomorphicLayoutEffect = typeof window === 'undefined' ? useEffect : useLayoutEffect;
+
+export const Checkbox = ({ children, disabled, variant = 'primary', bold = false, size = 1.6, labelProps, className, style, indeterminate = false, onClick, ...props }: CheckboxProps) => {
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  // `indeterminate` is a DOM property with no attribute, so it is applied after every render,
+  // before paint, so the box never shows the wrong state.
+  useIsomorphicLayoutEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.indeterminate = indeterminate;
+    }
+  });
+
   // Get variant styles for CSS variables
   const variantStyles = disabled ? checkboxVariants.disabled : checkboxVariants[variant];
 
@@ -29,7 +43,6 @@ export const Checkbox = ({ children, disabled, variant = 'primary', bold = false
   const labelStyle = {
     '--checkbox-font-weight': bold ? 700 : 400,
     '--checkbox-color': variantStyles.color,
-    '--checkbox-disabled-color': colors.palette.neutralLight,
     ...labelProps?.style
   } as unknown as React.CSSProperties;
 
@@ -43,13 +56,17 @@ export const Checkbox = ({ children, disabled, variant = 'primary', bold = false
   // Merge input style with our CSS variables
   const inputStyle = {
     '--checkbox-size': `${size}rem`,
-    '--checkbox-bg-unchecked': colors.palette.white,
     '--checkbox-bg': variantStyles.backgroundColor,
     '--checkbox-border-unchecked': variantStyles.unCheckedBorder,
     '--checkbox-border-checked': variantStyles.checkedBorder,
     '--checkbox-checkmark': variantStyles.backgroundImage === 'none' ? 'none' : `url('${variantStyles.backgroundImage}')`,
     '--checkbox-opacity': disabled ? '0.4' : '1',
-    '--checkbox-disabled-border': `1px solid ${colors.palette.pale}`,
+    ...(indeterminate ? {
+      '--checkbox-indeterminate-bg': variantStyles.backgroundColor,
+      '--checkbox-indeterminate-icon': variantStyles.indeterminateImage === 'none'
+        ? 'none'
+        : `url('${variantStyles.indeterminateImage}')`,
+    } : {}),
     ...style
   } as unknown as React.CSSProperties;
 
@@ -57,6 +74,13 @@ export const Checkbox = ({ children, disabled, variant = 'primary', bold = false
     <label {...labelProps} className={labelClassName} style={labelStyle}>
       <input
         {...props}
+        ref={inputRef}
+        onClick={indeterminate ? (event) => {
+          onClick?.(event);
+          // The browser clears it on click, before any render. Put it back so it follows the prop
+          // even when the click does not cause one.
+          event.currentTarget.indeterminate = true;
+        } : onClick}
         type="checkbox"
         className={inputClassName}
         style={inputStyle}
