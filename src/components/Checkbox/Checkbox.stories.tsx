@@ -1,3 +1,4 @@
+import React from "react";
 import styled from "styled-components";
 import { Checkbox } from "./Checkbox";
 
@@ -46,3 +47,47 @@ export const Disabled = () => <>
   {renderDisabledCheckboxes('light', 1.6)}
   {renderDisabledCheckboxes('light', 2)}
 </>
+
+const renderIndeterminateCheckboxes = (variant: CheckboxProps['variant'], size: CheckboxProps['size']) => <CheckboxGroup>
+  <h2>{variant} - Size {size}</h2>
+  <Checkbox {...{size, variant}} indeterminate>Checkbox label</Checkbox>
+  <Checkbox {...{size, variant}} indeterminate bold>Checkbox label</Checkbox>
+  <Checkbox {...{size, variant}} indeterminate disabled>Checkbox label</Checkbox>
+</CheckboxGroup>;
+
+export const Indeterminate = () => <>
+  {(['primary', 'light', 'error'] as const).flatMap(variant =>
+    ([1.4, 1.6, 1.8, 2] as const).map(size =>
+      <React.Fragment key={`${variant}-${size}`}>{renderIndeterminateCheckboxes(variant, size)}</React.Fragment>
+    )
+  )}
+</>;
+
+const options = ['Option one', 'Option two', 'Option three'];
+
+// The parent is mixed while only some options are chosen, and selects all from the mixed state.
+export const ParentOfOptions = () => {
+  const [selected, setSelected] = React.useState<string[]>(['Option two']);
+  const all = selected.length === options.length;
+
+  return <CheckboxGroup>
+    <Checkbox
+      bold
+      size={2}
+      checked={all}
+      indeterminate={selected.length > 0 && !all}
+      onChange={() => setSelected(all ? [] : options)}
+    >
+      All options
+    </Checkbox>
+    {options.map(option => <Checkbox
+      key={option}
+      checked={selected.includes(option)}
+      onChange={event => setSelected(event.target.checked
+        ? [...selected, option]
+        : selected.filter(item => item !== option))}
+    >
+      {option}
+    </Checkbox>)}
+  </CheckboxGroup>;
+};
