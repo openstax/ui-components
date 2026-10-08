@@ -1,4 +1,4 @@
-import React, { LabelHTMLAttributes, PropsWithChildren, useEffect, useRef } from "react";
+import React, { LabelHTMLAttributes, PropsWithChildren, useEffect, useLayoutEffect, useRef } from "react";
 import { checkboxVariants, CheckboxVariant, CheckboxSize } from "./sharedCheckboxStyles";
 import { InputHTMLAttributes } from "react";
 import classNames from "classnames";
@@ -14,11 +14,15 @@ type CheckboxProps = PropsWithChildren<
   labelProps?: LabelHTMLAttributes<HTMLLabelElement>;
 }>;
 
+// useLayoutEffect warns when rendered on the server.
+const useIsomorphicLayoutEffect = typeof window === 'undefined' ? useEffect : useLayoutEffect;
+
 export const Checkbox = ({ children, disabled, variant = 'primary', bold = false, size = 1.6, labelProps, className, style, indeterminate = false, onClick, ...props }: CheckboxProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // `indeterminate` is a DOM property with no attribute, so it is applied after every render.
-  useEffect(() => {
+  // `indeterminate` is a DOM property with no attribute, so it is applied after every render,
+  // before paint, so the box never shows the wrong state.
+  useIsomorphicLayoutEffect(() => {
     if (inputRef.current) {
       inputRef.current.indeterminate = indeterminate;
     }
