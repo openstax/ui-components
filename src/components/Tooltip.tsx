@@ -12,6 +12,7 @@ import { mergeProps, Placement, useTooltip } from 'react-aria';
 import { CSSPropertiesWithVariables } from '../types';
 import classNames from 'classnames';
 import './Tooltip.css';
+import '../theme/theme.css';
 
 // The styled-components versions of these accepted a plain className/style and merged
 // them, so the replacements narrow away the react-aria render-callback forms rather

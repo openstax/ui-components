@@ -3,6 +3,7 @@ import { Toast } from './Toast';
 import { ToastData } from '../types';
 import classNames from 'classnames';
 import './ToastContainer.css';
+import '../theme/theme.css';
 
 export type ToastContainerParams = {
   toasts: ToastData[];

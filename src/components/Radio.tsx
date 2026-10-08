@@ -6,6 +6,7 @@ import {useTooltipTrigger} from 'react-aria';
 import { CustomTooltip } from './Tooltip';
 import classNames from 'classnames';
 import "./Radio.css";
+import '../theme/theme.css';
 
 type RadioProps = PropsWithChildren<
   Omit<InputHTMLAttributes<HTMLInputElement>, 'type'>>;

@@ -5,6 +5,7 @@ import * as Constants from '../constants';
 import { BodyPortal } from './BodyPortal';
 import { NavBarLogo as OpenstaxLogo } from './NavBarLogo';
 import './NavBar.css';
+import '../theme/theme.css';
 
 type Logo = React.HTMLProps<HTMLAnchorElement> & { alt?: string };
 
