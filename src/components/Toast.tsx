@@ -1,5 +1,4 @@
 import React from 'react';
-import { palette } from '../theme/palette';
 import classNames from 'classnames';
 import { CSSPropertiesWithVariables, ToastData } from '../types';
 import './Toast.css';
@@ -64,13 +63,6 @@ export const Toast = ({
 
   const style: CSSPropertiesWithVariables = {
     '--toast-animation-duration': `${ANIMATION_TIME_MS}ms`,
-    '--toast-success-title-color': palette.darkerGreen,
-    '--toast-success-bg': palette.paleGreen,
-    '--toast-neutral-title-color': palette.neutralDarker,
-    '--toast-neutral-bg': palette.neutralLighter,
-    '--toast-failure-title-color': palette.darkRed,
-    '--toast-failure-bg': palette.paleRed,
-    '--toast-failure-icon-color': palette.neutralDark,
     ...(dismissAfterMs ? { animationDelay: `${dismissAfterMs - ANIMATION_TIME_MS}ms` } : {}),
   };
 
