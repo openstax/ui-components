@@ -1,0 +1,1 @@
+import{p as s}from"./palette-97ed00c9.js";const b={palette:s,link:{color:"#026AA1",hover:"#005481"}};["navbar","sidebar","modals","toasts"].reduce((o,e,r)=>(o[e]=(r+1)*10,o),{});const t=38.75,a=75,c=a+.0625,i={mobileNavBreak:t,mobileBreak:a,desktopBreak:c};export{i as b,b as c};
