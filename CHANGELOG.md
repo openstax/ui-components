@@ -172,8 +172,8 @@ ability to override the wrapper's CSS variables.
 #### Feature Component Migration (CORE-2008)
 
 `MessageBox`, `Banner`, `Tree` and `ToggleButtonGroup` have been migrated from styled-components
-to plain CSS bound to the `--ox-*` theme tokens. Props, behaviour and visual appearance are
-unchanged, but the exported pieces are no longer styled-components:
+to plain CSS bound to the `--ox-*` theme tokens. Compatibility and visual differences are
+documented below, and the exported pieces are no longer styled-components:
 
 **Breaking Changes:**
 
