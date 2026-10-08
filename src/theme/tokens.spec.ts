@@ -113,13 +113,12 @@ const themeValues = themeColors.reduce((byValue, [token, value]) => {
  * Everything wrong with the colors in one stylesheet, split by what it would take to fix.
  *
  * `duplicates` are literals the theme already holds a token for: a mechanical swap that
- * changes nothing on screen, and the only kind of finding PENDING_SWEEP defers.
+ * changes nothing on screen.
  *
  * `offPalette` are colors the theme does not have at all, including the ones the checker
- * cannot resolve. Introducing one is a design decision rather than a missed swap, so it is
- * refused in every stylesheet — a file awaiting the sweep is no more entitled to a new
- * color than a clean one. Keeping the two apart is what stops a pending file from
- * smuggling one in under cover of the literals it is already known to carry.
+ * cannot resolve. Introducing one is a design decision rather than a missed swap, so the
+ * fix is a different conversation — put it in the palette or on the allowlist with a
+ * reason. Keeping the two apart is what lets each be reported in the terms it is fixed in.
  *
  * Both empty means the file is clean.
  */
@@ -139,8 +138,8 @@ const colorProblems = (
     // The allowlist excuses a color the theme does not have, and only for as long as that
     // is true. Read before the theme lookup it also excused one the theme *does* have, so
     // promoting an entry into palette.ts — the thing the list tells you to prefer — left
-    // every literal of it exempt: the swap never reached `duplicates`, so PENDING_SWEEP
-    // could not ask for it and the sweep had no way to know the copies were still there.
+    // every literal of it exempt: the swap never reached `duplicates`, so nothing asked
+    // for it and the copies stayed behind unnoticed.
     if (allowlist.has(key) && tokens === undefined) { continue; }
 
     if (rgba === null) {
@@ -336,9 +335,9 @@ describe('the color check itself', () => {
   });
 
   it('sorts a finding by whether the theme already has the color', () => {
-    // The split is what PENDING_SWEEP keys off, so it is worth stating directly: a file
-    // may be excused the literals it copied from the theme, never a color the theme
-    // does not have. Both kinds in one stylesheet, to show neither absorbs the other.
+    // A literal copied from the theme and a color the theme does not have are different
+    // findings with different fixes, so the split is worth stating directly. Both kinds in
+    // one stylesheet, to show neither absorbs the other.
     const css = '.x { color: #d5d5d5; border-color: #123456; background: hsl(200 50% 50%); }';
     expect(colorProblems(css)).toEqual({
       duplicates: [expect.stringContaining('use var(--ox-color-pale)')],
@@ -352,8 +351,8 @@ describe('the color check itself', () => {
   it('stops excusing an allowlisted color once the theme has it', () => {
     // The list's own advice is to put a color in palette.ts if it is really part of the
     // design. Checked before the theme lookup, taking that advice silently exempted every
-    // literal of it instead of turning them into the swap they now are — so PENDING_SWEEP
-    // could not name the files and the sweep would have left the copies behind.
+    // literal of it instead of turning them into the swap they now are — so the duplicate
+    // check stayed quiet and the copies would have been left behind.
     const promoted = new Map([['#d5d5d5', 'pretend pale predates the palette']]);
     expect(colorProblems('.x { color: #d5d5d5; }', promoted)).toEqual({
       duplicates: [expect.stringContaining('use var(--ox-color-pale)')],
@@ -484,39 +483,6 @@ describe('the color check itself', () => {
   });
 });
 
-/**
- * Stylesheets migrated before the tokens existed, still carrying hand-copied literals.
- * Each is removed by the PR that sweeps it; the list is expected to reach empty, at which
- * point it and the assertion below go away with it.
- *
- * The exemption is narrow: only the duplicate-literal check. The off-palette check below
- * runs over these files too, so being on this list defers a swap that is already owed and
- * grants nothing else — a new color in one of them fails exactly as it would anywhere.
- *
- * The point of listing them rather than skipping the check is that the list is asserted to
- * be *exactly* the set with duplicates left, so it cannot rot in either direction: dropping
- * a name without sweeping the file fails, and sweeping a file without dropping its name
- * fails too.
- */
-const PENDING_SWEEP = new Set([
-  'components/Button.css',
-  'components/ButtonBar.css',
-  'components/Checkbox/Checkbox.css',
-  'components/CloseModalButton.css',
-  'components/DropdownMenu.css',
-  'components/Modal.css',
-  'components/NavBar.css',
-  'components/NavBar.stories.css',
-  'components/NavBarMenuButtons.css',
-  'components/Overlay.css',
-  'components/Radio.css',
-  'components/Tabs.css',
-  'components/Text.css',
-  'components/Toast.css',
-  'components/Tooltip.css',
-  'components/forms/uncontrolled/inputTypes.css',
-]);
-
 describe('component CSS', () => {
   const cssFiles = walk(srcDir, isStylesheet).filter((file) => file !== themeCssPath);
   const tokens = themeTokens();
@@ -527,25 +493,14 @@ describe('component CSS', () => {
     expect(cssFiles.length).toBeGreaterThan(0);
   });
 
-  it('lists exactly the stylesheets whose literals still duplicate the theme', () => {
-    const failing = cssFiles
-      .filter((file) => colorProblems(fs.readFileSync(file, 'utf8')).duplicates.length > 0)
-      .map(name);
-    expect(failing.sort()).toEqual([...PENDING_SWEEP].sort());
-  });
-
   it.each(cssFiles.map((file) => [name(file), file]))(
     '%s introduces no color the theme does not have',
     (_name, file) => {
-      // Every stylesheet, PENDING_SWEEP included: the exemption is for literals that
-      // duplicate a token, not a licence to add a color while the file waits its turn.
       expect(colorProblems(fs.readFileSync(file, 'utf8')).offPalette).toEqual([]);
     }
   );
 
-  it.each(
-    cssFiles.filter((file) => !PENDING_SWEEP.has(name(file))).map((file) => [name(file), file])
-  )(
+  it.each(cssFiles.map((file) => [name(file), file]))(
     '%s uses tokens rather than repeating theme values',
     (_name, file) => {
       expect(colorProblems(fs.readFileSync(file, 'utf8')).duplicates).toEqual([]);

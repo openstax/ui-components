@@ -3,6 +3,7 @@ import * as RAC from "react-aria-components";
 import classNames from "classnames";
 import { CSSPropertiesWithVariables } from "../types";
 import './Tabs.css';
+import '../theme/theme.css';
 
 // style is widened to CSSPropertiesWithVariables so callers can override the documented
 // --tabs-* custom properties without casting. Note the Omit: intersecting a narrower

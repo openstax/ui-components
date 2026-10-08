@@ -1,6 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 import './Text.css';
+import '../theme/theme.css';
 
 export type HeadingLevel = 1 | 2 | 3 | 4 | 5 | 6;
 
