@@ -103,13 +103,25 @@ describe('Banner', () => {
     const rule = (selector: string) =>
       css.match(new RegExp(`\\${selector}\\s*\\{([^}]*)\\}`))?.[1] ?? '';
 
+    // matches a whole declaration, so `height: 4rem` does not match inside `min-height: 4rem`
+    const declares = (block: string, property: string, value: string) =>
+      new RegExp(`(^|[\\s;])${property}:\\s*${value}\\s*(;|$)`).test(block);
+
     it.each([
-      'display: inline-flex',
-      'align-items: center',
-      'justify-content: center',
-      'height: 4rem',
-    ])('keeps `%s` from .button-base', (declaration) => {
-      expect(rule('.banner-close-button')).toContain(declaration);
+      ['display', 'inline-flex'],
+      ['align-items', 'center'],
+      ['justify-content', 'center'],
+      ['min-height', '4rem'],
+      ['overflow-wrap', 'anywhere'],
+    ])('keeps `%s: %s` from .button-base', (property, value) => {
+      expect(declares(rule('.banner-close-button'), property, value)).toBe(true);
+    });
+
+    it('does not pin the height or stop the text wrapping', () => {
+      const block = rule('.banner-close-button');
+
+      expect(declares(block, 'height', '[^;]+')).toBe(false);
+      expect(declares(block, 'white-space', 'nowrap')).toBe(false);
     });
 
     it('keeps the disabled fade', () => {

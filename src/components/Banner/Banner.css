@@ -86,7 +86,7 @@
   transition: all 0.2s ease-in-out;
   text-decoration: none;
   user-select: none;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
 }
 
 .banner-close-button:disabled {
