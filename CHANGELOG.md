@@ -6,6 +6,15 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
+#### `NavBarDisclosureButton` and `NavBarDisclosureItem` (CORE-2875)
+
+A button that shows a list of links and actions, for navigation. `NavBarMenuButton`'s
+`role="menu"` is meant for command menus and misdescribes a list of links, which screen
+readers then don't announce as links.
+
+The button reports `aria-expanded`, and the list holds real links (`href`) and buttons
+(`onAction`) right after it, so Tab moves through the items. Escape closes the list and
+returns focus to the button, and so does activating an item.
 #### `Checkbox` supports an `indeterminate` state (CORE-2901)
 
 A checkbox that summarises a set of others, such as "all options" above a list, has no way
