@@ -1,70 +1,67 @@
+import React from "react";
 import * as RAC from "react-aria-components";
-import { colors } from "../../theme";
-import styled from "styled-components";
+import classNames from "classnames";
+import "./Tree.css";
+import "../../theme/theme.css";
 
-export const Tree = styled(RAC.Tree)`
-  padding: 0.8rem;
+// composeRenderProps normalises the string and render-callback forms of className so a
+// caller-supplied callback is composed rather than dropped.
+//
+// forwardRef erases the generic, so each wrapper is declared over `object` and then given
+// back the generic signature react-aria-components itself exports for the component being
+// wrapped. That keeps both the ref the styled() wrappers used to forward and the item-type
+// inference callers rely on.
+const TreeBase = React.forwardRef<HTMLDivElement, RAC.TreeProps<object>>(
+  ({ className, ...props }, ref) => (
+    <RAC.Tree
+      ref={ref}
+      {...props}
+      className={RAC.composeRenderProps(className, (resolved) => classNames('tree', resolved))}
+    />
+  )
+);
+TreeBase.displayName = 'Tree';
 
-  &[data-expanded] .react-aria-Button[slot=chevron] svg {
-    rotate: 90deg;
-  }
-`;
+export const Tree = TreeBase as <T extends object>(
+  props: RAC.TreeProps<T> & React.RefAttributes<HTMLDivElement>
+) => React.ReactElement | null;
 
-export const TreeItem = styled(RAC.TreeItem)`
-  padding-left: calc((var(--tree-item-level) - 1) * 5.5rem);
-  padding-bottom: 1rem;
+const TreeItemBase = React.forwardRef<HTMLDivElement, RAC.TreeItemProps<object>>(
+  ({ className, ...props }, ref) => (
+    <RAC.TreeItem
+      ref={ref}
+      {...props}
+      className={RAC.composeRenderProps(className, (resolved) => classNames('tree-item', resolved))}
+    />
+  )
+);
+TreeItemBase.displayName = 'TreeItem';
 
-  &[data-expanded] svg {
-    rotate: 90deg;
-  }
-`;
+export const TreeItem = TreeItemBase as <T extends object>(
+  props: RAC.TreeItemProps<T> & React.RefAttributes<HTMLDivElement>
+) => React.ReactElement | null;
 
-export const TreeItemContent = styled(RAC.TreeItemContent)`
-`;
+// TreeItemContent renders no DOM node, so it never had anything to style — the empty
+// styled() wrapper it used to carry was a no-op.
+export { TreeItemContent } from "react-aria-components";
 
-const ChevronWrapper = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  padding: 1rem 0 1rem 3rem;
-  font-weight: bold;
-  gap: 0.8rem;
-
-  button {
-    all: unset;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-
-    svg {
-      rotate: 0deg;
-      transition: rotate 200ms;
-      width: 1.4rem;
-      height: 1.4rem;
-      stroke: ${colors.palette.neutralDarker};
-      stroke-width: 0.3rem;
-      margin-right: 0.6rem;
-    }
-  }
-`;
-
-export const TreeChevron = styled(
-  (props: React.PropsWithChildren<{
-    className?: string,
-  }>) => (
-    <ChevronWrapper>
-      <RAC.Button
-        className={props.className}
-        type="button"
-        aria-label="expand/collapse"
-        slot="chevron"
-      >
-        <svg viewBox="0 0 24 24">
-          <path d="m8.25 4.5 7.5 7.5-7.5 7.5" />
-        </svg>
-        {props.children}
-      </RAC.Button>
-    </ChevronWrapper>
-  ))`
-`;
+// The caller's className lands on the button rather than the wrapper, matching the
+// styled-components original. The button is always given a class, which is also what kept
+// react-aria-components from applying its default `react-aria-Button` class.
+export const TreeChevron = (props: React.PropsWithChildren<{
+  className?: string,
+}>) => (
+  <div className="tree-chevron">
+    <RAC.Button
+      className={classNames('tree-chevron-button', props.className)}
+      type="button"
+      aria-label="expand/collapse"
+      slot="chevron"
+    >
+      <svg viewBox="0 0 24 24">
+        <path d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+      </svg>
+      {props.children}
+    </RAC.Button>
+  </div>
+);

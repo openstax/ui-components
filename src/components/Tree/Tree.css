@@ -1,0 +1,51 @@
+/* Tree styles */
+.tree {
+  padding: 0.8rem;
+}
+
+/*
+ * Carried over verbatim from the styled-components original. It is almost certainly
+ * inert: TreeChevron always supplies a className to its RAC.Button, so the button never
+ * carries react-aria-components' default `react-aria-Button` class. The rotation that is
+ * actually observed comes from the `.tree-item[data-expanded] svg` rule below. Kept
+ * because removing it would be a behaviour change rather than a refactor.
+ */
+.tree[data-expanded] .react-aria-Button[slot=chevron] svg {
+  rotate: 90deg;
+}
+
+.tree-item {
+  padding-left: calc((var(--tree-item-level) - 1) * 5.5rem);
+  padding-bottom: 1rem;
+}
+
+.tree-item[data-expanded] svg {
+  rotate: 90deg;
+}
+
+.tree-chevron {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 1rem 0 1rem 3rem;
+  font-weight: bold;
+  gap: 0.8rem;
+}
+
+.tree-chevron button {
+  all: unset;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.tree-chevron button svg {
+  rotate: 0deg;
+  transition: rotate 200ms;
+  width: 1.4rem;
+  height: 1.4rem;
+  stroke: var(--tree-chevron-color, var(--ox-color-neutral-darker));
+  stroke-width: 0.3rem;
+  margin-right: 0.6rem;
+}
