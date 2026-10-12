@@ -139,16 +139,8 @@ describe('Banner', () => {
   });
 });
 
-/**
- * CORE-2734: on the warning tone the link colour and the banner's body text sit at 1.17:1,
- * so colour alone cannot mark a link here (WCAG 1.4.1, Use of Color).
- *
- * Asserted against the stylesheet rather than through getComputedStyle, because Jest maps
- * `.css` to identity-obj-proxy and nothing rendered here carries these rules. Injecting the
- * sheet by hand would not fix it: jsdom resolves the cascade by document order alone and
- * ignores specificity, so `.banner .button-link` vs `.button-link` would come out however
- * the two sheets happened to be appended, which is not what a browser does.
- */
+// Checked against the stylesheet: Jest maps `.css` to identity-obj-proxy, and jsdom ignores
+// specificity, so computed styles cannot show whether these rules win.
 describe('banner link decoration', () => {
   const textDecoration = declarations(fs.readFileSync(path.join(__dirname, 'Banner.css'), 'utf-8'))
     .filter(({ property }) => property === 'text-decoration');
@@ -173,9 +165,8 @@ describe('banner link decoration', () => {
     expect(selectorsSetting('underline')).toContain(selector);
   });
 
-  // Scoped to rules that can reach a link. `.banner-close-button` also sets
-  // `text-decoration: none`, carried from `.button-base` when CORE-2008 made the dismiss
-  // control self-contained; it is a button, never a link, and no link selector reaches it.
+  // `.banner-close-button` also sets `text-decoration: none`; it is a button, and no link
+  // selector reaches it.
   it('never removes the underline from anything that can be a link', () => {
     const linkRules = textDecoration.filter(
       ({ context }) => /(^|,)\s*\.banner (a|\.button-link)\b/.test(context)
@@ -185,7 +176,7 @@ describe('banner link decoration', () => {
     expect(linkRules.filter((rule) => rule.value !== 'underline')).toEqual([]);
   });
 
-  // Those rules are only worth anything if they match what a banner renders.
+  // The selectors have to match what a banner renders.
   it('matches an anchor written into a message', () => {
     render(<Banner messages={['read more <a href="https://example.com">here</a>']} severity='warning' />);
 
