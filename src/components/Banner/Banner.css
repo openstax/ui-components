@@ -31,12 +31,21 @@
   align-items: center;
 }
 
-.banner a {
-  text-decoration: none;
+/*
+ * Links are underlined at rest: on the warning tone the link and body text colours are too
+ * close (1.17:1) for colour alone to mark a link (WCAG 1.4.1). `.button-link` covers
+ * link-styled buttons composed into message text; this outranks Button.css's `none`.
+ */
+.banner a,
+.banner .button-link {
+  text-decoration: underline;
   color: var(--banner-link-color, var(--ox-color-medium-blue));
 }
 
-.banner a:hover {
+.banner a:hover,
+.banner a:focus,
+.banner .button-link:hover,
+.banner .button-link:focus {
   text-decoration: underline;
   color: var(--banner-link-hover-color, var(--ox-color-link-hover));
 }

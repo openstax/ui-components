@@ -1,8 +1,10 @@
 import { createRef } from 'react';
 import fs from 'fs';
 import path from 'path';
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { Banner, CloseButton, Severity, StyledBanner } from "./Banner";
+import { ButtonLink } from '../Button';
+import { declarations } from '../../theme/cssColors';
 import renderer from 'react-test-renderer';
 
 describe('Banner', () => {
@@ -134,5 +136,56 @@ describe('Banner', () => {
       expect(focus).toContain('outline: solid');
       expect(focus).toContain('box-shadow: inset');
     });
+  });
+});
+
+// Checked against the stylesheet: Jest maps `.css` to identity-obj-proxy, and jsdom ignores
+// specificity, so computed styles cannot show whether these rules win.
+describe('banner link decoration', () => {
+  const textDecoration = declarations(fs.readFileSync(path.join(__dirname, 'Banner.css'), 'utf-8'))
+    .filter(({ property }) => property === 'text-decoration');
+
+  const selectorsSetting = (value: string) => textDecoration
+    .filter((rule) => rule.value === value)
+    .flatMap((rule) => rule.context.split(',').map((selector) => selector.trim()));
+
+  it.each([
+    '.banner a',
+    '.banner .button-link',
+  ])('underlines %s at rest', (selector) => {
+    expect(selectorsSetting('underline')).toContain(selector);
+  });
+
+  it.each([
+    '.banner a:hover',
+    '.banner a:focus',
+    '.banner .button-link:hover',
+    '.banner .button-link:focus',
+  ])('keeps the underline on %s', (selector) => {
+    expect(selectorsSetting('underline')).toContain(selector);
+  });
+
+  // `.banner-close-button` also sets `text-decoration: none`; it is a button, and no link
+  // selector reaches it.
+  it('never removes the underline from anything that can be a link', () => {
+    const linkRules = textDecoration.filter(
+      ({ context }) => /(^|,)\s*\.banner (a|\.button-link)\b/.test(context)
+    );
+
+    expect(linkRules).not.toEqual([]);
+    expect(linkRules.filter((rule) => rule.value !== 'underline')).toEqual([]);
+  });
+
+  // The selectors have to match what a banner renders.
+  it('matches an anchor written into a message', () => {
+    render(<Banner messages={['read more <a href="https://example.com">here</a>']} severity='warning' />);
+
+    expect(screen.getByRole('link').matches('.banner a')).toBe(true);
+  });
+
+  it('matches a link-styled button composed into a banner', () => {
+    render(<StyledBanner severity='warning'><ButtonLink>here</ButtonLink></StyledBanner>);
+
+    expect(screen.getByRole('button').matches('.banner .button-link')).toBe(true);
   });
 });
