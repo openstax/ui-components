@@ -35,6 +35,7 @@ const KNOWN_OFF_PALETTE = new Map([
   ['#976502', 'Banner note/warning text and close button. Inherited from the styled-components Banner; no palette entry is close.'],
   ['#fdbd3e', 'Banner note/warning border. Inherited from the styled-components Banner; nearest entry is tangerine (#ffbd3e), and snapping to it would be a visual change.'],
   ['#f8e8ea', 'Banner error background. Inherited from the styled-components Banner; nearest entry is paleRed (#fbe7ea), and snapping to it would be a visual change.'],
+  ['#959595', 'SidebarNav toggle button border. Carried over verbatim from the styled-components original; nearest entry is neutralMedium (#a0a0a0).'],
 ]);
 
 /**

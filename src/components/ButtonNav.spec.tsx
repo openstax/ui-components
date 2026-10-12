@@ -1,5 +1,6 @@
+import { render, screen, fireEvent } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import { ButtonNav } from './ButtonNav/index';
-import renderer from 'react-test-renderer';
 
 describe('ButtonNav', () => {
 
@@ -11,32 +12,81 @@ describe('ButtonNav', () => {
     <button key='5'>Slide 5</button>,
   ];
 
-  const handlePrev = jest.fn();
-  const handleNext = jest.fn();
+  let handlePrev: jest.Mock;
+  let handleNext: jest.Mock;
 
-  it('matches snapshot', () => {
-    const tree = renderer.create(
-      <ButtonNav
-        handlePrevArrow={handlePrev}
-        handleNextArrow={handleNext}
-      >
-        {childrenListWithKeys}
-      </ButtonNav>
-    ).toJSON();
-    expect(tree).toMatchSnapshot();
+  beforeEach(() => {
+    handlePrev = jest.fn();
+    handleNext = jest.fn();
   });
 
-  it('matches snapshot when arrows are disabled', () => {
-    const tree = renderer.create(
+  const renderNav = (props = {}) => render(
+    <ButtonNav handlePrevArrow={handlePrev} handleNextArrow={handleNext} {...props}>
+      {childrenListWithKeys}
+    </ButtonNav>
+  );
+
+  const arrows = () => ({
+    prev: screen.getByLabelText('move to previous item'),
+    next: screen.getByLabelText('move to next item'),
+  });
+
+  it('wraps each child in its own group, in order', () => {
+    const { container } = renderNav();
+
+    const groups = container.querySelectorAll('.button-nav-wrapper > .button-nav-group');
+    expect(Array.from(groups, (group) => group.textContent))
+      .toEqual(['Slide 1', 'Slide 2', 'Slide 3', 'Slide 4', 'Slide 5']);
+  });
+
+  it('renders the arrows either side of the children', () => {
+    const { container } = renderNav();
+
+    expect(Array.from(container.querySelectorAll('.button-nav > *'), (el) => el.className))
+      .toEqual(['button-nav-arrow left-arrow', 'button-nav-wrapper', 'button-nav-arrow right-arrow']);
+  });
+
+  it('enables both arrows by default', () => {
+    renderNav();
+    const { prev, next } = arrows();
+
+    expect(prev).toBeEnabled();
+    expect(next).toBeEnabled();
+  });
+
+  it('disables each arrow independently', () => {
+    const { rerender } = renderNav({ isPrevArrowDisabled: true });
+    expect(arrows().prev).toBeDisabled();
+    expect(arrows().next).toBeEnabled();
+
+    rerender(
       <ButtonNav
-        handlePrevArrow={handlePrev}
-        handleNextArrow={handleNext}
-        isPrevArrowDisabled
-        isNextArrowDisabled
+        handlePrevArrow={handlePrev} handleNextArrow={handleNext} isNextArrowDisabled
       >
         {childrenListWithKeys}
       </ButtonNav>
-    ).toJSON();
-    expect(tree).toMatchSnapshot();
+    );
+    expect(arrows().prev).toBeEnabled();
+    expect(arrows().next).toBeDisabled();
+  });
+
+  it('calls the matching handler when an arrow is clicked', () => {
+    renderNav();
+    const { prev, next } = arrows();
+
+    fireEvent.click(prev);
+    expect(handlePrev).toHaveBeenCalledTimes(1);
+    expect(handleNext).not.toHaveBeenCalled();
+
+    fireEvent.click(next);
+    expect(handleNext).toHaveBeenCalledTimes(1);
+    expect(handlePrev).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not call the handler for a disabled arrow', () => {
+    renderNav({ isPrevArrowDisabled: true });
+
+    fireEvent.click(arrows().prev);
+    expect(handlePrev).not.toHaveBeenCalled();
   });
 });

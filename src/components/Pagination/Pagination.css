@@ -1,0 +1,47 @@
+.pagination {
+  text-align: center;
+}
+
+.pagination > nav > ul {
+  list-style: none;
+  padding: 0;
+  border: thin solid var(--pagination-border-color, var(--ox-color-neutral-light));
+  border-radius: 0.5rem;
+  display: inline-block;
+  margin: 0 auto;
+}
+
+.pagination > nav > ul > li {
+  margin: 0;
+  min-width: 4rem;
+  text-align: center;
+  display: inline-block;
+}
+
+.pagination > nav > ul > li:not(:last-child) {
+  border-right: thin solid var(--pagination-border-color, var(--ox-color-neutral-light));
+}
+
+.pagination > nav > ul > li.active,
+.pagination > nav > ul > li:focus-within:not(.disabled),
+.pagination > nav > ul > li:hover:not(.disabled) {
+  background-color: var(--pagination-active-background, var(--ox-color-neutral-lighter));
+}
+
+/* Matches any anchor rather than .pagination-link specifically: consumers pass
+   their own Page component, which may render an anchor of its own. */
+.pagination > nav > ul > li > a,
+.pagination > nav > ul > li span {
+  padding: 1rem;
+  display: block;
+  text-decoration: none;
+  font-size: 1.6rem;
+  line-height: 1.3rem;
+  margin: 0;
+  color: inherit;
+}
+
+.pagination .pagination-info {
+  margin-top: 0.5rem;
+  font-size: 1.6rem;
+}

@@ -1,12 +1,8 @@
 import React from "react";
-import {
-  ButtonNavContainer,
-  ButtonNavWrapper,
-  ButtonNavGroup,
-  StyledArrow,
-} from './styles';
 import { LeftArrow } from "../svgs/LeftArrow";
 import { RightArrow } from "../svgs/RightArrow";
+import "./ButtonNav.css";
+import "../../theme/theme.css";
 
 export interface ButtonNavProps {
   children: React.ReactNode[];
@@ -27,29 +23,29 @@ export const ButtonNav = (
   const wrapperRef = React.useRef<HTMLDivElement>(null);
 
   return (
-    <ButtonNavContainer>
-      <StyledArrow
+    <div className="button-nav">
+      <button
         onClick={handlePrevArrow}
-        className="left-arrow"
+        className="button-nav-arrow left-arrow"
         aria-label="move to previous item"
         disabled={isPrevArrowDisabled}
       >
         <LeftArrow width={14} height={14} />
-      </StyledArrow>
-      <ButtonNavWrapper ref={wrapperRef} >
+      </button>
+      <div className="button-nav-wrapper" ref={wrapperRef} >
         {children.map((child, index) =>
-          <ButtonNavGroup key={`section-group-${index + 1}`} >
+          <div className="button-nav-group" key={`section-group-${index + 1}`} >
             {child}
-          </ButtonNavGroup>
+          </div>
         )}
-      </ButtonNavWrapper>
-      <StyledArrow
+      </div>
+      <button
         onClick={handleNextArrow}
-        className="right-arrow"
+        className="button-nav-arrow right-arrow"
         aria-label="move to next item"
         disabled={isNextArrowDisabled} >
         <RightArrow width={14} height={14} />
-      </StyledArrow>
-    </ButtonNavContainer>
+      </button>
+    </div>
   );
 };

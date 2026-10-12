@@ -187,6 +187,20 @@ ability to override the wrapper's CSS variables.
 
 ### Changed - BREAKING CHANGES
 
+#### Navigation Component Migration (CORE-2005)
+
+`SidebarNav`, `ButtonNav` and `Pagination` have been migrated from styled-components to plain
+CSS bound to the `--ox-*` theme tokens. Props and rendered markup are unchanged, and
+`styled(SidebarNav)` and `styled(BodyPortalSidebarNav)` still work because `className` is still
+forwarded.
+
+**Breaking change:** the pieces on `SidebarNavStyles` (`NavHeader`, `NavBody`, `NavFooter`,
+`ToggleButton`) are no longer styled-components, so they cannot be used as selectors in another
+styled component's template. `${SidebarNavStyles.NavBody} { ... }` no longer resolves.
+`openstax/assignments` does this in `ActivitiesDisplay.tsx`. Target the classes instead:
+`.sidebar-nav-header`, `.sidebar-nav-body`, `.sidebar-nav-footer` and `.sidebar-nav-toggle`.
+`expandedWidth` and `collapsedWidth` are unchanged.
+
 #### Feature Component Migration (CORE-2008)
 
 `MessageBox`, `Banner`, `Tree` and `ToggleButtonGroup` have been migrated from styled-components
