@@ -1,17 +1,20 @@
 import React from 'react';
 import { Banner } from './Banner';
-import styled from 'styled-components';
 
-const BannerContainer = styled.div`
-  font-size: 1.2rem;
-  position: relative;
-  padding-right: 2.5rem;
-  width: 42rem;
-`;
+const containerStyle: React.CSSProperties = {
+  fontSize: '1.2rem',
+  position: 'relative',
+  paddingRight: '2.5rem',
+  width: '42rem',
+};
 
-const Caption = styled.p`
-  margin: 0 0 1.2rem;
-`;
+const BannerContainer = ({ children }: React.PropsWithChildren<unknown>) => (
+  <div style={containerStyle}>{children}</div>
+);
+
+const Caption = ({ children }: React.PropsWithChildren<unknown>) => (
+  <p style={{ margin: '0 0 1.2rem' }}>{children}</p>
+);
 
 const presentAtLoad = <>
   Present when the page loads, so it is not announced. If it appears because of something the user or
