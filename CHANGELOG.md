@@ -4,7 +4,155 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+
+#### `NavBarDisclosureButton` and `NavBarDisclosureItem` (CORE-2875)
+
+A button that shows a list of links and actions, for navigation. `NavBarMenuButton`'s
+`role="menu"` is meant for command menus and misdescribes a list of links, which screen
+readers then don't announce as links.
+
+The button reports `aria-expanded`, and the list holds real links (`href`) and buttons
+(`onAction`) right after it, so Tab moves through the items. Escape closes the list and
+returns focus to the button, and so does activating an item.
+#### `Checkbox` supports an `indeterminate` state (CORE-2901)
+
+A checkbox that summarises a set of others, such as "all options" above a list, has no way
+to say that only some of them are chosen. It was either checked or unchecked, so assistive
+tech reported a fully checked box when it was not (WCAG 4.1.2, Name, Role, Value).
+
+`Checkbox` takes a new `indeterminate` prop. It sets the input's `indeterminate` property,
+which browsers expose as the "mixed" state, and draws a dash in place of the checkmark for
+each variant. It does not change `checked`, so the parent decides what a click on a mixed
+box does; selecting everything is the native behaviour. The browser clears `indeterminate`
+on click, so the prop is reapplied after every render and stays the source of truth.
+
+A disabled indeterminate checkbox draws no dash, the same as a disabled checked one.
+
 ### Fixed
+
+#### `TooltipGroup`'s trigger is a button that does something (CORE-2871)
+
+An accessibility evaluation flagged the info-icon trigger as a name/role/value failure
+(WCAG 4.1.2): it is exposed as `role="button"`, but pressing it did nothing useful.
+react-aria's `useTooltipTrigger` binds `onPointerDown` and `onKeyDown` to *close* the
+tooltip, so tabbing to the trigger opened it and then Enter or Space — the one interaction
+the button role promises — dismissed it. On touch it was worse: hover never fires there and
+the tap closed the tooltip on pointerdown, leaving the content unreachable.
+
+`TooltipGroup` now owns the trigger state and presses toggle it, so the button role
+describes real behaviour and the content is reachable by keyboard and by touch. Because
+those library handlers run before `onPress`, the press records the state at `onPressStart`
+rather than reading one react-aria has already flipped. The trigger also exposes
+`aria-expanded`, so the state it toggles is reported and not just described: `aria-describedby`
+supplies the description once the tooltip is already open, and says nothing about a control
+that can be opened and closed.
+
+`onOpenChange` reports each transition once, including for a caller that controls `isOpen`
+and has not applied the change yet. react-aria's own pointerdown/keydown handler closes the
+tooltip through the same callback before `onPress` runs, so `onPress` closes it only for a
+press that had neither, such as a screen reader click.
+
+The touch path is covered by tests. jsdom has no `PointerEvent`, and without one react-aria
+falls back to branches that cannot represent touch — `useHover` binds `onMouseEnter` with a
+hardcoded `mouse` pointer type — so the tests install a minimal polyfill and drive the
+pointer sequence a tap produces. That puts `useHover` and `usePress` on the same branches a
+real browser takes, with `triggerHoverStart` correctly ignoring touch.
+
+The two things the evaluation's recommendation asked for — `role="tooltip"` on the tooltip
+element and `aria-describedby` on the trigger — were already correct, with one exception now
+fixed: `isOpen` was spread into `Tooltip` instead of being given to `TooltipTrigger`.
+react-aria's `Tooltip` builds its own state when passed `isOpen` or `defaultOpen`, detached
+from the trigger's, so in controlled mode the trigger's state stayed closed and
+`aria-describedby` was never emitted at all — and hover and Escape-to-dismiss stopped
+working. `isOpen` keeps its meaning for callers; it now drives the trigger. `defaultOpen`
+and `onOpenChange` are accepted alongside it.
+
+`ariaLabel` is unchanged but now documented in the story: the `More information` default
+repeats across every instance on a screen, so callers should name what the tooltip is about.
+
+#### The Help menu no longer announces "menu" twice (CORE-2940)
+
+The Help trigger had `aria-label='Help menu'` on top of its visible "Help", so screen readers
+read "Help menu, menu button". The aria-label is removed, so the name is now the visible
+"Help".
+
+#### Menu popovers no longer render as dialogs (CORE-2875)
+
+react-aria-components' `Popover` gives itself `role="dialog"` unless `isNonModal` is set, and
+none of our menus set it. So every `MenuTrigger` → `Popover` → `Menu` put a dialog around
+the menu, with the trigger labelling both. Screen readers announced "Help menu, dialog" and
+then "Help menu, menu". The dialog also made the menu modal: a full-screen underlay, a focus
+trap, a scroll-locked body, and `aria-hidden` on the rest of the page. An accessibility
+audit flagged this under WCAG 4.1.2 (Name, Role, Value) on the Help and Resources menus in
+Assignable.
+
+`NavBarMenuButton`, `ProfileMenu` and `DropdownMenu` now pass `isNonModal`, so the popover
+has no role and the menu is the only thing announced. `NavBarMenuButton` sets it ahead of
+`popoverProps`, so a caller can still override it. `NavBarPopoverButton` is unchanged and
+still renders a dialog.
+
+`isNonModal` on its own also stops a click elsewhere on the page from closing the menu.
+The underlay used to catch that click, and react-aria's blur fallback ignores focus
+moving to the page body. A new exported `MenuPopover` wraps `Popover` with `isNonModal`
+and closes the menu again on an outside press. `NavBarPopover` switches to it whenever
+`isNonModal` is set, and `DropdownMenu` uses it directly.
+
+What changes for users while a menu is open: the page behind it stays scrollable and
+visible to assistive tech, and focus is no longer trapped. Moving focus out of the menu
+closes it, as does Escape or a click outside. Focus still returns to the trigger on close.
+The menu also closes when the page scrolls.
+
+
+#### Dropped the `os` restriction that blocked Windows installs (CORE-2876)
+
+`package.json` declared `"os": [ "darwin", "linux" ]`, which npm enforces at install time in
+*consuming* projects: `npm ci` on Windows fails with `EBADPLATFORM`, and the restriction is
+copied into consumers' lockfiles. It arrived incidentally in #134, an error-boundary change,
+and has shipped since 1.23.6.
+
+Nothing here is platform-specific — every dependency is pure JavaScript and the published
+package is prebuilt `dist` output — so the field is removed. The repo's own bash build
+scripts are unaffected: `os` gates installation of the package, not development in this repo.
+
+#### Consumer-supplied `generic` error fallback is honoured (CORE-2876)
+
+`ErrorBoundary` merges a consumer's `errorFallbacks` over its defaults, `generic` included,
+but then chose what to display with `typedFallback || defaultErrorFallbacks.generic` — the
+module-level constant rather than the merged map. Since `typedFallback` is keyed on
+`getTypeFromError`, which returns the error's constructor name (`'Error'`) and never
+`'generic'`, an override of `generic` was unreachable by either path and silently ignored.
+Consumers that had replaced the stock error screen — openstax/assignments deliberately uses
+its own, with support details instead of a Sentry id — got the built-in one back.
+
+The display now reads the merged map, falling back to the built-in only for boundaries that
+set `includeDefaultHandlers={false}` without supplying a `generic` of their own.
+
+A boundary that supplies `generic` also stops passing untyped errors up to its parent. It has
+declared it can display anything, so bubbling past it would make the override unreachable
+again whenever the boundary is nested. Boundaries without their own `generic` bubble exactly
+as before.
+
+#### Configurable `NavBar` element (CORE-2876)
+
+`NavBar` hard-coded `tagName='nav'` on its `BodyPortal`, so every consumer got a
+`navigation` landmark whether or not the bar contained navigation. An accessibility audit
+of the Assignments student view flagged a bar holding only a heading, a Help menu, and a
+kebab menu as an unnecessary navigation landmark (WCAG 4.1.2).
+
+`NavBar` now accepts `tagName?: 'nav' | 'header' | 'div'`, forwarded to `BodyPortal`. It
+still defaults to `'nav'`, so existing consumers are unchanged; bars that hold no
+navigation links can pass `'header'` (a `banner` landmark) or `'div'` (no landmark).
+
+The portal `slot` stays `'nav'` regardless — it is only an ordering key for
+`BodyPortalSlotsContext` — and styling inside the bar is class-based, so the default
+`'nav'` behaves exactly as before.
+
+Consumers that pass a non-default `tagName` must check their body-portal layout CSS: a
+tag-qualified selector such as `nav[data-portal-slot="nav"]` stops matching once the bar
+renders as a `header` or `div`, and the bar loses its `grid-area`. Drop the tag qualifier
+(`[data-portal-slot="nav"]`) to select the slot regardless of element. The
+`SidebarNav` "UsingBodyPortal" story was updated accordingly.
 
 #### Banner links are underlined by default (CORE-2734)
 
@@ -42,8 +190,8 @@ ability to override the wrapper's CSS variables.
 #### Feature Component Migration (CORE-2008)
 
 `MessageBox`, `Banner`, `Tree` and `ToggleButtonGroup` have been migrated from styled-components
-to plain CSS bound to the `--ox-*` theme tokens. Props, behaviour and visual appearance are
-unchanged, but the exported pieces are no longer styled-components:
+to plain CSS bound to the `--ox-*` theme tokens. Compatibility and visual differences are
+documented below, and the exported pieces are no longer styled-components:
 
 **Breaking Changes:**
 
@@ -90,6 +238,9 @@ unchanged, but the exported pieces are no longer styled-components:
 - The `style` prop on the `MessageBox` and `Banner` exports is widened from `React.CSSProperties`
   to `CSSPropertiesWithVariables`, so callers can set the documented `--message-box-*` and
   `--banner-*` variables without casting. This is a widening, so existing usage is unaffected.
+- `ToggleButtonGroup` shows its focus ring as an outline rather than a box-shadow, and marks the
+  selected button with `Highlight` / `HighlightText` under `forced-colors: active`, so both stay
+  visible in Windows contrast themes.
 - Four Banner colours (`#fff5e0`, `#976502`, `#fdbd3e`, `#f8e8ea`) are recorded in
   `KNOWN_OFF_PALETTE` rather than snapped to the nearest palette entry, which would have been a
   visual change.

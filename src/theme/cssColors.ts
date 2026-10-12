@@ -60,8 +60,20 @@ export interface StylesheetColor extends FoundColor {
   property: string;
 }
 
-/** https://www.w3.org/TR/css-color-4/#named-colors */
-const NAMED_COLORS: Record<string, string> = {
+/**
+ * https://www.w3.org/TR/css-color-4/#named-colors
+ *
+ * Prototype-less, so a lookup can only answer for a colour that is actually in the
+ * table. An object literal inherits from `Object.prototype`, where `constructor` and
+ * `__proto__` are truthy — and they are the two inherited keys that survive being
+ * lower-cased, so `color: constructor` looked up to a function, was reported as a
+ * colour, and then crashed `fromHex` on `.toLowerCase()`. A crash here takes down the
+ * whole suite of whichever consumer is running the audit.
+ *
+ * Fixed on the table rather than at the two lookups, because guarding a call site only
+ * holds until someone adds a third.
+ */
+const NAMED_COLORS: Record<string, string> = Object.assign(Object.create(null), {
   aliceblue: '#f0f8ff', antiquewhite: '#faebd7', aqua: '#00ffff', aquamarine: '#7fffd4',
   azure: '#f0ffff', beige: '#f5f5dc', bisque: '#ffe4c4', black: '#000000',
   blanchedalmond: '#ffebcd', blue: '#0000ff', blueviolet: '#8a2be2', brown: '#a52a2a',
@@ -102,7 +114,7 @@ const NAMED_COLORS: Record<string, string> = {
   steelblue: '#4682b4', tan: '#d2b48c', teal: '#008080', thistle: '#d8bfd8',
   tomato: '#ff6347', turquoise: '#40e0d0', violet: '#ee82ee', wheat: '#f5deb3',
   white: '#ffffff', whitesmoke: '#f5f5f5', yellow: '#ffff00', yellowgreen: '#9acd32',
-};
+});
 
 /**
  * Functions whose arguments *are* the colour, rather than containing one. These are
@@ -123,12 +135,38 @@ const COLOR_FUNCTIONS = [
  *
  * `var()` is deliberately absent: a fallback is whatever the property makes of it, so
  * it keeps the gate of the property it was written in.
+ *
+ * `image()` is here for its bare `<color>` argument, which renders as a solid image.
+ * `drop-shadow()` is here because it is the only part of `filter` that holds a colour,
+ * which is why `filter` itself is not in `COLOR_SHORTHANDS`.
+ *
+ * Verified in Chromium 153 rather than read off the grammar, one argument at a time:
+ * `image(red)`, `color-mix(in srgb, red, blue)`, `light-dark(red, blue)` and
+ * `drop-shadow(0 0 2px red)` are all accepted, and `image-set(red 1x)` is rejected
+ * while `image-set(url(a.png) 1x)` is accepted.
+ *
+ * `cross-fade()` is the one entry no engine could arbitrate: Chromium implements
+ * neither the standard syntax nor a colour argument to the prefixed one, so even the
+ * all-image control is rejected. CSS Images 4 defines its argument as
+ * `<percentage>? && [ <image> | <color> ]`, so it is kept on the spec's word.
  */
 const COLOR_CONTAINERS = [
   'linear-gradient', 'radial-gradient', 'conic-gradient', 'repeating-linear-gradient',
   'repeating-radial-gradient', 'repeating-conic-gradient', 'color-mix', 'light-dark',
-  'cross-fade',
+  'cross-fade', 'image', 'drop-shadow',
 ];
+
+/**
+ * Functions whose arguments are never a bare `<color>`, so the enclosing property's
+ * gate must not reach inside them either.
+ *
+ * Being absent from `COLOR_CONTAINERS` is not enough. An unlisted function passes the
+ * property's gate straight through, which is right for `var()` — a fallback is whatever
+ * the property makes of it — but wrong here: `background` does take a colour, so
+ * `background: image-set(red 1x)` arrived with the gate open and reported `red`, though
+ * `image-set()` holds images and resolutions and Chromium rejects that value.
+ */
+const NOT_COLOR_CONTAINERS = ['image-set', 'element', 'paint'];
 
 /**
  * Keywords that are colour-valued but carry no fixed channels, so there is nothing to
@@ -391,18 +429,28 @@ export const declarations = (css: string): Declaration[] => {
  * Spelled out rather than matched by prefix, so that `border-radius`, `border-width` and
  * the rest of the border family that cannot take a colour do not let one through.
  *
- * `list-style` is deliberately absent, though it is image-bearing: its bare identifier
- * is a `<counter-style>` name, and after `@counter-style red { ... }` the declaration
- * `list-style: red` is valid and means that counter. A gradient written there is still
- * found, because a gradient opens the gate for its own stops — see `COLOR_CONTAINERS`.
+ * The image-valued and filter-valued properties are all deliberately absent, because a
+ * bare identifier in one is never a colour. Each was checked in Chromium 153 by setting
+ * the declaration and reading it back, with `inherit` as a control for whether the
+ * property exists at all: `background-image`, `border-image`, `border-image-source`,
+ * `mask`, `mask-image`, `filter` and `backdrop-filter` all reject `red`. `list-style`
+ * is absent for a related but distinct reason — its identifier is an author-defined
+ * `<counter-style>` name, so `list-style: red` is *valid* and means that counter.
+ *
+ * Nothing is lost by their absence: a gradient opens the gate for its own stops and
+ * `drop-shadow()` for its own colour, wherever they are written — see
+ * `COLOR_CONTAINERS`.
+ *
+ * The entries that stay were checked the same way, and the question is whether a bare
+ * colour can appear *anywhere* in the value rather than as the whole of it: `red` alone
+ * is rejected by `box-shadow` and `text-shadow`, while `0 0 red` is accepted by both.
  */
 const COLOR_SHORTHANDS = [
-  'background', 'background-image', 'border', 'border-block', 'border-block-end',
-  'border-block-start', 'border-bottom', 'border-image', 'border-image-source',
-  'border-inline', 'border-inline-end', 'border-inline-start', 'border-left',
-  'border-right', 'border-top', 'box-shadow', 'caret', 'column-rule', 'fill', 'filter',
-  'backdrop-filter', 'mask', 'mask-image', 'outline', 'scrollbar', 'stroke',
-  'text-decoration', 'text-emphasis', 'text-shadow', 'text-stroke',
+  'background', 'border', 'border-block', 'border-block-end', 'border-block-start',
+  'border-bottom', 'border-inline', 'border-inline-end', 'border-inline-start',
+  'border-left', 'border-right', 'border-top', 'box-shadow', 'caret', 'column-rule',
+  'fill', 'outline', 'scrollbar', 'stroke', 'text-decoration', 'text-emphasis',
+  'text-shadow', 'text-stroke',
 ];
 
 /**
@@ -434,8 +482,22 @@ export const takesColor = (property: string): boolean => {
   return name.includes('color') || COLOR_SHORTHANDS.includes(name);
 };
 
-/** Whether this function's arguments are colours regardless of the enclosing property. */
-const holdsColor = (fn: string): boolean => COLOR_CONTAINERS.includes(unprefixed(fn));
+/**
+ * Whether a bare identifier inside this function may be read as a colour.
+ *
+ * Three answers, not two. A colour-bearing container opens the gate whatever the
+ * property was; a function known to hold no colour closes it whatever the property was;
+ * anything else — `var()`, and any function neither list has heard of — passes the
+ * property's own gate through unchanged.
+ */
+const gateInside = (fn: string, named: boolean): boolean => {
+  const name = unprefixed(fn);
+
+  if (COLOR_CONTAINERS.includes(name)) { return true; }
+  if (NOT_COLOR_CONTAINERS.includes(name)) { return false; }
+
+  return named;
+};
 
 const clamp = (value: number, max: number) => Math.min(max, Math.max(0, value));
 
@@ -643,17 +705,13 @@ export const describeColor = (literal: string): Rgba | null => {
 };
 
 /**
- * Finds every colour literal in a declaration value, at any depth. Functions that merely
- * contain colours are descended into; colour functions are terminal.
+ * The colour walk itself, over a value whose noise has already been blanked.
  *
- * `named` says whether a bare identifier may be read as a colour. That depends on the
- * property the value belongs to — see `takesColor` — and on whether the walk has since
- * descended into a function whose arguments are colours whatever the property is, see
- * `COLOR_CONTAINERS`. Hex and the colour functions are unambiguous and are found either
- * way. It has no default: defaulting it to `true` would quietly restore the over-eager
- * behaviour for any caller that forgot it.
+ * Split from `findColors` because the two have different preconditions rather than
+ * different behaviour: this one requires a blanked value and is also how it recurses
+ * into its own arguments, where re-blanking would be wasted work.
  */
-export const findColors = (value: string, named: boolean): FoundColor[] => {
+const scanColors = (value: string, named: boolean): FoundColor[] => {
   const found: FoundColor[] = [];
   let index = 0;
 
@@ -678,9 +736,7 @@ export const findColors = (value: string, named: boolean): FoundColor[] => {
       if (COLOR_FUNCTIONS.includes(fn)) {
         found.push({ literal, rgba: describeColor(literal) });
       } else {
-        // a colour-bearing container opens the gate for its arguments; anything else
-        // just passes the enclosing property's gate down unchanged.
-        found.push(...findColors(args, named || holdsColor(fn)));
+        found.push(...scanColors(args, gateInside(fn, named)));
       }
 
       index = cursor;
@@ -711,6 +767,26 @@ export const findColors = (value: string, named: boolean): FoundColor[] => {
 };
 
 /**
+ * Finds every colour literal in a declaration value, at any depth. Functions that merely
+ * contain colours are descended into; colour functions are terminal.
+ *
+ * `named` says whether a bare identifier may be read as a colour. That depends on the
+ * property the value belongs to — see `takesColor` — and on whether the walk has since
+ * descended into a function whose arguments are colours whatever the property is, see
+ * `COLOR_CONTAINERS`. Hex and the colour functions are unambiguous and are found either
+ * way. It has no default: defaulting it to `true` would quietly restore the over-eager
+ * behaviour for any caller that forgot it.
+ *
+ * The value is taken *raw*, as written in the source, and its noise is blanked here.
+ * Without that this took a declaration value in its doc comment and a noise-free one in
+ * fact: `url(#fff)` is a URL whose fragment is not a colour and `content: "red"` is a
+ * string, yet both were reported. `stylesheetColors` does not pay for this twice — it
+ * reads values that `declarations` has already blanked, so it walks them directly.
+ */
+export const findColors = (value: string, named: boolean): FoundColor[] =>
+  scanColors(stripNoise(value), named);
+
+/**
  * Every colour literal written in a stylesheet, in source order.
  *
  * Accumulated with `push` rather than by spreading into a new array per declaration:
@@ -721,7 +797,7 @@ export const stylesheetColors = (css: string): StylesheetColor[] => {
   const found: StylesheetColor[] = [];
 
   for (const { context, property, value } of declarations(css)) {
-    for (const color of findColors(value, takesColor(property))) {
+    for (const color of scanColors(value, takesColor(property))) {
       found.push({ ...color, context, property });
     }
   }

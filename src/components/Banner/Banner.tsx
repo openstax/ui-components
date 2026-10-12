@@ -46,6 +46,10 @@ export const CloseButton = React.forwardRef<HTMLButtonElement, CloseButtonProps>
 );
 CloseButton.displayName = 'CloseButton';
 
+/**
+ * A message box that does not announce itself. For a banner that appears or changes because of
+ * something the user or the app did, such as a failed request, use `BannerRegion`.
+ */
 export const Banner = (props: {messages: string[]; severity: BannerSeverity; onDismiss?: () => void}) => {
   const numWarnings = props.messages.length;
 

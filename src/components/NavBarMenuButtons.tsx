@@ -11,6 +11,7 @@ import {
   PopoverProps,
 } from "react-aria-components";
 import { NavBarButton, NavBarButtonProps } from "./NavBarButton";
+import { MenuPopover } from "./MenuPopover";
 import "./NavBarMenuButtons.css";
 import "../theme/theme.css";
 
@@ -18,11 +19,8 @@ export const NavBarMenuItem = React.forwardRef<
   HTMLDivElement,
   React.ComponentProps<typeof MenuItem>
 >(({ className, ...props }, ref) => (
-  // style is deliberately not destructured: with the theme defaults moved into
-  // NavBarMenuButtons.css there is nothing left to merge it with, so it passes straight
-  // through in ...props and react-aria handles both the object and render-callback forms.
-  // That is why this needs no composeRenderProps for style (cf. CORE-2710) — the bug that
-  // one guards against was us overwriting the caller's style, which we no longer do.
+  // style is not destructured: with no defaults to merge it with, it passes through in
+  // ...props and react-aria handles both the object and render-callback forms.
   <MenuItem
     ref={ref}
     className={composeRenderProps(className, (resolved) => classNames("navbar-menu-item", resolved))}
@@ -42,14 +40,19 @@ PopoverContainer.displayName = "PopoverContainer";
 export const NavBarPopover = React.forwardRef<
   HTMLDivElement,
   PopoverProps
->(({ className, ...props }, ref) => (
+>(({ className, ...props }, ref) => {
   // style passes through in ...props — see the note on NavBarMenuItem above.
-  <Popover
-    ref={ref}
-    className={composeRenderProps(className, (resolved) => classNames("navbar-popover", resolved))}
-    {...props}
-  />
-));
+  // MenuPopover closes a non-modal popover on an outside press.
+  const PopoverComponent = props.isNonModal ? MenuPopover : Popover;
+
+  return (
+    <PopoverComponent
+      ref={ref}
+      className={composeRenderProps(className, (resolved) => classNames("navbar-popover", resolved))}
+      {...props}
+    />
+  );
+});
 NavBarPopover.displayName = "NavBarPopover";
 
 export type NavBarBaseButtonProps = React.PropsWithChildren<{
@@ -70,7 +73,8 @@ const NavBarBaseButton = ({
   return (
     <Trigger>
       <NavBarButton {...props} />
-      <NavBarPopover {...popoverProps}>
+      {/* Non-modal so the popover is not announced as a dialog; popoverProps can override. */}
+      <NavBarPopover isNonModal={isMenu} {...popoverProps}>
         <Content>{children}</Content>
       </NavBarPopover>
     </Trigger>

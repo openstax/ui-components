@@ -4,11 +4,9 @@
 }
 
 /*
- * Carried over verbatim from the styled-components original. It is almost certainly
- * inert: TreeChevron always supplies a className to its RAC.Button, so the button never
- * carries react-aria-components' default `react-aria-Button` class. The rotation that is
- * actually observed comes from the `.tree-item[data-expanded] svg` rule below. Kept
- * because removing it would be a behaviour change rather than a refactor.
+ * Almost certainly inert: TreeChevron always supplies a className to its RAC.Button, so
+ * the button never carries react-aria-components' default `react-aria-Button` class. The
+ * rotation comes from the `.tree-item[data-expanded] svg` rule below.
  */
 .tree[data-expanded] .react-aria-Button[slot=chevron] svg {
   rotate: 90deg;

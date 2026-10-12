@@ -1,0 +1,5 @@
+/* Empty, the region leaves the layout, so a flex or grid parent does not count it as an item
+   with its own gap or cell. It stays in the accessibility tree, which is what lets it announce. */
+.banner-region:empty {
+  position: absolute;
+}
