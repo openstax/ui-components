@@ -6,6 +6,15 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
+#### `NavBarDisclosureButton` and `NavBarDisclosureItem` (CORE-2875)
+
+A button that shows a list of links and actions, for navigation. `NavBarMenuButton`'s
+`role="menu"` is meant for command menus and misdescribes a list of links, which screen
+readers then don't announce as links.
+
+The button reports `aria-expanded`, and the list holds real links (`href`) and buttons
+(`onAction`) right after it, so Tab moves through the items. Escape closes the list and
+returns focus to the button, and so does activating an item.
 #### `Checkbox` supports an `indeterminate` state (CORE-2901)
 
 A checkbox that summarises a set of others, such as "all options" above a list, has no way
@@ -145,6 +154,15 @@ renders as a `header` or `div`, and the bar loses its `grid-area`. Drop the tag 
 (`[data-portal-slot="nav"]`) to select the slot regardless of element. The
 `SidebarNav` "UsingBodyPortal" story was updated accordingly.
 
+#### Banner links are underlined by default (CORE-2734)
+
+Links inside `Banner`/`StyledBanner` were distinguished from the surrounding banner text by
+colour alone, and only picked up an underline on hover. On the warning background the link
+colour (`#026AA1`) and the body-text colour (`#976502`) have a contrast ratio of 1.17:1 — far
+under the 3:1 that WCAG 1.4.1 requires before colour can be the only distinction. Both `a`
+elements and `.button-link` buttons in a banner are now underlined at rest; hover and focus
+keep the underline and continue to change the colour.
+
 #### Render-callback `className` support in react-aria-components wrappers (CORE-2708)
 
 `NavBarMenuItem`, `NavBarPopover`, `NavBarButton`, and `TreeCheckbox` passed the caller's
@@ -168,6 +186,65 @@ callback, so both forms reach the DOM. The object form is unchanged, including t
 ability to override the wrapper's CSS variables.
 
 ### Changed - BREAKING CHANGES
+
+#### Feature Component Migration (CORE-2008)
+
+`MessageBox`, `Banner`, `Tree` and `ToggleButtonGroup` have been migrated from styled-components
+to plain CSS bound to the `--ox-*` theme tokens. Compatibility and visual differences are
+documented below, and the exported pieces are no longer styled-components:
+
+**Breaking Changes:**
+
+1. **`BoxWrapper` (and `BoxHeading`, `BoxBody`, `BoxEventId`) are no longer styled-components**
+   - **Old behavior**: styled-components, usable as component selectors inside another styled
+     component's template — `${BoxWrapper} { ... }`
+   - **New behavior**: plain function components rendering `.message-box`, `.message-box-heading`,
+     `.message-box-body` and `.message-box-event-id`
+   - **Impact**: `${BoxWrapper}` in a styled-components template no longer resolves to a selector.
+     `openstax/assessments` does this in
+     `packages/frontend/src/assessments/screens/Preview/styled.tsx`
+   - **Migration**: target the `.message-box` class instead
+
+2. **`CloseButton` no longer wraps `Button`**
+   - **Old behavior**: `styled(Button)` that unset every style `Button` applied, and forwarded the
+     `severity` prop through to the rendered `<button>` element
+   - **New behavior**: a self-contained `<button class="banner-close-button">`. The old layering
+     only worked because styled-components injects its sheet last; in plain CSS the two class
+     selectors have equal specificity and the winner would depend on module evaluation order
+   - **Impact**: `variant` and `isWaiting` are no longer accepted (no consumer passes them), and the
+     rendered element no longer carries a `severity` attribute or the `button-base` class. The
+     parts of `.button-base` the old override did *not* unset — the inline-flex 4rem centred box,
+     the 40% disabled fade and the `:focus` outline and inset ring — are carried into
+     `.banner-close-button`, so the control looks and focuses the same
+   - **Migration**: none needed for the `severity` / `onClick` / `aria-label` usage in the wild
+
+**Non-Breaking Changes:**
+
+- `StyledBanner`, `Severity`, `Tree`, `TreeItem`, `TreeItemContent`, `TreeChevron`, `MessageBox`
+  and `ToggleButtonGroup` keep their props and rendered structure.
+- Every replaced export still forwards refs to its element. The styled components these grew out
+  of did, and this package is on React 17, where a plain function component drops a ref silently.
+  `Tree` and `TreeItem` keep their item-type generic as well: `forwardRef` erases it, so each is
+  given back the signature react-aria-components itself exports.
+- Banner severity is now a tone class — `.banner-note`, `.banner-warning`, `.banner-error` — which
+  sets `--banner-bg`, `--banner-color` and `--banner-border-color`. The tone class is applied to
+  the close button as well as the banner, so `CloseButton` keeps its colour when rendered outside
+  a `StyledBanner`.
+- The react-aria wrappers (`Tree`, `TreeItem`, `StyledToggleButtonGroup`, `StyledToggleButton`)
+  compose `className` with `composeRenderProps`, so both the string and render-callback forms
+  survive. `styled(UI.ToggleButtonGroup)` in consuming projects keeps working.
+- `TreeItemContent` is re-exported straight from react-aria-components. It renders no DOM node, so
+  the empty `styled()` wrapper it used to carry was a no-op.
+- The `style` prop on the `MessageBox` and `Banner` exports is widened from `React.CSSProperties`
+  to `CSSPropertiesWithVariables`, so callers can set the documented `--message-box-*` and
+  `--banner-*` variables without casting. This is a widening, so existing usage is unaffected.
+- `ToggleButtonGroup` shows its focus ring as an outline rather than a box-shadow, and marks the
+  selected button with `Highlight` / `HighlightText` under `forced-colors: active`, so both stay
+  visible in Windows contrast themes.
+- Four Banner colours (`#fff5e0`, `#976502`, `#fdbd3e`, `#f8e8ea`) are recorded in
+  `KNOWN_OFF_PALETTE` rather than snapped to the nearest palette entry, which would have been a
+  visual change.
+
 
 #### Button Component Migration (CORE-1999)
 
