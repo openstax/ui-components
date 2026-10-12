@@ -51,17 +51,9 @@
 }
 
 /*
- * Self-contained rather than layered over .button-base: the styled-components original
- * wrapped Button and then unset everything Button gave it, which only worked because
- * styled-components injected its sheet last. Plain CSS has no such guarantee, and the two
- * class selectors would have equal specificity.
- *
- * Self-contained means carrying the parts of .button-base the original did *not* unset,
- * or the control would lose them. The first block below is the original's own
- * declarations; the second is the .button-base remainder, which is what kept the dismiss
- * control an inline-flex 4rem box with its contents centred. `:disabled` and `:focus` are
- * carried for the same reason — they outranked the reset on specificity, so the original
- * kept Button's 40% disabled fade and its keyboard focus ring.
+ * Self-contained rather than layered over .button-base, whose equal-specificity class
+ * would win or lose by stylesheet order. It carries the .button-base declarations it
+ * needs (inline-flex box, centred contents, wrapping), plus :disabled and :focus below.
  */
 .banner-close-button {
   color: var(--banner-color);
@@ -94,9 +86,8 @@
 }
 
 /*
- * The --button-* custom properties are read here, not renamed to --banner-*, because the
- * control used to be a Button: a consumer that had set them to retheme the focus ring
- * keeps doing so.
+ * The --button-* custom properties are read here, not renamed to --banner-*, so a consumer
+ * that sets them to retheme the focus ring keeps doing so.
  */
 .banner-close-button:focus {
   outline: solid var(--button-outline, var(--ox-color-white));
