@@ -31,6 +31,12 @@ A disabled indeterminate checkbox draws no dash, the same as a disabled checked 
 
 ### Fixed
 
+#### `ButtonNav` disabled arrows no longer show a hover border (CORE-2005)
+
+A disabled arrow is faded and cannot be pressed, but it still drew the hover border of an
+enabled one. The border now appears only on an enabled arrow. The `ButtonNav` story also marks
+the current slide with `aria-current`, as consumers should for their own children.
+
 #### `TooltipGroup`'s trigger is a button that does something (CORE-2871)
 
 An accessibility evaluation flagged the info-icon trigger as a name/role/value failure
