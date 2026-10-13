@@ -31,6 +31,16 @@ A disabled indeterminate checkbox draws no dash, the same as a disabled checked 
 
 ### Fixed
 
+#### Default Sentry config ignores two errors from the user's environment (CORE-3249)
+
+The default `Sentry.init` in `ErrorBoundary` now sets `ignoreErrors` for:
+
+- `c.isActive is not a function`: GTM finds a `google_tag_manager.zones` object that our
+  scripts didn't create. It's seen on Windows behind VPN software.
+- `mce-visual-caret-hidden`: a script injected by Apple Mail's embedded browser.
+
+Apps that pass their own `sentryInit` are unaffected.
+
 #### `TooltipGroup`'s trigger is a button that does something (CORE-2871)
 
 An accessibility evaluation flagged the info-icon trigger as a name/role/value failure
