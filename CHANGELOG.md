@@ -42,6 +42,15 @@ Anything in that strip, such as header content at the rail's right edge, is cove
 A disabled arrow is faded and cannot be pressed, but it still drew the hover border of an
 enabled one. The border now appears only on an enabled arrow. The `ButtonNav` story also marks
 the current slide with `aria-current`, as consumers should for their own children.
+#### Default Sentry config ignores two errors from the user's environment (CORE-3249)
+
+The default `Sentry.init` in `ErrorBoundary` now sets `ignoreErrors` for:
+
+- `c.isActive is not a function`: GTM finds a `google_tag_manager.zones` object that our
+  scripts didn't create. It's seen on Windows behind VPN software.
+- `mce-visual-caret-hidden`: a script injected by Apple Mail's embedded browser.
+
+Apps that pass their own `sentryInit` are unaffected.
 
 #### `TooltipGroup`'s trigger is a button that does something (CORE-2871)
 
