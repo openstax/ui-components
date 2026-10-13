@@ -275,6 +275,26 @@ describe('ErrorBoundary', () => {
     expect(initMock).toHaveBeenCalled();
   });
 
+  it('ignores third-party errors by default', () => {
+    const initMock = Sentry.init as jest.Mock;
+    initMock.mockClear();
+
+    act(() => {
+      renderer.create(
+        <ErrorBoundary sentryDsn='https://examplePublicKey@o0.ingest.sentry.io/0' />
+      );
+    });
+
+    const { ignoreErrors } = initMock.mock.calls[0][0];
+    const isIgnored = (message: string) => ignoreErrors.some((pattern: RegExp) => pattern.test(message));
+
+    expect(isIgnored('TypeError: c.isActive is not a function')).toBe(true);
+    expect(isIgnored(
+      "TypeError: undefined is not an object (evaluating 'document.getElementsByClassName('hide-icon hidden mce-visual-caret-hidden')[0].remove')"
+    )).toBe(true);
+    expect(isIgnored('TypeError: pi is not a function')).toBe(false);
+  });
+
   it('can override Sentry init', () => {
     const initMock = Sentry.init as jest.Mock;
     initMock.mockClear();
