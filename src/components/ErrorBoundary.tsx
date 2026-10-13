@@ -24,6 +24,12 @@ const defaultErrorLevels: { [_: string]: Sentry.SeverityLevel } = {
   'SessionExpiredError': 'warning'
 };
 
+// expected errors the fallback already explains to the user; they're kept as a
+// breadcrumb on whatever event comes next instead of being sent on their own
+const defaultBreadcrumbErrors: { [_: string]: boolean } = {
+  'SessionExpiredError': true
+};
+
 export const ErrorBoundary = ({
   children,
   includeDefaultHandlers = true,
@@ -36,6 +42,7 @@ export const ErrorBoundary = ({
   sentryInit?: Sentry.BrowserOptions;
   errorFallbacks?: { [_: string]: JSX.Element };
   errorLevels?: { [_: string]: Sentry.SeverityLevel };
+  breadcrumbErrors?: { [_: string]: boolean };
   userUuid?: string; // Optional user UUID to set in Sentry
   children?: React.ReactNode;
 }) => {
@@ -49,6 +56,10 @@ export const ErrorBoundary = ({
     ...(includeDefaultHandlers ? defaultErrorLevels : {}),
     ...props.errorLevels
   }), [includeDefaultHandlers, props.errorLevels]);
+  const breadcrumbErrors = React.useMemo(() => ({
+    ...(includeDefaultHandlers ? defaultBreadcrumbErrors : {}),
+    ...props.breadcrumbErrors
+  }), [includeDefaultHandlers, props.breadcrumbErrors]);
   const typedFallback = error?.type ? errorFallbacks[error.type] : undefined;
   // Supplying `generic` is a consumer saying it can display any error, so this
   // boundary stops passing untyped ones up to its parent. Read off the prop rather
@@ -110,6 +121,12 @@ export const ErrorBoundary = ({
     const type = getTypeFromError(error);
 
     if (type in errorFallbacks || handlesUntypedErrors || !parentContext.initialized) {
+      if (breadcrumbErrors[type]) {
+        Sentry.addBreadcrumb({ category: 'error', level: errorLevels[type] ?? 'error', message: type });
+        setThisError({ error, type, componentStack, isInline });
+        return;
+      }
+
       setThisError({
         error, type, componentStack, isInline,
         // the level goes on the scope because sentry's capture hint disallows
@@ -132,7 +149,7 @@ export const ErrorBoundary = ({
       // catcher is intact because this boundary is the one that caught the error
       parentContext.setError(input, componentStack);
     }
-  }, [errorFallbacks, errorLevels, handlesUntypedErrors, parentContext]);
+  }, [errorFallbacks, errorLevels, breadcrumbErrors, handlesUntypedErrors, parentContext]);
 
   const contextValue = React.useMemo(() => ({
     error,

@@ -29,6 +29,15 @@ on click, so the prop is reapplied after every render and stays the source of tr
 
 A disabled indeterminate checkbox draws no dash, the same as a disabled checked one.
 
+#### `SessionExpiredError` is a Sentry breadcrumb, not an event (CORE-3251)
+
+An expired session is expected, and the fallback already tells the user about it, so
+`ErrorBoundary` no longer sends it to Sentry as an event. It adds a breadcrumb instead, so
+the next real error from that user shows that their session expired first.
+
+Error types handled this way are set with the new `breadcrumbErrors` prop, merged over the
+defaults like `errorLevels`. Pass `{ SessionExpiredError: false }` to send it as an event again.
+
 ### Fixed
 
 #### `TooltipGroup`'s trigger is a button that does something (CORE-2871)
