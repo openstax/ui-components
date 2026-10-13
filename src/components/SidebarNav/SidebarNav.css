@@ -136,3 +136,13 @@
   border-radius: 0.4rem 0 0 0.4rem;
   z-index: 1;
 }
+
+/* Widens the pressable area of the 1.6rem toggle to a 2.4rem square (WCAG 2.5.8). */
+.sidebar-nav-toggle::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -0.8rem;
+  right: 0;
+}
