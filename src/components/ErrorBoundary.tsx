@@ -48,18 +48,23 @@ export const ErrorBoundary = ({
 }) => {
   const parentContext = React.useContext(ErrorContext);
   const [error, setThisError] = React.useState<(SentryError & {isInline?: boolean}) | null>(null);
-  const errorFallbacks: { [_: string]: JSX.Element } = React.useMemo(() => ({
-    ...(includeDefaultHandlers ? defaultErrorFallbacks : {}),
-    ...props.errorFallbacks
-  }), [includeDefaultHandlers, props.errorFallbacks]);
-  const errorLevels = React.useMemo(() => ({
-    ...(includeDefaultHandlers ? defaultErrorLevels : {}),
-    ...props.errorLevels
-  }), [includeDefaultHandlers, props.errorLevels]);
-  const breadcrumbErrors = React.useMemo(() => ({
-    ...(includeDefaultHandlers ? defaultBreadcrumbErrors : {}),
-    ...props.breadcrumbErrors
-  }), [includeDefaultHandlers, props.breadcrumbErrors]);
+  // the merged maps are keyed by error type, which comes from the error's name, so
+  // they have no prototype; otherwise a type like `constructor` would match inherited keys
+  const errorFallbacks: { [_: string]: JSX.Element } = React.useMemo(() => Object.assign(
+    Object.create(null),
+    includeDefaultHandlers ? defaultErrorFallbacks : {},
+    props.errorFallbacks
+  ), [includeDefaultHandlers, props.errorFallbacks]);
+  const errorLevels: { [_: string]: Sentry.SeverityLevel } = React.useMemo(() => Object.assign(
+    Object.create(null),
+    includeDefaultHandlers ? defaultErrorLevels : {},
+    props.errorLevels
+  ), [includeDefaultHandlers, props.errorLevels]);
+  const breadcrumbErrors: { [_: string]: boolean } = React.useMemo(() => Object.assign(
+    Object.create(null),
+    includeDefaultHandlers ? defaultBreadcrumbErrors : {},
+    props.breadcrumbErrors
+  ), [includeDefaultHandlers, props.breadcrumbErrors]);
   const typedFallback = error?.type ? errorFallbacks[error.type] : undefined;
   // Supplying `generic` is a consumer saying it can display any error, so this
   // boundary stops passing untyped ones up to its parent. Read off the prop rather

@@ -196,6 +196,25 @@ describe('ErrorBoundary', () => {
     }));
   }));
 
+  it('does not match error types against inherited object keys', () => withoutReactLogs(() => {
+    class ToStringError extends Error {
+      static readonly TYPE = 'toString';
+    }
+    const ToStringComponent = () => {
+      throw new ToStringError();
+    };
+
+    renderer.create(
+      <ErrorBoundary>
+        <ToStringComponent />
+      </ErrorBoundary>
+    );
+
+    const reports = testkit.reports();
+    expect(reports).toHaveLength(1);
+    expect(reports[0].level).toBe('error');
+  }));
+
   it('can override fallback components for specific errors', () => {
     const spy = jest.spyOn(console, 'error')
     spy.mockImplementation(() => undefined);
