@@ -102,6 +102,12 @@ export const ErrorBoundary = ({
         Sentry.extraErrorDataIntegration()
       ],
       tracesSampleRate: 0.1,
+      ignoreErrors: [
+        // GTM finding a google_tag_manager.zones object we didn't create (VPN/blocker software on Windows)
+        /c\.isActive is not a function/,
+        // script injected by Apple Mail's embedded browser
+        /mce-visual-caret-hidden/,
+      ],
     });
   }, [sentryDsn, sentryInit, parentContext.initialized]);
 
