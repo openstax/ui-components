@@ -1,0 +1,25 @@
+/* MessageBox styles */
+.message-box {
+  /* --message-box-margin is bound from JS when the customMargin prop is set; it is the
+     one value here that genuinely varies per render. */
+  margin: var(--message-box-margin, 0 auto);
+  max-width: 90.2rem;
+  border: 0.1rem solid var(--message-box-border-color, var(--ox-color-pale));
+}
+
+.message-box-heading {
+  font-weight: 400;
+  font-size: 2.2rem;
+  margin-top: 0;
+}
+
+.message-box-body {
+  font-size: 1.6rem;
+  padding: 3rem;
+}
+
+.message-box-event-id {
+  font-size: 1.4rem;
+  color: var(--message-box-event-id-color, var(--ox-color-neutral-medium));
+  margin-top: 1.6rem;
+}
