@@ -106,6 +106,58 @@ describe('ProfileMenu', () => {
     await waitFor(() => expect(screen.queryByRole('menu')).toBeNull());
   });
 
+  it('opens again on the next press of the trigger after an outside press moved focus', async () => {
+    const user = userEvent.setup();
+    render(
+      <>
+        <ProfileMenu
+          user={{ firstName: 'John', lastName: 'Doe' }}
+          data-testid="profile-menu"
+        >
+          <ProfileMenuItem id="profile">Profile</ProfileMenuItem>
+        </ProfileMenu>
+        <div tabIndex={0}>Page content</div>
+      </>
+    );
+    const button = screen.getByTestId('profile-menu');
+
+    await user.click(button);
+    await screen.findByRole('menu');
+
+    // Pressing focusable content closes the menu when focus leaves it, before the press's
+    // click, so the outside-press handler never sees that click.
+    await user.click(screen.getByText('Page content'));
+    await waitFor(() => expect(screen.queryByRole('menu')).toBeNull());
+
+    await user.click(button);
+    await screen.findByRole('menu');
+
+    // If the handler kept its state across the close, the click that just opened the menu
+    // would close it again.
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    expect(screen.queryByRole('menu')).not.toBeNull();
+  });
+
+  it('closes when the trigger is pressed again', async () => {
+    const user = userEvent.setup();
+    render(
+      <ProfileMenu
+        user={{ firstName: 'John', lastName: 'Doe' }}
+        data-testid="profile-menu"
+      >
+        <ProfileMenuItem id="profile">Profile</ProfileMenuItem>
+      </ProfileMenu>
+    );
+    const button = screen.getByTestId('profile-menu');
+
+    await user.click(button);
+    await screen.findByRole('menu');
+
+    await user.click(button);
+
+    await waitFor(() => expect(screen.queryByRole('menu')).toBeNull());
+  });
+
   it('moves focus into the menu when it opens', async () => {
     render(
       <ProfileMenu

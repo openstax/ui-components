@@ -87,6 +87,21 @@ The Help trigger had `aria-label='Help menu'` on top of its visible "Help", so s
 read "Help menu, menu button". The aria-label is removed, so the name is now the visible
 "Help".
 
+#### A menu opens again after an outside press closed it (CORE-2973)
+
+`MenuPopover` closes a non-modal menu on a press outside it, using react-aria's
+`useInteractOutside`. That hook records that a press has started and clears the record when
+the press's click arrives, but `MenuPopover` switched the hook off while the menu was closed.
+When the press itself closed the menu first, by moving focus to something on the page, the
+click never reached the hook and the record stayed set. The next press on the trigger then
+opened the menu, and the click that finished that press closed it again, so the menu seemed
+not to open.
+
+This showed up in rex-web, where pressing book text while the profile menu is open moved
+focus and closed the menu. The hook is now mounted only while the menu is open, so its record
+starts clean each time. This affects every menu built on `MenuPopover`: `NavBarMenuButton`,
+`ProfileMenu` and `DropdownMenu`.
+
 #### Menu popovers no longer render as dialogs (CORE-2875)
 
 react-aria-components' `Popover` gives itself `role="dialog"` unless `isNonModal` is set, and
