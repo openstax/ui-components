@@ -38,9 +38,13 @@ uses `NavBarDisclosureButton`, so links are links and actions are buttons. Focus
 button when the list opens, and Tab moves through the items.
 
 `HelpMenuItem` now takes the props of `NavBarDisclosureItem`: `href`, `target`, `rel`,
-`onAction`, `className` and children. It no longer accepts `style`, render-callback
+`onAction`, `className` and children. It no longer accepts `style`, a `ref`, a render-callback
 `className`, or other react-aria `MenuItem` props. A focused item shows the browser's focus
 ring, so the `--help-menu-item-focus-bg` hook is gone.
+
+To migrate, pass a string `className` and style it in CSS instead of using `style`, and
+drop any `ref`. The two known consumers, assignments and lti-gateway, pass only `href`,
+`target` and `onAction`, so neither is affected.
 
 ### Fixed
 
