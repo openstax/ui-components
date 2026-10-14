@@ -6,9 +6,10 @@
 /* NavBar Popover */
 .navbar-popover {
   margin-top: -1rem;
-  border-top: 0.4rem solid var(--navbar-popover-border-color, #63a524);
+  border-top: 0.4rem solid var(--navbar-popover-border-color, var(--ox-color-dark-green));
+  /* black at 20% alpha; no token form without color-mix() */
   box-shadow: 0 0.4rem 0.4rem 0 #00000033;
-  background: #fff;
+  background: var(--ox-color-white);
 }
 
 /* NavBar Menu Item */
@@ -24,7 +25,7 @@
 .navbar-menu-item:hover,
 .navbar-menu-item[data-hovered],
 .navbar-menu-item[data-focused] {
-  background: var(--navbar-menu-item-hover-bg, #f1f1f1);
+  background: var(--navbar-menu-item-hover-bg, var(--ox-color-neutral-lighter));
 }
 
 .navbar-menu-item:focus-visible {
@@ -38,5 +39,5 @@
 }
 
 .navbar-menu-item:not(:last-child) {
-  border-bottom: 0.1rem solid var(--navbar-menu-item-border-color, #f5f5f5);
+  border-bottom: 0.1rem solid var(--navbar-menu-item-border-color, var(--ox-color-neutral-bright));
 }

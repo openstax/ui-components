@@ -12,7 +12,7 @@
 }
 
 .story-styled-menu-item {
-  color: #d4450c; /* colors.palette.orange */
+  color: var(--ox-color-orange);
 }
 
 .info-menu-button:hover svg path {

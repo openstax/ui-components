@@ -1,20 +1,12 @@
 import React from "react";
 import classNames from "classnames";
-import styled from "styled-components";
 import { LeftArrow } from "../svgs/LeftArrow";
 import { RightArrow } from "../svgs/RightArrow";
 import { FocusScope } from "react-aria";
 import { BodyPortal } from "../BodyPortal";
+import { CSSPropertiesWithVariables } from "../../types";
 
-import {
-  NavBody,
-  NavFooter,
-  NavHeader,
-  ToggleButton,
-  expandedWidth,
-  collapsedWidth,
-  navStyles,
-} from "./styles";
+import { collapsedWidth, expandedWidth } from "./constants";
 import {
   useNavAnimation,
   useSidebarNavProps,
@@ -23,6 +15,53 @@ import {
   useScrollRestoration,
   useNavCollapseHandler,
 } from "./hooks";
+import "./SidebarNav.css";
+import "../../theme/theme.css";
+
+const NavHeader = React.forwardRef<HTMLElement, React.HTMLAttributes<HTMLElement>>(
+  ({ className, ...props }, ref) => (
+    <header
+      ref={ref}
+      className={classNames("sidebar-nav-header", className)}
+      {...props}
+    />
+  ),
+);
+NavHeader.displayName = "NavHeader";
+
+const NavBody = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => (
+    <div
+      ref={ref}
+      className={classNames("sidebar-nav-body", className)}
+      {...props}
+    />
+  ),
+);
+NavBody.displayName = "NavBody";
+
+const NavFooter = React.forwardRef<HTMLElement, React.HTMLAttributes<HTMLElement>>(
+  ({ className, ...props }, ref) => (
+    <footer
+      ref={ref}
+      className={classNames("sidebar-nav-footer", className)}
+      {...props}
+    />
+  ),
+);
+NavFooter.displayName = "NavFooter";
+
+const ToggleButton = React.forwardRef<
+  HTMLButtonElement,
+  React.ButtonHTMLAttributes<HTMLButtonElement>
+>(({ className, ...props }, ref) => (
+  <button
+    ref={ref}
+    className={classNames("sidebar-nav-toggle", className)}
+    {...props}
+  />
+));
+ToggleButton.displayName = "ToggleButton";
 
 type FunctionRender = (_: {
   navIsCollapsed: boolean;
@@ -38,6 +77,7 @@ interface SidebarNavSharedProps {
   mobileBreakpoint?: string;
   isMobile?: boolean;
   className?: string;
+  style?: CSSPropertiesWithVariables;
   ariaLabel?: string;
 }
 
@@ -137,93 +177,99 @@ export const SidebarNavBase = ({
   );
 };
 
-export const SidebarNav = styled(
-  ({ className, id, ariaLabel, ...props }: SidebarNavSharedProps) => {
-    const { isMobile, navIsCollapsed, setNavIsCollapsed } =
-      useSidebarNavProps(props);
-    const sidebarNavRef = React.useRef<HTMLElement>(null);
-    const { navAnimation, setNavAnimation } = useNavAnimation();
+export const SidebarNav = ({
+  className,
+  style,
+  id,
+  ariaLabel,
+  ...props
+}: SidebarNavSharedProps) => {
+  const { isMobile, navIsCollapsed, setNavIsCollapsed } =
+    useSidebarNavProps(props);
+  const sidebarNavRef = React.useRef<HTMLElement>(null);
+  const { navAnimation, setNavAnimation } = useNavAnimation();
 
-    const handleSetNavIsCollapsed = useNavCollapseHandler(
-      navIsCollapsed,
-      setNavIsCollapsed,
-      setNavAnimation,
-    );
+  const handleSetNavIsCollapsed = useNavCollapseHandler(
+    navIsCollapsed,
+    setNavIsCollapsed,
+    setNavAnimation,
+  );
 
-    return (
-      <nav
-        id={id}
-        ref={sidebarNavRef}
-        data-testid="sidebarnav"
-        aria-label={ariaLabel}
-        className={classNames(className, {
-          collapsed: navIsCollapsed,
-          mobile: isMobile,
-          collapsing: navAnimation === "collapsing",
-          expanding: navAnimation === "expanding",
-        })}
+  return (
+    <nav
+      id={id}
+      ref={sidebarNavRef}
+      data-testid="sidebarnav"
+      aria-label={ariaLabel}
+      style={style}
+      className={classNames("sidebar-nav", className, {
+        collapsed: navIsCollapsed,
+        mobile: isMobile,
+        collapsing: navAnimation === "collapsing",
+        expanding: navAnimation === "expanding",
+      })}
+    >
+      <SidebarNavBase
+        {...props}
+        sidebarNavRef={sidebarNavRef}
+        navIsCollapsed={navIsCollapsed}
+        setNavIsCollapsed={handleSetNavIsCollapsed}
+        isMobile={isMobile}
       >
-        <SidebarNavBase
-          {...props}
-          sidebarNavRef={sidebarNavRef}
-          navIsCollapsed={navIsCollapsed}
-          setNavIsCollapsed={handleSetNavIsCollapsed}
-          isMobile={isMobile}
-        >
-          {props.children}
-        </SidebarNavBase>
-      </nav>
-    );
-  },
-)`
-  ${navStyles}
-`;
+        {props.children}
+      </SidebarNavBase>
+    </nav>
+  );
+};
 
-export const BodyPortalSidebarNav = styled(
-  ({ className, id, ariaLabel, ...props }: SidebarNavSharedProps) => {
-    const { isMobile, navIsCollapsed, setNavIsCollapsed } =
-      useSidebarNavProps(props);
+export const BodyPortalSidebarNav = ({
+  className,
+  style,
+  id,
+  ariaLabel,
+  ...props
+}: SidebarNavSharedProps) => {
+  const { isMobile, navIsCollapsed, setNavIsCollapsed } =
+    useSidebarNavProps(props);
 
-    const ref = React.useRef<HTMLElement | null>(
-      typeof document !== 'undefined' ? document.createElement("NAV") : null
-    );
-    const { navAnimation, setNavAnimation } = useNavAnimation();
+  const ref = React.useRef<HTMLElement | null>(
+    typeof document !== "undefined" ? document.createElement("NAV") : null,
+  );
+  const { navAnimation, setNavAnimation } = useNavAnimation();
 
-    const handleSetNavIsCollapsed = useNavCollapseHandler(
-      navIsCollapsed,
-      setNavIsCollapsed,
-      setNavAnimation,
-    );
+  const handleSetNavIsCollapsed = useNavCollapseHandler(
+    navIsCollapsed,
+    setNavIsCollapsed,
+    setNavAnimation,
+  );
 
-    return (
-      <BodyPortal
-        ref={ref}
-        id={id}
-        tagName="nav"
-        slot="sidebar"
-        data-testid="sidebarnav"
-        ariaLabel={ariaLabel}
-        className={classNames(className, {
-          collapsed: navIsCollapsed,
-          mobile: isMobile,
-          collapsing: navAnimation === "collapsing",
-          expanding: navAnimation === "expanding",
-        })}
-      >
-        <SidebarNavBase
-          {...props}
-          navIsCollapsed={navIsCollapsed}
-          setNavIsCollapsed={handleSetNavIsCollapsed}
-          sidebarNavRef={ref}
-          navAnimation={navAnimation}
-          isMobile={isMobile}
-        />
-      </BodyPortal>
-    );
-  },
-)`
-  ${navStyles}
-`;
+  return (
+    <BodyPortal
+      ref={ref}
+      id={id}
+      tagName="nav"
+      slot="sidebar"
+      data-testid="sidebarnav"
+      ariaLabel={ariaLabel}
+      style={style}
+      className={classNames("sidebar-nav", className, {
+        collapsed: navIsCollapsed,
+        mobile: isMobile,
+        collapsing: navAnimation === "collapsing",
+        expanding: navAnimation === "expanding",
+      })}
+    >
+      <SidebarNavBase
+        {...props}
+        navIsCollapsed={navIsCollapsed}
+        setNavIsCollapsed={handleSetNavIsCollapsed}
+        sidebarNavRef={ref}
+        navAnimation={navAnimation}
+        isMobile={isMobile}
+      />
+    </BodyPortal>
+  );
+};
 
 export const SidebarNavStyles = {
   NavHeader,
@@ -231,5 +277,5 @@ export const SidebarNavStyles = {
   NavFooter,
   ToggleButton,
   expandedWidth,
-  collapsedWidth
+  collapsedWidth,
 };

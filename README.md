@@ -169,14 +169,6 @@ written that way; CORE-2885 tracks it along with the rest of the lexing work.
 
 The check has its own tests, so what is claimed above is pinned rather than asserted.
 
-The stylesheets migrated before the tokens existed are listed in `PENDING_SWEEP` in
-`tokens.spec.ts` and are exempt from the duplicate-literal check until they are swept —
-from that check only. A color the theme does not have is still refused in those files, so
-the list defers work already owed rather than opening a gap. The list is asserted to be
-exactly the set of files that still carry duplicates, so it cannot drift: you cannot exempt
-a clean file, and you cannot sweep a file without removing it from the list. Do not add to
-it — new stylesheets are expected to use the tokens from the start.
-
 Adding a genuinely new color is therefore a deliberate act: put it in `palette.ts` if it is
 part of the design, or in the allowlist with a reason if it is a one-off we are keeping.
 

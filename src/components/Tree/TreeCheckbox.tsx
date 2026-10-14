@@ -13,6 +13,7 @@ import { checkedMixIcon } from "../svgs/checkmarksvgs";
 import { CSSPropertiesWithVariables } from "../../types";
 import classNames from "classnames";
 import "../Checkbox/Checkbox.css";
+import '../../theme/theme.css';
 
 export interface TreeCheckboxProps
   extends PropsWithChildren<Omit<RACCheckboxProps, "children">> {

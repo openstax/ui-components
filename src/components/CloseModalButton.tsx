@@ -2,6 +2,7 @@ import React from 'react';
 import classNames from 'classnames';
 import { Times } from "./svgs/Times";
 import './CloseModalButton.css';
+import '../theme/theme.css';
 
 export interface CloseModalButtonProps
   extends Omit<React.ComponentPropsWithoutRef<'button'>, 'type' | 'aria-label'> {

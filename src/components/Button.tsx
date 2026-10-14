@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import theme from '../theme';
 import { getButtonVariantStyles, ButtonVariant } from "../theme/buttons";
 import './Button.css';
+import '../theme/theme.css';
 
 // Re-export for backwards compatibility
 export { applyButtonVariantStyles } from "../theme/buttons";

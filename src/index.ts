@@ -10,6 +10,7 @@ export * from './components/Error';
 export * from './components/Html';
 export * from './components/MessageBox/MessageBox';
 export * from './components/Banner/Banner';
+export * from './components/Banner/BannerRegion';
 export * from './components/ErrorBoundary';
 export * from './components/ErrorMessage';
 export * from './components/ErrorModal';

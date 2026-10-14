@@ -3,6 +3,7 @@ import { CloseModalButton } from "./CloseModalButton";
 import * as RAC from "react-aria-components";
 import React from "react";
 import './Modal.css';
+import '../theme/theme.css';
 
 export const ModalCard = React.forwardRef<HTMLElement, RAC.DialogProps>(
   ({ className, ...props }, ref) => (

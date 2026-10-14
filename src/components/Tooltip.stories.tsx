@@ -22,9 +22,15 @@ const Row = styled.div`
   }
 `;
 
+// The 'More information' default is the same on every instance, so name the subject with ariaLabel.
 export const Default = () => <Wrapper>
   {(['right', 'top', 'bottom'] as Placement[]).map((placement, i) =>
-    <Row key={i}><TooltipGroup placement={placement}>Tooltip content goes here.</TooltipGroup>{placement}</Row>
+    <Row key={i}>
+      <TooltipGroup placement={placement} ariaLabel={`More information about ${placement} placement`}>
+        Tooltip content goes here.
+      </TooltipGroup>
+      {placement}
+    </Row>
   )}
   </Wrapper>
 ;

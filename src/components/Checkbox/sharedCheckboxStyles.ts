@@ -1,5 +1,7 @@
 import { colors } from "../../theme";
-import { whiteCheckmark, grayCheckmark, redCheckmark } from "../svgs/checkmarksvgs";
+import {
+  whiteCheckmark, grayCheckmark, redCheckmark, checkedMixIcon, grayMixIcon, redMixIcon
+} from "../svgs/checkmarksvgs";
 
 export type CheckboxVariant = keyof typeof checkboxVariants;
 export type CheckboxSize = 1.4 | 1.6 | 1.8 | 2;
@@ -14,27 +16,31 @@ export const checkboxVariants = {
     color: 'inherit',
     unCheckedBorder: `1px solid ${colors.palette.neutralThin}`,
     checkedBorder: `1px solid ${colors.palette.mediumBlue}`,
-    backgroundImage: whiteCheckmark
+    backgroundImage: whiteCheckmark,
+    indeterminateImage: checkedMixIcon
   },
   light: {
     backgroundColor: colors.palette.white,
     color: 'inherit',
     unCheckedBorder: `1px solid ${colors.palette.pale}`,
     checkedBorder: `1px solid ${colors.palette.pale}`,
-    backgroundImage: grayCheckmark
+    backgroundImage: grayCheckmark,
+    indeterminateImage: grayMixIcon
   },
   error: {
     backgroundColor: colors.palette.paleRed,
     color: colors.palette.darkRed,
     unCheckedBorder: `1px solid ${colors.palette.lightRed}`,
     checkedBorder: `1px solid ${colors.palette.lightRed}`,
-    backgroundImage: redCheckmark
+    backgroundImage: redCheckmark,
+    indeterminateImage: redMixIcon
   },
   disabled: {
     backgroundColor: colors.palette.white,
     color: 'inherit',
     unCheckedBorder: `1px solid ${colors.palette.pale}`,
     checkedBorder: `1px solid ${colors.palette.pale}`,
-    backgroundImage: 'none'
+    backgroundImage: 'none',
+    indeterminateImage: 'none'
   }
 } as const;

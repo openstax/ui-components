@@ -13,6 +13,7 @@ import {
 import { NavBarButton, NavBarButtonProps } from "./NavBarButton";
 import { MenuPopover } from "./MenuPopover";
 import "./NavBarMenuButtons.css";
+import "../theme/theme.css";
 
 export const NavBarMenuItem = React.forwardRef<
   HTMLDivElement,
