@@ -40,7 +40,7 @@
   opacity: 0.5;
 }
 
-.button-nav-arrow:hover {
+.button-nav-arrow:not(:disabled):hover {
   border: 0.1rem solid var(--button-nav-arrow-hover-border-color, var(--ox-color-pale));
 }
 

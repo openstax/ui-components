@@ -3,6 +3,24 @@ import { useInteractOutside, useObjectRef } from "react-aria";
 import { OverlayTriggerStateContext, Popover, PopoverProps } from "react-aria-components";
 
 /**
+ * Closes the menu on a press outside `popoverRef`. It is mounted only while the menu is open,
+ * so the hook's record of an in-progress press starts clean each time. Kept across closes, a
+ * press that closed the menu by moving focus (before its click) would leave that record set,
+ * and the next press on the trigger would close the menu again as soon as it opened.
+ */
+const CloseOnOutsidePress = ({ popoverRef }: { popoverRef: React.RefObject<HTMLElement> }) => {
+  const state = React.useContext(OverlayTriggerStateContext);
+
+  // A mouse press on the trigger only opens the menu, so a second press closes it here.
+  useInteractOutside({
+    ref: popoverRef,
+    onInteractOutside: () => state?.close(),
+  });
+
+  return null;
+};
+
+/**
  * A non-modal Popover for menus, so it is not rendered as a dialog. Non-modal popovers do
  * not close on an outside press by default; this adds that back.
  */
@@ -11,14 +29,12 @@ export const MenuPopover = React.forwardRef<HTMLElement, PopoverProps>(
     const ref = useObjectRef(forwardedRef);
     const state = React.useContext(OverlayTriggerStateContext);
 
-    // A mouse press on the trigger only opens the menu, so a second press closes it here.
-    useInteractOutside({
-      ref,
-      isDisabled: !state?.isOpen,
-      onInteractOutside: () => state?.close(),
-    });
-
-    return <Popover isNonModal {...props} ref={ref} />;
+    return (
+      <>
+        {state?.isOpen && <CloseOnOutsidePress popoverRef={ref} />}
+        <Popover isNonModal {...props} ref={ref} />
+      </>
+    );
   },
 );
 MenuPopover.displayName = "MenuPopover";

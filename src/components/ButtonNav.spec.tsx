@@ -1,5 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
+import fs from 'fs';
+import path from 'path';
 import { ButtonNav } from './ButtonNav/index';
 
 describe('ButtonNav', () => {
@@ -88,5 +90,15 @@ describe('ButtonNav', () => {
 
     fireEvent.click(arrows().prev);
     expect(handlePrev).not.toHaveBeenCalled();
+  });
+
+  describe('arrow styles', () => {
+    // jsdom does not apply stylesheets, so the hover rule is checked in the source.
+    const css = fs.readFileSync(path.join(__dirname, 'ButtonNav', 'ButtonNav.css'), 'utf8');
+
+    it('shows the hover border only on an enabled arrow', () => {
+      expect(css).toMatch(/\.button-nav-arrow:not\(:disabled\):hover\s*\{[^}]*border:/);
+      expect(css).not.toMatch(/\.button-nav-arrow:hover/);
+    });
   });
 });
