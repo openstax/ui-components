@@ -132,6 +132,42 @@ describe("SidebarNav", () => {
     );
   });
 
+  it.each([
+    ["SidebarNav", SidebarNav],
+    ["BodyPortalSidebarNav", BodyPortalSidebarNav],
+  ] as const)("%s puts consumer classNames on its sub-parts", (_name, Component) => {
+    render(
+      <Component
+        isMobile={false}
+        navHeader="Header"
+        navFooter="Footer"
+        navHeaderClassName="consumer-header"
+        navBodyClassName="consumer-body"
+        navFooterClassName="consumer-footer"
+        toggleButtonClassName="consumer-toggle"
+      >
+        Content
+      </Component>,
+    );
+
+    const nav = screen.getByRole("navigation");
+    expect(nav.querySelector(".sidebar-nav-header")).toHaveClass("consumer-header");
+    expect(screen.getByTestId("nav-body")).toHaveClass("sidebar-nav-body", "consumer-body");
+    expect(nav.querySelector(".sidebar-nav-footer")).toHaveClass("consumer-footer");
+    expect(screen.getByTestId("sidebarnav-toggle")).toHaveClass("sidebar-nav-toggle", "consumer-toggle");
+  });
+
+  it("keeps the toggle's collapsed class alongside a consumer className", () => {
+    render(<SidebarNav toggleButtonClassName="consumer-toggle">Content</SidebarNav>);
+
+    const toggle = screen.getByTestId("sidebarnav-toggle");
+    act(() => {
+      fireEvent.click(toggle);
+    });
+
+    expect(toggle).toHaveClass("consumer-toggle", "collapsed");
+  });
+
   it("is dismissable on mobile", async () => {
     render(
       <SidebarNav isMobile={true}>

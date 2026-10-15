@@ -77,6 +77,12 @@ interface SidebarNavSharedProps {
   mobileBreakpoint?: string;
   isMobile?: boolean;
   className?: string;
+  // The sub-parts are rendered here, not by the consumer, so these are the only way to give
+  // them a class the consumer controls and can select on.
+  navHeaderClassName?: string;
+  navBodyClassName?: string;
+  navFooterClassName?: string;
+  toggleButtonClassName?: string;
   style?: CSSPropertiesWithVariables;
   ariaLabel?: string;
 }
@@ -86,6 +92,10 @@ export const SidebarNavBase = ({
   navHeader,
   navFooter,
   children,
+  navHeaderClassName,
+  navBodyClassName,
+  navFooterClassName,
+  toggleButtonClassName,
   navIsCollapsed,
   setNavIsCollapsed,
   navAnimation,
@@ -137,7 +147,7 @@ export const SidebarNavBase = ({
         aria-expanded={!navIsCollapsed}
         ref={toggleButtonRef}
         data-testid="sidebarnav-toggle"
-        className={classNames({ collapsed: navIsCollapsed })}
+        className={classNames(toggleButtonClassName, { collapsed: navIsCollapsed })}
         onClick={(e) => {
           setNavIsCollapsed(!navIsCollapsed);
           e.stopPropagation();
@@ -149,7 +159,7 @@ export const SidebarNavBase = ({
         {navIsCollapsed ? <RightArrow /> : <LeftArrow />}
       </ToggleButton>
       {navHeader ? (
-        <NavHeader>
+        <NavHeader className={navHeaderClassName}>
           {typeof navHeader === "function"
             ? navHeader(functionRenderArguments)
             : navHeader}
@@ -157,6 +167,7 @@ export const SidebarNavBase = ({
       ) : null}
       <NavBody
         data-testid="nav-body"
+        className={navBodyClassName}
         ref={navBodyRef}
         onScroll={(e) =>
           setScrollPosition((e.target as HTMLDivElement).scrollTop)
@@ -167,7 +178,7 @@ export const SidebarNavBase = ({
           : children}
       </NavBody>
       {navFooter ? (
-        <NavFooter>
+        <NavFooter className={navFooterClassName}>
           {typeof navFooter === "function"
             ? navFooter(functionRenderArguments)
             : navFooter}

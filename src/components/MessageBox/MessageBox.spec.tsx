@@ -38,6 +38,13 @@ describe('MessageBox', () => {
     expect(document.querySelector('.message-box')?.getAttribute('style')).toBeNull();
   });
 
+  it('puts a consumer className on the wrapper alongside its own', () => {
+    render(<MessageBox className='consumer-class'>Body text</MessageBox>);
+
+    expect(document.querySelector('.message-box')?.classList).toContain('consumer-class');
+    expect(document.querySelector('.message-box-body')?.classList).not.toContain('consumer-class');
+  });
+
   // The styled intrinsics these replaced forwarded refs, and this package is on React 17,
   // where a plain function component silently drops one.
   it.each([

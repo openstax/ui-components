@@ -6,6 +6,8 @@ import "../../theme/theme.css";
 
 export interface MessageBoxProps {
   customMargin?: string;
+  // Applied to the outer BoxWrapper, so consumers can select the box with a class they control.
+  className?: string;
   children?: React.ReactNode;
 }
 
@@ -53,10 +55,10 @@ export const BoxEventId = React.forwardRef<HTMLDivElement, BoxProps<'div'>>(
 );
 BoxEventId.displayName = 'BoxEventId';
 
-export const MessageBox = ({ children, customMargin, ...props }: MessageBoxProps) => {
+export const MessageBox = ({ children, customMargin, className, ...props }: MessageBoxProps) => {
 
   return (
-    <BoxWrapper margin={customMargin}>
+    <BoxWrapper margin={customMargin} className={className}>
       <BoxBody {...props} data-testid='message-box'>
         {children}
       </BoxBody>

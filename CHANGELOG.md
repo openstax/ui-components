@@ -38,6 +38,20 @@ the next real error from that user shows that their session expired first.
 Error types handled this way are set with the new `breadcrumbErrors` prop, merged over the
 defaults like `errorLevels`. Pass `{ SessionExpiredError: false }` to send it as an event again.
 
+#### `SidebarNav` and `MessageBox` take classNames for their inner parts
+
+Since the plain CSS migration, the exported sub-components can no longer be used as
+styled-components selectors. `${SidebarNavStyles.NavBody} { … }` now recurses until the
+stack overflows, at runtime and without a type error, and `${BoxWrapper}` fails to typecheck.
+These parts are rendered by the component, not the consumer, so there was no way to put a
+class on them instead.
+
+- `SidebarNav` and `BodyPortalSidebarNav` take `navHeaderClassName`, `navBodyClassName`,
+  `navFooterClassName` and `toggleButtonClassName`.
+- `MessageBox` takes `className`, which goes on its outer `BoxWrapper`.
+
+To migrate, pass your own class and select on it instead of the component.
+
 ### Changed
 
 #### `HelpMenu` is a disclosure instead of a menu (CORE-3088)
