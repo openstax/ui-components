@@ -4,22 +4,9 @@
   font-size: 1.4rem;
 }
 
-/* HelpMenu menu item */
-.help-menu-item {
+/* HelpMenu list item. The compound selector keeps this independent of stylesheet order. */
+.navbar-disclosure-item.help-menu-item {
   color: var(--help-menu-item-color, var(--ox-color-neutral-darker));
-  text-decoration: none;
-}
-
-/* The compound selector keeps the override of .navbar-menu-item:focus-visible
-   independent of stylesheet order */
-.navbar-menu-item.help-menu-item:focus-visible {
-  outline: 0;
-  background: var(--help-menu-item-focus-bg, var(--ox-color-neutral-lighter));
-}
-
-.help-menu-item:hover {
-  color: var(--help-menu-item-color, var(--ox-color-neutral-darker));
-  text-decoration: none;
 }
 
 /* Contact form iframe, portaled to the body */

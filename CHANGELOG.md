@@ -29,6 +29,23 @@ on click, so the prop is reapplied after every render and stays the source of tr
 
 A disabled indeterminate checkbox draws no dash, the same as a disabled checked one.
 
+### Changed
+
+#### `HelpMenu` is a disclosure instead of a menu (CORE-3088)
+
+Help is mostly links, which `role="menu"` announced as menu items and not as links. It now
+uses `NavBarDisclosureButton`, so links are links and actions are buttons. Focus stays on the
+button when the list opens, and Tab moves through the items.
+
+`HelpMenuItem` now takes the props of `NavBarDisclosureItem`: `href`, `target`, `rel`,
+`onAction`, `className` and children. It no longer accepts `style`, a `ref`, a render-callback
+`className`, or other react-aria `MenuItem` props. A focused item shows the browser's focus
+ring, so the `--help-menu-item-focus-bg` hook is gone.
+
+To migrate, pass a string `className` and style it in CSS instead of using `style`, and
+drop any `ref`. The two known consumers, assignments and lti-gateway, pass only `href`,
+`target` and `onAction`, so neither is affected.
+
 ### Fixed
 
 #### Default Sentry config ignores two errors from the user's environment (CORE-3249)
