@@ -94,7 +94,7 @@ describe('ErrorBoundary', () => {
 
     // Should create warning (reports[0])
     renderer.create(
-      <ErrorBoundary>
+      <ErrorBoundary breadcrumbErrors={{ SessionExpiredError: false }}>
         <SessionExpiredComponent />
       </ErrorBoundary>
     );
@@ -130,6 +130,7 @@ describe('ErrorBoundary', () => {
     renderer.create(
       <ErrorBoundary
         errorLevels={{ SessionExpiredError: 'debug' }}
+        breadcrumbErrors={{ SessionExpiredError: false }}
       >
         <SessionExpiredComponent />
       </ErrorBoundary>
@@ -155,6 +156,7 @@ describe('ErrorBoundary', () => {
     renderer.create(
       <ErrorBoundary
         errorLevels={{ SessionExpiredError: unsetLevel }}
+        breadcrumbErrors={{ SessionExpiredError: false }}
       >
         <SessionExpiredComponent />
       </ErrorBoundary>
@@ -165,6 +167,53 @@ describe('ErrorBoundary', () => {
 
     spy.mockRestore();
   });
+
+  it('records SessionExpiredError as a breadcrumb instead of an event', () => withoutReactLogs(() => {
+    const SessionExpiredComponent = () => {
+      throw new SessionExpiredError();
+    };
+
+    const render = renderer.create(
+      <ErrorBoundary>
+        <SessionExpiredComponent />
+      </ErrorBoundary>
+    );
+
+    expect(findByTestId(render.root, 'error-fallback')).toBeTruthy();
+    expect(testkit.reports()).toHaveLength(0);
+
+    // the next real error carries it
+    renderer.create(
+      <ErrorBoundary>
+        <ErrorComponent />
+      </ErrorBoundary>
+    );
+
+    const reports = testkit.reports();
+    expect(reports).toHaveLength(1);
+    expect(reports[0].originalReport.breadcrumbs).toContainEqual(expect.objectContaining({
+      category: 'error', level: 'warning', message: 'SessionExpiredError'
+    }));
+  }));
+
+  it('does not match error types against inherited object keys', () => withoutReactLogs(() => {
+    class ToStringError extends Error {
+      static readonly TYPE = 'toString';
+    }
+    const ToStringComponent = () => {
+      throw new ToStringError();
+    };
+
+    renderer.create(
+      <ErrorBoundary>
+        <ToStringComponent />
+      </ErrorBoundary>
+    );
+
+    const reports = testkit.reports();
+    expect(reports).toHaveLength(1);
+    expect(reports[0].level).toBe('error');
+  }));
 
   it('can override fallback components for specific errors', () => {
     const spy = jest.spyOn(console, 'error')
