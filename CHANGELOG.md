@@ -29,6 +29,23 @@ on click, so the prop is reapplied after every render and stays the source of tr
 
 A disabled indeterminate checkbox draws no dash, the same as a disabled checked one.
 
+### Changed
+
+#### `HelpMenu` is a disclosure instead of a menu (CORE-3088)
+
+Help is mostly links, which `role="menu"` announced as menu items and not as links. It now
+uses `NavBarDisclosureButton`, so links are links and actions are buttons. Focus stays on the
+button when the list opens, and Tab moves through the items.
+
+`HelpMenuItem` now takes the props of `NavBarDisclosureItem`: `href`, `target`, `rel`,
+`onAction`, `className` and children. It no longer accepts `style`, a `ref`, a render-callback
+`className`, or other react-aria `MenuItem` props. A focused item shows the browser's focus
+ring, so the `--help-menu-item-focus-bg` hook is gone.
+
+To migrate, pass a string `className` and style it in CSS instead of using `style`, and
+drop any `ref`. The two known consumers, assignments and lti-gateway, pass only `href`,
+`target` and `onAction`, so neither is affected.
+
 ### Fixed
 
 #### `SidebarNav` toggle has a 2.4rem square hit area (CORE-2005)
@@ -97,6 +114,21 @@ repeats across every instance on a screen, so callers should name what the toolt
 The Help trigger had `aria-label='Help menu'` on top of its visible "Help", so screen readers
 read "Help menu, menu button". The aria-label is removed, so the name is now the visible
 "Help".
+
+#### A menu opens again after an outside press closed it (CORE-2973)
+
+`MenuPopover` closes a non-modal menu on a press outside it, using react-aria's
+`useInteractOutside`. That hook records that a press has started and clears the record when
+the press's click arrives, but `MenuPopover` switched the hook off while the menu was closed.
+When the press itself closed the menu first, by moving focus to something on the page, the
+click never reached the hook and the record stayed set. The next press on the trigger then
+opened the menu, and the click that finished that press closed it again, so the menu seemed
+not to open.
+
+This showed up in rex-web, where pressing book text while the profile menu is open moved
+focus and closed the menu. The hook is now mounted only while the menu is open, so its record
+starts clean each time. This affects every menu built on `MenuPopover`: `NavBarMenuButton`,
+`ProfileMenu` and `DropdownMenu`.
 
 #### Menu popovers no longer render as dialogs (CORE-2875)
 
