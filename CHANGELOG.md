@@ -48,6 +48,17 @@ drop any `ref`. The two known consumers, assignments and lti-gateway, pass only 
 
 ### Fixed
 
+#### `SidebarNav` toggle has a 2.4rem square hit area (CORE-2005)
+
+The toggle is 1.6rem wide, under the 24px minimum for a pointer target (WCAG 2.5.8). Its look
+is unchanged, but the pressable area now extends 0.8rem to its left to make a 2.4rem square.
+Anything in that strip, such as header content at the rail's right edge, is covered by it.
+
+#### `ButtonNav` disabled arrows no longer show a hover border (CORE-2005)
+
+A disabled arrow is faded and cannot be pressed, but it still drew the hover border of an
+enabled one. The border now appears only on an enabled arrow. The `ButtonNav` story also marks
+the current slide with `aria-current`, as consumers should for their own children.
 #### Default Sentry config ignores two errors from the user's environment (CORE-3249)
 
 The default `Sentry.init` in `ErrorBoundary` now sets `ignoreErrors` for:

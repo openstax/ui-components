@@ -7,6 +7,8 @@ import {
   cleanup,
 } from "@testing-library/react";
 import userEvent, { UserEvent } from "@testing-library/user-event";
+import fs from "fs";
+import path from "path";
 import { createRef } from "react";
 import {
   BodyPortalSidebarNav,
@@ -357,5 +359,23 @@ describe("SidebarNav", () => {
     expect(bodyRef.current).toBeInstanceOf(HTMLDivElement);
     expect(footerRef.current).toBeInstanceOf(HTMLElement);
     expect(toggleRef.current).toBeInstanceOf(HTMLButtonElement);
+  });
+
+  describe("toggle hit area", () => {
+    // jsdom does not lay out or apply stylesheets, so the rule is checked in the source.
+    const css = fs.readFileSync(path.join(__dirname, "SidebarNav", "SidebarNav.css"), "utf8");
+    const rule = (selector: string) =>
+      css.match(new RegExp(`${selector.replace(/[.:]/g, "\\$&")}\\s*\\{([^}]*)\\}`))?.[1] ?? "";
+
+    it("widens the pressable area to at least 2.4rem square", () => {
+      const toggle = rule(".sidebar-nav-toggle");
+      const area = rule(".sidebar-nav-toggle::before");
+      const rem = (source: string, property: string) =>
+        Number(source.match(new RegExp(`${property}:\\s*(-?[\\d.]+)rem`))?.[1] ?? 0);
+
+      expect(rem(toggle, "width") + Math.abs(rem(area, "left")) + Math.abs(rem(area, "right"))).toBeGreaterThanOrEqual(2.4);
+      expect(rem(toggle, "height")).toBeGreaterThanOrEqual(2.4);
+      expect(area).toMatch(/position:\s*absolute/);
+    });
   });
 });

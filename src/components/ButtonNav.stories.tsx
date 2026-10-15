@@ -7,16 +7,16 @@ import { Key } from "react-aria-components";
 export const Default = () => {
   const [selectedIndex, setSelectedIndex] = React.useState(0);
 
-  const childrenListWithKeys = [
-    <button key='1' onClick={() => setSelectedIndex(0)}>Slide 1</button>,
-    <button key='2' onClick={() => setSelectedIndex(1)}>Slide 2</button>,
-    <button key='3' onClick={() => setSelectedIndex(2)}>Slide 3</button>,
-    <button key='4' onClick={() => setSelectedIndex(3)}>Slide 4</button>,
-    <button key='5' onClick={() => setSelectedIndex(4)}>Slide 5</button>,
-    <button key='6' onClick={() => setSelectedIndex(5)}>Slide 6</button>,
-    <button key='7' onClick={() => setSelectedIndex(6)}>Slide 7</button>,
-    <button key='8' onClick={() => setSelectedIndex(7)}>Slide 8</button>,
-  ];
+  const childrenListWithKeys = Array.from({ length: 8 }, (_, index) => (
+    <button
+      key={index + 1}
+      aria-current={selectedIndex === index ? 'true' : undefined}
+      style={{ fontWeight: selectedIndex === index ? 700 : 400 }}
+      onClick={() => setSelectedIndex(index)}
+    >
+      Slide {index + 1}
+    </button>
+  ));
 
   const handlePrevArrow = () => {
     setSelectedIndex((prevIndex) => Math.max(prevIndex - 1, 0));
