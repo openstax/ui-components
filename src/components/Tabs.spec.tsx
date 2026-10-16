@@ -18,12 +18,12 @@ describe("Tabs component", () => {
 
   describe("variants and sizes", () => {
     it.each([
-      [undefined, undefined, "tabs tabs-medium"],
-      [undefined, "small", "tabs tabs-small"],
-      [undefined, "large", "tabs tabs-large"],
-      ["button-bar", undefined, "tabs tabs-button-bar tabs-medium"],
-      ["button-bar", "small", "tabs tabs-button-bar tabs-small"],
-      ["button-bar", "large", "tabs tabs-button-bar tabs-large"],
+      [undefined, undefined, "ox-tabs ox-tabs-medium"],
+      [undefined, "small", "ox-tabs ox-tabs-small"],
+      [undefined, "large", "ox-tabs ox-tabs-large"],
+      ["button-bar", undefined, "ox-tabs ox-tabs-button-bar ox-tabs-medium"],
+      ["button-bar", "small", "ox-tabs ox-tabs-button-bar ox-tabs-small"],
+      ["button-bar", "large", "ox-tabs ox-tabs-button-bar ox-tabs-large"],
     ] as const)("classes the root for variant %s and size %s", (variant, size, expected) => {
       const { container } = renderTabs({ variant, size });
 
@@ -67,8 +67,8 @@ describe("Tabs component", () => {
       const { container } = tabs({ className: "custom", style: { color: "red" } });
       const el = container.querySelector('[data-orientation]') as HTMLElement;
 
-      expect(el.classList.contains("tabs")).toBe(true);
-      expect(el.classList.contains("tabs-medium")).toBe(true);
+      expect(el.classList.contains("ox-tabs")).toBe(true);
+      expect(el.classList.contains("ox-tabs-medium")).toBe(true);
       expect(el.classList.contains("custom")).toBe(true);
       expect(el.style.color).toBe("red");
     });
@@ -103,7 +103,7 @@ describe("Tabs component", () => {
       });
       const el = container.querySelector('[data-orientation]') as HTMLElement;
 
-      expect(el.classList.contains("tabs")).toBe(true);
+      expect(el.classList.contains("ox-tabs")).toBe(true);
       expect(el.classList.contains("custom-horizontal")).toBe(true);
       expect(el.style.color).toBe("red");
     });

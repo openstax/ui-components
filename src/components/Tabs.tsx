@@ -23,11 +23,11 @@ export const Tabs = ({
   style,
   ...restProps
 }: TabsProps) => {
-  const variantClassName = classNames('tabs', {
-    'tabs-button-bar': variant === 'button-bar',
-    'tabs-small': size === 'small',
-    'tabs-medium': size === 'medium',
-    'tabs-large': size === 'large',
+  const variantClassName = classNames('ox-tabs', {
+    'ox-tabs-button-bar': variant === 'button-bar',
+    'ox-tabs-small': size === 'small',
+    'ox-tabs-medium': size === 'medium',
+    'ox-tabs-large': size === 'large',
   });
 
   // className and style may each be a render callback, so resolve them against the

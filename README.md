@@ -117,7 +117,7 @@ Declare the **default in the stylesheet** with the token as the fallback, and do
 from JavaScript:
 
 ```css
-.tabs [role="tab"] { border-color: var(--tabs-active-border-color, var(--ox-color-dark-green)); }
+.ox-tabs [role="tab"] { border-color: var(--tabs-active-border-color, var(--ox-color-dark-green)); }
 ```
 
 Bind a custom property from JavaScript only when its value genuinely varies at runtime — a

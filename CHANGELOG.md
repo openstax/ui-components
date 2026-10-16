@@ -54,6 +54,17 @@ To migrate, pass your own class and select on it instead of the component.
 
 ### Changed
 
+#### `Tabs` and `Tooltip` classes are prefixed with `ox-`
+
+`.tabs` and `.tooltip` are common class names, and the library's rules for them are global, so
+they restyled unrelated elements in a consumer that used the same names. lti-gateway has its own
+`.tabs` and `.tooltip`. The classes are now `ox-tabs`, `ox-tabs-button-bar`,
+`ox-tabs-small`/`-medium`/`-large`, `ox-tooltip` and `ox-tooltip-trigger`, the same prefix as the
+`--ox-*` theme tokens. The `--tabs-*` and `--tooltip-*` custom properties are unchanged.
+
+To migrate, rename any selector on the old classes. None of the OpenStax consumers checked
+(assignments, assessments, lti-gateway, promptly, flex-pages and others) select on them.
+
 #### `HelpMenu` is a disclosure instead of a menu (CORE-3088)
 
 Help is mostly links, which `role="menu"` announced as menu items and not as links. It now
@@ -378,9 +389,9 @@ styling fragments that `Tabs` exported are gone:
 
 1. **`tabListBaseCss`, `tabBaseCss`, `buttonBarWrapperCss`, `buttonBarItemCss` exports removed from `Tabs`**
    - **Old behavior**: styled-components `css` fragments (and plain strings) intended for interpolation into a consumer's own styled components
-   - **New behavior**: the equivalent rules live in `Tabs.css` / `ButtonBar.css` under the `.tabs` and `.button-bar` class names
+   - **New behavior**: the equivalent rules live in `Tabs.css` / `ButtonBar.css` under the `.ox-tabs` and `.button-bar` class names
    - **Impact**: any styled-component interpolating these fragments will fail to compile. A search of the `openstax` org found no consumers outside this repo
-   - **Migration**: use the `Tabs` or `ButtonBar` components, or apply the `.tabs` / `.button-bar` classes and set the documented CSS custom properties
+   - **Migration**: use the `Tabs` or `ButtonBar` components, or apply the `.ox-tabs` / `.button-bar` classes and set the documented CSS custom properties
 
 **Non-Breaking Changes:**
 

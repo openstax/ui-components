@@ -1,5 +1,5 @@
 /* Tooltip styles */
-.tooltip {
+.ox-tooltip {
   box-shadow: 0 0.8rem 2rem rgba(0, 0, 0, 0.1);
   border-radius: 0.3rem;
   /* #ccc is not a palette value; see KNOWN_OFF_PALETTE in src/theme/tokens.spec.ts */
@@ -15,51 +15,51 @@
   z-index: 1000;
 }
 
-.tooltip[data-placement="top"] {
+.ox-tooltip[data-placement="top"] {
   margin-bottom: 0.8rem;
   --origin: translateY(0.4rem);
 }
 
-.tooltip[data-placement="bottom"] {
+.ox-tooltip[data-placement="bottom"] {
   margin-top: 0.8rem;
   top: 50%;
   --origin: translateY(-0.4rem);
 }
 
-.tooltip[data-placement="bottom"] .react-aria-OverlayArrow svg {
+.ox-tooltip[data-placement="bottom"] .react-aria-OverlayArrow svg {
   transform: rotate(180deg);
 }
 
-.tooltip[data-placement="right"] {
+.ox-tooltip[data-placement="right"] {
   left: 100%;
   margin-left: 0.8rem;
   --origin: translateX(-0.4rem);
 }
 
-.tooltip[data-placement="right"] .react-aria-OverlayArrow {
+.ox-tooltip[data-placement="right"] .react-aria-OverlayArrow {
   top: 50%;
 }
 
-.tooltip[data-placement="right"] .react-aria-OverlayArrow svg {
+.ox-tooltip[data-placement="right"] .react-aria-OverlayArrow svg {
   transform: rotate(90deg);
 }
 
-.tooltip[data-placement="left"] {
+.ox-tooltip[data-placement="left"] {
   margin-right: 0.8rem;
   --origin: translateX(0.4rem);
 }
 
-.tooltip[data-placement="left"] .react-aria-OverlayArrow svg {
+.ox-tooltip[data-placement="left"] .react-aria-OverlayArrow svg {
   transform: rotate(-90deg);
 }
 
-.tooltip .react-aria-OverlayArrow svg {
+.ox-tooltip .react-aria-OverlayArrow svg {
   display: block;
   fill: var(--tooltip-bg, var(--ox-color-white));
 }
 
 /* Tooltip trigger button */
-.tooltip-trigger {
+.ox-tooltip-trigger {
   border: none;
   padding: 0;
   margin-left: 0.4rem;
