@@ -52,6 +52,8 @@ describe("NavBarMenuButton", () => {
 });
 
 describe("NavBarMenuButton when open", () => {
+  afterEach(() => jest.restoreAllMocks());
+
   const renderOpenMenu = async () => {
     const user = userEvent.setup();
     render(
@@ -110,6 +112,16 @@ describe("NavBarMenuButton when open", () => {
     const outside = screen.getByText("Page content");
     fireEvent.mouseDown(outside);
     fireEvent.mouseUp(outside);
+
+    await waitFor(() => expect(screen.queryByRole("menu")).toBeNull());
+  });
+
+  it("closes when a press inside an iframe takes focus", async () => {
+    await renderOpenMenu();
+    // The parent document only sees the window blur, with the iframe as the active element.
+    jest.spyOn(document, "activeElement", "get").mockReturnValue(document.createElement("iframe"));
+
+    fireEvent.blur(window);
 
     await waitFor(() => expect(screen.queryByRole("menu")).toBeNull());
   });

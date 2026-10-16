@@ -82,6 +82,16 @@ drop any `ref`. The two known consumers, assignments and lti-gateway, pass only 
 
 ### Fixed
 
+#### Menus close when you press inside an iframe
+
+`NavBarMenuButton`, `DropdownMenu`, `ProfileMenu` and `HelpMenu` stopped closing on a press
+inside an iframe when they became non-modal (CORE-2875). The press happens in the iframe's
+document, so outside-press detection never sees it, and Assignable's Help and Resources menus
+stayed open over the activity while a student worked in it.
+
+They now also close when focus moves into an iframe. Switching tabs or apps leaves them open.
+The new `useFocusIframe` hook does the check.
+
 #### `useSetAppError` returns the same function on every render
 
 `setError` was a `useCallback` keyed on the merged `errorFallbacks` and `errorLevels`. Those

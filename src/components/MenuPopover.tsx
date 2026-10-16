@@ -1,6 +1,7 @@
 import React from "react";
 import { useInteractOutside, useObjectRef } from "react-aria";
 import { OverlayTriggerStateContext, Popover, PopoverProps } from "react-aria-components";
+import { useFocusIframe } from "../hooks";
 
 /**
  * Closes the menu on a press outside `popoverRef`. It is mounted only while the menu is open,
@@ -16,6 +17,8 @@ const CloseOnOutsidePress = ({ popoverRef }: { popoverRef: React.RefObject<HTMLE
     ref: popoverRef,
     onInteractOutside: () => state?.close(),
   });
+  // A press inside an iframe never reaches this document, so watch for focus moving into one.
+  useFocusIframe(() => state?.close());
 
   return null;
 };

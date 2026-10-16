@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { NavBarDisclosureButton, NavBarDisclosureItem } from "./NavBarDisclosureButton";
 
@@ -23,6 +23,8 @@ const renderDisclosure = (
 };
 
 describe("NavBarDisclosureButton", () => {
+  afterEach(() => jest.restoreAllMocks());
+
   describe("the trigger", () => {
     it("is a collapsed button that does not claim to open a menu or dialog", () => {
       const { trigger } = renderDisclosure();
@@ -226,6 +228,27 @@ describe("NavBarDisclosureButton", () => {
 
       expect(screen.queryByRole("list")).toBeNull();
       expect(document.activeElement).toBe(trigger);
+    });
+
+    // A press inside an iframe happens in the iframe's document. The parent only sees the
+    // window blur, with the iframe as the active element.
+    it("closes when a press inside an iframe takes focus", async () => {
+      renderDisclosure({ defaultOpen: true });
+      const iframe = document.createElement("iframe");
+      jest.spyOn(document, "activeElement", "get").mockReturnValue(iframe);
+
+      fireEvent.blur(window);
+
+      await waitFor(() => expect(screen.queryByRole("list")).toBeNull());
+    });
+
+    it("stays open when the window loses focus to another tab or app", async () => {
+      renderDisclosure({ defaultOpen: true });
+
+      fireEvent.blur(window);
+      await act(() => new Promise((resolve) => setTimeout(resolve)));
+
+      expect(screen.getByRole("list")).toBeTruthy();
     });
 
     it("stays open on a press inside the list", () => {
