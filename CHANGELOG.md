@@ -80,8 +80,9 @@ re-ran. In assignments, an effect that calls `setAppError(state.error)` while a 
 error state re-raised the error screen and sent a duplicate Sentry event on each browser
 back/forward.
 
-`setError` now reads the fallbacks, levels and parent context through a ref, so its identity never
-changes, and it still uses the latest props.
+The `setError` in context now reads the fallbacks, levels and parent context of the last committed
+render through a ref, so its identity never changes. A concurrent render that never commits can't
+change how it handles errors. Render errors still use the settings of the render that threw.
 
 #### `SidebarNav` toggle has a 2.4rem square hit area (CORE-2005)
 

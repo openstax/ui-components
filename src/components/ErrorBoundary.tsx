@@ -117,15 +117,15 @@ export const ErrorBoundary = ({
     }
   }, [props.userUuid]);
 
-  // setError reads these through a ref so its identity never changes. Consumers pass
-  // errorFallbacks and errorLevels as inline objects, which re-memoise on every render, and
-  // effects depend on setAppError; a new function each render re-runs them, and one that
-  // re-sets an error it's still holding raises the error screen and reports it again.
-  const latest = React.useRef({ errorFallbacks, errorLevels, breadcrumbErrors, handlesUntypedErrors, parentContext });
-  latest.current = { errorFallbacks, errorLevels, breadcrumbErrors, handlesUntypedErrors, parentContext };
+  const settings = React.useMemo(
+    () => ({ errorFallbacks, errorLevels, breadcrumbErrors, handlesUntypedErrors, parentContext }),
+    [errorFallbacks, errorLevels, breadcrumbErrors, handlesUntypedErrors, parentContext]
+  );
 
-  const setError = React.useCallback((input: unknown, componentStack?: string, isInline?: boolean) => {
-    const { errorFallbacks, errorLevels, breadcrumbErrors, handlesUntypedErrors, parentContext } = latest.current;
+  const handleError = React.useCallback((
+    { errorFallbacks, errorLevels, breadcrumbErrors, handlesUntypedErrors, parentContext }: typeof settings,
+    input: unknown, componentStack?: string, isInline?: boolean
+  ) => {
 
     if (input === null) {
       setThisError(null);
@@ -170,6 +170,30 @@ export const ErrorBoundary = ({
     }
   }, []);
 
+  // The setError in context (what useSetAppError returns) keeps one identity. Consumers pass
+  // errorFallbacks and errorLevels as inline objects, which re-memoise on every render, and
+  // effects depend on setAppError; a new function each render re-runs them, and one that
+  // re-sets an error it's still holding raises the error screen and reports it again. It reads
+  // the settings of the last committed render, published in a layout effect, so a concurrent
+  // render that never commits can't change how errors from the visible tree are handled.
+  const committedSettings = React.useRef(settings);
+  React.useLayoutEffect(() => {
+    committedSettings.current = settings;
+  }, [settings]);
+
+  const setError = React.useCallback(
+    (input: unknown, componentStack?: string, isInline?: boolean) =>
+      handleError(committedSettings.current, input, componentStack, isInline),
+    [handleError]
+  );
+
+  // A render error belongs to the render that threw, so the catcher uses that render's settings.
+  const catchRenderError = React.useCallback(
+    (input: unknown, componentStack?: string, isInline?: boolean) =>
+      handleError(settings, input, componentStack, isInline),
+    [handleError, settings]
+  );
+
   const contextValue = React.useMemo(() => ({
     error,
     setError,
@@ -186,7 +210,7 @@ export const ErrorBoundary = ({
   return <ErrorContext.Provider value={contextValue}>
     {error && error.isInline
       ? errorDisplay 
-      : <RenderErrorCatcher catch={setError}>{error ? errorDisplay : children}</RenderErrorCatcher>
+      : <RenderErrorCatcher catch={catchRenderError}>{error ? errorDisplay : children}</RenderErrorCatcher>
     }
   </ErrorContext.Provider>;
 };
