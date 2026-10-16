@@ -82,6 +82,20 @@ drop any `ref`. The two known consumers, assignments and lti-gateway, pass only 
 
 ### Fixed
 
+#### `useSetAppError` returns the same function on every render
+
+`setError` was a `useCallback` keyed on the merged `errorFallbacks` and `errorLevels`. Those
+re-memoise whenever a consumer passes them as inline objects, which is the usual way, so every
+re-render of the boundary handed out a new `setAppError`. Effects that list it as a dependency
+re-ran. In assignments, an effect that calls `setAppError(state.error)` while a fetch is in its
+error state re-raised the error screen and sent a duplicate Sentry event on each browser
+back/forward.
+
+The `setError` in context now reads the fallbacks, levels and parent context of the last committed
+render through a ref, so its identity never changes. A concurrent render that never commits can't
+change how it handles errors. Render errors still use the settings of the render that threw, including
+when they bubble to a parent boundary, through a new optional `catchRenderError` on `ErrorContext`.
+
 #### `SidebarNav` toggle has a 2.4rem square hit area (CORE-2005)
 
 The toggle is 1.6rem wide, under the 24px minimum for a pointer target (WCAG 2.5.8). Its look
