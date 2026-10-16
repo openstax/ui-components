@@ -82,7 +82,8 @@ back/forward.
 
 The `setError` in context now reads the fallbacks, levels and parent context of the last committed
 render through a ref, so its identity never changes. A concurrent render that never commits can't
-change how it handles errors. Render errors still use the settings of the render that threw.
+change how it handles errors. Render errors still use the settings of the render that threw, including
+when they bubble to a parent boundary, through a new optional `catchRenderError` on `ErrorContext`.
 
 #### `SidebarNav` toggle has a 2.4rem square hit area (CORE-2005)
 

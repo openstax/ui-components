@@ -432,6 +432,27 @@ describe('ErrorBoundary', () => {
       expect(testkit.reports()).toHaveLength(1);
     }));
 
+    it('reports a bubbled render error with the settings of the update that threw', () => withoutReactLogs(() => {
+      const Child = ({ fail }: { fail: boolean }) => {
+        if (fail) throw new Error('Test Error');
+        return null;
+      };
+      const tree = (level: Sentry.SeverityLevel, fail: boolean) => (
+        <ErrorBoundary errorFallbacks={{ Error: <div /> }} errorLevels={{ Error: level }}>
+          <ErrorBoundary>
+            <Child fail={fail} />
+          </ErrorBoundary>
+        </ErrorBoundary>
+      );
+
+      let component: ReactTestRenderer | undefined;
+      act(() => { component = renderer.create(tree('warning', false)); });
+      act(() => { component?.update(tree('info', true)); });
+
+      expect(testkit.reports()).toHaveLength(1);
+      expect(testkit.reports()[0].level).toBe('info');
+    }));
+
     it('only inits Sentry at the outermost boundary', () => {
       const initMock = Sentry.init as jest.Mock;
       initMock.mockClear();
