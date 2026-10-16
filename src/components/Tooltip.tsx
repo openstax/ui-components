@@ -38,7 +38,7 @@ type TooltipGroupProps = TooltipProps & {
 };
 
 /**
- * @deprecated The styles now live in the `.tooltip` class in Tooltip.css. Prefer `Tooltip`;
+ * @deprecated The styles now live in the `.ox-tooltip` class in Tooltip.css. Prefer `Tooltip`;
  * this remains so consumers that composed the old styled-component keep working.
  */
 export const StyledTooltip = React.forwardRef<
@@ -47,7 +47,7 @@ export const StyledTooltip = React.forwardRef<
 >(({className, style, ...props}, ref) => (
   <AriaTooltip
     ref={ref}
-    className={classNames('tooltip', className)}
+    className={classNames('ox-tooltip', className)}
     style={style}
     {...props}
   />
@@ -55,7 +55,7 @@ export const StyledTooltip = React.forwardRef<
 StyledTooltip.displayName = 'StyledTooltip';
 
 /**
- * @deprecated The styles now live in the `.tooltip-trigger` class in Tooltip.css. Prefer
+ * @deprecated The styles now live in the `.ox-tooltip-trigger` class in Tooltip.css. Prefer
  * `TooltipGroup`; this remains so consumers that composed the old styled-component keep working.
  */
 export const StyledTrigger = React.forwardRef<
@@ -64,7 +64,7 @@ export const StyledTrigger = React.forwardRef<
 >(({className, style, ...props}, ref) => (
   <Button
     ref={ref}
-    className={classNames('tooltip-trigger', className)}
+    className={classNames('ox-tooltip-trigger', className)}
     style={style}
     {...props}
   />
@@ -125,7 +125,7 @@ export const TooltipGroup = (
 export const CustomTooltip = ({ state, ...props }: any) => {
   const { tooltipProps } = useTooltip(props, state);
 
-  const mergedProps = mergeProps(props, tooltipProps, { className: 'tooltip' });
+  const mergedProps = mergeProps(props, tooltipProps, { className: 'ox-tooltip' });
 
   return (
     <div data-placement={props.placement} {...mergedProps}>

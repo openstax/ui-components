@@ -13,7 +13,7 @@ describe('Tooltip', () => {
 
       const tooltip = document.body.querySelector('[role="tooltip"]') as HTMLElement;
       expect(tooltip).toBeTruthy();
-      expect(tooltip.classList.contains('tooltip')).toBe(true);
+      expect(tooltip.classList.contains('ox-tooltip')).toBe(true);
       expect(tooltip.classList.contains('generated-class')).toBe(true);
     });
 
@@ -21,7 +21,7 @@ describe('Tooltip', () => {
       const { container } = render(<StyledTrigger className='generated-class'>label</StyledTrigger>);
 
       const button = container.querySelector('button') as HTMLElement;
-      expect(button.classList.contains('tooltip-trigger')).toBe(true);
+      expect(button.classList.contains('ox-tooltip-trigger')).toBe(true);
       expect(button.classList.contains('generated-class')).toBe(true);
     });
 
@@ -35,7 +35,7 @@ describe('Tooltip', () => {
 
       const tooltip = document.body.querySelector('[role="tooltip"]') as HTMLElement;
       expect(tooltip).toBeTruthy();
-      expect(tooltip.classList.contains('tooltip')).toBe(true);
+      expect(tooltip.classList.contains('ox-tooltip')).toBe(true);
       expect(tooltip.classList.contains('generated-class')).toBe(true);
     });
   });
@@ -47,7 +47,7 @@ describe('Tooltip', () => {
       render(<StyledTrigger ref={ref}>label</StyledTrigger>);
 
       expect(ref.current).toBeInstanceOf(HTMLButtonElement);
-      expect(ref.current?.classList.contains('tooltip-trigger')).toBe(true);
+      expect(ref.current?.classList.contains('ox-tooltip-trigger')).toBe(true);
     });
 
     it('StyledTooltip forwards its ref to the tooltip element', () => {
@@ -61,7 +61,7 @@ describe('Tooltip', () => {
 
       expect(ref.current).toBeInstanceOf(HTMLDivElement);
       expect(ref.current?.getAttribute('role')).toBe('tooltip');
-      expect(ref.current?.classList.contains('tooltip')).toBe(true);
+      expect(ref.current?.classList.contains('ox-tooltip')).toBe(true);
     });
   });
   describe('css variable overrides', () => {

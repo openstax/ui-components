@@ -54,6 +54,17 @@ To migrate, pass your own class and select on it instead of the component.
 
 ### Changed
 
+#### `Tabs` and `Tooltip` classes are prefixed with `ox-`
+
+`.tabs` and `.tooltip` are common class names, and the library's rules for them are global, so
+they restyled unrelated elements in a consumer that used the same names. lti-gateway has its own
+`.tabs` and `.tooltip`. The classes are now `ox-tabs`, `ox-tabs-button-bar`,
+`ox-tabs-small`/`-medium`/`-large`, `ox-tooltip` and `ox-tooltip-trigger`, the same prefix as the
+`--ox-*` theme tokens. The `--tabs-*` and `--tooltip-*` custom properties are unchanged.
+
+To migrate, rename any selector on the old classes. None of the OpenStax consumers checked
+(assignments, assessments, lti-gateway, promptly, flex-pages and others) select on them.
+
 #### `HelpMenu` is a disclosure instead of a menu (CORE-3088)
 
 Help is mostly links, which `role="menu"` announced as menu items and not as links. It now
@@ -80,6 +91,20 @@ stayed open over the activity while a student worked in it.
 
 They now also close when focus moves into an iframe. Switching tabs or apps leaves them open.
 The new `useFocusIframe` hook does the check.
+
+#### `useSetAppError` returns the same function on every render
+
+`setError` was a `useCallback` keyed on the merged `errorFallbacks` and `errorLevels`. Those
+re-memoise whenever a consumer passes them as inline objects, which is the usual way, so every
+re-render of the boundary handed out a new `setAppError`. Effects that list it as a dependency
+re-ran. In assignments, an effect that calls `setAppError(state.error)` while a fetch is in its
+error state re-raised the error screen and sent a duplicate Sentry event on each browser
+back/forward.
+
+The `setError` in context now reads the fallbacks, levels and parent context of the last committed
+render through a ref, so its identity never changes. A concurrent render that never commits can't
+change how it handles errors. Render errors still use the settings of the render that threw, including
+when they bubble to a parent boundary, through a new optional `catchRenderError` on `ErrorContext`.
 
 #### `SidebarNav` toggle has a 2.4rem square hit area (CORE-2005)
 
@@ -388,9 +413,9 @@ styling fragments that `Tabs` exported are gone:
 
 1. **`tabListBaseCss`, `tabBaseCss`, `buttonBarWrapperCss`, `buttonBarItemCss` exports removed from `Tabs`**
    - **Old behavior**: styled-components `css` fragments (and plain strings) intended for interpolation into a consumer's own styled components
-   - **New behavior**: the equivalent rules live in `Tabs.css` / `ButtonBar.css` under the `.tabs` and `.button-bar` class names
+   - **New behavior**: the equivalent rules live in `Tabs.css` / `ButtonBar.css` under the `.ox-tabs` and `.button-bar` class names
    - **Impact**: any styled-component interpolating these fragments will fail to compile. A search of the `openstax` org found no consumers outside this repo
-   - **Migration**: use the `Tabs` or `ButtonBar` components, or apply the `.tabs` / `.button-bar` classes and set the documented CSS custom properties
+   - **Migration**: use the `Tabs` or `ButtonBar` components, or apply the `.ox-tabs` / `.button-bar` classes and set the documented CSS custom properties
 
 **Non-Breaking Changes:**
 
