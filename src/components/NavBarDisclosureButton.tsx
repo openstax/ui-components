@@ -2,6 +2,7 @@ import React from "react";
 import classNames from "classnames";
 import { useId, useInteractOutside } from "react-aria";
 import { NavBarButton, NavBarButtonProps } from "./NavBarButton";
+import { useFocusIframe } from "../hooks";
 import "./NavBarDisclosure.css";
 import "../theme/theme.css";
 
@@ -22,7 +23,8 @@ export type NavBarDisclosureButtonProps = NavBarButtonProps & React.PropsWithChi
  * command menus and misdescribes a list of links.
  *
  * The list is plain content next to the button, so Tab moves through the items. Escape,
- * a press outside, or focus leaving closes it, and Escape returns focus to the button.
+ * a press outside (including inside an iframe), or focus leaving closes it, and Escape
+ * returns focus to the button.
  */
 export const NavBarDisclosureButton = ({
   children,
@@ -54,6 +56,7 @@ export const NavBarDisclosureButton = ({
   const context = React.useMemo(() => ({ close: () => close(true) }), [close]);
 
   useInteractOutside({ ref: wrapperRef, isDisabled: !isOpen, onInteractOutside: () => close() });
+  useFocusIframe(() => close(), !isOpen);
 
   return (
     <DisclosureContext.Provider value={context}>
