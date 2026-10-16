@@ -117,7 +117,15 @@ export const ErrorBoundary = ({
     }
   }, [props.userUuid]);
 
+  // setError reads these through a ref so its identity never changes. Consumers pass
+  // errorFallbacks and errorLevels as inline objects, which re-memoise on every render, and
+  // effects depend on setAppError; a new function each render re-runs them, and one that
+  // re-sets an error it's still holding raises the error screen and reports it again.
+  const latest = React.useRef({ errorFallbacks, errorLevels, breadcrumbErrors, handlesUntypedErrors, parentContext });
+  latest.current = { errorFallbacks, errorLevels, breadcrumbErrors, handlesUntypedErrors, parentContext };
+
   const setError = React.useCallback((input: unknown, componentStack?: string, isInline?: boolean) => {
+    const { errorFallbacks, errorLevels, breadcrumbErrors, handlesUntypedErrors, parentContext } = latest.current;
 
     if (input === null) {
       setThisError(null);
@@ -160,7 +168,7 @@ export const ErrorBoundary = ({
       // catcher is intact because this boundary is the one that caught the error
       parentContext.setError(input, componentStack);
     }
-  }, [errorFallbacks, errorLevels, breadcrumbErrors, handlesUntypedErrors, parentContext]);
+  }, []);
 
   const contextValue = React.useMemo(() => ({
     error,

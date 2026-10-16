@@ -497,6 +497,46 @@ describe('ErrorBoundary', () => {
       expect(componentStackFrom(testkit.reports()[0])).toContain('ErrorComponent');
     }));
 
+    it('keeps setAppError stable across re-renders with inline props', () => {
+      const seen = new Set<unknown>();
+      const Capture = () => {
+        seen.add(useSetAppError());
+        return null;
+      };
+      const tree = (level: Sentry.SeverityLevel) => (
+        <ErrorBoundary errorFallbacks={{ generic: <div /> }} errorLevels={{ ScoresSyncError: level }}>
+          <Capture />
+        </ErrorBoundary>
+      );
+
+      let component: ReactTestRenderer | undefined;
+      act(() => { component = renderer.create(tree('warning')); });
+      act(() => { component?.update(tree('warning')); });
+      act(() => { component?.update(tree('info')); });
+
+      expect(seen.size).toBe(1);
+    });
+
+    it('uses the latest errorLevels with the stable setAppError', () => {
+      let setAppError: ((error: unknown) => void) | undefined;
+      const Capture = () => {
+        setAppError = useSetAppError();
+        return null;
+      };
+      const tree = (level: Sentry.SeverityLevel) => (
+        <ErrorBoundary errorLevels={{ Error: level }}>
+          <Capture />
+        </ErrorBoundary>
+      );
+
+      let component: ReactTestRenderer | undefined;
+      act(() => { component = renderer.create(tree('warning')); });
+      act(() => { component?.update(tree('info')); });
+      act(() => { setAppError?.(new Error('Async Error')); });
+
+      expect(testkit.reports()[0].level).toBe('info');
+    });
+
     it('reports errors set outside of rendering, which have no component stack', () => {
       const AsyncErrorComponent = () => {
         const setAppError = useSetAppError();
