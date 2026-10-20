@@ -1,6 +1,6 @@
 import { ToastData } from '../types';
 import { BodyPortalToastContainer, ToastContainer } from './ToastContainer';
-import "./stories.css";
+import './stories.css';
 
 const toasts: ToastData[] = [
   { title: 'Neutral', message: 'message' },
