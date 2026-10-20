@@ -1,16 +1,16 @@
 import { Key } from 'react-aria-components';
-import { createGlobalStyle } from 'styled-components';
 import { BodyPortalSlotsContext } from '../BodyPortalSlotsContext';
 import { ProfileMenu, ProfileMenuItem } from '.';
 import { NavBar } from '../NavBar';
 
-const BodyPortalGlobalStyle = createGlobalStyle`
+// Rendered with the story so the rule goes away with it.
+const BodyPortalGlobalStyle = () => <style>{`
   [data-portal-slot="nav"] {
     position: fixed;
     top: 0;
     width: 100%;
   }
-`;
+`}</style>;
 
 const handleAction = (key: Key) => {
   window.alert(`Action: ${key}`);
