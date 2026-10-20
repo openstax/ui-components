@@ -1,5 +1,4 @@
 import { useMatchMediaQuery } from "../hooks";
-import styled, { createGlobalStyle, css } from "styled-components";
 import {
   BodyPortalSidebarNav,
   SidebarNav,
@@ -10,10 +9,12 @@ import { BodyPortal } from "./BodyPortal";
 import { NavBar } from "./NavBar";
 import { NavBarLogo } from "./NavBarLogo";
 import React from "react";
-import { breakpoints, colors } from "../theme";
+import { breakpoints } from "../theme";
 import { NavBarPopoverButton, PopoverContainer } from "./NavBarMenuButtons";
+import "./SidebarNav.stories.css";
+import "../theme/theme.css";
 
-const GlobalStyle = createGlobalStyle`
+const GlobalStyle = () => <style>{`
   html, body, #ladle-root {
     margin: 0;
     padding: 0;
@@ -22,9 +23,9 @@ const GlobalStyle = createGlobalStyle`
   #ladle-root {
     height: 100vh;
   }
-`;
+`}</style>;
 
-const BodyPortalGlobalStyle = createGlobalStyle`
+const BodyPortalGlobalStyle = () => <style>{`
   body {
     display: grid;
     grid-template-columns: auto 1fr;
@@ -58,80 +59,7 @@ const BodyPortalGlobalStyle = createGlobalStyle`
     position: absolute;
     right: 0;
   }
-`;
-
-const Wrapper = styled.div`
-  flex: 1;
-  display: grid;
-  grid-template: "nav main" / auto 1fr;
-  overflow: hidden;
-  height: 100%;
-
-  main {
-    grid-area: main;
-    overflow: hidden auto;
-    display: flex;
-    flex-direction: column;
-    place-content: center;
-    align-items: center;
-    text-align: center;
-  }
-`;
-
-const sidebarStyles = css`
-  overflow: auto;
-  grid-area: nav;
-  padding: 2rem;
-
-  ul {
-    list-style: none;
-    padding: 0;
-  }
-
-  .sidebar-nav-toggle {
-    margin-top: 3.2rem;
-  }
-`;
-
-const mainStyles = css`
-  .mobile + & {
-    margin-left: 5.6rem;
-  }
-`;
-
-const StyledSidebarNav = styled(SidebarNav)`
-  ${sidebarStyles}
-`;
-
-const StyledBodyPortalSidebarNav = styled(BodyPortalSidebarNav)`
-  ${sidebarStyles}
-`;
-
-const StyledMain = styled.main`
-  ${mainStyles}
-`;
-
-const StyledBodyPortalMain = styled(BodyPortal)`
-  ${mainStyles}
-  padding: 4rem;
-`;
-
-const NavItem = styled.li`
-  a {
-    text-decoration: none;
-    color: black;
-    padding: 0.5rem 1rem;
-    display: block;
-    border-radius: 4px;
-
-    ${(props: { active: boolean }) =>
-      props.active &&
-      css`
-        background-color: #007bff;
-        color: white;
-      `}
-  }
-`;
+`}</style>;
 
 const items = [
   "Home",
@@ -157,9 +85,10 @@ const NavItemsList = ({
   return (
     <ul>
       {items.map((item, index) => (
-        <NavItem key={index} active={activeItem === item}>
+        <li key={index} className="story-sidebar-nav-item">
           <a
             href="#"
+            style={activeItem === item ? { backgroundColor: "#007bff", color: "white" } : undefined}
             onClick={(e) => {
               e.preventDefault();
               if (navIsCollapsed) {
@@ -172,7 +101,7 @@ const NavItemsList = ({
           >
             {item}
           </a>
-        </NavItem>
+        </li>
       ))}
     </ul>
   );
@@ -186,8 +115,8 @@ const SidebarNavAndMain = () => {
   return (
     <>
       <GlobalStyle />
-      <Wrapper>
-        <StyledSidebarNav ariaLabel="Main navigation">
+      <div className="story-sidebar-wrapper">
+        <SidebarNav className="story-sidebar-nav" ariaLabel="Main navigation">
           {({ setNavIsCollapsed, navIsCollapsed, isMobile }) => (
             <NavItemsList
               items={items}
@@ -196,8 +125,9 @@ const SidebarNavAndMain = () => {
               isMobile={isMobile}
             />
           )}
-        </StyledSidebarNav>
-        <StyledMain
+        </SidebarNav>
+        <main
+          className="story-sidebar-main"
           style={{
             padding: "4rem",
             marginLeft: isMobile ? SidebarNavStyles.collapsedWidth : "",
@@ -209,27 +139,18 @@ const SidebarNavAndMain = () => {
               <a href="#">focusable element</a>
             </p>
           </h1>
-        </StyledMain>
-      </Wrapper>
+        </main>
+      </div>
     </>
   );
 };
-
-const InfoMenuButton = styled(NavBarPopoverButton)`
-  &:hover {
-    svg path {
-      fill: ${colors.palette.lightBlue};
-    }
-  }
-`;
-
 
 const BodyPortalSidebarNavAndMain = () => {
   return (
     <BodyPortalSlotsContext.Provider value={["sidebar", "nav", "main"]}>
       <BodyPortalGlobalStyle />
-      <Wrapper>
-        <StyledBodyPortalSidebarNav ariaLabel="Header navigation" navHeader={<NavBarLogo alt="logo" />}>
+      <div className="story-sidebar-wrapper">
+        <BodyPortalSidebarNav className="story-sidebar-nav" ariaLabel="Header navigation" navHeader={<NavBarLogo alt="logo" />}>
           {({ setNavIsCollapsed, navIsCollapsed, isMobile }) => (
             <NavItemsList
               items={items}
@@ -238,17 +159,17 @@ const BodyPortalSidebarNavAndMain = () => {
               isMobile={isMobile}
             />
           )}
-        </StyledBodyPortalSidebarNav>
+        </BodyPortalSidebarNav>
         <NavBar ariaLabel="Main navigation">
           <h1>Title</h1>
-          <InfoMenuButton label="Menu">
+          <NavBarPopoverButton className="story-sidebar-info-button" label="Menu">
             <PopoverContainer>
               <button>Example button</button>
               <button>Another button</button>
             </PopoverContainer>
-          </InfoMenuButton>
+          </NavBarPopoverButton>
         </NavBar>
-        <StyledBodyPortalMain tagName="main" slot="main">
+        <BodyPortal className="story-sidebar-main story-sidebar-main-portal" tagName="main" slot="main">
           <h1>
             Main content
             <p>
@@ -256,8 +177,8 @@ const BodyPortalSidebarNavAndMain = () => {
             </p>
             <p>{Date.now().toString()}</p>
           </h1>
-        </StyledBodyPortalMain>
-      </Wrapper>
+        </BodyPortal>
+      </div>
     </BodyPortalSlotsContext.Provider>
   );
 };
