@@ -33,7 +33,8 @@ const serializeBreadcrumb = (level: Level, breadcrumb: JsonCompatibleStruct): {
     level: serializeLevel(level),
     category: 'log',
     message: typeof message === 'string' ? message : '',
-    timestamp: typeof timestamp === 'number' ? timestamp : undefined,
+    // events carry ms since epoch (Date.now()); sentry breadcrumbs take seconds
+    timestamp: typeof timestamp === 'number' ? timestamp / 1000 : undefined,
     data: flattenObj(rest),
   }
 };

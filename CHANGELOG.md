@@ -54,6 +54,13 @@ To migrate, pass your own class and select on it instead of the component.
 
 ### Changed
 
+#### `createSentryLogger` reads `timestamp` as milliseconds (CORE-3301)
+
+A logged event's `timestamp` is now read as milliseconds since the epoch, the units of
+`Date.now()`, and converted to the seconds Sentry breadcrumbs expect. ts-utils' logger is
+starting to stamp every event with `Date.now()`, which Sentry would otherwise read as a time
+far in the future. No current caller passes a `timestamp`.
+
 #### `Tabs` and `Tooltip` classes are prefixed with `ox-`
 
 `.tabs` and `.tooltip` are common class names, and the library's rules for them are global, so
