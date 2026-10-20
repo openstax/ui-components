@@ -1,22 +1,13 @@
-import styled from "styled-components";
 import { Radio } from "./Radio";
-
-const RadioGroup = styled.div`
-  & + & {
-    margin-top: 3.2rem;
-  }
-  > * + * {
-    margin-top: 0.5rem;
-  }
-`;
+import "./stories.css";
 
 type RadioProps = React.ComponentProps<typeof Radio>;
-const renderRadios = (props: RadioProps) => <RadioGroup>
+const renderRadios = (props: RadioProps) => <div className="story-group">
   <Radio {...props}>Label</Radio>
   <Radio {...props} defaultChecked>Label</Radio>
   <Radio {...props}>Label</Radio>
   <Radio disabled {...props}>Disabled label</Radio>
-</RadioGroup>;
+</div>;
 
 export const Default = () => <>
   {renderRadios({name: 'default'})}
@@ -26,10 +17,10 @@ export const WithTooltip = () => <>
   {renderRadios({name: 'withTooltip', tooltipText: 'Tooltip text for radio input goes here'})}
 </>;
 
-const renderDisabledRadios = (props: RadioProps) => <RadioGroup>
+const renderDisabledRadios = (props: RadioProps) => <div className="story-group">
   <Radio disabled {...props}>Disabled label</Radio>
   <Radio disabled defaultChecked {...props}>Disabled label</Radio>
-</RadioGroup>;
+</div>;
 
 export const Disabled = () => <>
   {renderDisabledRadios({name: 'disabled'})}

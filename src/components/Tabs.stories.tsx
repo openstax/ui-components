@@ -1,22 +1,7 @@
 import React from "react";
-import styled from "styled-components";
 import { Tabs, Tab, TabList, TabPanel } from "./Tabs";
-
-const StyledTabPanel = styled(TabPanel)`
-  margin: 1rem 0;
-  padding: 5rem;
-  display: flex;
-  align-items: center;
-  border: 0.1rem solid #d5d5d5;
-`;
-
-const Wrapper = styled.div`
-  padding: 2.4rem;
-
-  .react-aria-TabList {
-    margin-top: 4.8rem;
-  }
-`;
+import "./Tabs.stories.css";
+import "../theme/theme.css";
 
 type TabsProps = React.ComponentProps<typeof Tabs>;
 
@@ -26,7 +11,7 @@ export const Examples = () => {
 
   const handleSetSize = (e: any) => setSize(e.currentTarget.value as TabsProps['size']);
 
-  return <Wrapper>
+  return <div className="story-tabs-wrapper">
     <label>
       <b>Size</b><br/>
       <select onChange={handleSetSize} defaultValue={size}>
@@ -40,9 +25,9 @@ export const Examples = () => {
         <Tab id="two">Second Item</Tab>
         <Tab id="three">Last Item</Tab>
       </TabList>
-      <StyledTabPanel id="one">First Content Panel</StyledTabPanel>
-      <StyledTabPanel id="two">Second Content Panel</StyledTabPanel>
-      <StyledTabPanel id="three">Third Content Panel</StyledTabPanel>
+      <TabPanel className="story-tab-panel" id="one">First Content Panel</TabPanel>
+      <TabPanel className="story-tab-panel" id="two">Second Content Panel</TabPanel>
+      <TabPanel className="story-tab-panel" id="three">Third Content Panel</TabPanel>
     </Tabs>
     <br />
     <Tabs variant="button-bar" size={size}>
@@ -51,9 +36,9 @@ export const Examples = () => {
         <Tab id="two">Second Item</Tab>
         <Tab id="three">Last Item</Tab>
       </TabList>
-      <StyledTabPanel id="one">First Content Panel</StyledTabPanel>
-      <StyledTabPanel id="two">Second Content Panel</StyledTabPanel>
-      <StyledTabPanel id="three">Third Content Panel</StyledTabPanel>
+      <TabPanel className="story-tab-panel" id="one">First Content Panel</TabPanel>
+      <TabPanel className="story-tab-panel" id="two">Second Content Panel</TabPanel>
+      <TabPanel className="story-tab-panel" id="three">Third Content Panel</TabPanel>
     </Tabs>
-  </Wrapper>
+  </div>
 };

@@ -1,17 +1,5 @@
-import styled from "styled-components";
 import { TreeCheckbox } from "./TreeCheckbox";
-
-const CheckboxGroup = styled.div`
-  text-transform: capitalize;
-
-  & + & {
-    margin-top: 3.2rem;
-  }
-
-  > * + * {
-    margin-top: 0.5rem;
-  }
-`;
+import "../stories.css";
 
 type CheckboxProps = React.ComponentProps<typeof TreeCheckbox>;
 
@@ -20,7 +8,7 @@ const renderCheckboxes = (
   size: CheckboxProps['size'],
   isIndeterminate = false,
 ) => (
-  <CheckboxGroup>
+  <div className="story-group story-group-capitalize">
     <h2>Size {size}</h2>
     <TreeCheckbox slot='selection' {...{ size, variant, isIndeterminate }}>Checkbox label</TreeCheckbox>
     <TreeCheckbox slot='selection' {...{ size, variant, isIndeterminate }} defaultSelected>
@@ -29,7 +17,7 @@ const renderCheckboxes = (
     <TreeCheckbox slot='selection' {...{ size, variant, isIndeterminate }} defaultSelected bold>
       Checkbox label
     </TreeCheckbox>
-  </CheckboxGroup>
+  </div>
 );
 
 export const Primary = () => (
@@ -70,7 +58,7 @@ export const Error = () => (
 
 export const Disabled = () => (
   <>
-    <CheckboxGroup>
+    <div className="story-group story-group-capitalize">
       <h2>Disabled</h2>
       <TreeCheckbox slot='selection' variant="primary" size={1.6} isDisabled>
         Checkbox label
@@ -78,6 +66,6 @@ export const Disabled = () => (
       <TreeCheckbox slot='selection' variant="primary" size={1.6} isDisabled defaultSelected>
         Checkbox label
       </TreeCheckbox>
-    </CheckboxGroup>
+    </div>
   </>
 );
