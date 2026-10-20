@@ -36,18 +36,18 @@
   margin-right: 1rem;
 }
 
+/* More specific than the container's own `:not(.toast-container-inline)` rule, which sets `right`. */
 .toast-container.story-toast-container:not(.toast-container-inline) {
   top: 2rem;
   left: 2rem;
   right: unset;
 }
 
-.uncontrolled-form-section.story-form-row {
+.story-form-row {
   display: flex;
   flex-direction: row;
 }
 
-.uncontrolled-form-section.story-form-row > *:not(:first-child) {
-  margin-top: 0;
+.story-form-row > *:not(:first-child) {
   margin-left: 5px;
 }
