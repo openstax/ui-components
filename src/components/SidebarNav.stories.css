@@ -16,7 +16,7 @@
   text-align: center;
 }
 
-.sidebar-nav.story-sidebar-nav {
+.story-sidebar-nav {
   overflow: auto;
   grid-area: nav;
   padding: 2rem;
