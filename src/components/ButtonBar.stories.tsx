@@ -1,12 +1,8 @@
 import React from "react";
-import styled from "styled-components";
 import { ButtonBar } from "./ButtonBar";
+import "./stories.css";
 
 type ButtonBarProps = React.ComponentProps<typeof ButtonBar>;
-
-const Wrapper = styled.div`
-  padding: 2.4rem;
-`;
 
 export const Examples = () => {
   const [size, setSize] = React.useState<ButtonBarProps["size"]>("medium");
@@ -23,7 +19,7 @@ export const Examples = () => {
     setSize(e.currentTarget.value as ButtonBarProps["size"]);
 
   return (
-    <Wrapper>
+    <div className="story-padded">
       <label>
         <b>Size</b>
         <br />
@@ -76,6 +72,6 @@ export const Examples = () => {
           </a>
         ))}
       </ButtonBar>
-    </Wrapper>
+    </div>
   );
 };

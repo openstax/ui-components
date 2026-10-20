@@ -1,16 +1,16 @@
-import { createGlobalStyle } from 'styled-components';
 import { BodyPortalSlotsContext } from '../BodyPortalSlotsContext';
 import { HelpMenu, HelpMenuItem, HelpMenuProps } from '.';
 import { NavBar } from '../NavBar';
 import { ChatConfiguration } from './hooks';
 
-const BodyPortalGlobalStyle = createGlobalStyle`
+// Rendered with the story so the rule goes away with it.
+const BodyPortalGlobalStyle = () => <style>{`
   [data-portal-slot="nav"] {
     position: fixed;
     top: 0;
     width: 100%;
   }
-`;
+`}</style>;
 
 const happyHoursResponse: ChatConfiguration['businessHours'] = {
   businessHoursInfo: {

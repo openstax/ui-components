@@ -1,24 +1,15 @@
-import styled from "styled-components";
 import { Checkbox, RangeInput, TextInput, TextArea, Select, Radio, File } from "./inputTypes";
+import "../../stories.css";
 
-
-const CheckboxGroup = styled.div`
-  & + & {
-    margin-top: 3.2rem;
-  }
-  > * + * {
-    margin-top: 0.5rem;
-  }
-`;
 
 type CheckboxProps = React.ComponentProps<typeof Checkbox>;
 const renderCheckboxes = (props: CheckboxProps) => 
-<CheckboxGroup>
+<div className="story-group">
   <h2>Size {props.size}</h2>
   <Checkbox {...props} defaultChecked></Checkbox>
   <Checkbox {...props} defaultChecked></Checkbox>
   <Checkbox {...props} defaultChecked></Checkbox>
-</CheckboxGroup>;
+</div>;
 
 export const defaultCheckbox = () => <>
   {renderCheckboxes({error: [], label: 'Checkbox Label', variant: 'primary', size: 1.4})}
