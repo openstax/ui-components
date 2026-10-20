@@ -42,7 +42,7 @@ describe('createConsoleLogger', () => {
 
     expect(logFn).toHaveBeenCalledWith(
       {
-        "timestamp": 1461165894000,
+        "timestamp": 1461165894,
         "level": "info",
         "message": "This is a test",
         "category": "log",
