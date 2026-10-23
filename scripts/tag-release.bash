@@ -28,4 +28,13 @@ unset GIT_INDEX_FILE
 
 commit=$(git commit-tree "$tree" -p HEAD -m "Dist files")
 git tag -a "$version" -m "$version" "$commit"
-git push origin "refs/tags/$version"
+if ! git push origin "refs/tags/$version"; then
+  cat > /dev/stderr <<EOF
+
+The tag $version was created locally but not pushed. The package is already published, so
+do not run the release again. Push the tag by hand:
+
+  git push origin refs/tags/$version
+EOF
+  exit 1
+fi
