@@ -37,6 +37,16 @@ fi
 
 npm ci
 npm run build:clean
+
+# The build regenerates tracked files (src/theme/theme.css). The tag is made from HEAD, so a
+# change here would be published in the package but missing from the tag.
+if [ -n "$(git status --porcelain=v1)" ]; then
+  echo "the build changed tracked files, so the package would not match the tag:" > /dev/stderr
+  git status --short > /dev/stderr
+  echo "Commit the regenerated files, then run the release again." > /dev/stderr
+  exit 1
+fi
+
 npm publish
 
 if ! ./scripts/tag-release.bash; then
