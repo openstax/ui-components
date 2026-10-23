@@ -32,7 +32,24 @@ elif [ "$tag_check" -ne 2 ]; then
   exit 1
 fi
 
+# Fail before publishing if the tag could not be created afterwards.
+./scripts/tag-release.bash --check
+
 npm ci
 npm run build:clean
 npm publish
-./scripts/tag-release.bash
+
+if ! ./scripts/tag-release.bash; then
+  cat > /dev/stderr <<EOF
+
+$version was published, but tagging it failed. Do not run the release again.
+Once the cause is fixed, run this from the same checkout to create and push the tag:
+
+  ./scripts/tag-release.bash
+
+If the tag was created and only the push failed, this pushes it by hand:
+
+  git push origin refs/tags/$version
+EOF
+  exit 1
+fi
