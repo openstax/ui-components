@@ -1,0 +1,40 @@
+import { colors } from "../../theme";
+import { whiteCheckmark, grayCheckmark, redCheckmark, checkedMixIcon, grayMixIcon, redMixIcon } from "../svgs/checkmarksvgs";
+/**
+ * Checkbox variant configuration for runtime theme lookups.
+ * These values are used to bind CSS custom properties at the component level.
+ */
+export const checkboxVariants = {
+    primary: {
+        backgroundColor: colors.palette.mediumBlue,
+        color: 'inherit',
+        unCheckedBorder: `1px solid ${colors.palette.neutralThin}`,
+        checkedBorder: `1px solid ${colors.palette.mediumBlue}`,
+        backgroundImage: whiteCheckmark,
+        indeterminateImage: checkedMixIcon
+    },
+    light: {
+        backgroundColor: colors.palette.white,
+        color: 'inherit',
+        unCheckedBorder: `1px solid ${colors.palette.pale}`,
+        checkedBorder: `1px solid ${colors.palette.pale}`,
+        backgroundImage: grayCheckmark,
+        indeterminateImage: grayMixIcon
+    },
+    error: {
+        backgroundColor: colors.palette.paleRed,
+        color: colors.palette.darkRed,
+        unCheckedBorder: `1px solid ${colors.palette.lightRed}`,
+        checkedBorder: `1px solid ${colors.palette.lightRed}`,
+        backgroundImage: redCheckmark,
+        indeterminateImage: redMixIcon
+    },
+    disabled: {
+        backgroundColor: colors.palette.white,
+        color: 'inherit',
+        unCheckedBorder: `1px solid ${colors.palette.pale}`,
+        checkedBorder: `1px solid ${colors.palette.pale}`,
+        backgroundImage: 'none',
+        indeterminateImage: 'none'
+    }
+};

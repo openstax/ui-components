@@ -1,0 +1,12 @@
+/* Includes hard-coded values copied from constants */
+.navbar-logo {
+  display: block;
+  width: auto;
+  height: 2.4rem; /* navLogoMobileHeight */
+}
+
+@media screen and (min-width: 75.0625em) { /* desktopBreak */
+  .navbar-logo {
+    height: 2.4rem; /* navLogoDesktopHeight */
+  }
+}
