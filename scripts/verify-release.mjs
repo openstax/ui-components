@@ -2,7 +2,8 @@
 // The tag is the release commit plus the built dist/, so every file in the package has to be
 // in the tag's tree with the same contents. This catches untracked or ignored files under
 // src/, a generated file that changed during the build, and anything else that would make
-// them differ.
+// them differ. Files are hashed as they are on disk, with no line-ending conversion, because
+// npm packs the bytes on disk, not what git would store.
 import { execFileSync } from "node:child_process";
 
 const tag = process.argv[2];
@@ -31,8 +32,8 @@ for (const { path: file } of files) {
   const blob = inTag.get(file);
   if (blob === undefined) {
     problems.push(`${file}: in the package, but not in the tag (untracked or ignored)`);
-  } else if (run("git", ["hash-object", file]).trim() !== blob) {
-    problems.push(`${file}: differs from the committed copy`);
+  } else if (run("git", ["hash-object", "--no-filters", file]).trim() !== blob) {
+    problems.push(`${file}: differs from the committed copy (check core.autocrlf and .gitattributes)`);
   }
 }
 
