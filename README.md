@@ -26,7 +26,15 @@ Tags are the version, with no `v` prefix: `1.26.4`, or `1.25.1-pre1` for a pre-r
 1. Merge it, then check out that commit with a clean working tree
 1. Run `./scripts/publish.bash`
 
-The script stops before publishing if the working tree has changes, the tag already exists, or git cannot work out an author and committer identity to create the tag with. It also stops before `npm publish` if the build changes any tracked file, such as the generated `src/theme/theme.css`, because the tag is made from the committed code and would not match the package. After `npm publish` it runs `scripts/tag-release.bash`, which creates the "Dist files" commit and the tag and pushes the tag. No branch is moved. If tagging fails after the package is published, the script says so; fix the cause and run `./scripts/tag-release.bash` from the same checkout. Do not run the release again.
+Publishing cannot be undone, so the script checks everything the tagging needs before it publishes anything, cheapest first. It stops if:
+
+- the working tree has changes (untracked files included), or the tag already exists locally or on origin
+- git cannot create the tag (no author and committer identity, or `tag.gpgSign` is on without a usable key) or cannot push it to origin
+- you are not logged in to the npm registry
+- `HEAD` moves during the build, or the build changes a tracked file such as the generated `src/theme/theme.css`
+- any file in the package is missing from the tag or differs from it, for example an untracked or ignored file under `src/`
+
+After `npm publish` it runs `scripts/tag-release.bash`, which creates the "Dist files" commit and the tag and pushes the tag. No branch is moved. If tagging fails after the package is published, the script says so; fix the cause and run `./scripts/tag-release.bash` from the same checkout, which pushes a tag that already exists without needing a git identity. Do not run the release again.
 
 ## CI/CD Workflows
 
