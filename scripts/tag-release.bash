@@ -13,11 +13,12 @@ project_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." >/dev/null 2>&1 && pwd 
 
 cd "$project_dir"
 
-# Creating a commit and an annotated tag needs an identity, from git config or the environment.
-name="${GIT_COMMITTER_NAME:-$(git config user.name || true)}"
-email="${GIT_COMMITTER_EMAIL:-$(git config user.email || true)}"
-if [ -z "$name" ] || [ -z "$email" ]; then
-  echo "git needs a user.name and user.email to tag the release. Set them with git config, e.g." > /dev/stderr
+# Creating the commit needs an author and a committer, and the annotated tag needs a tagger.
+# Try the same operations instead of guessing from config, since git also reads GIT_AUTHOR_*,
+# GIT_COMMITTER_* and author.* / committer.* settings. The commit is never referenced.
+if ! git commit-tree "HEAD^{tree}" -p HEAD -m "check" > /dev/null 2>&1 \
+  || ! git var GIT_COMMITTER_IDENT > /dev/null 2>&1; then
+  echo "git cannot work out an author and committer identity to tag the release with. Set one, e.g." > /dev/stderr
   echo "  git config user.name \"Your Name\" && git config user.email you@example.com" > /dev/stderr
   exit 1
 fi
