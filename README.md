@@ -14,15 +14,28 @@ Use a version that matches your project's requirements.
 
 ## Versioning & Release Process
 
-### Git Tags
-We use Git tags instead of npm publishing:
-- Standard: `1.15.0`, `1.15.1`
-- Pre-release: `1.15.3-pre1`
-- Feature-specific: `sentry-logger-03212025`
+A release is published to the GitHub Packages npm registry and tagged in git. Projects can install either way:
+
+- **Registry:** a semver range such as `^1.26.0`, with `@openstax:registry=https://npm.pkg.github.com` in `.npmrc`.
+- **Git tag:** `openstax/ui-components#1.26.4`. The tag points to a "Dist files" commit that adds the built `dist/` to the release commit, so the install needs no build.
+
+Tags are the version, with no `v` prefix: `1.26.4`, or `1.25.1-pre1` for a pre-release. A feature-specific tag such as `sentry-logger-03212025` is created by hand.
 
 ### Creating a Release
-1. Update the version in `package.json`
+1. Update the version in `package.json` (and the lockfile, with `npm version <version> --no-git-tag-version`)
+1. Merge it, then check out that commit with a clean working tree
 1. Run `./scripts/publish.bash`
+
+Publishing cannot be undone, so the script creates the tag first. Everything that can go wrong with it then happens before the publish. The script stops, before `npm publish`, if:
+
+- the working tree has changes (untracked files included), or the tag already exists locally or on origin
+- you are not logged in to the npm registry
+- the build changes a tracked file, such as the generated `src/theme/theme.css`
+- git cannot create the tag: no author and committer identity, or `tag.gpgSign` is on without a usable key
+- any file in the package is missing from the tag or differs from it, byte for byte, for example an untracked or ignored file under `src/`, or a checkout whose files have CRLF line endings because of `core.autocrlf`. Release from a checkout with LF line endings.
+- git cannot push the tag to origin (a dry-run push), or `HEAD` has moved since the script started
+
+If it stops before the publish, it removes the tag it created. The only step after the publish is pushing the tag; if that fails the script says so, and the tag is still there locally, so push it by hand with `git push origin refs/tags/<version>`. Do not run the release again.
 
 ## CI/CD Workflows
 
