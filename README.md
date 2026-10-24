@@ -26,15 +26,16 @@ Tags are the version, with no `v` prefix: `1.26.4`, or `1.25.1-pre1` for a pre-r
 1. Merge it, then check out that commit with a clean working tree
 1. Run `./scripts/publish.bash`
 
-Publishing cannot be undone, so the script checks everything the tagging needs before it publishes anything, cheapest first. It stops if:
+Publishing cannot be undone, so the script creates the tag first. Everything that can go wrong with it then happens before the publish. The script stops, before `npm publish`, if:
 
 - the working tree has changes (untracked files included), or the tag already exists locally or on origin
-- git cannot create the tag (no author and committer identity, or `tag.gpgSign` is on without a usable key) or cannot push it to origin
 - you are not logged in to the npm registry
-- the build changes a tracked file such as the generated `src/theme/theme.css`, or `HEAD` moves at any point before the publish
+- the build changes a tracked file, such as the generated `src/theme/theme.css`
+- git cannot create the tag: no author and committer identity, or `tag.gpgSign` is on without a usable key
 - any file in the package is missing from the tag or differs from it, for example an untracked or ignored file under `src/`
+- git cannot push the tag to origin (a dry-run push), or `HEAD` has moved since the script started
 
-After `npm publish` it runs `scripts/tag-release.bash`, which creates the "Dist files" commit and the tag and pushes the tag. No branch is moved. If tagging fails after the package is published, the script says so; fix the cause, then run the two commands it prints, `git checkout <release commit>` and `./scripts/tag-release.bash --commit <release commit>`. The tag is built on that exact commit, and the script refuses to run if `HEAD` is somewhere else. If the tag was created and only the push failed, running it again pushes the existing tag without needing a git identity. Do not run the release again.
+If it stops before the publish, it removes the tag it created. The only step after the publish is pushing the tag; if that fails the script says so, and the tag is still there locally, so push it by hand with `git push origin refs/tags/<version>`. Do not run the release again.
 
 ## CI/CD Workflows
 
