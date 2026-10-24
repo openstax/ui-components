@@ -6,30 +6,40 @@ set -euo pipefail; if [ -n "${DEBUG-}" ]; then set -x; fi
 # The tag points at a commit that adds the built dist/ to HEAD. That commit is only
 # reachable from the tag, so no branch moves and the working tree is left alone.
 #
-# `--check` only verifies that a tag can be created, so publish.bash can find out before
-# anything is published.
+# `--check` only verifies that the tag could be created and pushed, so publish.bash can find
+# out before anything is published.
 
 project_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." >/dev/null 2>&1 && pwd )"
 
 cd "$project_dir"
 
-# Creating the commit needs an author and a committer, and the annotated tag needs a tagger.
-# Try the same operations instead of guessing from config, since git also reads GIT_AUTHOR_*,
-# GIT_COMMITTER_* and author.* / committer.* settings. The commit is never referenced.
-if ! git commit-tree "HEAD^{tree}" -p HEAD -m "check" > /dev/null 2>&1 \
-  || ! git var GIT_COMMITTER_IDENT > /dev/null 2>&1; then
-  echo "git cannot work out an author and committer identity to tag the release with. Set one, e.g." > /dev/stderr
-  echo "  git config user.name \"Your Name\" && git config user.email you@example.com" > /dev/stderr
-  exit 1
-fi
+version=$(node -p "require('./package.json').version")
 
 if [ "${1-}" = "--check" ]; then
+  # Do what the real run does with a throwaway tag, so every setting that can break it is
+  # exercised: the author and committer identity, tag signing (tag.gpgSign needs a key) and
+  # the credentials to push a tag to origin. The commit is never referenced.
+  probe="release-check-$$"
+  trap 'git tag -d "$probe" > /dev/null 2>&1 || true' EXIT
+
+  if ! git commit-tree "HEAD^{tree}" -p HEAD -m "check" > /dev/null 2>&1 \
+    || ! git tag -a "$probe" -m "check" HEAD > /dev/null 2>&1; then
+    echo "git cannot create the release tag. It needs an author and committer identity, e.g." > /dev/stderr
+    echo "  git config user.name \"Your Name\" && git config user.email you@example.com" > /dev/stderr
+    echo "and, if tag.gpgSign is on, a usable signing key." > /dev/stderr
+    exit 1
+  fi
+
+  if ! git push --dry-run origin "refs/tags/$probe" > /dev/null 2>&1; then
+    echo "git cannot push a tag to origin. Check your credentials and your access to the repository." > /dev/stderr
+    exit 1
+  fi
+
   exit 0
 fi
 
-version=$(node -p "require('./package.json').version")
-
-# An earlier run may have created the tag and failed to push it, so only create it when missing.
+# An earlier run may have created the tag and failed to push it. Pushing an existing tag needs
+# no identity, so that recovery works anywhere.
 if git rev-parse -q --verify "refs/tags/$version" > /dev/null; then
   echo "tag $version already exists locally, pushing it."
 else
