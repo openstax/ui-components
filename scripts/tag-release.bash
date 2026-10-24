@@ -7,7 +7,8 @@ set -euo pipefail; if [ -n "${DEBUG-}" ]; then set -x; fi
 # reachable from the tag, so no branch moves and the working tree is left alone.
 #
 # `--check` only verifies that the tag could be created and pushed, so publish.bash can find
-# out before anything is published.
+# out before anything is published. `--commit <sha>` tags exactly the commit that was verified
+# and published, and refuses to run if HEAD has moved since.
 
 project_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." >/dev/null 2>&1 && pwd )"
 
@@ -15,15 +16,26 @@ cd "$project_dir"
 
 version=$(node -p "require('./package.json').version")
 
-if [ "${1-}" = "--check" ]; then
+mode=""
+commit=$(git rev-parse HEAD)
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    --check) mode=check ;;
+    --commit) shift; commit=$(git rev-parse --verify "$1^{commit}") ;;
+    *) echo "unknown argument: $1" > /dev/stderr; exit 1 ;;
+  esac
+  shift
+done
+
+if [ "$mode" = "check" ]; then
   # Do what the real run does with a throwaway tag, so every setting that can break it is
   # exercised: the author and committer identity, tag signing (tag.gpgSign needs a key) and
   # the credentials to push a tag to origin. The commit is never referenced.
   probe="release-check-$$"
   trap 'git tag -d "$probe" > /dev/null 2>&1 || true' EXIT
 
-  if ! git commit-tree "HEAD^{tree}" -p HEAD -m "check" > /dev/null 2>&1 \
-    || ! git tag -a "$probe" -m "check" HEAD > /dev/null 2>&1; then
+  if ! git commit-tree "$commit^{tree}" -p "$commit" -m "check" > /dev/null 2>&1 \
+    || ! git tag -a "$probe" -m "check" "$commit" > /dev/null 2>&1; then
     echo "git cannot create the release tag. It needs an author and committer identity, e.g." > /dev/stderr
     echo "  git config user.name \"Your Name\" && git config user.email you@example.com" > /dev/stderr
     echo "and, if tag.gpgSign is on, a usable signing key." > /dev/stderr
@@ -43,6 +55,12 @@ fi
 if git rev-parse -q --verify "refs/tags/$version" > /dev/null; then
   echo "tag $version already exists locally, pushing it."
 else
+  if [ "$(git rev-parse HEAD)" != "$commit" ]; then
+    echo "HEAD is not $commit, so dist/ may not be the build of that commit. Check it out first:" > /dev/stderr
+    echo "  git checkout $commit" > /dev/stderr
+    exit 1
+  fi
+
   if [ ! -d dist ]; then
     echo "dist/ not found: run the build before tagging" > /dev/stderr
     exit 1
@@ -52,13 +70,13 @@ else
   trap 'rm -rf "$index_dir"' EXIT
   export GIT_INDEX_FILE="$index_dir/index"
 
-  git read-tree HEAD
+  git read-tree "$commit"
   git add -f dist
   tree=$(git write-tree)
   unset GIT_INDEX_FILE
 
-  commit=$(git commit-tree "$tree" -p HEAD -m "Dist files")
-  git tag -a "$version" -m "$version" "$commit"
+  dist_commit=$(git commit-tree "$tree" -p "$commit" -m "Dist files")
+  git tag -a "$version" -m "$version" "$dist_commit"
 fi
 
 git push origin "refs/tags/$version"

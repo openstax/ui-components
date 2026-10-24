@@ -1,11 +1,14 @@
 // Checks that the package npm is about to publish is exactly what the release tag will hold.
-// The tag is HEAD plus the built dist/, so every file in the package has to be in that tree
+// The tag is the release commit plus the built dist/, so every file in the package has to be in that tree
 // with the same contents. This catches untracked or ignored files under src/, a generated
 // file that changed during the build, and anything else that would make them differ.
 import { execFileSync } from "node:child_process";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
+
+// The commit the tag will be built on, so the check and the tag use the same object.
+const commit = process.argv[2] ?? "HEAD";
 
 const run = (command, args, env = {}) =>
   execFileSync(command, args, { encoding: "utf8", env: { ...process.env, ...env }, maxBuffer: 1 << 28 });
@@ -15,7 +18,7 @@ const env = { GIT_INDEX_FILE: path.join(indexDir, "index") };
 
 let planned;
 try {
-  run("git", ["read-tree", "HEAD"], env);
+  run("git", ["read-tree", commit], env);
   run("git", ["add", "-f", "dist"], env);
   // "<mode> <blob> <stage>\t<path>"
   planned = new Map(

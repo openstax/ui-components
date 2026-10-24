@@ -38,8 +38,11 @@ elif [ "$tag_check" -ne 2 ]; then
   fail "could not check origin for tag $version, aborting."
 fi
 
+# The commit being released. The checks, the build and the tag all use this one object.
+head=$(git rev-parse HEAD)
+
 # Identity, tag signing and push access to origin.
-./scripts/tag-release.bash --check
+./scripts/tag-release.bash --check --commit "$head"
 
 registry=$(node -p "(require('./package.json').publishConfig || {}).registry || ''")
 if ! npm whoami ${registry:+--registry "$registry"} > /dev/null 2>&1; then
@@ -47,14 +50,8 @@ if ! npm whoami ${registry:+--registry "$registry"} > /dev/null 2>&1; then
     "Log in with npm login, or set the auth token for the registry in your .npmrc."
 fi
 
-head=$(git rev-parse HEAD)
-
 npm ci
 npm run build:clean
-
-if [ "$(git rev-parse HEAD)" != "$head" ]; then
-  fail "HEAD changed while building, so the tag would not match what was built. Run the release again."
-fi
 
 # The build regenerates tracked files (src/theme/theme.css), so this also catches a stale one.
 if [ -n "$(git status --porcelain=v1)" ]; then
@@ -64,17 +61,23 @@ if [ -n "$(git status --porcelain=v1)" ]; then
 fi
 
 # Everything in the package has to be in the tag, byte for byte.
-node ./scripts/verify-release.mjs
+node ./scripts/verify-release.mjs "$head"
+
+# The tag is built on $head, so nothing may have moved the checkout since the build started.
+if [ "$(git rev-parse HEAD)" != "$head" ]; then
+  fail "HEAD changed while building, so the tag would not match what was built. Run the release again."
+fi
 
 npm publish
 
-if ! ./scripts/tag-release.bash; then
+if ! ./scripts/tag-release.bash --commit "$head"; then
   cat > /dev/stderr <<EOF
 
 $version was published, but tagging it failed. Do not run the release again.
-Once the cause is fixed, run this from the same checkout to create and push the tag:
+Once the cause is fixed, check out the release commit and run this to create and push the tag:
 
-  ./scripts/tag-release.bash
+  git checkout $head
+  ./scripts/tag-release.bash --commit $head
 
 If the tag was created and only the push failed, this pushes it by hand:
 

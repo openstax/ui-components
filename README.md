@@ -31,10 +31,10 @@ Publishing cannot be undone, so the script checks everything the tagging needs b
 - the working tree has changes (untracked files included), or the tag already exists locally or on origin
 - git cannot create the tag (no author and committer identity, or `tag.gpgSign` is on without a usable key) or cannot push it to origin
 - you are not logged in to the npm registry
-- `HEAD` moves during the build, or the build changes a tracked file such as the generated `src/theme/theme.css`
+- the build changes a tracked file such as the generated `src/theme/theme.css`, or `HEAD` moves at any point before the publish
 - any file in the package is missing from the tag or differs from it, for example an untracked or ignored file under `src/`
 
-After `npm publish` it runs `scripts/tag-release.bash`, which creates the "Dist files" commit and the tag and pushes the tag. No branch is moved. If tagging fails after the package is published, the script says so; fix the cause and run `./scripts/tag-release.bash` from the same checkout, which pushes a tag that already exists without needing a git identity. Do not run the release again.
+After `npm publish` it runs `scripts/tag-release.bash`, which creates the "Dist files" commit and the tag and pushes the tag. No branch is moved. If tagging fails after the package is published, the script says so; fix the cause, then run the two commands it prints, `git checkout <release commit>` and `./scripts/tag-release.bash --commit <release commit>`. The tag is built on that exact commit, and the script refuses to run if `HEAD` is somewhere else. If the tag was created and only the push failed, running it again pushes the existing tag without needing a git identity. Do not run the release again.
 
 ## CI/CD Workflows
 
