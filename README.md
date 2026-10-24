@@ -32,7 +32,7 @@ Publishing cannot be undone, so the script creates the tag first. Everything tha
 - you are not logged in to the npm registry
 - the build changes a tracked file, such as the generated `src/theme/theme.css`
 - git cannot create the tag: no author and committer identity, or `tag.gpgSign` is on without a usable key
-- any file in the package is missing from the tag or differs from it, for example an untracked or ignored file under `src/`
+- any file in the package is missing from the tag or differs from it, byte for byte, for example an untracked or ignored file under `src/`, or a checkout whose files have CRLF line endings because of `core.autocrlf`. Release from a checkout with LF line endings.
 - git cannot push the tag to origin (a dry-run push), or `HEAD` has moved since the script started
 
 If it stops before the publish, it removes the tag it created. The only step after the publish is pushing the tag; if that fails the script says so, and the tag is still there locally, so push it by hand with `git push origin refs/tags/<version>`. Do not run the release again.
