@@ -54,6 +54,12 @@ To migrate, pass your own class and select on it instead of the component.
 
 ### Changed
 
+#### `styled-components` is no longer a peer dependency (CORE-2010)
+
+No component in the package imports `styled-components` any more, so consumers no longer
+need it installed to use `@openstax/ui-components`. Apps that use it themselves are
+unaffected and keep their own dependency.
+
 #### `createSentryLogger` reads `timestamp` as milliseconds (CORE-3301)
 
 A logged event's `timestamp` is now read as milliseconds since the epoch, the units of
