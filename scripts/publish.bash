@@ -115,7 +115,8 @@ if [ "$(git rev-parse HEAD)" != "$head" ]; then
 fi
 
 publish_attempted=1
-if ! npm publish ${dist_tag:+--tag "$dist_tag"}; then
+# The registry is passed explicitly so the login checked above is for the registry published to.
+if ! npm publish ${registry:+--registry "$registry"} ${dist_tag:+--tag "$dist_tag"}; then
   fail "npm publish failed." \
     "If the package was not published, delete the tag it left with: git tag -d $version" \
     "If it was published, push the tag with: git push origin refs/tags/$version"
