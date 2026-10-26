@@ -26,9 +26,12 @@ Tags are the version, with no `v` prefix: `1.26.4`, or `1.25.1-pre1` for a pre-r
 1. Merge it, then check out that commit with a clean working tree
 1. Run `./scripts/publish.bash`
 
+A pre-release (a version with a `-` suffix) is published with the `next` dist-tag, so `npm install @openstax/ui-components` still gets the latest release.
+
 Publishing cannot be undone, so the script creates the tag first. Everything that can go wrong with it then happens before the publish. The script stops, before `npm publish`, if:
 
 - the working tree has changes (untracked files included), or the tag already exists locally or on origin
+- the version is not `MAJOR.MINOR.PATCH` or `MAJOR.MINOR.PATCH-prerelease`
 - you are not logged in to the npm registry
 - the build changes a tracked file, such as the generated `src/theme/theme.css`
 - git cannot create the tag: no author and committer identity, or `tag.gpgSign` is on without a usable key

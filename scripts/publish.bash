@@ -32,6 +32,15 @@ fi
 
 version=$(node -p "require('./package.json').version")
 
+# MAJOR.MINOR.PATCH with an optional -prerelease part, such as 1.26.4 or 1.25.1-pre1. No build metadata.
+if ! [[ "$version" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?$ ]]; then
+  fail "version \"$version\" in package.json is not MAJOR.MINOR.PATCH or MAJOR.MINOR.PATCH-prerelease, aborting."
+fi
+
+# A pre-release must not take the latest tag, which is what plain installs resolve to.
+dist_tag=""
+if [[ "$version" == *-* ]]; then dist_tag="next"; fi
+
 if git rev-parse -q --verify "refs/tags/$version" > /dev/null; then
   fail "tag $version already exists locally, aborting." \
     "If a previous release did not push it, push it with: git push origin refs/tags/$version" \
@@ -106,7 +115,7 @@ if [ "$(git rev-parse HEAD)" != "$head" ]; then
 fi
 
 publish_attempted=1
-if ! npm publish; then
+if ! npm publish ${dist_tag:+--tag "$dist_tag"}; then
   fail "npm publish failed." \
     "If the package was not published, delete the tag it left with: git tag -d $version" \
     "If it was published, push the tag with: git push origin refs/tags/$version"
