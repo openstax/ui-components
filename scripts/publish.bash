@@ -32,8 +32,8 @@ fi
 
 version=$(node -p "require('./package.json').version")
 
-# MAJOR.MINOR.PATCH with an optional -prerelease part, such as 1.26.4 or 1.25.1-pre1. No build metadata.
-if ! [[ "$version" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?$ ]]; then
+# Semver MAJOR.MINOR.PATCH with an optional -prerelease part, such as 1.26.4 or 1.25.1-pre1. No build metadata.
+if ! [[ "$version" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-(0|[1-9][0-9]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*)(\.(0|[1-9][0-9]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*))*)?$ ]]; then
   fail "version \"$version\" in package.json is not MAJOR.MINOR.PATCH or MAJOR.MINOR.PATCH-prerelease, aborting."
 fi
 
