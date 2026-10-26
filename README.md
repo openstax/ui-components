@@ -3,14 +3,24 @@
 General UI components for OpenStax projects.
 
 ## Installation
-Add to your project using GitHub tags:
+
+From the GitHub Packages registry, with `@openstax:registry=https://npm.pkg.github.com` in `.npmrc`:
 
 ```json
 "dependencies": {
-  "@openstax/ui-components": "https://github.com/openstax/ui-components#1.15.0"
+  "@openstax/ui-components": "^1.26.0"
 }
 ```
-Use a version that matches your project's requirements.
+
+Or from a git tag, which needs no registry setup:
+
+```json
+"dependencies": {
+  "@openstax/ui-components": "https://github.com/openstax/ui-components#1.26.4"
+}
+```
+
+Use a version that matches your project's requirements. See [Versioning & Release Process](#versioning--release-process) for how releases are tagged.
 
 ## Versioning & Release Process
 
