@@ -1,7 +1,8 @@
 import { createRef } from 'react';
 import fs from 'fs';
 import path from 'path';
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import { Banner, CloseButton, Severity, StyledBanner } from "./Banner";
 import { ButtonLink } from '../Button';
 import { declarations } from '../../theme/cssColors';
@@ -15,15 +16,70 @@ describe('Banner', () => {
     expect(tree).toMatchSnapshot();
   });
 
-  it('matches snapshot (multiple messages, with dismiss)', () => {
-    const tree = renderer.create(
-      <Banner 
-        messages={['This is warning one', 'This is warning two']} 
-        severity='warning' 
-        onDismiss={() => () => alert('dismiss checkout')} 
-      />
-    ).toJSON();
-    expect(tree).toMatchSnapshot();
+  describe('several messages', () => {
+    const messages = ['This is warning one', 'This is warning two', 'See <a href="https://example.com">the guide</a>'];
+
+    it('are a list with one item per message', () => {
+      render(<Banner messages={messages} severity='warning' />);
+
+      const items = within(screen.getByRole('list')).getAllByRole('listitem');
+
+      expect(items).toHaveLength(3);
+      expect(items[0]).toHaveTextContent('This is warning one');
+      expect(items[1]).toHaveTextContent('This is warning two');
+      expect(within(items[2]).getByRole('link', { name: 'the guide' })).toBeTruthy();
+    });
+
+    it('keep the visible "[1 of 3]:" numbering but hide it, since the list announces count and position', () => {
+      render(<Banner messages={messages} severity='warning' />);
+
+      const items = screen.getAllByRole('listitem');
+
+      expect(items.map((item) => item.querySelector('[aria-hidden="true"]')?.textContent)).toEqual([
+        '[1 of 3]: ', '[2 of 3]: ', '[3 of 3]: ',
+      ]);
+      expect(items[0].textContent).toBe('[1 of 3]: This is warning one');
+    });
+
+    it('state the roles, because removing the markers drops list semantics in Safari', () => {
+      render(<Banner messages={messages} severity='warning' />);
+
+      expect(screen.getByRole('list').getAttribute('role')).toBe('list');
+      screen.getAllByRole('listitem').forEach((item) => expect(item.getAttribute('role')).toBe('listitem'));
+    });
+
+    it('draw no markers of their own, since the visible prefix is the marker', () => {
+      render(<Banner messages={messages} severity='warning' />);
+
+      // jest maps stylesheets away, so the rule is checked as source
+      const css = fs.readFileSync(path.join(__dirname, 'Banner.css'), 'utf8');
+
+      expect(screen.getByRole('list')).toHaveClass('banner-messages');
+      expect(css).toMatch(/\.banner-messages\s*\{[^}]*list-style:\s*none/);
+    });
+
+    it('keep the severity prefix in front of the list', () => {
+      const { container } = render(<Banner messages={messages} severity='warning' />);
+
+      const list = screen.getByRole('list');
+
+      expect(list.previousElementSibling).toBe(container.querySelector('.banner-severity'));
+      expect(list.previousElementSibling).toHaveTextContent('Warning:');
+    });
+
+    it('are a list for an error too, which has no severity prefix', () => {
+      render(<Banner messages={messages.slice(0, 2)} severity='error' />);
+
+      expect(screen.getAllByRole('listitem')).toHaveLength(2);
+    });
+  });
+
+  it('is not a list for one message', () => {
+    render(<Banner messages={['This is a note']} severity='note' />);
+
+    expect(screen.queryByRole('list')).toBeNull();
+    expect(screen.queryByRole('listitem')).toBeNull();
+    expect(screen.getByText('This is a note')).toBeTruthy();
   });
 
   it('matches snapshot (error, with dismiss)', () => {

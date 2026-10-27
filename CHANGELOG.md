@@ -60,6 +60,18 @@ No component in the package imports `styled-components` any more, so consumers n
 need it installed to use `@openstax/ui-components`. Apps that use it themselves are
 unaffected and keep their own dependency.
 
+#### `Banner` shows several messages as a list (CORE-2943)
+
+With more than one message, `Banner` rendered each as a block with "[1 of 2]: " typed into the
+text, so screen readers read the numbering as text and found no list (WCAG 1.3.1). The messages
+are now an `<ol>` with one `<li>` each. The visible "[1 of 2]: " stays, but is hidden from
+assistive technology, because the list announces its own count and position. The list has no
+markers of its own, so it carries `role="list"` and `role="listitem"`, which keeps list semantics
+in Safari. The "Warning:" or "Note:" prefix still comes before the list.
+
+One message renders exactly as before, with no list. If you target a multi-message banner's
+markup, the messages are now `li` elements inside `ol.banner-messages` and not sibling `div`s.
+
 #### `createSentryLogger` reads `timestamp` as milliseconds (CORE-3301)
 
 A logged event's `timestamp` is now read as milliseconds since the epoch, the units of
