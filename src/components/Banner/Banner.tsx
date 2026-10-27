@@ -56,11 +56,17 @@ export const Banner = (props: {messages: string[]; severity: BannerSeverity; onD
   return <StyledBanner severity={props.severity}>
     <div>
       {props.severity !== 'error' ? <Severity>{props.severity === 'note' ? 'Note: ' : 'Warning: '}</Severity> : null}
-      {props.messages.map((message, i) =>
-        <Html block={numWarnings > 1} key={i}>
-          {numWarnings > 1 ? `[${i + 1} of ${numWarnings}]: ${message}`: message}
-        </Html>
-      )}
+      {numWarnings > 1
+        // The markers are removed in CSS, which drops list semantics in Safari, so the roles are explicit.
+        ? <ol className='banner-messages' role='list'>
+          {props.messages.map((message, i) =>
+            <li key={i} role='listitem'>
+              <span aria-hidden='true'>{`[${i + 1} of ${numWarnings}]: `}</span>
+              <Html>{message}</Html>
+            </li>
+          )}
+        </ol>
+        : props.messages.map((message, i) => <Html key={i}>{message}</Html>)}
     </div>
     {props.onDismiss
       ? <CloseButton severity={props.severity} onClick={props.onDismiss} aria-label='dismiss'>
