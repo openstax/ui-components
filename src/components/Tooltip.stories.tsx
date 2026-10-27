@@ -1,36 +1,16 @@
-import styled from 'styled-components';
 import { TooltipGroup } from './Tooltip';
 import { Placement } from 'react-aria';
-
-const Wrapper = styled.div`
-  width: 50%;
-  margin: 0 auto;
-  font-size: 1.6rem;
-  position: relative;
-
-  > * {
-    margin-bottom: 1rem;
-  }
-`;
-
-const Row = styled.div`
-  display: flex;
-  align-items: center;
-
-  > * {
-    margin-right: 1rem;
-  }
-`;
+import "./stories.css";
 
 // The 'More information' default is the same on every instance, so name the subject with ariaLabel.
-export const Default = () => <Wrapper>
+export const Default = () => <div className="story-tooltip-wrapper">
   {(['right', 'top', 'bottom'] as Placement[]).map((placement, i) =>
-    <Row key={i}>
+    <div className="story-tooltip-row" key={i}>
       <TooltipGroup placement={placement} ariaLabel={`More information about ${placement} placement`}>
         Tooltip content goes here.
       </TooltipGroup>
       {placement}
-    </Row>
+    </div>
   )}
-  </Wrapper>
+  </div>
 ;

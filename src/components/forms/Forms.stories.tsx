@@ -1,7 +1,7 @@
 import React from 'react';
-import styled from 'styled-components';
 import {Controlled as Forms, Uncontrolled} from '.';
 import { fetchSuccess, fetchError } from "@openstax/ts-utils/fetch";
+import "../stories.css";
 
 export const BasicControlledForm = () => {
   const data = {
@@ -19,15 +19,6 @@ export const BasicControlledForm = () => {
   </Forms.Form>
 };
 
-const FormRow = styled(Forms.FormSection)`
-  display: flex;
-  flex-direction: row;
-
-  > *:not(:first-child) {
-    margin-top: 0;
-    margin-left: 5px;
-  }
-`;
 export const FormRepeatableElements = () => {
   const data = {
     name: 'Test McTesterson',
@@ -44,11 +35,11 @@ export const FormRepeatableElements = () => {
     <Uncontrolled.Checkbox name="sortable" label="Sortable" onChangeValue={checked => setSortable(!!checked)} />
     <Forms.List name="interests">
       <Forms.ListItems>
-        <FormRow>
+        <Forms.FormSection className="story-form-row">
           {sortable ? <Forms.ListRecordSortableHandle style={{height: 'auto'}} /> : null}
           <Forms.TextInput name="interest" label="Interest" />
           <Forms.ListRecordRemoveButton>remove interest</Forms.ListRecordRemoveButton>
-        </FormRow>
+        </Forms.FormSection>
       </Forms.ListItems>
       <Forms.ListRecordAddButton>add interest</Forms.ListRecordAddButton>
     </Forms.List>
@@ -102,10 +93,10 @@ export const DataReferencesInNamespaces = () => {
       </Forms.NameSpace>
       <Forms.List name="interests">
         <Forms.ListItems>
-          <FormRow>
+          <Forms.FormSection className="story-form-row">
             <Forms.TextInput name="interest" label="Interest" />
             <Forms.ListRecordRemoveButton>remove interest</Forms.ListRecordRemoveButton>
-          </FormRow>
+          </Forms.FormSection>
             <Forms.GetFormData>
               {data => <pre>{JSON.stringify(data, null, 2)}</pre>}
             </Forms.GetFormData>

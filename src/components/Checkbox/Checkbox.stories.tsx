@@ -1,24 +1,14 @@
 import React from "react";
-import styled from "styled-components";
 import { Checkbox } from "./Checkbox";
-
-const CheckboxGroup = styled.div`
-  text-transform: capitalize;
-  & + & {
-    margin-top: 3.2rem;
-  }
-  > * + * {
-    margin-top: 0.5rem;
-  }
-`;
+import "../stories.css";
 
 type CheckboxProps = React.ComponentProps<typeof Checkbox>;
-const renderCheckboxes = (variant: CheckboxProps['variant'], size: CheckboxProps['size']) => <CheckboxGroup>
+const renderCheckboxes = (variant: CheckboxProps['variant'], size: CheckboxProps['size']) => <div className="story-group story-group-capitalize">
   <h2>Size {size}</h2>
   <Checkbox {...{size, variant}}>Checkbox label</Checkbox>
   <Checkbox {...{size, variant}} defaultChecked>Checkbox label</Checkbox>
   <Checkbox {...{size, variant}} defaultChecked bold>Checkbox label</Checkbox>
-</CheckboxGroup>;
+</div>;
 
 export const Primary = () => <>
   {renderCheckboxes('primary', 1.4)}
@@ -34,12 +24,12 @@ export const Light = () => <>
   {renderCheckboxes('light', 2)}
 </>
 
-const renderDisabledCheckboxes = (variant: CheckboxProps['variant'], size: CheckboxProps['size']) => <CheckboxGroup>
+const renderDisabledCheckboxes = (variant: CheckboxProps['variant'], size: CheckboxProps['size']) => <div className="story-group story-group-capitalize">
   <h2>{variant} - Size {size}</h2>
   <Checkbox {...{size, variant}} disabled>Checkbox label</Checkbox>
   <Checkbox {...{size, variant}} disabled defaultChecked>Checkbox label</Checkbox>
   <Checkbox {...{size, variant}} disabled defaultChecked bold>Checkbox label</Checkbox>
-</CheckboxGroup>;
+</div>;
 
 export const Disabled = () => <>
   {renderDisabledCheckboxes('primary', 1.6)}
@@ -48,12 +38,12 @@ export const Disabled = () => <>
   {renderDisabledCheckboxes('light', 2)}
 </>
 
-const renderIndeterminateCheckboxes = (variant: CheckboxProps['variant'], size: CheckboxProps['size']) => <CheckboxGroup>
+const renderIndeterminateCheckboxes = (variant: CheckboxProps['variant'], size: CheckboxProps['size']) => <div className="story-group story-group-capitalize">
   <h2>{variant} - Size {size}</h2>
   <Checkbox {...{size, variant}} indeterminate>Checkbox label</Checkbox>
   <Checkbox {...{size, variant}} indeterminate bold>Checkbox label</Checkbox>
   <Checkbox {...{size, variant}} indeterminate disabled>Checkbox label</Checkbox>
-</CheckboxGroup>;
+</div>;
 
 export const Indeterminate = () => <>
   {(['primary', 'light', 'error'] as const).flatMap(variant =>
@@ -70,7 +60,7 @@ export const ParentOfOptions = () => {
   const [selected, setSelected] = React.useState<string[]>(['Option two']);
   const all = selected.length === options.length;
 
-  return <CheckboxGroup>
+  return <div className="story-group story-group-capitalize">
     <Checkbox
       bold
       size={2}
@@ -89,5 +79,5 @@ export const ParentOfOptions = () => {
     >
       {option}
     </Checkbox>)}
-  </CheckboxGroup>;
+  </div>;
 };

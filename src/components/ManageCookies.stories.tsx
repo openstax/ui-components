@@ -1,6 +1,7 @@
 import React from 'react';
-import styled from "styled-components";
 import { ManageCookiesLink } from "./ManageCookies";
+import "./ManageCookies.stories.css";
+import "../theme/theme.css";
 
 /*
  * CookieYes renders its revisit badge as a fixed circle wrapping a button, and ships
@@ -43,9 +44,9 @@ export const WithoutCookieYes = () => <>
   <ManageCookiesLink />
 
   <h2>Inside a styled container</h2>
-  <SomeContainer>
+  <div className="story-cookies-container">
     if there is some container like a footer or whatever that sets colors: <ManageCookiesLink />
-  </SomeContainer>
+  </div>
 
   <h2>As a list item</h2>
   <ul>
@@ -53,16 +54,6 @@ export const WithoutCookieYes = () => <>
     <ManageCookiesLink wrapper={button => <li>{button}</li>} />
   </ul>
 </>;
-
-const SomeContainer = styled.div`
-  a, button {
-    color: #ccc;
-
-    &:hover {
-      color: #000;
-    }
-  }
-`;
 
 export const WithCookieYes = () => {
   React.useEffect(() => {
@@ -76,9 +67,9 @@ export const WithCookieYes = () => {
     <ManageCookiesLink />
 
     <h2>Inside a styled container</h2>
-    <SomeContainer>
+    <div className="story-cookies-container">
       if there is some container like a footer or whatever that sets colors: <ManageCookiesLink />
-    </SomeContainer>
+    </div>
 
     <h2>As a list item</h2>
     <ul>
