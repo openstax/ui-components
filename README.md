@@ -42,6 +42,7 @@ Publishing cannot be undone, so the script creates the tag first. Everything tha
 
 - the working tree has changes (untracked files included), or the tag already exists locally or on origin
 - the version is not `MAJOR.MINOR.PATCH` or `MAJOR.MINOR.PATCH-prerelease`
+- the version is not higher than every full release tag (`MAJOR.MINOR.PATCH`), local or on origin. Pre-release tags and tags in other forms, such as `v1.2.0`, are ignored.
 - you are not logged in to the npm registry
 - the build changes a tracked file, such as the generated `src/theme/theme.css`
 - git cannot create the tag: no author and committer identity, or `tag.gpgSign` is on without a usable key
