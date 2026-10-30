@@ -60,7 +60,7 @@ fi
 # A release must be higher than every full release tag, local or on origin. This lists all the
 # tags on origin, because the check above only asked about this version's.
 remote_tags=$(git ls-remote --tags --refs origin) || fail "could not list the tags on origin, aborting."
-order_error=$({ git tag --list; printf '%s\n' "$remote_tags" | sed 's|.*refs/tags/||'; } \
+order_error=$({ git tag --list; printf '%s\n' "$remote_tags" | cut -f2 | sed 's|^refs/tags/||'; } \
   | node ./scripts/check-version-order.cjs "$version" 2>&1) \
   || fail "$order_error" \
     "Bump the version in package.json. If the higher tag is a mistake, delete it first."

@@ -9,13 +9,16 @@ const RELEASE_TAG = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*
 
 const parse = (version) => {
   const match = RELEASE_TAG.exec(version);
-  return match && {core: match.slice(1, 4).map(Number), pre: match[4] ? match[4].split('.') : []};
+  return match && {core: match.slice(1, 4), pre: match[4] ? match[4].split('.') : []};
 };
+
+// Numeric identifiers have no leading zeros and no size limit, so compare them as strings.
+const compareNumbers = (a, b) => a.length !== b.length ? Math.sign(a.length - b.length) : a < b ? -1 : a > b ? 1 : 0;
 
 const compareIdentifiers = (a, b) => {
   const aNum = /^\d+$/.test(a);
   const bNum = /^\d+$/.test(b);
-  if (aNum && bNum) return Math.sign(Number(a) - Number(b));
+  if (aNum && bNum) return compareNumbers(a, b);
   if (aNum !== bNum) return aNum ? -1 : 1;
   return a < b ? -1 : a > b ? 1 : 0;
 };
@@ -25,7 +28,8 @@ const compareVersions = (a, b) => {
   const left = parse(a);
   const right = parse(b);
   for (let i = 0; i < 3; i++) {
-    if (left.core[i] !== right.core[i]) return Math.sign(left.core[i] - right.core[i]);
+    const result = compareNumbers(left.core[i], right.core[i]);
+    if (result) return result;
   }
   if (!left.pre.length || !right.pre.length) return Math.sign(right.pre.length - left.pre.length);
   for (let i = 0; i < Math.max(left.pre.length, right.pre.length); i++) {
