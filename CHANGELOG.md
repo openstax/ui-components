@@ -54,6 +54,12 @@ To migrate, pass your own class and select on it instead of the component.
 
 ### Changed
 
+#### `styled-components` is no longer a peer dependency (CORE-2010)
+
+No component in the package imports `styled-components` any more, so consumers no longer
+need it installed to use `@openstax/ui-components`. Apps that use it themselves are
+unaffected and keep their own dependency.
+
 #### `Banner` shows several messages as a list (CORE-2943)
 
 With more than one message, `Banner` rendered each as a block with "[1 of 2]: " typed into the
