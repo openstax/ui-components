@@ -1,0 +1,9 @@
+.story-cookies-container a,
+.story-cookies-container button {
+  color: #ccc;
+}
+
+.story-cookies-container a:hover,
+.story-cookies-container button:hover {
+  color: var(--ox-color-black);
+}
