@@ -107,6 +107,13 @@ drop any `ref`. The two known consumers, assignments and lti-gateway, pass only 
 
 ### Fixed
 
+#### `CloseModalButton` has 3:1 contrast on the modal header (CORE-4150)
+
+The default close button was `--ox-color-neutral-medium` (#a0a0a0) on the modal header's
+`--ox-color-neutral-lighter` (#f1f1f1), 2.32:1 against the 3:1 that WCAG 1.4.11 asks of an
+icon-only control. It is now `--ox-color-neutral-thin` (#6f6f6f). The hover color is
+unchanged and still darker than the resting one. `--close-button-color` still overrides it.
+
 #### Menus close when you press inside an iframe
 
 `NavBarMenuButton`, `DropdownMenu`, `ProfileMenu` and `HelpMenu` stopped closing on a press
