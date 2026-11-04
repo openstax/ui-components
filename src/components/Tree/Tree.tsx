@@ -48,7 +48,7 @@ export { TreeItemContent } from "react-aria-components";
 // The chevron's own text is its name, which react-aria extends with the row's label ("Show sections
 // Chapter 1"), so a person who speaks the visible label can activate it (WCAG 2.5.3). Without this
 // react-aria names it "Expand"/"Collapse" and the visible text is not part of the name. A chevron
-// with no plain text has nothing else to go by and keeps "expand/collapse".
+// with no plain text, including one whose label is in a nested element, keeps "expand/collapse".
 const visibleText = (children: React.ReactNode) => React.Children.toArray(children)
   .filter((child): child is string | number => typeof child === 'string' || typeof child === 'number')
   .join('')

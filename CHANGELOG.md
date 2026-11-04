@@ -327,8 +327,8 @@ ability to override the wrapper's CSS variables.
 A chevron labelled "Select section(s)" was announced as "expand/collapse …", and a person
 using voice control who said the visible label could not activate it (WCAG 2.5.3, Label in
 Name). A chevron with text now uses that text as its `aria-label`, which react-aria extends with the
-row's label, for example "Select section(s) Chapter 1". A chevron with no plain text keeps
-"expand/collapse".
+row's label, for example "Select section(s) Chapter 1". A chevron with no plain text, or with
+its label in a nested element, keeps "expand/collapse".
 
 ### Changed - BREAKING CHANGES
 
