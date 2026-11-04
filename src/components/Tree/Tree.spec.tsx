@@ -106,6 +106,20 @@ describe('Tree', () => {
     expect(screen.getByRole('button', { name: 'expand/collapse Row one' })).toBeTruthy();
   });
 
+  it('falls back to expand/collapse when text is mixed with an element', () => {
+    render(
+      <Tree>
+        <TreeItem id="1" textValue="Row one">
+          <TreeItemContent>
+            <TreeChevron>Select <span>section(s)</span></TreeChevron>
+          </TreeItemContent>
+        </TreeItem>
+      </Tree>
+    );
+
+    expect(screen.getByRole('button', { name: 'expand/collapse Row one' })).toBeTruthy();
+  });
+
   it('expands a row when its chevron is activated', () => {
     renderTree();
 
