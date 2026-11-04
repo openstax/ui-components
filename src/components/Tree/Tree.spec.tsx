@@ -77,6 +77,21 @@ describe('Tree', () => {
     expect(screen.getByRole('button', { name: 'Show/Hide 1' })).toBeTruthy();
   });
 
+  it('keeps the spacing of a label split across expressions', () => {
+    const multiple = true;
+    render(
+      <Tree>
+        <TreeItem id="1" textValue="Row one">
+          <TreeItemContent>
+            <TreeChevron>Select section{multiple ? 's' : ''}</TreeChevron>
+          </TreeItemContent>
+        </TreeItem>
+      </Tree>
+    );
+
+    expect(screen.getByRole('button', { name: 'Select sections Row one' })).toBeTruthy();
+  });
+
   it('falls back to expand/collapse for a chevron with no text', () => {
     render(
       <Tree>

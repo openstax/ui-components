@@ -51,7 +51,7 @@ export { TreeItemContent } from "react-aria-components";
 // with no plain text has nothing else to go by and keeps "expand/collapse".
 const visibleText = (children: React.ReactNode) => React.Children.toArray(children)
   .filter((child): child is string | number => typeof child === 'string' || typeof child === 'number')
-  .join(' ')
+  .join('')
   .trim();
 
 // The caller's className lands on the button rather than the wrapper, matching the
