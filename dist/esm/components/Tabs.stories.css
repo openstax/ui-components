@@ -1,0 +1,15 @@
+.story-tabs-wrapper {
+  padding: 2.4rem;
+}
+
+.story-tabs-wrapper .react-aria-TabList {
+  margin-top: 4.8rem;
+}
+
+.story-tab-panel {
+  margin: 1rem 0;
+  padding: 5rem;
+  display: flex;
+  align-items: center;
+  border: 0.1rem solid var(--ox-color-pale);
+}
