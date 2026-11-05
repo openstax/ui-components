@@ -11,8 +11,9 @@
   align-items: center;
   justify-content: center;
 
-  /* Default variant colors using CSS custom properties with fallbacks */
-  color: var(--close-button-color, var(--ox-color-neutral-medium));
+  /* Default variant colors using CSS custom properties with fallbacks.
+     neutral-thin is 3:1 or better on the modal header (WCAG 1.4.11); neutral-medium was 2.32:1. */
+  color: var(--close-button-color, var(--ox-color-neutral-thin));
 }
 
 .close-modal-button:hover {
