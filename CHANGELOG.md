@@ -321,6 +321,15 @@ error to catch it. These wrappers now use RAC's `composeRenderProps` and merge i
 callback, so both forms reach the DOM. The object form is unchanged, including the caller's
 ability to override the wrapper's CSS variables.
 
+#### `TreeChevron` is named by its visible text (CORE-4153)
+
+`TreeChevron` always set `aria-label="expand/collapse"`, which replaced the text it showed.
+A chevron labelled "Select section(s)" was announced as "expand/collapse …", and a person
+using voice control who said the visible label could not activate it (WCAG 2.5.3, Label in
+Name). A chevron with text now uses that text as its `aria-label`, which react-aria extends with the
+row's label, for example "Select section(s) Chapter 1". A chevron whose children are not all
+plain text, such as an icon or a label in a nested element, keeps "expand/collapse".
+
 ### Changed - BREAKING CHANGES
 
 #### Navigation Component Migration (CORE-2005)

@@ -66,21 +66,64 @@ describe('Tree', () => {
     renderTree();
     expect(screen.getAllByRole('row')[0].style.getPropertyValue('--tree-item-level')).toBe('1');
 
-    fireEvent.click(screen.getByRole('button', { name: 'expand/collapse 1' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Show/Hide 1' }));
 
     expect(screen.getAllByRole('row')[1].style.getPropertyValue('--tree-item-level')).toBe('2');
   });
 
-  it('names each chevron after its row', () => {
+  it('names each chevron by its visible text and its row', () => {
     renderTree();
 
-    expect(screen.getByRole('button', { name: 'expand/collapse 1' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Show/Hide 1' })).toBeTruthy();
+  });
+
+  it('keeps the spacing of a label split across expressions', () => {
+    const multiple = true;
+    render(
+      <Tree>
+        <TreeItem id="1" textValue="Row one">
+          <TreeItemContent>
+            <TreeChevron>Select section{multiple ? 's' : ''}</TreeChevron>
+          </TreeItemContent>
+        </TreeItem>
+      </Tree>
+    );
+
+    expect(screen.getByRole('button', { name: 'Select sections Row one' })).toBeTruthy();
+  });
+
+  it('falls back to expand/collapse for a chevron with no text', () => {
+    render(
+      <Tree>
+        <TreeItem id="1" textValue="Row one">
+          <TreeItemContent>
+            <TreeChevron />
+          </TreeItemContent>
+        </TreeItem>
+      </Tree>
+    );
+
+    expect(screen.getByRole('button', { name: 'expand/collapse Row one' })).toBeTruthy();
+  });
+
+  it('falls back to expand/collapse when text is mixed with an element', () => {
+    render(
+      <Tree>
+        <TreeItem id="1" textValue="Row one">
+          <TreeItemContent>
+            <TreeChevron>Select <span>section(s)</span></TreeChevron>
+          </TreeItemContent>
+        </TreeItem>
+      </Tree>
+    );
+
+    expect(screen.getByRole('button', { name: 'expand/collapse Row one' })).toBeTruthy();
   });
 
   it('expands a row when its chevron is activated', () => {
     renderTree();
 
-    fireEvent.click(screen.getByRole('button', { name: 'expand/collapse 1' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Show/Hide 1' }));
 
     const rows = screen.getAllByRole('row');
     expect(rows).toHaveLength(2);
