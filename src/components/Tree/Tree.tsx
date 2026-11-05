@@ -45,6 +45,18 @@ export const TreeItem = TreeItemBase as <T extends object>(
 // styled() wrapper it used to carry was a no-op.
 export { TreeItemContent } from "react-aria-components";
 
+// The chevron's own text is its name, which react-aria extends with the row's label ("Show sections
+// Chapter 1"), so a person who speaks the visible label can activate it (WCAG 2.5.3). Without this
+// react-aria names it "Expand"/"Collapse" and the visible text is not part of the name. A chevron
+// with no text, or with any element child, keeps "expand/collapse": the text alone would
+// leave part of the visible label out of the name.
+const visibleText = (children: React.ReactNode) => {
+  const nodes = React.Children.toArray(children);
+  return nodes.every((node) => typeof node === 'string' || typeof node === 'number')
+    ? nodes.join('').trim()
+    : '';
+};
+
 // The caller's className lands on the button rather than the wrapper, matching the
 // styled-components original. The button is always given a class, which is also what kept
 // react-aria-components from applying its default `react-aria-Button` class.
@@ -55,7 +67,7 @@ export const TreeChevron = (props: React.PropsWithChildren<{
     <RAC.Button
       className={classNames('tree-chevron-button', props.className)}
       type="button"
-      aria-label="expand/collapse"
+      aria-label={visibleText(props.children) || 'expand/collapse'}
       slot="chevron"
     >
       <svg viewBox="0 0 24 24">
