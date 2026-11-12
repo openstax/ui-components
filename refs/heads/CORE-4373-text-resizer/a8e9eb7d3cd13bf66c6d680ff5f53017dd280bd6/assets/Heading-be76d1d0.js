@@ -1,0 +1,1 @@
+import{$ as c}from"./VisuallyHidden-a5309a6c.js";import{$ as f}from"./useFocusRing-01ad82ab.js";import{r as m,R as s}from"./index-6087a8a4.js";const x=m.forwardRef(function(e,a){[e,a]=f(e,a,c);let{children:t,level:l=3,className:r,...o}=e,$=`h${l}`;return s.createElement($,{...o,ref:a,className:r??"react-aria-Heading"},t)});export{x as $};
