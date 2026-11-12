@@ -68,6 +68,16 @@
   background: transparent;
 }
 
+@media (forced-colors: active) {
+  .ox-text-resizer-slider::-webkit-slider-runnable-track {
+    border: 1px solid CanvasText;
+  }
+
+  .ox-text-resizer-slider::-moz-range-track {
+    border: 1px solid CanvasText;
+  }
+}
+
 .ox-text-resizer-slider::-webkit-slider-thumb {
   appearance: none;
   margin-top: -0.6rem;
