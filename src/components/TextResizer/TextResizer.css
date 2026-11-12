@@ -1,0 +1,116 @@
+.ox-text-resizer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 0.2rem 0.6rem;
+  color: var(--ox-color-neutral-dark);
+}
+
+.ox-text-resizer-button {
+  height: 4rem;
+  width: 4.8rem;
+  background: none;
+  border-color: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.ox-text-resizer-button[aria-disabled="true"] {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.ox-text-resizer-slider {
+  appearance: none;
+  background-color: var(--ox-color-neutral);
+  /* Top layer: a 1px tick at each inner stop, inset by half the thumb width. Bottom layer: the fill. */
+  background-image:
+    linear-gradient(
+      to right,
+      transparent 0 calc(20% - 0.5px),
+      var(--ox-color-white) calc(20% - 0.5px) calc(20% + 0.5px),
+      transparent calc(20% + 0.5px) calc(40% - 0.5px),
+      var(--ox-color-white) calc(40% - 0.5px) calc(40% + 0.5px),
+      transparent calc(40% + 0.5px) calc(60% - 0.5px),
+      var(--ox-color-white) calc(60% - 0.5px) calc(60% + 0.5px),
+      transparent calc(60% + 0.5px) calc(80% - 0.5px),
+      var(--ox-color-white) calc(80% - 0.5px) calc(80% + 0.5px),
+      transparent calc(80% + 0.5px) 100%
+    ),
+    linear-gradient(
+      var(--text-resizer-fill, var(--ox-color-neutral-dark)),
+      var(--text-resizer-fill, var(--ox-color-neutral-dark))
+    );
+  background-size:
+    calc(100% - 0.8rem) 100%,
+    var(--text-resizer-progress, 0%) 100%;
+  background-position: center, left;
+  background-repeat: no-repeat;
+  overflow: visible;
+  height: 0.4rem;
+  width: 12rem;
+  margin: 0.8rem 1.4rem;
+}
+
+.ox-text-resizer-slider::-webkit-slider-runnable-track {
+  appearance: none;
+  box-shadow: none;
+  border: none;
+  height: 0.2rem;
+  background: transparent;
+}
+
+.ox-text-resizer-slider::-moz-range-track {
+  appearance: none;
+  box-shadow: none;
+  border: none;
+  height: 0.2rem;
+  background: transparent;
+}
+
+@media (forced-colors: active) {
+  .ox-text-resizer-slider::-webkit-slider-runnable-track {
+    border: 1px solid CanvasText;
+  }
+
+  .ox-text-resizer-slider::-moz-range-track {
+    border: 1px solid CanvasText;
+  }
+}
+
+.ox-text-resizer-slider::-webkit-slider-thumb {
+  appearance: none;
+  margin-top: -0.6rem;
+  width: 0.8rem;
+  height: 1.5rem;
+  background: var(--ox-color-white);
+  border: 1px solid var(--ox-color-neutral-dark);
+  border-radius: 1px;
+  box-shadow:
+    0 2px 1px -1px rgba(0, 0, 0, 0.04),
+    0 1px 1px 0 rgba(0, 0, 0, 0.14),
+    0 1px 3px 0 rgba(0, 0, 0, 0.12);
+}
+
+.ox-text-resizer-slider::-moz-range-thumb {
+  width: 0.7rem;
+  height: 1.5rem;
+  background: var(--ox-color-white);
+  border: 1px solid var(--ox-color-neutral-dark);
+  border-radius: 1px;
+  box-shadow:
+    0 2px 1px -1px rgba(0, 0, 0, 0.04),
+    0 1px 1px 0 rgba(0, 0, 0, 0.14),
+    0 1px 3px 0 rgba(0, 0, 0, 0.12);
+}
+
+.ox-text-resizer-status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
