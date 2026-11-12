@@ -104,6 +104,28 @@ describe("TextResizer", () => {
     expect(status.textContent).toBe("Text size 125%");
   });
 
+  it("does not bring an announcement back when the size returns to the size it was made for", () => {
+    render(<Controlled />);
+    const status = screen.getByRole("status");
+
+    fireEvent.click(increase());
+    fireEvent.change(screen.getByRole("slider"), { target: { value: "0" } });
+    fireEvent.change(screen.getByRole("slider"), { target: { value: "1" } });
+
+    expect(status.textContent).toBe("");
+  });
+
+  it("does not bring an announcement back after an outside change and return", () => {
+    const { rerender } = render(<TextResizer value={0} onChange={jest.fn()} />);
+
+    fireEvent.click(increase());
+    rerender(<TextResizer value={1} onChange={jest.fn()} />);
+    rerender(<TextResizer value={-1} onChange={jest.fn()} />);
+    rerender(<TextResizer value={1} onChange={jest.fn()} />);
+
+    expect(screen.getByRole("status").textContent).toBe("");
+  });
+
   it("clears the announcement when the size changes from outside", () => {
     const { rerender } = render(<TextResizer value={0} onChange={jest.fn()} />);
 

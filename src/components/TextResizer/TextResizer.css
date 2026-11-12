@@ -23,11 +23,28 @@
 .ox-text-resizer-slider {
   appearance: none;
   background-color: var(--ox-color-neutral);
-  background-image: linear-gradient(
-    var(--text-resizer-fill, var(--ox-color-neutral-dark)),
-    var(--text-resizer-fill, var(--ox-color-neutral-dark))
-  );
-  background-size: var(--text-resizer-progress, 0%) 100%;
+  /* Top layer: a 1px tick at each inner stop, inset by half the thumb width. Bottom layer: the fill. */
+  background-image:
+    linear-gradient(
+      to right,
+      transparent 0 calc(20% - 0.5px),
+      var(--ox-color-white) calc(20% - 0.5px) calc(20% + 0.5px),
+      transparent calc(20% + 0.5px) calc(40% - 0.5px),
+      var(--ox-color-white) calc(40% - 0.5px) calc(40% + 0.5px),
+      transparent calc(40% + 0.5px) calc(60% - 0.5px),
+      var(--ox-color-white) calc(60% - 0.5px) calc(60% + 0.5px),
+      transparent calc(60% + 0.5px) calc(80% - 0.5px),
+      var(--ox-color-white) calc(80% - 0.5px) calc(80% + 0.5px),
+      transparent calc(80% + 0.5px) 100%
+    ),
+    linear-gradient(
+      var(--text-resizer-fill, var(--ox-color-neutral-dark)),
+      var(--text-resizer-fill, var(--ox-color-neutral-dark))
+    );
+  background-size:
+    calc(100% - 0.8rem) 100%,
+    var(--text-resizer-progress, 0%) 100%;
+  background-position: center, left;
   background-repeat: no-repeat;
   overflow: visible;
   height: 0.4rem;
@@ -35,21 +52,20 @@
   margin: 0.8rem 1.4rem;
 }
 
-.ox-text-resizer-slider::-webkit-slider-runnable-track,
+.ox-text-resizer-slider::-webkit-slider-runnable-track {
+  appearance: none;
+  box-shadow: none;
+  border: none;
+  height: 0.2rem;
+  background: transparent;
+}
+
 .ox-text-resizer-slider::-moz-range-track {
   appearance: none;
   box-shadow: none;
   border: none;
   height: 0.2rem;
-  background: repeating-linear-gradient(
-    to right,
-    transparent,
-    transparent 19%,
-    var(--ox-color-white) 19%,
-    var(--ox-color-white) 20%,
-    transparent 20%,
-    transparent 20%
-  );
+  background: transparent;
 }
 
 .ox-text-resizer-slider::-webkit-slider-thumb {

@@ -51,6 +51,10 @@ export const TextResizer = ({
 }: TextResizerProps) => {
   const [announced, setAnnounced] = React.useState<{ value: TextResizerValue; text: string }>();
 
+  React.useEffect(() => {
+    setAnnounced((current) => (current && current.value !== value ? undefined : current));
+  }, [value]);
+
   const change = (next: number) => {
     if (next < textResizerMinValue || next > textResizerMaxValue) return;
     onChange(next as TextResizerValue);
