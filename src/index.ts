@@ -32,6 +32,8 @@ export * from './components/RiceLogo';
 export * from './components/SidebarNav';
 export * from './components/Tabs';
 export * from './components/Text';
+export * from './components/TextResizer/TextResizer';
+export * from './components/TextResizer/constants';
 export * from './components/ToastContainer';
 export * from './components/ToggleButtonGroup';
 export * from './components/Tooltip';

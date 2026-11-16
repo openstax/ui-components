@@ -6,6 +6,29 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
+#### `TextResizer` (CORE-4373)
+
+The text size control that rex-web and assignments each had their own copy of: a slider with a
+decrease and an increase button, for the text sizes in the new `textResizerValues` (and the
+other `textResizer*` constants and the `TextResizerValue` type, exported with it).
+
+It takes `value` and `onChange`. The app keeps loading and saving the size, and puts the
+control in its own popover, so the control has no popover and no heading of its own. Pass
+`aria-label` or `aria-labelledby` to name it as a group. The slider name, the button names and
+the announcement are props with English defaults, so an app can pass its own translated text.
+`fillColor` sets the color of the slider up to the current size, and `className` goes on the
+outer element.
+
+It meets the accessibility fixes from the assignments copy:
+
+- The slider reports the size as a percentage ("125%") in `aria-valuetext`, and has a name.
+- The buttons set `aria-disabled` at the smallest and largest size and stay focusable, so
+  focus stays on the button that was just pressed.
+- A status region announces the new size after a button press. It is empty until then, so it
+  announces nothing when the control appears. It is emptied when the size changes another
+  way, so pressing the same button again after using the slider is announced again.
+- The unfilled track is `--ox-color-neutral`, 3.9:1 on white (WCAG 1.4.11).
+
 #### `NavBarDisclosureButton` and `NavBarDisclosureItem` (CORE-2875)
 
 A button that shows a list of links and actions, for navigation. `NavBarMenuButton`'s
