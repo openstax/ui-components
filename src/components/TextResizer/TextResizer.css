@@ -22,8 +22,11 @@
 
 .ox-text-resizer-slider {
   appearance: none;
-  background-color: var(--ox-color-neutral);
-  /* Top layer: a 1px tick at each inner stop, inset by half the thumb width. Bottom layer: the fill. */
+  /*
+   * Three layers, top to bottom: a 1px tick at each inner stop, the fill, the track. All sit
+   * between the centers of the thumb at its two ends (inset by half the thumb width), so the
+   * thumb hangs off the track at each end and all six segments are the same size.
+   */
   background-image:
     linear-gradient(
       to right,
@@ -40,11 +43,13 @@
     linear-gradient(
       var(--text-resizer-fill, var(--ox-color-neutral-dark)),
       var(--text-resizer-fill, var(--ox-color-neutral-dark))
-    );
+    ),
+    linear-gradient(var(--ox-color-neutral), var(--ox-color-neutral));
   background-size:
     calc(100% - 0.8rem) 100%,
-    var(--text-resizer-progress, 0%) 100%;
-  background-position: center, left;
+    calc((100% - 0.8rem) * var(--text-resizer-progress, 0)) 100%,
+    calc(100% - 0.8rem) 100%;
+  background-position: center, 0.4rem 0, center;
   background-repeat: no-repeat;
   overflow: visible;
   height: 0.4rem;

@@ -175,6 +175,6 @@ describe("TextResizer", () => {
 
     expect(root.classList.contains("mine")).toBe(true);
     expect(root.style.getPropertyValue("--text-resizer-fill")).toBe("rebeccapurple");
-    expect(root.style.getPropertyValue("--text-resizer-progress")).toBe("100%");
+    expect(root.style.getPropertyValue("--text-resizer-progress")).toBe("1");
   });
 });

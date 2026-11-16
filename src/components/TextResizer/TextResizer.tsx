@@ -68,7 +68,7 @@ export const TextResizer = ({
   };
 
   const style: CSSPropertiesWithVariables = {
-    "--text-resizer-progress": `${((value - textResizerMinValue) / (textResizerMaxValue - textResizerMinValue)) * 100}%`,
+    "--text-resizer-progress": String((value - textResizerMinValue) / (textResizerMaxValue - textResizerMinValue)),
     ...(fillColor ? { "--text-resizer-fill": fillColor } : {}),
   };
   const isGroup = ariaLabel !== undefined || ariaLabelledby !== undefined;
