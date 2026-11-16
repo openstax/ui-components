@@ -1,0 +1,10 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.textResizerStorageKey = exports.textResizerDefaultValue = exports.textResizerMaxValue = exports.textResizerMinValue = exports.textResizerValueMap = exports.textResizerValues = void 0;
+exports.textResizerValues = [-2, -1, 0, 1, 2, 3];
+const textResizerScales = [0.75, 0.9, 1, 1.25, 1.5, 2];
+exports.textResizerValueMap = new Map(exports.textResizerValues.map((v, i) => [v, textResizerScales[i]]));
+exports.textResizerMinValue = exports.textResizerValues[0];
+exports.textResizerMaxValue = exports.textResizerValues[exports.textResizerValues.length - 1];
+exports.textResizerDefaultValue = exports.textResizerValues[2];
+exports.textResizerStorageKey = 'textSize';
